@@ -2,7 +2,7 @@
 
 _Learn about the person you're helping. Update this as you go._
 
-- **Name:** _(not yet given)_
+- **Name:** The Darkhorse
 - **What to call them:** _(TBD)_
 - **Pronouns:** _(TBD)_
 - **Timezone:** GMT+8
