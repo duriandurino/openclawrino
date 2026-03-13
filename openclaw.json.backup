@@ -1,0 +1,154 @@
+{
+  "wizard": {
+    "lastRunAt": "2026-03-13T07:38:20.750Z",
+    "lastRunVersion": "2026.3.12",
+    "lastRunCommand": "onboard",
+    "lastRunMode": "local"
+  },
+  "auth": {
+    "profiles": {
+      "openrouter:default": {
+        "provider": "openrouter",
+        "mode": "api_key"
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "openrouter/healer-alpha"
+      },
+      "models": {
+        "openrouter/auto": {
+          "alias": "OpenRouter"
+        },
+        "openrouter/healer-alpha": {},
+        "ollama/xploiter/pentester": {},
+        "ollama/xploiter/the-xploiter": {}
+      },
+      "workspace": "/home/dukali/.openclaw/workspace",
+      "subagents": {
+        "maxSpawnDepth": 2,
+        "maxChildrenPerAgent": 5,
+        "maxConcurrent": 8,
+        "runTimeoutSeconds": 900
+      }
+    },
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "Hatless White",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-recon",
+        "name": "Recon Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/pentester" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-enum",
+        "name": "Enumeration Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/pentester" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-vuln",
+        "name": "Vulnerability Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/the-xploiter" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-exploit",
+        "name": "Exploitation Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/the-xploiter" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-post",
+        "name": "Post-Exploit Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/the-xploiter" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-report",
+        "name": "Reporting Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/pentester" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "specter-skillcrafter",
+        "name": "Skill Crafting Agent",
+        "workspace": "/home/dukali/.openclaw/workspace",
+        "model": { "primary": "ollama/xploiter/pentester" },
+        "sandbox": { "mode": "off" }
+      }
+    ]
+  },
+  "tools": {
+    "profile": "coding"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "hooks": {
+    "internal": {
+      "enabled": true,
+      "entries": {
+        "session-memory": {
+          "enabled": true
+        },
+        "command-logger": {
+          "enabled": true
+        }
+      }
+    }
+  },
+  "gateway": {
+    "port": 18789,
+    "mode": "local",
+    "bind": "loopback",
+    "auth": {
+      "mode": "token",
+      "token": "16de07b0672829a71e735fc13e4388ae5b9fc69c6fd88041"
+    },
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
+    }
+  },
+  "skills": {
+    "install": {
+      "nodeManager": "npm"
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.3.12",
+    "lastTouchedAt": "2026-03-13T07:38:20.766Z"
+  }
+}
