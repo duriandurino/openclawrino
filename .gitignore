@@ -1,0 +1,30 @@
+# .gitignore — Pentest Workspace
+
+# Loot & Credentials (NEVER commit)
+loot/
+*.cred
+*.key
+*.pem
+
+# Raw Evidence
+evidence/
+
+# Memory / Session logs (contain target details)
+memory/
+*.log
+
+# Sensitive data
+*.pcap
+*.pcapng
+*.cap
+*.john
+*.hash
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Tool output
+*.nmap
+*.xml
+*_output.txt
