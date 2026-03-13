@@ -5,7 +5,7 @@ _Learn about the person you're helping. Update this as you go._
 - **Name:** The Darkhorse
 - **What to call them:** _(TBD)_
 - **Pronouns:** _(TBD)_
-- **Timezone:** GMT+8
+- **Timezone:** Asia/Manila (GMT+8 / Philippine Standard Time)
 - **Notes:** Developer by background, pivoting into cybersecurity/penetration testing. New to pentesting with fundamental networking knowledge.
 
 ## Context
