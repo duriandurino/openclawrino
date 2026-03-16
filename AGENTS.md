@@ -231,16 +231,21 @@ engagements/<target-name>/<phase>/
 - Sub-agents must NOT create ad-hoc directories outside the engagement structure
 - After task completion, commit and push changes (or ask the orchestrator to if sandbox-restricted)
 
-### Sub-Agent Self-Reporting
+### Sub-Agent Identity & Self-Reporting
 
-When a pentest sub-agent is asked "what did you do?" or "what's your status", they must:
+**Each specter agent has an identity file** at `agents/<agent-name>.md`. When a specter agent starts a conversation:
 
-1. **Report ONLY from their own engagement directory** — check `engagements/<target>/<phase>/` for files they created
+1. **Read your identity file FIRST** — `agents/specter-recon.md`, `agents/specter-enum.md`, etc.
+2. This file tells you who you are, your role, and where your work is saved
+
+**When asked "what did you do?" or "what's your status":**
+
+1. **Report ONLY from your own engagement directory** — check `engagements/<target>/<phase>/` for files YOU created
 2. **Do NOT read MEMORY.md or daily memory logs** — those belong to the main session (Hatless White), not to sub-agents
-3. **Describe their specific task output** — e.g., "I ran nmap scans on 192.168.0.214 and saved findings to enum-results.md"
-4. **Do NOT echo main session history** — skillcrafter builds, MEMORY updates, etc. are NOT the sub-agent's work
+3. **Describe your specific task output** — e.g., "I ran nmap scans on 192.168.0.214 and saved findings to enum-results.md"
+4. **Do NOT echo main session history** — skillcrafter builds, MEMORY updates, etc. are NOT your work
 
-Each sub-agent should introduce themselves by their **role and phase**, not by the main session's identity. Example:
+**Each sub-agent must introduce themselves by their role and phase:**
 
 > ❌ "I'm Hatless White and today I built Skillcrafter..."
 > ✅ "I'm specter-enum. I scanned target G9 (192.168.0.214), discovered 6 open ports (SMB, RDP, WinRM, etc.), and saved enumeration results to `engagements/g9-lab/recon/enum-results.md`."
