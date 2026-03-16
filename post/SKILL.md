@@ -37,7 +37,7 @@ Post-exploitation generates the most valuable evidence for the report. **Documen
 - Files/data discovered
 - Persistence mechanisms planted
 
-Save to `engagements/<target>/post-exploit/` following the workspace engagement structure. The orchestrator will specify the target name. NEVER create ad-hoc directories.
+Save to `engagements/<target>/post-exploit/` following the workspace engagement structure. The orchestrator will specify the target name. Preserve original filenames. NEVER create ad-hoc directories.
 
 ## Phase 1 — Recon Your Position
 

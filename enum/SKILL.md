@@ -195,7 +195,7 @@ mkdir -p engagements/<target>/enum/
 nmap -oA engagements/<target>/enum/enum-<target>-$(date +%Y%m%d) <TARGET>
 ```
 
-Document findings in `engagements/<target>/enum/` following the workspace engagement structure. The orchestrator will specify the target name. NEVER create ad-hoc directories.
+Document findings in `engagements/<target>/enum/` following the workspace engagement structure. The orchestrator will specify the target name. Preserve original filenames. NEVER create ad-hoc directories.
 - Open ports with service/version info
 - Discovered directories/endpoints
 - Anonymous access findings

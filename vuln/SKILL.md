@@ -35,8 +35,8 @@ Start from what enumeration found:
 
 ```bash
 # Read enum results
-cat loot/enum-<target>-*.json
-cat loot/enum-<target>-detail-*.nmap
+cat engagements/<target>/enum/enum-<target>-*.json
+cat engagements/<target>/enum/enum-<target>-detail-*.nmap
 ```
 
 Extract the service/version pairs for analysis.
@@ -126,7 +126,7 @@ python3 scripts/cve_lookup.py --file engagements/<target>/enum/enum-<target>-*.j
 
 ## Output Format
 
-Document findings in `engagements/<target>/vuln/` following the workspace engagement structure. The orchestrator will specify the target name. NEVER create ad-hoc directories.
+Document findings in `engagements/<target>/vuln/` following the workspace engagement structure. The orchestrator will specify the target name. Preserve original filenames. NEVER create ad-hoc directories.
 
 ```markdown
 # Vulnerability Analysis — <target>
@@ -162,4 +162,6 @@ Service + Version identified
     └── Any confirmed vulns?
           ├── YES → Prioritize for exploitation (next phase)
           └── NO → Document as "no known CVEs" — note for manual testing
+```
+ testing
 ```
