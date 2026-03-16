@@ -207,6 +207,30 @@ Think of it like a human reviewing their journal and updating their mental model
 
 The goal: Be helpful without being annoying. Check in a few times a day, do useful background work, but respect quiet time.
 
+## Pentest Agent Documentation
+
+When spawning pentest sub-agents (specter-recon, specter-enum, specter-vuln, specter-exploit, specter-post, specter-report), **always include the engagement output path in the task**:
+
+```
+engagements/<target-name>/<phase>/
+```
+
+**Mapping:**
+| Agent | Phase |
+|-------|-------|
+| specter-recon | recon |
+| specter-enum | enum |
+| specter-vuln | vuln |
+| specter-exploit | exploit |
+| specter-post | post-exploit |
+| specter-report | reporting |
+
+**Rules:**
+- The orchestrator (Hatless White) determines the target name and phase before spawning
+- Sub-agents must save all findings/documentation to their assigned path
+- Sub-agents must NOT create ad-hoc directories outside the engagement structure
+- After task completion, commit and push changes (or ask the orchestrator to if sandbox-restricted)
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
