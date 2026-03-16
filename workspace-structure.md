@@ -64,6 +64,21 @@ Examples:
 - `acme-webapp-2026-04/` — April web app engagement
 - `corp-internal-2026-Q2/` — Internal network assessment
 
+## Agent Output Paths
+
+All pentest agents must write to their engagement directory. **Never create ad-hoc output folders.**
+
+| Agent | Output Path |
+|-------|-------------|
+| specter-recon | `engagements/<target>/recon/` |
+| specter-enum | `engagements/<target>/enum/` |
+| specter-vuln | `engagements/<target>/vuln/` |
+| specter-exploit | `engagements/<target>/exploit/` |
+| specter-post | `engagements/<target>/post-exploit/` |
+| specter-report | `engagements/<target>/reporting/` |
+
+The orchestrator specifies `<target>` when spawning each agent (e.g., `raspi5-lab`). Raw evidence (screenshots, pcaps, command output) goes in an `evidence/` subfolder within the phase directory.
+
 ## Key Principles
 
 1. **One folder per engagement** — Never mix engagements

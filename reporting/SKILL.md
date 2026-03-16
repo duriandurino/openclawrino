@@ -118,10 +118,14 @@ Use consistent severity ratings:
 ### Step 1 — Gather Findings
 
 ```bash
-# Collect all phase outputs from loot/
-ls -la loot/
-cat loot/recon-<target>-*.md
-cat loot/exploit-<target>-*.md
+# Collect all phase outputs from engagement directory
+ls -la engagements/<target>/recon/
+ls -la engagements/<target>/enum/
+ls -la engagements/<target>/vuln/
+ls -la engagements/<target>/exploit/
+ls -la engagements/<target>/post-exploit/
+cat engagements/<target>/recon/*.md
+cat engagements/<target>/exploit/*.md
 ```
 
 ### Step 2 — Generate Report
@@ -129,8 +133,8 @@ cat loot/exploit-<target>-*.md
 ```bash
 python3 scripts/generate_report.py \
   --target <TARGET> \
-  --findings loot/findings-<target>.json \
-  --output reports/report-<target>-<date>.md
+  --findings engagements/<target>/reporting/findings-<target>.json \
+  --output engagements/<target>/reporting/report-<target>-<date>.md
 ```
 
 ### Step 3 — Review Checklist

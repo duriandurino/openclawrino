@@ -119,7 +119,7 @@ SHODAN: <open ports, services, banners>
 OSINT NOTES: <any additional intel>
 ```
 
-Store outputs in `loot/recon-<target>-<date>.md` in the workspace.
+Store outputs in `engagements/<target>/recon/` following the workspace engagement structure. The orchestrator will specify the target name (e.g., `raspi5-lab`). Save findings as `<target>-recon-<date>.md` within that directory. NEVER create ad-hoc directories — always use the engagement structure.
 
 ## Notes
 

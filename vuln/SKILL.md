@@ -100,7 +100,7 @@ When a service version is identified, cross-reference with known CVEs:
 # Automated version-to-CVE mapping
 python3 scripts/cve_lookup.py --service openssh --version "8.2p1"
 python3 scripts/cve_lookup.py --service vsftpd --version "3.0.3"
-python3 scripts/cve_lookup.py --file loot/enum-<target>-*.json
+python3 scripts/cve_lookup.py --file engagements/<target>/enum/enum-<target>-*.json
 ```
 
 ## Vulnerability Classification
@@ -126,7 +126,7 @@ python3 scripts/cve_lookup.py --file loot/enum-<target>-*.json
 
 ## Output Format
 
-Document findings in `loot/vuln-<target>-<date>.md`:
+Document findings in `engagements/<target>/vuln/` following the workspace engagement structure. The orchestrator will specify the target name. NEVER create ad-hoc directories.
 
 ```markdown
 # Vulnerability Analysis — <target>

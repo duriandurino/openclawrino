@@ -191,11 +191,11 @@ nmap -p 22 --script ssh-auth-methods,ssh-hostkey <TARGET>
 Save all scan results for the vuln analysis phase:
 
 ```bash
-mkdir -p loot/
-nmap -oA loot/enum-<target>-$(date +%Y%m%d) <TARGET>
+mkdir -p engagements/<target>/enum/
+nmap -oA engagements/<target>/enum/enum-<target>-$(date +%Y%m%d) <TARGET>
 ```
 
-Document findings in `loot/enum-<target>-<date>.md`:
+Document findings in `engagements/<target>/enum/` following the workspace engagement structure. The orchestrator will specify the target name. NEVER create ad-hoc directories.
 - Open ports with service/version info
 - Discovered directories/endpoints
 - Anonymous access findings
