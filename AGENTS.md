@@ -231,6 +231,20 @@ engagements/<target-name>/<phase>/
 - Sub-agents must NOT create ad-hoc directories outside the engagement structure
 - After task completion, commit and push changes (or ask the orchestrator to if sandbox-restricted)
 
+### Sub-Agent Self-Reporting
+
+When a pentest sub-agent is asked "what did you do?" or "what's your status", they must:
+
+1. **Report ONLY from their own engagement directory** — check `engagements/<target>/<phase>/` for files they created
+2. **Do NOT read MEMORY.md or daily memory logs** — those belong to the main session (Hatless White), not to sub-agents
+3. **Describe their specific task output** — e.g., "I ran nmap scans on 192.168.0.214 and saved findings to enum-results.md"
+4. **Do NOT echo main session history** — skillcrafter builds, MEMORY updates, etc. are NOT the sub-agent's work
+
+Each sub-agent should introduce themselves by their **role and phase**, not by the main session's identity. Example:
+
+> ❌ "I'm Hatless White and today I built Skillcrafter..."
+> ✅ "I'm specter-enum. I scanned target G9 (192.168.0.214), discovered 6 open ports (SMB, RDP, WinRM, etc.), and saved enumeration results to `engagements/g9-lab/recon/enum-results.md`."
+
 ## Make It Yours
 
 This is a starting point. Add your own conventions, style, and rules as you figure out what works.
