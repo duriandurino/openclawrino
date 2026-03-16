@@ -26,20 +26,18 @@ The Raspberry Pi 5B's storage device (SD card / NVMe HAT) is **locked to the dev
 
 ---
 
-## Engagement Directory Structure
+## Documentation Index
 
-```
-engagements/raspi5-lab/
-├── README.md              ← This file (master guide)
-├── recon/                 ← Passive recon & OSINT docs
-├── enum/                  ← Active enumeration docs
-├── exploit/               ← Hardware attacks & exploitation
-├── vuln/                  ← Vulnerability analysis
-├── post-exploit/          ← Post-exploitation, storage lock bypass
-├── reporting/             ← Final report & remediation
-├── evidence/              ← Raw scan outputs, captures, hashes
-└── loot/                  ← Exfiltrated data, configs, keys
-```
+| Phase | Document | Scope |
+|-------|----------|-------|
+| **Recon** | [01-recon.md](01-recon.md) | Passive OSINT, network discovery, Shodan |
+| **Enumeration** | [02-enumeration.md](02-enumeration.md) | Active scanning, service detection, port scanning |
+| **Hardware** | [03-hardware-attacks.md](03-hardware-attacks.md) | GPIO, UART, JTAG, USB, HDMI, power analysis |
+| **Storage Lock** | [04-storage-lock-bypass.md](04-storage-lock-bypass.md) | Strategies for the device-locked storage |
+| **Vulnerability Analysis** | [05-vulnerability-analysis.md](05-vulnerability-analysis.md) | CVE mapping, misconfiguration checks |
+| **Exploitation** | [06-exploitation.md](06-exploitation.md) | Network & local exploits |
+| **Post-Exploitation** | [07-post-exploitation.md](07-post-exploitation.md) | PrivEsc, persistence, lateral movement |
+| **Reporting** | [08-reporting.md](08-reporting.md) | Report template & deliverables |
 
 ---
 
@@ -58,8 +56,8 @@ engagements/raspi5-lab/
 │  │ • NFS    │  │ • USB    │  │                    │    │
 │  │ • VNC    │  │ • HDMI   │  │                    │    │
 │  │ • mDNS   │  │ • SD Card│  │                    │    │
-│  └──────────┘  │ • Power  │  └────────────────────┘    │
-│                └──────────┘                             │
+│  │ • Avahi  │  │ • Power  │  │                    │    │
+│  └──────────┘  └──────────┘  └────────────────────┘    │
 │                                                         │
 │  ┌──────────────────────────────────────────────────┐   │
 │  │               STORAGE (LOCKED)                   │   │
