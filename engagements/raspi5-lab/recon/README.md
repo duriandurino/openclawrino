@@ -1,192 +1,167 @@
-# Phase 1: Passive Reconnaissance
+# Raspberry Pi 5B Penetration Testing — Master Guide
 
-> **Agent:** specter-recon  
-> **Phase:** Recon  
-> **Methodology:** Passive only — no direct interaction with target
-
----
-
-## 1.1 Network Discovery (LAN)
-
-Since we're on the same network, start with local discovery.
-
-### ARP Scan
-```bash
-# Find all hosts on the local subnet
-sudo arp-scan --localnet
-
-# Or with nmap
-nmap -sn 192.168.1.0/24
-```
-
-### mDNS / Avahi Enumeration
-Raspberry Pi OS ships with Avahi (mDNS). The Pi will likely advertise itself.
-
-```bash
-# Discover .local hosts
-avahi-browse -a -r -t
-
-# Or using nmap
-nmap --script dns-sd-discovery -p 5353 <subnet>
-
-# Direct queries
-dig @224.0.0.251 -p 5353 _workstation._tcp.local PTR
-```
-
-### Expected mDNS Services
-| Service Type | Typical on Pi | What It Reveals |
-|-------------|---------------|-----------------|
-| `_ssh._tcp` | Yes (if enabled) | SSH availability, port |
-| `_http._tcp` | Possible (if web server) | Web interface |
-| `_smb._tcp` | Possible (if Samba) | File shares |
-| `_VNC._tcp` | Possible (if VNC) | Remote desktop |
-| `_workstation._tcp` | Yes | Hostname, basic info |
-
-### NetBIOS / NMBLOOKUP
-```bash
-nmblookup -A <subnet_broadcast>
-# Windows network name resolution — may reveal hostname
-```
+> **Target:** Raspberry Pi 5 Model B  
+> **Engagement Date:** 2026-03-16  
+> **Operator:** Hatless White 🎯  
+> **Authorization:** Confirmed (physical + network access in scope)
 
 ---
 
-## 1.2 DNS Enumeration
+## ⚠️ CRITICAL CONSTRAINT: Storage Device Lock
 
-If the Pi has a hostname or is accessible via DNS:
+The Raspberry Pi 5B's storage device (SD card / NVMe HAT) is **locked to the device ID**. This means:
 
-```bash
-# Forward lookup
-dig raspberrypi.local
-nslookup <hostname>
+- ❌ **Cannot clone** the SD card or NVMe on another machine
+- ❌ **Cannot image** the storage for offline analysis
+- ❌ **Cannot swap** storage between Pi units — it won't boot
+- ✅ **All storage-level attacks MUST happen on the device itself**
+- ✅ **Physical access is required** for storage manipulation
+- ✅ **Booting from external media** (USB/NVMe) is still possible if configured
 
-# Reverse lookup on suspected IPs
-dig -x 192.168.1.x
-
-# Check for any .local or .home.arpa records
-dig @<dns_server> <domain> ANY
-```
+**This fundamentally changes the pentest approach.** We can't pull the SD card, mount it on our Kali box, and analyze it offline. We need to:
+1. Gain physical access
+2. Get a shell (network or hardware)
+3. Exfiltrate data live, or
+4. Manipulate the running system in-place
 
 ---
 
-## 1.3 OSINT (if externally accessible)
+## Documentation Index
 
-**Note:** The Pi 5B is on a local network, so external OSINT is limited unless:
-- Port forwarding is configured on the router
-- The Pi has a public IP or is exposed via VPN/tunnel
-- There's a public-facing service hosted on it
+| Phase | Document | Scope |
+|-------|----------|-------|
+| **Recon** | [01-recon.md](01-recon.md) | Passive OSINT, network discovery, Shodan |
+| **Enumeration** | [02-enumeration.md](02-enumeration.md) | Active scanning, service detection, port scanning |
+| **Hardware** | [03-hardware-attacks.md](03-hardware-attacks.md) | GPIO, UART, JTAG, USB, HDMI, power analysis |
+| **Storage Lock** | [04-storage-lock-bypass.md](04-storage-lock-bypass.md) | Strategies for the device-locked storage |
+| **Vulnerability Analysis** | [05-vulnerability-analysis.md](05-vulnerability-analysis.md) | CVE mapping, misconfiguration checks |
+| **Exploitation** | [06-exploitation.md](06-exploitation.md) | Network & local exploits |
+| **Post-Exploitation** | [07-post-exploitation.md](07-post-exploitation.md) | PrivEsc, persistence, lateral movement |
+| **Reporting** | [08-reporting.md](08-reporting.md) | Report template & deliverables |
 
-### Shodan (if public IP found)
-```bash
-# From our Kali box with Shodan CLI
-shodan search "raspberrypi <public_ip>"
-shodan search "hostname:raspberrypi"
-shodan search "product:OpenSSH product:Linux"
+---
 
-# Or via web
-# https://www.shodan.io/search?query=raspberrypi
+## Attack Surface Summary
+
 ```
-
-### Censys.io
-```bash
-# Web-based: search for the Pi's public IP or hostname
-# https://censys.io/ipv4/<public_ip>
+┌─────────────────────────────────────────────────────────┐
+│                   RASPBERRY PI 5B                       │
+│                                                         │
+│  ┌──────────┐  ┌──────────┐  ┌────────────────────┐    │
+│  │ NETWORK  │  │ PHYSICAL │  │     WIRELESS       │    │
+│  │          │  │          │  │                    │    │
+│  │ • SSH    │  │ • GPIO   │  │ • WiFi (802.11ac) │    │
+│  │ • HTTP   │  │ • UART   │  │ • Bluetooth 5.0   │    │
+│  │ • Samba  │  │ • JTAG*  │  │ • BLE             │    │
+│  │ • NFS    │  │ • USB    │  │                    │    │
+│  │ • VNC    │  │ • HDMI   │  │                    │    │
+│  │ • mDNS   │  │ • SD Card│  │                    │    │
+│  │ • Avahi  │  │ • Power  │  │                    │    │
+│  └──────────┘  └──────────┘  └────────────────────┘    │
+│                                                         │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │               STORAGE (LOCKED)                   │   │
+│  │  • SD Card (microSD) — device-bound              │   │
+│  │  • NVMe (via HAT) — device-bound                 │   │
+│  │  • USB boot possible (if configured)             │   │
+│  │  • Cannot image/clone to another machine         │   │
+│  └──────────────────────────────────────────────────┘   │
+│                                                         │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │              BCM2712 SoC (Pi 5)                  │   │
+│  │  • ARM Cortex-A76 quad-core @ 2.4GHz            │   │
+│  │  • RP1 I/O controller (new in Pi 5)             │   │
+│  │  • VideoCore VII GPU                            │   │
+│  │  • Hardware crypto engine                        │   │
+│  │  * JTAG not exposed on standard headers          │   │
+│  └──────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 1.4 Passive Traffic Analysis
+## Methodology Overview
 
-### tcpdump — Listen Without Interacting
-```bash
-# Capture traffic to/from suspected Pi IP (no active probing)
-sudo tcpdump -i eth0 host 192.168.1.x -w raspi-recon.pcap
+### Phase 1: Passive Recon
+- Network discovery (who's on the LAN?)
+- mDNS/Avahi enumeration
+- Service fingerprinting from the network
+- OSINT on the Pi's public-facing surface (if any)
 
-# Watch for mDNS announcements
-sudo tcpdump -i wlan0 port 5353 -n
+### Phase 2: Active Enumeration
+- Targeted nmap scans
+- Service version detection
+- SSH configuration analysis
+- Web service discovery (if running)
+- Samba/NFS enumeration
 
-# Look for DHCP traffic
-sudo tcpdump -i eth0 port 67 or port 68 -n
-```
+### Phase 3: Hardware Attacks
+- **UART console access** (primary hardware vector)
+- GPIO manipulation
+- USB attack vectors (BadUSB, HID injection)
+- HDMI/display output analysis
+- Power side-channel analysis
+- NVMe/SD card physical inspection
 
-### What to Look For
-- **DHCP lease requests** — hostname, MAC vendor (Raspberry Pi Foundation: B8:27:EB, DC:A6:32, E4:5F:01)
-- **mDNS announcements** — services, hostname
-- **SSH banners** — OpenSSH version reveals OS age
-- **NTP traffic** — timing info, NTP server preferences
-- **SMB/NetBIOS** — Windows compatibility, workgroup names
+### Phase 4: Storage Lock Exploitation
+- On-device forensics (live system)
+- Boot sequence manipulation
+- Alternative boot media attacks
+- Config file extraction
+- Key/certificate recovery from live memory
 
----
+### Phase 5: Vulnerability Analysis
+- OS version → CVE matching
+- Kernel exploit assessment
+- Service misconfiguration checks
+- Default credential testing
+- Firmware analysis
 
-## 1.5 MAC Address Fingerprinting
+### Phase 6: Exploitation
+- Network-based attacks
+- Local privilege escalation
+- Physical access exploits
+- Credential attacks
 
-Raspberry Pi Foundation OUIs:
-
-| OUI Prefix | Device |
-|------------|--------|
-| `B8:27:EB` | Raspberry Pi (older) |
-| `DC:A6:32` | Raspberry Pi (newer) |
-| `E4:5F:01` | Raspberry Pi (Pi 4/5 era) |
-| `28:CD:C1` | Raspberry Pi (Pi 5 specific batches) |
-
-```bash
-# Check if a MAC matches Pi
-arp-scan --localnet | grep -i "b8:27:eb\|dc:a6:32\|e4:5f:01"
-
-# Or with nmap
-nmap -sn 192.168.1.0/24 --script mac-geolocation
-```
-
----
-
-## 1.6 Passive Port Detection (via mDNS/SSDP)
-
-Without sending packets to the target directly:
-
-```bash
-# mDNS service discovery (target announces itself)
-avahi-browse -a -r -t | grep -A5 "raspberrypi"
-
-# SSDP discovery (if UPnP enabled)
-nmap --script upnp-info -p 1900 239.255.255.250
-
-# Check ARP cache after any mDNS queries
-arp -an
-```
+### Phase 7: Post-Exploitation
+- Persistence mechanisms
+- Data exfiltration
+- Lateral movement to other hosts
+- Evidence collection
 
 ---
 
-## 1.7 Recon Summary Template
+## Pi 5B-Specific Notes
 
-Document findings before moving to active enumeration:
+### What's New vs Pi 4
+- **RP1 I/O chip** — new southbridge, different GPIO handling
+- **BCM2712 SoC** — different from BCM2711 (Pi 4), some kernel drivers differ
+- **PCIe 2.0 x1** — enables NVMe HAT (fast storage = new attack surface)
+- **True Gigabit Ethernet** — no longer USB-shared, different network behavior
+- **2x USB 3.0 + 2x USB 2.0** — USB attack surface remains
+- **5-pin UART header** — broken out for debug (prime hardware vector)
+- **Power button** — new physical interaction point
+- **RTC battery connector** — new surface for persistence?
 
-```
-TARGET RECON SUMMARY
-=====================
-IP Address:        ___________
-MAC Address:       ___________
-MAC Vendor:        ___________ (confirm: Raspberry Pi Foundation)
-Hostname:          ___________
-OS (guessed):      ___________
-mDNS Services:     ___________
-  - SSH:           ___________
-  - HTTP:          ___________
-  - Samba:         ___________
-  - VNC:           ___________
-  - Other:         ___________
-Open Ports (observed): ___________
-Default Creds:     ___________
-Storage Lock:      CONFIRMED — cannot image SD/NVMe off-device
-Physical Access:   YES / NO
-```
+### What's the Same
+- Still runs Raspberry Pi OS (Debian-based)
+- SSH, VNC, and default service landscape unchanged
+- Boot from SD/NVMe/USB still uses same config.txt mechanisms
+- User management, sudo, group membership — standard Linux
 
 ---
 
-## 1.8 Next Steps
+## Quick Start Checklist
 
-Once passive recon is complete, move to:
-- [Phase 2: Active Enumeration](02-enumeration.md) — nmap, service fingerprinting
-- [Phase 3: Hardware Attacks](03-hardware-attacks.md) — if physical access confirmed
+- [ ] Confirm target IP (nmap -sn on local subnet)
+- [ ] Identify OS version (SSH banner, service fingerprint)
+- [ ] Check for default credentials (pi/raspberry, or custom?)
+- [ ] Map open ports and services
+- [ ] Assess physical access vectors (UART pins, USB ports)
+- [ ] Check boot configuration (config.txt, cmdline.txt)
+- [ ] Test for storage lock (can we image the SD? no.)
+- [ ] Plan on-device vs off-device attack strategy
 
 ---
 
-*Don't jump to active scanning until you've exhausted passive vectors. You might learn everything you need without ever touching the target.*
+*This is a living document. Update as the engagement progresses.*
