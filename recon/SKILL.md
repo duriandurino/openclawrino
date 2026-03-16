@@ -119,7 +119,7 @@ SHODAN: <open ports, services, banners>
 OSINT NOTES: <any additional intel>
 ```
 
-Store outputs in `engagements/<target>/recon/` following the workspace engagement structure. The orchestrator will specify the target name (e.g., `raspi5-lab`). Preserve original filenames when saving — do NOT rename existing documentation. All recon findings, research, and documentation stay in `recon/` regardless of topic coverage. NEVER create ad-hoc directories outside the engagement structure.
+Store outputs in `engagements/<target>/recon/` following the workspace engagement structure. The orchestrator will specify the target name (e.g., `raspi5-lab`). Save findings as `<target>-recon-<date>.md` within that directory. NEVER create ad-hoc directories — always use the engagement structure.
 
 ## Notes
 
