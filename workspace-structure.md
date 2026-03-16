@@ -79,6 +79,8 @@ All pentest agents must write to their engagement directory. **Never create ad-h
 
 The orchestrator specifies `<target>` when spawning each agent (e.g., `raspi5-lab`). Raw evidence (screenshots, pcaps, command output) goes in an `evidence/` subfolder within the phase directory.
 
+**Important:** All of an agent's documentation stays in its own phase directory. If recon produces research covering enumeration or hardware topics, those docs still live in `recon/` — they're recon's output, not another agent's.
+
 ## Key Principles
 
 1. **One folder per engagement** — Never mix engagements
