@@ -28,3 +28,4 @@ Thumbs.db
 *.nmap
 *.xml
 *_output.txt
+skillcrafter/scripts/__pycache__/
