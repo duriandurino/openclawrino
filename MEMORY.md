@@ -114,3 +114,4 @@
 - When SSH is off, **host is unreachable remotely** — only physical access works
 - This is a **security feature** but also means remote pentest is impossible without SSH
 - Confirms physical access is the primary attack vector for this engagement
+- **IMPORTANT:** Network attack chain (tcpdump, mosquitto_sub, MQTT exploitation) was NEVER executed — only theoretical documentation. All network-phase files removed from workspace.

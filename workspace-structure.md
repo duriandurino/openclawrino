@@ -8,17 +8,12 @@ This workspace is organized to support the full penetration testing lifecycle. E
 ~/.openclaw/workspace/
 ├── 📂 engagements/              # Each pentest engagement lives here
 │   └── pulselink-pi/            # Current target: Raspberry Pi 5 (n-compass TV)
-│       ├── recon/               # Phase 1: Passive recon, OSINT, DNS, business model
-│       ├── enum/                # Phase 2: Active enumeration (nmap, filesystem)
-│       ├── enum-network/        # Phase 2b: Network enumeration (tcpdump, MQTT, TLS)
+│       ├── recon/               # Phase 1: Passive recon, OSINT, business model, CVE research
+│       ├── enum/                # Phase 2: Active enumeration (from physical terminal)
 │       ├── vuln/                # Phase 3: Vulnerability analysis (versions, CVEs)
-│       ├── vuln-network/        # Phase 3b: Network vulns (MQTT, TLS, Paho CVEs)
-│       ├── exploit/             # Phase 4: Exploitation (sudo, credentials, physical)
-│       ├── exploit-network/     # Phase 4b: Network exploitation (MQTT broker, injection)
-│       ├── post-exploit/        # Phase 5: Post-exploitation (original)
-│       ├── post-exploit-network/# Phase 5b: Post-exploit (fleet compromise, impact)
-│       ├── report/              # Phase 6: Reports, presentations, demo guides
-│       └── evidence/            # Screenshots, packet captures, raw output
+│       ├── exploit/             # Phase 4: Exploitation findings (physical access)
+│       ├── report/              # Phase 5: Reports, presentations, guides
+│       └── evidence/            # Screenshots, raw output
 │
 ├── 📂 skills/                   # Custom OpenClaw agent skills
 │   ├── presentation/            # Generate slide decks from pentest reports
@@ -40,31 +35,22 @@ This workspace is organized to support the full penetration testing lifecycle. E
 
 ## Engagement Structure (pulselink-pi)
 
-### Phase Mapping (Dual Track)
+### What Was Actually Done
 
-The pulselink-pi engagement has TWO parallel tracks:
+The pulselink-pi engagement is based on **physical terminal access** to the Raspberry Pi. No network-based exploitation was performed.
 
-| Phase | Physical Track | Network Track |
-|-------|---------------|---------------|
-| Recon | `recon/` | (same — covers both) |
-| Enum | `enum/` (nmap, filesystem) | `enum-network/` (tcpdump, MQTT, TLS) |
-| Vuln | `vuln/` (CVEs, versions) | `vuln-network/` (MQTT vulns, Paho CVEs) |
-| Exploit | `exploit/` (sudo, creds) | `exploit-network/` (broker exploit, content injection) |
-| Post | `post-exploit/` | `post-exploit-network/` (fleet compromise) |
-| Report | `report/` (unified) | `report/` (unified) |
+| Phase | Directory | Content | Verified? |
+|-------|-----------|---------|-----------|
+| Recon | `recon/` | Business model research, CVE databases, attack surface mapping | ✅ Research |
+| Enum | `enum/` | nmap scan results, filesystem audit, service enumeration | ✅ Real data |
+| Vuln | `vuln/` | CVE verification against confirmed versions, Electron analysis | ✅ Verified |
+| Exploit | `exploit/` | Physical terminal command outputs (6 rounds), exploitation plans | ✅ Real terminal output |
+| Report | `report/` | Full reports, presentation slides, fix guides | ✅ Based on real findings |
 
-### Presentation Files in `report/`
-
-| File | Slides | Purpose |
-|------|--------|---------|
-| `presentation-5slide-final.md` | 5 | Network attack story + physical what-ifs (requested) |
-| `presentation-agent-suggested.md` | 7 | Agent's recommended format |
-| `key-takeaways.md` | — | Executive one-pager |
-| `demo-flow-guide-jucy.md` | 9 acts | Live demo script |
-| `demo-flow-guide.md` | — | Original demo guide |
-| `reverse-fix-guide.md` | — | Pi restoration commands |
-| `pentest-report-final.md` | — | Full technical report |
-| `findings-summary.md` | — | 17 findings table |
+### What Was NOT Done
+- Network-based attacks (tcpdump, MQTT broker exploitation) — never executed
+- Content injection via MQTT — theoretical only
+- Fleet-wide compromise demonstration — not proven
 
 ### Terminal Output Evidence
 
@@ -82,12 +68,8 @@ Raw command output from physical terminal access:
 |-------|-------------|-------|
 | specter-recon | `engagements/<target>/recon/` | Passive recon, OSINT |
 | specter-enum | `engagements/<target>/enum/` | Active scanning |
-| specter-enum (network) | `engagements/<target>/enum-network/` | Traffic capture, MQTT |
 | specter-vuln | `engagements/<target>/vuln/` | CVE analysis |
-| specter-vuln (network) | `engagements/<target>/vuln-network/` | MQTT/TLS vulns |
-| specter-exploit | `engagements/<target>/exploit/` | Exploitation |
-| specter-exploit (network) | `engagements/<target>/exploit-network/` | MQTT exploitation |
-| specter-post | `engagements/<target>/post-exploit-network/` | Fleet compromise |
+| specter-exploit | `engagements/<target>/exploit/` | Exploitation findings |
 | specter-report | `engagements/<target>/report/` | Reports + presentations |
 | specter-skillcrafter | `skills/<skill-name>/` | Skill creation |
 
@@ -107,8 +89,8 @@ Raw command output from physical terminal access:
 ## Key Principles
 
 1. **One folder per engagement** — Never mix engagements
-2. **Phase-based organization** — Dual track: physical + network where applicable
+2. **Phase-based organization** — Recon → Enum → Vuln → Exploit → Report
 3. **Terminal outputs are evidence** — Raw Pi command output preserved as .txt
-4. **Presentation-ready** — Report folder contains slides, demo guides, fix guides
+4. **Only real findings documented** — No theoretical attacks in reports
 5. **Reports are the product** — Everything feeds into reporting/
 6. **Skills are reusable** — Presentations and orchestrator skills work across engagements
