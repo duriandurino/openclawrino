@@ -203,7 +203,27 @@ Every slide must have speaker notes. These are what the presenter reads/speaks.
 
 ---
 
+## Output File Naming Convention
+
+All generated presentation files MUST include a datetime stamp for easy identification:
+
+```
+<DESCRIPTION>_<YYYY-MM-DD_HHMM>.md
+```
+
+Examples:
+- `FINAL_5_slide_2026-03-17_1747.md`
+- `FINAL_SUGGEST_slide_2026-03-17_1749.md`
+- `KEY_TAKEAWAYS_2026-03-17_1749.md`
+- `SLIDES_10_2026-03-18_0930.md`
+
+This allows multiple versions to coexist and makes it easy to identify which is latest.
+
+Get current datetime from session context or use `date +%Y-%m-%d_%H%M` if available.
+
 ## Output Format
+
+Save to: `engagements/<target>/report/<DESCRIPTION>_<YYYY-MM-DD_HHMM>.md`
 
 Present slides as numbered sections in the response. For each slide:
 
