@@ -1,0 +1,97 @@
+# Version Analysis — PulseLink Pi (192.168.0.125)
+# Generated: 2026-03-17
+# ============================================================
+
+## INFRASTRUCTURE VERSIONS (Confirmed via Nmap + Recon)
+
+### SSH Service
+- Service: OpenSSH 10.0p2 Debian 7 (protocol 2.0)
+- Port: 22/tcp OPEN
+- Authentication: publickey, password
+- Status: Default password (raspberry) REJECTED — password changed
+- Encryption algorithms: chacha20-poly1305, aes128-gcm, aes256-gcm, aes128/192/256-ctr
+- Key exchange: curve25519-sha256, ecdh-sha2-nistp256/384/521, mlkem768x25519-sha256
+
+### RPC Service
+- Service: rpcbind 2-4 (RPC #100000)
+- Port: 111/tcp OPEN
+- Versions: 2, 3, 4
+
+### Linux Kernel
+- OS: Debian GNU/Linux 13 (trixie) / Raspberry Pi OS
+- Architecture: aarch64 (ARM64) — Broadcom BCM2712, 4x Cortex-A76 @ 2.4GHz
+- Kernel Range (nmap OS detection): Linux 4.15 - 5.19 (imprecise)
+- Expected Kernel: Linux 6.x (Raspberry Pi OS custom kernel, based on recon)
+- NOTE: Exact kernel version UNCONFIRMED — requires SSH access to read /proc/version
+- Kernel cmdline: UNCONFIRMED
+- Dirty Pipe (CVE-2022-0847) affected range: 5.8 - 5.16.11 / 5.15.25 / 5.10.102
+- CVE-2024-1086 affected range: 3.15 - 6.8-rc1
+
+### Sudo
+- Version: UNCONFIRMED via direct check
+- Expected: sudo 1.9.x (standard on Debian 13 / Raspberry Pi OS)
+- CVE-2025-32463 affected range: 1.9.14 - 1.9.17 (patched in 1.9.17p1)
+- STATUS: HIGH PROBABILITY of being in vulnerable range
+
+### glibc
+- Version: UNCONFIRMED (expected 2.36+ for Debian 13 trixie)
+- ldd: part of glibc-utils
+
+### Electron Player Runtime
+- Path: /opt/electron-player
+- Location confirmed accessible (recon)
+- Exact Electron version: UNCONFIRMED (requires SSH or direct file read)
+- Chromiun version: UNCONFIRMED (would be embedded in /opt/electron-player/chrome binary)
+- Node.js version: UNCONFIRMED (expected bundled with Electron)
+
+### PulseLink Application
+- Binary: /usr/local/bin/pulselink (confirmed)
+- App resources: /opt/pulselink (permission denied in recon — likely root-owned)
+- Type: Electron desktop app (content sharing platform)
+- Website: https://pulselink.app
+
+### Widevine CDM
+- Path: /opt/WidevineCdm
+- Security Level: L3 (software-only, no hardware TEE)
+- Status: KNOWN VULNERABLE by design (multiple public extraction tools exist)
+
+## SERVICES SUMMARY
+
+| Service    | Version              | Port  | Status |
+|------------|----------------------|-------|--------|
+| SSH        | OpenSSH 10.0p2       | 22    | OPEN   |
+| rpcbind    | 2-4                  | 111   | OPEN   |
+| HTTP/HTTPS | N/A                  | 80,443| CLOSED |
+| Other      | N/A                  | 3000+ | CLOSED |
+
+## VERSION CONFIDENCE LEVELS
+
+### CONFIRMED (via nmap/network)
+- OpenSSH: 10.0p2 Debian 7 ✓
+- RPCbind: 2-4 ✓
+- OS Family: Linux (Debian-based) ✓
+- Architecture: ARM64 ✓
+
+### HIGH CONFIDENCE (via recon fingerprinting)
+- Device: Raspberry Pi 5 Model B ✓
+- OS: Debian 13 (trixie) / Raspberry Pi OS ✓
+- Kernel: 6.x (RPi OS custom) ✓
+- Electron runtime present ✓
+- Widevine L3 present ✓
+
+### UNCONFIRMED (requires SSH access)
+- Exact kernel version (need /proc/version)
+- Exact sudo version (need sudo --version)
+- Exact Electron version (need binary strings or --version)
+- Exact Chromium version (need chrome binary inspection)
+- glibc version (need ldd --version)
+- Sudoers configuration (need cat /etc/sudoers)
+- SUID binaries list (need find / -perm -4000)
+
+## NOTES
+
+1. Default credentials (pi/raspberry) are NOT valid — password was changed
+2. SSH access required to confirm exact versions of kernel, sudo, Electron, glibc
+3. Enum agent's full nmap scan was still in progress during this analysis
+4. Target only exposes SSH (22) and RPC (111) — minimal network attack surface
+5. All other ports (80, 443, 3000, 8080, 8443, 9090) are CLOSED

@@ -1,0 +1,232 @@
+---
+name: presentation
+description: "Generate pentest presentation slides from engagement findings. Use when: user asks for slides, presentation deck, slide count specified, 'make a presentation', 'create slides', or wants a talk/showcase format from pentest reports. NOT for: writing the full technical report (use reporting skill), raw data collection, or non-security presentations."
+---
+
+# Presentation Skill
+
+Generate structured presentation slides from pentest engagement data.
+
+## When to Use
+
+✅ **USE this skill when:**
+- "Give me 10 slides for this pentest"
+- "Create a presentation from the report"
+- "I need 5 slides for management"
+- "Generate slides with speaker notes"
+- User specifies a slide count
+- User mentions "presentation", "deck", "slides", "showcase"
+
+## When NOT to Use
+
+❌ **DON'T use this skill when:**
+- Writing the full technical report (use `reporting` skill)
+- Raw data collection or scan output
+- Non-security presentations
+- User wants a document, not a visual deck
+
+---
+
+## Slide Structure
+
+### Default Template (Adapts to Slide Count)
+
+Every slide deck follows this flow. Slide density adjusts to the requested count:
+
+```
+Slide 1:  Title Slide
+Slide 2:  Problem Statement
+Slide 3:  Target Overview
+[Slides 4-N-3: Findings (distributed by severity)]
+Slide N-2: Remediation
+Slide N-1: Why OpenClaw / Methodology Value
+Slide N:   Q&A / Contact
+```
+
+### Slide Distribution by Count
+
+| Total Slides | Problem | Target | Findings | Remediation | Methodology | Closing |
+|-------------|---------|--------|----------|-------------|-------------|---------|
+| **5** | 1 | 0 | 2 | 1 | 0 | 1 |
+| **7** | 1 | 1 | 3 | 1 | 0 | 1 |
+| **10** | 1 | 1 | 5 | 1 | 1 | 1 |
+| **12** | 1 | 1 | 6 | 1 | 2 | 1 |
+| **15** | 1 | 1 | 8 | 2 | 2 | 1 |
+| **20** | 2 | 1 | 11 | 2 | 2 | 2 |
+
+---
+
+## Slide Format
+
+Each slide output follows this structure:
+
+```
+### SLIDE [N]: [Title]
+
+**Visual:** [Description of what to show — diagram, table, bullet list, screenshot reference]
+
+**Content:**
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+
+**Speaker Notes:**
+What the presenter should say while this slide is shown.
+
+**Transition:** [One-line cue to next slide]
+```
+
+---
+
+## Finding Slide Templates
+
+### Single Finding Slide
+
+```
+### SLIDE [N]: Finding — [Title]
+
+**Visual:** Severity badge + CVSS score + icon
+
+**Content:**
+- **Severity:** [CRITICAL/HIGH/MEDIUM/LOW] (CVSS X.X)
+- **Affected:** [Target/service/version]
+- **What:** [1-line vulnerability description]
+- **Impact:** [1-line business impact]
+
+**Speaker Notes:**
+[Talking points with context, evidence reference]
+
+**Demo Cue:** [If applicable — "Show terminal output #X"]
+```
+
+### Findings Summary Slide (Multiple Findings)
+
+```
+### SLIDE [N]: Key Findings Summary
+
+**Visual:** Table or matrix
+
+**Content:**
+| # | Finding | Severity |
+|---|---------|----------|
+| 1 | [Title] | [Severity] |
+| 2 | [Title] | [Severity] |
+| ... | ... | ... |
+
+**Speaker Notes:**
+[Brief walkthrough of each finding]
+```
+
+### Attack Chain Slide
+
+```
+### SLIDE [N]: Attack Chain
+
+**Visual:** Flowchart/diagram
+
+**Content:**
+[Step 1] → [Step 2] → [Step 3] → [Result]
+Each step with brief label
+
+**Speaker Notes:**
+[Narrative walkthrough of the exploitation path]
+```
+
+---
+
+## Data Sources
+
+Read from the engagement report directory:
+
+```
+engagements/<target>/report/
+├── pentest-report-full.md          # Primary source for all content
+├── pentest-report-presentation.md  # Existing presentation-ready content
+├── findings-summary.md             # Structured findings table
+└── openclaw-value.md               # Methodology/why OpenClaw content
+```
+
+Also read from phase directories for evidence references:
+
+```
+engagements/<target>/{recon,enum,vuln,exploit}/
+```
+
+---
+
+## Presentation Styles
+
+### Style: Executive (Non-Technical)
+- Minimal jargon, focus on business impact
+- Emphasize financial/reputational risk
+- Remediation as investment, not fix
+- Skip CVSS scores, use color-coded risk labels
+
+### Style: Technical (Engineers/IT)
+- Include CVSS scores and CVE IDs
+- Show terminal commands and outputs
+- Detail the exploit chain
+- Include code snippets and config changes
+
+### Style: Mixed Audience
+- Findings as summary + one deep-dive
+- Business impact first, technical detail optional
+- Include "What happened" + "How we fixed it"
+
+Default: **Mixed Audience** unless specified.
+
+---
+
+## Slide Generation Workflow
+
+### Step 1 — Identify Slide Count
+Extract the number from the user's request: "10 slides" → N=10
+
+### Step 2 — Read Source Data
+```
+Read: engagements/<target>/report/findings-summary.md
+Read: engagements/<target>/report/pentest-report-presentation.md
+Read: engagements/<target>/report/openclaw-value.md
+```
+
+### Step 3 — Distribute Slides
+Use the distribution table above to allocate slides per section.
+
+### Step 4 — Generate Slides
+Output each slide in the format above. Prioritize:
+1. CRITICAL/HIGH findings first
+2. Most impactful findings for the audience
+3. Visual variety (mix tables, diagrams, bullets)
+
+### Step 5 — Add Speaker Notes
+Every slide must have speaker notes. These are what the presenter reads/speaks.
+
+---
+
+## Output Format
+
+Present slides as numbered sections in the response. For each slide:
+
+1. **Slide title** (what goes on the slide)
+2. **Visual element** (what to show — table, diagram, bullets)
+3. **Key points** (3-5 bullets max per slide)
+4. **Speaker notes** (what to say)
+5. **Demo/transition cue** (optional — when to show terminal or move)
+
+---
+
+## Customization Options
+
+User can specify:
+- **Slide count:** "Give me 10 slides" → adjusts density
+- **Audience:** "for management" / "for technical team" → adjusts language
+- **Focus:** "focus on the exploit chain" → prioritizes findings slides
+- **Include/exclude:** "skip the methodology slides" / "add more on remediation"
+- **With/without notes:** "with speaker notes" / "just the slide content"
+
+---
+
+## References
+
+For detailed examples of each slide type, see `references/examples.md`.
+For slide visual templates (ASCII diagrams), see `references/templates.md`.

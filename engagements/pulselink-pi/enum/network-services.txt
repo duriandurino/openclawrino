@@ -1,0 +1,107 @@
+══════════════════════════════════════════════════════════════════
+  NETWORK SERVICES — 192.168.0.125 (pulselink-pi)
+  Specter-Enum | 2026-03-17 10:25 PST
+══════════════════════════════════════════════════════════════════
+
+── LISTENING PORTS (TCP) ─────────────────────────────────────────
+
+┌──────┬─────────┬───────────┬──────────────────────────────────┐
+│ Port │ Proto   │ Service   │ Details                          │
+├──────┼─────────┼───────────┼──────────────────────────────────┤
+│ 22   │ TCP     │ SSH       │ OpenSSH 10.0p2, password auth on │
+│ 111  │ TCP     │ rpcbind   │ Versions 2,3,4 — portmapper only │
+└──────┴─────────┴───────────┴──────────────────────────────────┘
+
+── LISTENING PORTS (UDP) ─────────────────────────────────────────
+
+┌──────┬─────────┬───────────┬──────────────────────────────────┐
+│ Port │ Proto   │ Service   │ Details                          │
+├──────┼─────────┼───────────┼──────────────────────────────────┤
+│ 67   │ UDP     │ DHCP      │ open|filtered (client, not srv)  │
+│ 111  │ UDP     │ rpcbind   │ Versions 2,3,4                   │
+│ 123  │ UDP     │ NTP       │ open|filtered — clock sync       │
+│ 500  │ UDP     │ ISAKMP    │ open|filtered — likely gateway   │
+│ 5353 │ UDP     │ mDNS      │ open — zeroconf discovery        │
+└──────┴─────────┴───────────┴──────────────────────────────────┘
+
+── PULSELINK NETWORK BEHAVIOR ────────────────────────────────────
+
+STATUS: NOT directly observable without shell access.
+
+From recon intelligence:
+- PulseLink runs as an Electron app on the Pi
+- It communicates with Pi hardware (HATs, displays, LEDs)
+- Does NOT appear to open any listening ports on the network
+- Likely acts as a CLIENT to external services, not a server
+- May use WebSocket connections to localhost or external endpoints
+
+HYPOTHESIS: PulseLink may open ephemeral/dynamic ports during
+operation. Without `ss -tlnp` or `netstat -tlnp` from the
+target, we cannot confirm this.
+
+── FIREWALL STATUS ───────────────────────────────────────────────
+
+STATUS: Cannot determine without shell access.
+
+Expected findings (once shell is obtained):
+  - iptables -L -n
+  - nft list ruleset
+  - ufw status
+
+Note: Since only 2 TCP ports are visible, either:
+  a) The Pi has minimal services running (confirmed), OR
+  b) A firewall is dropping connections to other ports
+
+── NETWORK CONFIGURATION ─────────────────────────────────────────
+
+From recon:
+  Interface:  wlan0 (WiFi — active)
+  eth0:       DOWN (not connected)
+  IP:         192.168.0.125/24
+  Gateway:    192.168.0.1 (likely)
+  Hostname:   raspberrypi
+
+mDNS advertisement: Device likely advertises as
+  raspberrypi.local on the .local domain.
+
+── DHCP OBSERVATIONS ─────────────────────────────────────────────
+
+UDP 67 is open|filtered — The Pi likely runs a DHCP client
+(dhcpcd) rather than a DHCP server. No DHCP server functionality
+detected on the target.
+
+── NTP SERVICE ───────────────────────────────────────────────────
+
+UDP 123 is open|filtered — NTP client running on the Pi.
+Likely using systemd-timesyncd or chrony for time sync.
+
+No NTP server functionality exposed (no stratum announcements).
+
+── IPSec / ISAKMP ────────────────────────────────────────────────
+
+UDP 500 is open|filtered — This is almost certainly from the
+gateway/router (192.168.0.1), not the Pi itself. The Pi does
+not appear to be running any VPN software.
+
+── ATTACK SURFACE ASSESSMENT ─────────────────────────────────────
+
+NETWORK ATTACK SURFACE: VERY LOW
+
+The target presents only 2 TCP services to the network:
+  1. SSH (port 22) — Modern OpenSSH, password auth enabled
+  2. RPCBind (port 111) — Information disclosure only
+
+No web services, no file shares, no database services,
+no application-level network interfaces exposed.
+
+RECOMMENDED ATTACK VECTORS (in priority order):
+  1. SSH brute force (if password is weak)
+  2. SSH credential spraying with common passwords
+  3. Social engineering for SSH credentials
+  4. Physical access / supply chain (if in scope)
+  5. WiFi-based attacks (deauth, evil twin) if authorized
+  6. mDNS spoofing on local network
+
+══════════════════════════════════════════════════════════════════
+  END NETWORK SERVICES
+══════════════════════════════════════════════════════════════════

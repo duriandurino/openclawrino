@@ -1,0 +1,91 @@
+══════════════════════════════════════════════════════════════════
+  FILESYSTEM AUDIT — 192.168.0.125 (pulselink-pi)
+  Specter-Enum | 2026-03-17 10:25 PST
+══════════════════════════════════════════════════════════════════
+
+── SSH ACCESS ATTEMPT ────────────────────────────────────────────
+
+Target:          pi@192.168.0.125
+Password tried:  raspberry (default)
+Result:          ✗ REJECTED — Password was changed from default
+
+Auth methods supported: publickey, password
+Without valid credentials or SSH key, filesystem enumeration
+from the network is NOT possible.
+
+Error output:
+  ssh_askpass: exec(/usr/bin/ssh-askpass): No such file or directory
+  Permission denied, please try again.
+  pi@192.168.0.125: Permission denied (publickey,password).
+
+── FILESYSTEM ENUMERATION STATUS ─────────────────────────────────
+
+Due to SSH access being blocked (password changed), the following
+tests CANNOT be performed remotely:
+
+✗ ls -la /opt/electron-player/resources/scripts/
+✗ ls -la /opt/pulselink/
+✗ ls -la /opt/
+✗ cat /home/pi/.config/electron-player/*
+✗ find / -perm -4000 2>/dev/null (SUID binaries)
+✗ sudo -l
+✗ crontab -l
+✗ ps aux
+✗ systemctl list-units --type=service
+✗ uname -a
+✗ cat /etc/os-release
+✗ dpkg -l
+✗ apt list --upgradable
+✗ ls /dev/ttyAMA0 /dev/serial0 (UART)
+✗ dmesg | grep -i uart
+✗ lsmod | grep -i usb
+
+── RECOMMENDED NEXT STEPS ────────────────────────────────────────
+
+To proceed with filesystem enumeration, one of the following is needed:
+
+1. CREDENTIAL GUESSING: Attempt password spraying with common
+   Raspberry Pi passwords:
+   - pi:raspberry (tried, rejected)
+   - pi:pi
+   - pi:password
+   - pi:raspberrypi
+   - pi:admin
+
+2. KEY-BASED AUTH: If an SSH private key was discovered in
+   prior phases or through other means.
+
+3. SOCIAL ENGINEERING: If this is an authorized engagement,
+   ask the client for the pi user password.
+
+4. PHYSICAL ACCESS: If physical access is available, mount
+   the SD card on another machine to inspect the filesystem.
+
+── KNOWN FILESYSTEM STRUCTURE (from Recon phase) ─────────────────
+
+Based on prior reconnaissance, the following paths are known
+to exist on the target:
+
+HIGH PRIORITY:
+  /opt/electron-player/resources/scripts/  — Launch scripts
+  /opt/pulselink/                          — Permission denied
+  /usr/local/bin/pulselink                 — Main binary
+  /home/pi/.config/electron-player/        — User config dir
+
+MEDIUM PRIORITY:
+  /opt/electron-player/                    — Electron runtime
+  /opt/WidevineCdm/                        — DRM module
+  /home/pi/.config/chromium/Crash Reports/ — Crash dumps
+
+── NETWORK-BASED ALTERNATIVES ────────────────────────────────────
+
+Since filesystem enumeration is blocked, consider:
+- Monitoring mDNS advertisements (port 5353/UDP) for service info
+- Attempting RPC enumeration if additional RPC services appear
+- Checking if PulseLink opens any dynamic ports during operation
+- Network traffic analysis (packet capture) to observe PulseLink
+  communication patterns
+
+══════════════════════════════════════════════════════════════════
+  END FILESYSTEM AUDIT
+══════════════════════════════════════════════════════════════════

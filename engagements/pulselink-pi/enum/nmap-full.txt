@@ -1,0 +1,124 @@
+══════════════════════════════════════════════════════════════════
+  FULL PORT SCAN — 192.168.0.125 (pulselink-pi)
+  Specter-Enum | 2026-03-17 10:25 PST
+══════════════════════════════════════════════════════════════════
+
+Command: nmap -sC -sV -O -A -p- --min-rate 1000 192.168.0.125
+
+Nmap 7.95 scan initiated 2026-03-17 10:25 PST
+
+── SCAN SUMMARY ──────────────────────────────────────────────────
+Target:          192.168.0.125
+Hostname:        raspberrypi (from recon)
+MAC:             2C:CF:67:04:0B:D1 (Raspberry Pi (Trading))
+Latency:         0.039ms (local network)
+Scan Duration:   88.31 seconds
+
+── OPEN TCP PORTS (2 of 65535) ──────────────────────────────────
+
+PORT      STATE SERVICE   VERSION
+22/tcp    open  ssh       OpenSSH 10.0p2 Debian 7 (protocol 2.0)
+111/tcp   open  rpcbind   2-4 (RPC #100000)
+
+All other 65,533 TCP ports: CLOSED (reset)
+
+── SSH ENUMERATION ───────────────────────────────────────────────
+
+Service:        OpenSSH 10.0p2
+OS:             Debian 7 (Debian package)
+Protocol:       2.0
+Auth Methods:   publickey, password
+
+Key Exchange Algorithms:
+  - mlkem768x25519-sha256
+  - sntrup761x25519-sha512
+  - curve25519-sha256
+  - ecdh-sha2-nistp256/384/521
+  - ext-info-s
+
+Server Host Key Algorithms:
+  - rsa-sha2-512, rsa-sha2-256
+  - ecdsa-sha2-nistp256
+  - ssh-ed25519
+
+Encryption Algorithms:
+  - chacha20-poly1305@openssh.com
+  - aes128-gcm@openssh.com, aes256-gcm@openssh.com
+  - aes128-ctr, aes192-ctr, aes256-ctr
+
+MAC Algorithms:
+  - umac-64/128-etm@openssh.com
+  - hmac-sha2-256/512-etm@openssh.com
+  - hmac-sha1-etm@openssh.com
+  - umac-64/128, hmac-sha2-256/512, hmac-sha1
+
+Compression:     none, zlib@openssh.com
+
+⚠ SECURITY NOTE: OpenSSH 10.0p2 is very recent (Debian trixie).
+No known CVEs for this version as of scan date.
+
+── RPC ENUMERATION ───────────────────────────────────────────────
+
+Port 111 (rpcbind/portmapper) is running with versions 2,3,4.
+Registered RPC Programs:
+  - Program 100000 (portmapper): versions 2,3,4 (TCP+UDP)
+
+No other RPC programs registered:
+  - 100005 (mountd): NOT registered
+  - 100003 (nfs): NOT registered
+  - 100024 (status): NOT registered
+
+⚠ FINDING: rpcbind exposes service information to unauthenticated
+attackers. While only portmapper is registered, this still leaks
+that the target is Linux and reveals RPC version info.
+
+── OS DETECTION ──────────────────────────────────────────────────
+
+Device type:    general purpose|router
+Running:        Linux 4.X|5.X
+OS CPE:         cpe:/o:linux:linux_kernel:4
+                cpe:/o:linux:linux_kernel:5
+OS Details:     Linux 4.15 - 5.19, OpenWrt 21.02 (Linux 5.4),
+                MikroTik RouterOS 7.2 - 7.5 (Linux 5.6.3)
+
+⚠ NOTE: OS detection is generic. From recon we know this is:
+        Debian GNU/Linux 13 (trixie) / Raspberry Pi OS
+        Kernel: likely 6.x series (Pi 5 needs recent kernels)
+
+── UDP PORT SCAN ─────────────────────────────────────────────────
+
+Command: nmap -sU -Pn -p 53,67,68,69,123,135,137,138,161,162,500,1900,4500,5353
+
+PORT     STATE         SERVICE
+67/udp   open|filtered dhcps
+68/udp   closed        dhcpc
+69/udp   closed        tftp
+123/udp  open|filtered ntp
+135/udp  closed        msrpc
+137/udp  closed        netbios-ns
+138/udp  closed        netbios-dgm
+161/udp  closed        snmp
+162/udp  closed        snmptrap
+500/udp  open|filtered isakmp
+1900/udp closed        upnp
+4500/udp closed        nat-t-ike
+5353/udp open          zeroconf (mDNS)
+
+── UNCOMMON PORT SCAN ────────────────────────────────────────────
+
+Ranges scanned: 1000-2000, 3000-4000, 5000-6000, 7000-8000,
+                9000-10000, 15000-16000, 20000-21000, 30000-31000
+Result: ALL CLOSED
+
+Web service ports tested individually (3000, 3001, 4000, 4200,
+5000, 5173, 5601, 8000, 8001, 8080, 8443, 8888, 9000, 9090):
+ALL CLOSED — No HTTP services detected on non-standard ports.
+
+── NETWORK DISTANCE ──────────────────────────────────────────────
+
+1 hop (local network, 0.039ms latency)
+Traceroute: 192.168.0.125 (39.36ms avg)
+
+══════════════════════════════════════════════════════════════════
+  SCAN COMPLETE — 2 TCP services, 3 UDP services detected
+══════════════════════════════════════════════════════════════════

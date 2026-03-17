@@ -1,0 +1,111 @@
+══════════════════════════════════════════════════════════════════
+  ELECTRON ENUMERATION — 192.168.0.125 (pulselink-pi)
+  Specter-Enum | 2026-03-17 10:25 PST
+══════════════════════════════════════════════════════════════════
+
+── STATUS ────────────────────────────────────────────────────────
+
+SSH access is blocked (password changed from default). Direct
+filesystem enumeration of the Electron player is not possible
+from the network. This document records what is KNOWN and what
+REMAINS TO BE ENUMERATED.
+
+── KNOWN ELECTRON STRUCTURE (from Recon) ─────────────────────────
+
+Install path: /opt/electron-player/
+Key subdirectories:
+  /opt/electron-player/resources/scripts/
+    └── Likely contains launch scripts, app initialization
+  /opt/electron-player/resources/
+    └── Standard Electron resources directory
+  /opt/electron-player/ (runtime)
+    └── Full Electron/Chromium runtime
+
+User data: /home/pi/.config/electron-player/
+  └── Cookies, sessions, preferences, local storage
+
+Chromium data: /home/pi/.config/chromium/Crash Reports/
+  └── Crash dumps (potential version info leakage)
+
+── ELECTRON VERSION (UNKNOWN — needs filesystem access) ──────────
+
+Pending enumeration:
+  - Read /opt/electron-player/version
+  - Read /opt/electron-player/resources/app/package.json
+  - Check /opt/electron-player/chrome-sandbox --version
+  - Run electron --version (if accessible in PATH)
+
+── CHROMIUM VERSION (UNKNOWN — needs filesystem access) ──────────
+
+Pending enumeration:
+  - Check running processes for Chromium version flags
+  - Read from /opt/electron-player/lib/chrome/ or similar
+  - Extract from electron binary version info
+
+── WIDEVINE CDM ──────────────────────────────────────────────────
+
+Path: /opt/WidevineCdm/
+Purpose: Digital Rights Management module for DRM-protected content
+Status: Present on target (confirmed via recon)
+Pending: Full directory listing, version extraction
+
+── PULSELINK BINARY ANALYSIS ─────────────────────────────────────
+
+Binary path: /usr/local/bin/pulselink
+
+Pending enumeration (requires SSH access):
+  - file /usr/local/bin/pulselink
+  - strings /usr/local/bin/pulselink | head -100
+  - ldd /usr/local/bin/pulselink
+  - objdump -T /usr/local/bin/pulselink
+  - Check if it's a wrapper script or compiled binary
+  - Check for embedded API keys/credentials in strings
+
+── SECURITY CONSIDERATIONS ───────────────────────────────────────
+
+Electron apps are a rich attack surface because they combine:
+
+1. NODE.JS INTEGRATION: Electron apps typically have Node.js
+   integration enabled, meaning renderer processes can make
+   system calls. If the app loads untrusted content, this is
+   a command injection vector.
+
+2. CHROMIUM ENGINE: inherits all Chrome CVEs. The version of
+   Chromium bundled with Electron determines the attack surface
+   for web-based exploitation.
+
+3. NODE INTEGRATION IN RENDERER: If nodeIntegration is true
+   (default in older Electron), any XSS becomes RCE.
+
+4. CONTEXT ISOLATION: If disabled, renderer can access all
+   Node.js APIs. If enabled, limited to exposed preload APIs.
+
+5. PRELOAD SCRIPTS: /opt/electron-player/resources/scripts/
+   likely contains preload scripts that run with elevated
+   privileges. These are HIGH VALUE targets for finding
+   exploitable patterns.
+
+6. ELECTRON UPDATES: Electron apps that auto-update download
+   and execute code. If update mechanism is insecure, it's
+   a supply chain attack vector.
+
+7. WIDEVINE DRM: The Widevine CDM runs in a sandboxed
+   environment but interacts with the app. Known CVEs exist
+   for various Widevine versions.
+
+── PRIORITY CHECKLIST (for when SSH access is obtained) ──────────
+
+[ ] Read /opt/electron-player/package.json
+[ ] Read /opt/electron-player/resources/app/package.json
+[ ] Read /opt/electron-player/resources/scripts/*
+[ ] Check Electron version from binary
+[ ] Check Chromium version
+[ ] Read /home/pi/.config/electron-player/* configs
+[ ] Check preload scripts for nodeIntegration settings
+[ ] Analyze /usr/local/bin/pulselink (file, strings, ldd)
+[ ] Check WidevineCdm version
+[ ] Look for electron-builder or forge config files
+
+══════════════════════════════════════════════════════════════════
+  END ELECTRON ENUMERATION
+══════════════════════════════════════════════════════════════════

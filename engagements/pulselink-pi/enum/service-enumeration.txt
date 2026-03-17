@@ -1,0 +1,83 @@
+══════════════════════════════════════════════════════════════════
+  SERVICE ENUMERATION — 192.168.0.125 (pulselink-pi)
+  Specter-Enum | 2026-03-17 10:25 PST
+══════════════════════════════════════════════════════════════════
+
+── TCP SERVICE INVENTORY ─────────────────────────────────────────
+
+┌──────────┬─────────┬──────────────────────────────────────────┐
+│ Port     │ Service │ Version                                  │
+├──────────┼─────────┼──────────────────────────────────────────┤
+│ 22/tcp   │ SSH     │ OpenSSH 10.0p2 Debian 7 (protocol 2.0)  │
+│ 111/tcp  │ rpcbind │ 2-4 (RPC #100000)                        │
+└──────────┴─────────┴──────────────────────────────────────────┘
+
+── SSH SERVICE DEEP DIVE ─────────────────────────────────────────
+
+Host Key Types Available:
+  - ED25519 (preferred)
+  - ECDSA (nistp256)
+  - RSA (SHA2-512/256)
+
+Authentication: publickey + password enabled
+⚠ Default credentials (pi/raspberry) REJECTED — password changed
+
+Key Exchange: Includes post-quantum algorithms (mlkem768x25519,
+sntrup761x25519) indicating a very modern OpenSSH build.
+
+── RPCBind SERVICE ───────────────────────────────────────────────
+
+Versions supported: 2, 3, 4 (TCP and UDP)
+IPv6: versions 3, 4 (TCP6 and UDP6)
+
+Registered Programs: NONE beyond portmapper itself.
+This means: no NFS exports, no NIS, no other RPC services.
+
+── UDP SERVICE INVENTORY ─────────────────────────────────────────
+
+┌──────────┬─────────┬──────────────────────────────────────────┐
+│ Port     │ Service │ Notes                                    │
+├──────────┼─────────┼──────────────────────────────────────────┤
+│ 67/udp   │ DHCP    │ open|filtered — likely Pi's dhcpc agent  │
+│ 123/udp  │ NTP     │ open|filtered — system clock sync        │
+│ 500/udp  │ ISAKMP  │ open|filtered — IPSec key exchange       │
+│ 5353/udp │ mDNS    │ open — zeroconf service discovery        │
+└──────────┴─────────┴──────────────────────────────────────────┘
+
+── NOTABLE ABSENCES ──────────────────────────────────────────────
+
+The following services are NOT running on the target:
+
+✗ No HTTP/HTTPS (port 80, 443, or any alt ports)
+✗ No SMB/CIFS (port 445, 139)
+✗ No FTP (port 21)
+✗ No Telnet (port 23)
+✗ No VNC (port 5900/5901)
+✗ No RDP (port 3389)
+✗ No MySQL/PostgreSQL (port 3306/5432)
+✗ No MQTT (port 1883/8883)
+✗ No Docker API (port 2375/2376)
+✗ No NFS (no mountd registered with rpcbind)
+
+── SECURITY IMPLICATIONS ─────────────────────────────────────────
+
+1. ATTACK SURFACE: Extremely minimal — only SSH + RPCBind TCP.
+   PulseLink application does NOT expose any network services.
+
+2. RPCBind: Unauthenticated RPC enumeration is possible.
+   Currently only portmapper is registered (low risk), but
+   this service is unnecessary and should be disabled.
+
+3. mDNS: Device advertises itself on the local network via
+   zeroconf. Could reveal hostname "raspberrypi" to network.
+
+4. ISAKMP (UDP 500): IPSec key exchange is filtered, likely
+   handled by the gateway/router, not the Pi itself.
+
+5. SSH: Modern OpenSSH with post-quantum KEX. No known vulns.
+   Password auth is enabled — brute force is possible but
+   would be slow given the Pi's authentication rate.
+
+══════════════════════════════════════════════════════════════════
+  END SERVICE ENUMERATION
+══════════════════════════════════════════════════════════════════
