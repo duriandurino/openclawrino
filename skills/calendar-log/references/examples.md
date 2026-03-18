@@ -30,7 +30,34 @@ gog calendar create "primary" \
 📊 Status: Complete"
 ```
 
-## Example 3: In-Progress Day
+## Example 3: FULL DAY Capture (Recommended)
+
+```bash
+gog calendar create "primary" \
+  --summary "EOD — Full Day (2026-03-18)" \
+  --all-day \
+  --from "2026-03-18" \
+  --to "2026-03-18" \
+  --account hatlesswhite@gmail.com \
+  --description "🎯 Vault decrypted via hardcoded Pi serial (15 min)
+📦 Report (28KB), Google Docs, Slides (9 slides)
+🔍 V-012: Hardcoded key (CRITICAL 9.1), 9 total findings
+🛠️ Built: pentest-slides + calendar-log skills
+🛠️ Configured: gog CLI, Google Cloud project, OAuth
+📊 Status: Complete"
+```
+
+### How to Capture Full Day
+
+Before creating the event:
+1. Check `memory/YYYY-MM-DD.md` for all entries
+2. Run `git log --oneline --since="2026-03-18"` for commits
+3. Review sessions/sub-agents spawned
+4. List all skills created or modified
+
+Then compile into single comprehensive entry.
+
+## Example 4: In-Progress Day
 
 ```bash
 gog calendar create "primary" \

@@ -86,10 +86,21 @@ gog calendar create "primary" \
 📊 Status: Complete"
 ```
 
+## Full Day Capture
+
+To capture the WHOLE day, review:
+1. `memory/YYYY-MM-DD.md` — daily log entries
+2. Git commits from today
+3. Tool calls and sub-agent spawns
+4. Key milestones and decisions
+
+Include ALL major activities, not just the final task.
+
 ## Guidelines
 
-1. **Keep it under 15 lines** — calendar should be scannable
-2. **Use emojis sparingly** — 🎯📦🔍📊 for section headers only
-3. **No timestamps** — just high-level activities
-4. **One event per day per project** — don't clutter
+1. **Full day coverage** — capture morning to evening activities
+2. **Use emojis sparingly** — 🎯📦🔍🛠️📊 for section headers only
+3. **Chronological order** — morning activities first
+4. **One event per day** — single comprehensive entry
 5. **Bullet points over paragraphs** — always
+6. **Keep under 20 lines** — still scannable but complete
