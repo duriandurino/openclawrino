@@ -1,0 +1,172 @@
+# Nmap 7.95 scan initiated Wed Mar 18 09:23:45 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sS -sV -sC -O -p- --min-rate 3000 -oN /home/dukali/.openclaw/workspace/engagements/player-network/recon/nmap-target-103.txt 192.168.0.103
+Nmap scan report for 192.168.0.103
+Host is up (0.00095s latency).
+Not shown: 65511 filtered tcp ports (no-response)
+PORT      STATE SERVICE         VERSION
+82/tcp    open  xfer?
+| fingerprint-strings: 
+|   FourOhFourRequest, GetRequest: 
+|     HTTP/1.1 404 Not Found
+|     Connection: close
+|     Date: Wed, 18 Mar 2026 01:24:35 GMT
+|     Server: Kestrel
+|     Content-Length: 0
+|   GenericLines: 
+|     HTTP/1.1 400 Bad Request
+|     Connection: close
+|     Date: Wed, 18 Mar 2026 01:24:35 GMT
+|     Server: Kestrel
+|     Content-Length: 0
+|   HTTPOptions: 
+|     HTTP/1.1 200 OK
+|     Connection: close
+|     Date: Wed, 18 Mar 2026 01:24:35 GMT
+|     Server: Kestrel
+|     Content-Length: 0
+|     Access-Control-Allow-Credentials: true
+|     Access-Control-Allow-Headers: Content-Type, Authorization
+|     Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
+|     Access-Control-Allow-Origin: *
+|   Help, Kerberos, SSLSessionReq, TLSSessionReq, TerminalServerCookie: 
+|     HTTP/1.1 400 Bad Request
+|     Connection: close
+|     Date: Wed, 18 Mar 2026 01:24:50 GMT
+|     Server: Kestrel
+|     Content-Length: 0
+|   RTSPRequest: 
+|     HTTP/1.1 505 HTTP Version Not Supported
+|     Connection: close
+|     Date: Wed, 18 Mar 2026 01:24:35 GMT
+|     Server: Kestrel
+|_    Content-Length: 0
+135/tcp   open  msrpc           Microsoft Windows RPC
+139/tcp   open  netbios-ssn     Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds?
+1236/tcp  open  tcpwrapped
+3306/tcp  open  mysql           MySQL 8.4.8
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=MySQL_Server_8.4.8_Auto_Generated_Server_Certificate
+| Not valid before: 2026-03-03T01:55:12
+|_Not valid after:  2036-02-29T01:55:12
+| mysql-info: 
+|   Protocol: 10
+|   Version: 8.4.8
+|   Thread ID: 74
+|   Capabilities flags: 65535
+|   Some Capabilities: Support41Auth, SupportsLoadDataLocal, InteractiveClient, SwitchToSSLAfterHandshake, Speaks41ProtocolNew, DontAllowDatabaseTableColumn, Speaks41ProtocolOld, ConnectWithDatabase, IgnoreSpaceBeforeParenthesis, LongPassword, SupportsTransactions, ODBCClient, FoundRows, IgnoreSigpipes, SupportsCompression, LongColumnFlag, SupportsAuthPlugins, SupportsMultipleStatments, SupportsMultipleResults
+|   Status: Autocommit
+|   Salt: \x7F?\x01\x04%\x16.eE3\x0E\x1F):\x1Dm\x16oq\x1D
+|_  Auth Plugin Name: caching_sha2_password
+3307/tcp  open  mysql           MySQL 8.0.45
+|_ssl-date: TLS randomness does not represent time
+| mysql-info: 
+|   Protocol: 10
+|   Version: 8.0.45
+|   Thread ID: 71
+|   Capabilities flags: 65535
+|   Some Capabilities: Support41Auth, SupportsLoadDataLocal, InteractiveClient, SwitchToSSLAfterHandshake, Speaks41ProtocolNew, DontAllowDatabaseTableColumn, Speaks41ProtocolOld, ConnectWithDatabase, IgnoreSpaceBeforeParenthesis, LongPassword, SupportsTransactions, ODBCClient, FoundRows, IgnoreSigpipes, SupportsCompression, LongColumnFlag, SupportsAuthPlugins, SupportsMultipleStatments, SupportsMultipleResults
+|   Status: Autocommit
+|   Salt: i*Se\x12\x12Cz0\x04b=Tn cHaE\x1F
+|_  Auth Plugin Name: caching_sha2_password
+| ssl-cert: Subject: commonName=MySQL_Server_8.0.45_Auto_Generated_Server_Certificate
+| Not valid before: 2026-03-02T07:36:43
+|_Not valid after:  2036-02-28T07:36:43
+3389/tcp  open  ms-wbt-server
+| rdp-ntlm-info: 
+|   Target_Name: NCTV360
+|   NetBIOS_Domain_Name: NCTV360
+|   NetBIOS_Computer_Name: G8
+|   DNS_Domain_Name: nctv360.com
+|   DNS_Computer_Name: G8.nctv360.com
+|   DNS_Tree_Name: nctv360.com
+|   Product_Version: 10.0.26100
+|_  System_Time: 2026-03-18T01:26:01+00:00
+|_ssl-date: TLS randomness does not represent time
+| ssl-cert: Subject: commonName=G8.nctv360.com
+| Not valid before: 2026-01-19T03:15:54
+|_Not valid after:  2026-07-21T03:15:54
+4200/tcp  open  http            Node.js (Express middleware)
+|_http-title: N-Compass TV Development
+5985/tcp  open  http            Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+7070/tcp  open  ssl/realserver?
+| ssl-cert: Subject: commonName=AnyDesk Client
+| Not valid before: 2026-03-18T01:06:45
+|_Not valid after:  2076-03-05T01:06:45
+|_ssl-date: TLS randomness does not represent time
+7680/tcp  open  pando-pub?
+42052/tcp open  http            Node.js Express framework
+|_http-title: Site doesn't have a title (application/json; charset=utf-8).
+47001/tcp open  http            Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+|_http-title: Not Found
+|_http-server-header: Microsoft-HTTPAPI/2.0
+49153/tcp open  tcpwrapped
+49664/tcp open  msrpc           Microsoft Windows RPC
+49665/tcp open  msrpc           Microsoft Windows RPC
+49666/tcp open  msrpc           Microsoft Windows RPC
+49667/tcp open  msrpc           Microsoft Windows RPC
+49668/tcp open  msrpc           Microsoft Windows RPC
+49669/tcp open  msrpc           Microsoft Windows RPC
+49670/tcp open  msrpc           Microsoft Windows RPC
+49671/tcp open  msrpc           Microsoft Windows RPC
+53005/tcp open  tcpwrapped
+2 services unrecognized despite returning data. If you know the service/version, please submit the following fingerprints at https://nmap.org/cgi-bin/submit.cgi?new-service :
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port82-TCP:V=7.95%I=7%D=3/18%Time=69B9FED4%P=x86_64-pc-linux-gnu%r(GetR
+SF:equest,76,"HTTP/1\.1\x20404\x20Not\x20Found\r\nConnection:\x20close\r\n
+SF:Date:\x20Wed,\x2018\x20Mar\x202026\x2001:24:35\x20GMT\r\nServer:\x20Kes
+SF:trel\r\nContent-Length:\x200\r\n\r\n")%r(HTTPOptions,131,"HTTP/1\.1\x20
+SF:200\x20OK\r\nConnection:\x20close\r\nDate:\x20Wed,\x2018\x20Mar\x202026
+SF:\x2001:24:35\x20GMT\r\nServer:\x20Kestrel\r\nContent-Length:\x200\r\nAc
+SF:cess-Control-Allow-Credentials:\x20true\r\nAccess-Control-Allow-Headers
+SF::\x20Content-Type,\x20Authorization\r\nAccess-Control-Allow-Methods:\x2
+SF:0GET,\x20POST,\x20PUT,\x20DELETE,\x20OPTIONS\r\nAccess-Control-Allow-Or
+SF:igin:\x20\*\r\n\r\n")%r(FourOhFourRequest,76,"HTTP/1\.1\x20404\x20Not\x
+SF:20Found\r\nConnection:\x20close\r\nDate:\x20Wed,\x2018\x20Mar\x202026\x
+SF:2001:24:35\x20GMT\r\nServer:\x20Kestrel\r\nContent-Length:\x200\r\n\r\n
+SF:")%r(GenericLines,78,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:
+SF:\x20close\r\nDate:\x20Wed,\x2018\x20Mar\x202026\x2001:24:35\x20GMT\r\nS
+SF:erver:\x20Kestrel\r\nContent-Length:\x200\r\n\r\n")%r(RTSPRequest,87,"H
+SF:TTP/1\.1\x20505\x20HTTP\x20Version\x20Not\x20Supported\r\nConnection:\x
+SF:20close\r\nDate:\x20Wed,\x2018\x20Mar\x202026\x2001:24:35\x20GMT\r\nSer
+SF:ver:\x20Kestrel\r\nContent-Length:\x200\r\n\r\n")%r(Help,78,"HTTP/1\.1\
+SF:x20400\x20Bad\x20Request\r\nConnection:\x20close\r\nDate:\x20Wed,\x2018
+SF:\x20Mar\x202026\x2001:24:50\x20GMT\r\nServer:\x20Kestrel\r\nContent-Len
+SF:gth:\x200\r\n\r\n")%r(SSLSessionReq,78,"HTTP/1\.1\x20400\x20Bad\x20Requ
+SF:est\r\nConnection:\x20close\r\nDate:\x20Wed,\x2018\x20Mar\x202026\x2001
+SF::24:50\x20GMT\r\nServer:\x20Kestrel\r\nContent-Length:\x200\r\n\r\n")%r
+SF:(TerminalServerCookie,78,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnect
+SF:ion:\x20close\r\nDate:\x20Wed,\x2018\x20Mar\x202026\x2001:24:50\x20GMT\
+SF:r\nServer:\x20Kestrel\r\nContent-Length:\x200\r\n\r\n")%r(TLSSessionReq
+SF:,78,"HTTP/1\.1\x20400\x20Bad\x20Request\r\nConnection:\x20close\r\nDate
+SF::\x20Wed,\x2018\x20Mar\x202026\x2001:24:50\x20GMT\r\nServer:\x20Kestrel
+SF:\r\nContent-Length:\x200\r\n\r\n")%r(Kerberos,78,"HTTP/1\.1\x20400\x20B
+SF:ad\x20Request\r\nConnection:\x20close\r\nDate:\x20Wed,\x2018\x20Mar\x20
+SF:2026\x2001:24:50\x20GMT\r\nServer:\x20Kestrel\r\nContent-Length:\x200\r
+SF:\n\r\n");
+==============NEXT SERVICE FINGERPRINT (SUBMIT INDIVIDUALLY)==============
+SF-Port3389-TCP:V=7.95%I=7%D=3/18%Time=69B9FED8%P=x86_64-pc-linux-gnu%r(Te
+SF:rminalServerCookie,13,"\x03\0\0\x13\x0e\xd0\0\0\x124\0\x02\?\x08\0\x02\
+SF:0\0\0");
+MAC Address: 58:02:05:2D:05:CC (Unknown)
+Warning: OSScan results may be unreliable because we could not find at least 1 open and 1 closed port
+Device type: general purpose|phone|specialized
+Running (JUST GUESSING): Microsoft Windows 11|10|2022|2008|Phone|7 (96%)
+OS CPE: cpe:/o:microsoft:windows_11 cpe:/o:microsoft:windows_10 cpe:/o:microsoft:windows_server_2022 cpe:/o:microsoft:windows_server_2008::sp1 cpe:/o:microsoft:windows cpe:/o:microsoft:windows_7
+Aggressive OS guesses: Microsoft Windows 11 21H2 (96%), Microsoft Windows 10 (91%), Microsoft Windows 10 1607 (91%), Microsoft Windows Server 2022 (90%), Microsoft Windows Server 2008 SP1 (88%), Microsoft Windows Phone 7.5 or 8.0 (88%), Microsoft Windows Embedded Standard 7 (87%), Microsoft Windows 10 1511 - 1607 (86%)
+No exact OS matches for host (test conditions non-ideal).
+Network Distance: 1 hop
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Host script results:
+| smb2-security-mode: 
+|   3:1:1: 
+|_    Message signing enabled but not required
+| smb2-time: 
+|   date: 2026-03-18T01:26:01
+|_  start_date: N/A
+|_nbstat: NetBIOS name: G8, NetBIOS user: <unknown>, NetBIOS MAC: 58:02:05:2d:05:cc (unknown)
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Wed Mar 18 09:26:43 2026 -- 1 IP address (1 host up) scanned in 179.04 seconds
