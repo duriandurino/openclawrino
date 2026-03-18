@@ -257,32 +257,33 @@ engagements/<target-name>/<phase>/
 
 ```
 engagements/<target-name>/
-├── scope.md                  # Engagement scope (created in Phase 0)
+├── SCOPE_<target>_<YYYY-MM-DD>.md        # Engagement scope (Phase 0)
 ├── recon/
-│   ├── phase-complete.md     # REQUIRED handoff to next phase
-│   └── nmap-*.txt            # Supporting evidence (flexible naming)
+│   ├── RECON_SUMMARY_<YYYY-MM-DD_HHMM>.md   # REQUIRED handoff
+│   └── nmap-*.txt                             # Supporting evidence (flexible)
 ├── enum/
-│   ├── phase-complete.md     # REQUIRED handoff
-│   └── *.txt                 # Supporting evidence
+│   ├── ENUM_SUMMARY_<YYYY-MM-DD_HHMM>.md    # REQUIRED handoff
+│   └── *.txt
 ├── vuln/
-│   ├── phase-complete.md     # REQUIRED handoff
-│   └── *.md                  # CVE analysis, exploit plan
+│   ├── VULN_SUMMARY_<YYYY-MM-DD_HHMM>.md    # REQUIRED handoff
+│   └── *.md
 ├── exploit/
-│   ├── phase-complete.md     # REQUIRED handoff
-│   └── *.md                  # Exploit logs, evidence
+│   ├── EXPLOIT_SUMMARY_<YYYY-MM-DD_HHMM>.md # REQUIRED handoff
+│   └── *.md
 ├── post-exploit/
-│   ├── phase-complete.md     # REQUIRED handoff
-│   └── *.md                  # Credential dumps, lateral movement
-└── report/
-    ├── final-report.md       # Final deliverable
-    └── executive-summary.md  # Management summary
+│   ├── POST_EXPLOIT_SUMMARY_<YYYY-MM-DD_HHMM>.md  # REQUIRED handoff
+│   └── *.md
+└── reporting/
+    ├── REPORT_FINAL_<YYYY-MM-DD_HHMM>.md    # Final deliverable
+    └── EXECUTIVE_SUMMARY_<YYYY-MM-DD_HHMM>.md
 ```
 
-**Critical rules:**
-1. **`scope.md`** must exist at the engagement root before Phase 1
-2. **`phase-complete.md`** is MANDATORY in every phase directory — it's how agents hand off to each other
-3. Supporting evidence files (nmap output, logs, screenshots) can use descriptive names
-4. Read `skills/pentest-orchestrator/references/phase-handoff.md` for the required template
+**File naming rules:**
+1. All phase handoff files MUST include datetime stamp: `<PHASE>_SUMMARY_<YYYY-MM-DD_HHMM>.md`
+2. Scope file: `SCOPE_<target-name>_<YYYY-MM-DD>.md`
+3. Supporting evidence files (nmap, logs, pcaps) can use descriptive names
+4. Get current datetime from session context or use `date +%Y-%m-%d_%H%M`
+5. Read `skills/pentest-orchestrator/references/phase-handoff.md` for the required template
 
 ### Sub-Agent Identity & Self-Reporting
 
