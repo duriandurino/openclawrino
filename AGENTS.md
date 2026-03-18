@@ -231,6 +231,39 @@ engagements/<target-name>/<phase>/
 - Sub-agents must NOT create ad-hoc directories outside the engagement structure
 - After task completion, commit and push changes (or ask the orchestrator to if sandbox-restricted)
 
+### File Naming Convention (REQUIRED)
+
+**Every pentest engagement MUST follow this naming structure:**
+
+```
+engagements/<target-name>/
+├── scope.md                  # Engagement scope (created in Phase 0)
+├── recon/
+│   ├── phase-complete.md     # REQUIRED handoff to next phase
+│   └── nmap-*.txt            # Supporting evidence (flexible naming)
+├── enum/
+│   ├── phase-complete.md     # REQUIRED handoff
+│   └── *.txt                 # Supporting evidence
+├── vuln/
+│   ├── phase-complete.md     # REQUIRED handoff
+│   └── *.md                  # CVE analysis, exploit plan
+├── exploit/
+│   ├── phase-complete.md     # REQUIRED handoff
+│   └── *.md                  # Exploit logs, evidence
+├── post-exploit/
+│   ├── phase-complete.md     # REQUIRED handoff
+│   └── *.md                  # Credential dumps, lateral movement
+└── report/
+    ├── final-report.md       # Final deliverable
+    └── executive-summary.md  # Management summary
+```
+
+**Critical rules:**
+1. **`scope.md`** must exist at the engagement root before Phase 1
+2. **`phase-complete.md`** is MANDATORY in every phase directory — it's how agents hand off to each other
+3. Supporting evidence files (nmap output, logs, screenshots) can use descriptive names
+4. Read `skills/pentest-orchestrator/references/phase-handoff.md` for the required template
+
 ### Sub-Agent Identity & Self-Reporting
 
 **Each specter agent has an identity file** at `agents/<agent-name>.md`. When a specter agent starts a conversation:

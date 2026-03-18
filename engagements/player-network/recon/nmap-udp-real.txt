@@ -1,0 +1,15 @@
+# Nmap 7.95 scan initiated Wed Mar 18 09:41:06 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sU --top-ports 100 --min-rate 5000 -oN /home/dukali/.openclaw/workspace/engagements/player-network/recon/nmap-udp-real.txt 192.168.0.130
+Nmap scan report for 192.168.0.130
+Host is up (0.047s latency).
+Not shown: 93 open|filtered udp ports (no-response)
+PORT      STATE  SERVICE
+111/udp   open   rpcbind
+997/udp   closed maitrd
+999/udp   closed applix
+1646/udp  closed radacct
+5353/udp  open   zeroconf
+17185/udp closed wdbrpc
+49188/udp closed unknown
+MAC Address: 2C:CF:67:04:0B:D1 (Raspberry Pi (Trading))
+
+# Nmap done at Wed Mar 18 09:41:07 2026 -- 1 IP address (1 host up) scanned in 0.88 seconds
