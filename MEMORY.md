@@ -115,3 +115,21 @@
 - This is a **security feature** but also means remote pentest is impossible without SSH
 - Confirms physical access is the primary attack vector for this engagement
 - **IMPORTANT:** Network attack chain (tcpdump, mosquitto_sub, MQTT exploitation) was NEVER executed — only theoretical documentation. All network-phase files removed from workspace.
+
+## Vault.img Decryption (2026-03-18)
+- **LUKS2 encrypted:** AES-XTS-256, argon2id PBKDF, UUID `9757eca5-e8a1-4f8a-9c20-8c9252d61d09`
+- **Location:** `/home/pi/vault.img` (separate from SD card partition)
+- **Key slot 0 enabled**, 8 total slots
+- **cryptsetup 2.6.0** on Player
+- **Passphrase NOT found in nctv-installer/** — scripts are just app installers (NGINX, Node 20, Chromium)
+- **Next: search Player Server app `/home/pi/n-compasstv/player-server/` and `/opt/electron-player/` for decryption key**
+- Common passwords `raspberry`, `nctv360` failed
+- `/etc/crypttab` empty — no auto-unlock configured
+
+### Vault Decryption — SUCCESS (2026-03-18)
+- **Passphrase:** `ffb6d42807368154\n` (with trailing newline!)
+- **Unlock command:** `echo "ffb6d42807368154" | sudo cryptsetup open /home/pi/vault.img nctv_data -`
+- **Key detail:** Use `echo` (with newline), NOT `echo -n --key-file -`
+- **Discovery:** From `.bash_history` and `hardware_lock.py` hardcoded serial
+- **Vault contents:** player-server/, db_backup_dirty/, logs/, backup/, ecosystem.config.js
+- **Vulnerabilities:** V-012 (CRITICAL), V-013 (HIGH), V-014 (MEDIUM)
