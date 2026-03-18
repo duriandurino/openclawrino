@@ -1,0 +1,3 @@
+# PCAP files are too large for git
+*.pcap
+*.pcapng
