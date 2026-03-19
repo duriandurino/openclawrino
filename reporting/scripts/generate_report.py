@@ -99,7 +99,8 @@ def build_styled_pptx(data, output_path, title=None):
     deck_title = title or f"Pentest Report — {target}"
     date_str = datetime.now().strftime("%B %d, %Y")
 
-    gen = PentestPPTXGenerator()
+    logo_path = ROOT / "assets" / "branding" / "ncompass-logo.png"
+    gen = PentestPPTXGenerator(theme="ncompass", logo_path=str(logo_path) if logo_path.exists() else None)
     gen.add_title_slide(deck_title, "Security Assessment Results", date_str, overall)
 
     top_findings = findings[:3]
