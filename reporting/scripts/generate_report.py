@@ -21,10 +21,21 @@ Findings JSON format:
 import json
 import argparse
 import subprocess
+import sys
+from pathlib import Path
 from datetime import datetime
 
 
 SEVERITY_ORDER = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "scripts"))
+
+try:
+    from pentest_pptx_generator import PentestPPTXGenerator
+except Exception:
+    PentestPPTXGenerator = None
 
 
 def run_gog(command):
@@ -55,14 +66,113 @@ def upload_to_drive(path, account=None, parent=None, convert_to=None):
     return run_gog(cmd)
 
 
-def create_slides_from_markdown(title, content_file, account=None, parent=None):
-    """Create Google Slides deck from markdown via gog."""
-    cmd = ["gog", "slides", "create-from-markdown", title, "--content-file", content_file, "--json"]
+def upload_pptx_as_slides(path, account=None, parent=None, name=None):
+    """Upload a PPTX and convert it to Google Slides via gog."""
+    cmd = ["gog", "drive", "upload", path, "--json", "--convert-to", "slides"]
     if account:
         cmd.extend(["-a", account])
     if parent:
         cmd.extend(["--parent", parent])
+    if name:
+        cmd.extend(["--name", name])
     return run_gog(cmd)
+
+
+def severity_counts(findings):
+    counts = {"Critical": 0, "High": 0, "Medium": 0, "Low": 0, "Info": 0}
+    for f in findings:
+        sev = f.get("severity", "Info")
+        counts[sev] = counts.get(sev, 0) + 1
+    return counts
+
+
+def build_styled_pptx(data, output_path, title=None):
+    """Create a styled PPTX deck from report data."""
+    if PentestPPTXGenerator is None:
+        raise RuntimeError("python-pptx generator unavailable")
+
+    target = data.get("target", "Unknown Target")
+    findings = sorted(data.get("findings", []), key=lambda x: SEVERITY_ORDER.get(x.get("severity", "Info"), 99))
+    enhancements = data.get("enhancements", [])
+    counts = severity_counts(findings)
+    overall = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev, 0) > 0), "Info")
+    deck_title = title or f"Pentest Report — {target}"
+    date_str = datetime.now().strftime("%B %d, %Y")
+
+    gen = PentestPPTXGenerator()
+    gen.add_title_slide(deck_title, "Security Assessment Results", date_str, overall)
+
+    top_findings = findings[:3]
+    exec_lines = [f"Assessment identified {len(findings)} finding(s) on {target}.", ""]
+    for f in top_findings:
+        exec_lines.append(f"• {f.get('id', 'V-???')}: {f.get('title', 'Untitled')} ({f.get('severity', 'Info').upper()})")
+    if enhancements:
+        exec_lines.extend(["", f"• {len(enhancements)} cross-cutting hardening recommendation(s) included"])
+    gen.add_content_slide("Executive Summary", exec_lines)
+
+    left = [
+        f"Critical: {counts['Critical']}",
+        f"High: {counts['High']}",
+        f"Medium: {counts['Medium']}",
+        f"Low: {counts['Low']}",
+        f"Info: {counts['Info']}",
+    ]
+    right = [
+        "Reconnaissance completed",
+        "Enumeration and service analysis performed",
+        "Vulnerabilities validated",
+        "Impact and remediation documented",
+    ]
+    gen.add_two_column_slide("Risk Overview", "Severity Counts", left, "Assessment Scope", right)
+
+    rows = []
+    for f in findings[:6]:
+        rows.append([
+            f.get("id", "V-???"),
+            f.get("severity", "Info").upper(),
+            str(f.get("cvss", "-")),
+            f.get("title", "Untitled")[:48],
+        ])
+    if rows:
+        gen.add_table_slide("Top Findings", ["ID", "Severity", "CVSS", "Finding"], rows)
+
+    for f in top_findings:
+        content = [
+            f"{f.get('severity', 'Info').upper()} — CVSS {f.get('cvss', 'N/A')}",
+            "",
+            f"What: {f.get('description', 'No description provided')[:180]}",
+            "",
+            f"Impact: {f.get('impact', 'No impact assessment')[:180]}",
+            "",
+            f"Fix: {f.get('remediation', 'No remediation provided')[:180]}",
+        ]
+        hardening = f.get("hardening")
+        if hardening:
+            content.extend(["", f"Hardening: {str(hardening)[:180]}"])
+        gen.add_content_slide(f"{f.get('id', 'V-???')} — {f.get('title', 'Untitled')[:50]}", content)
+
+    immediate = []
+    short_term = []
+    for f in findings:
+        sev = f.get("severity", "Info")
+        item = f"{f.get('id', 'V-???')}: {f.get('remediation', 'No remediation')[:80]}"
+        if sev in ("Critical", "High") and len(immediate) < 5:
+            immediate.append(item)
+        elif sev in ("Medium", "Low", "Info") and len(short_term) < 5:
+            short_term.append(item)
+    if enhancements:
+        for enh in enhancements[:3]:
+            short_term.append(f"{enh.get('category', 'General')}: {enh.get('recommendation', '')[:70]}")
+    gen.add_two_column_slide(
+        "Remediation Roadmap",
+        "Immediate Priority",
+        immediate or ["No immediate actions recorded"],
+        "Planned Hardening",
+        short_term or ["No planned actions recorded"],
+    )
+
+    gen.save(output_path)
+    return output_path
 
 
 def generate_executive_summary(findings, enhancements):
@@ -272,24 +382,23 @@ def main():
     if args.create_slides:
         slides_title = args.slides_title or f"Penetration Test Report — {args.target}"
         try:
-            slides_result = create_slides_from_markdown(slides_title, args.output, account=args.gdrive_account, parent=args.gdrive_parent)
-            pres = None
-            if isinstance(slides_result, dict):
-                pres = slides_result.get("presentation") or slides_result.get("file") or slides_result
+            pptx_output = str(Path(args.output).with_suffix(".pptx"))
+            build_styled_pptx(data, pptx_output, title=slides_title)
+            print(f"[OK] Styled PPTX generated: {pptx_output}")
+            slides_result = upload_pptx_as_slides(pptx_output, account=args.gdrive_account, parent=args.gdrive_parent, name=slides_title)
+            pres = slides_result.get("file", slides_result) if isinstance(slides_result, dict) else slides_result
             if isinstance(pres, dict):
                 publish_summary["slides_id"] = pres.get("presentationId") or pres.get("id")
                 publish_summary["slides_link"] = pres.get("webViewLink")
                 if not publish_summary["slides_link"] and publish_summary["slides_id"]:
                     publish_summary["slides_link"] = f"https://docs.google.com/presentation/d/{publish_summary['slides_id']}/edit?usp=drivesdk"
-                print(f"[OK] Slides created: {pres.get('name', slides_title)}")
-                if pres.get("presentationId"):
-                    print(f"     Slides ID: {pres['presentationId']}")
-                elif pres.get("id"):
-                    print(f"     Slides ID: {pres['id']}")
+                print(f"[OK] Styled Slides created: {pres.get('name', slides_title)}")
+                if publish_summary["slides_id"]:
+                    print(f"     Slides ID: {publish_summary['slides_id']}")
                 if publish_summary["slides_link"]:
                     print(f"     Slides Link: {publish_summary['slides_link']}")
             else:
-                print(f"[OK] Slides created: {slides_result}")
+                print(f"[OK] Styled Slides created: {slides_result}")
         except Exception as e:
             print(f"[WARN] Slides creation failed: {e}")
 

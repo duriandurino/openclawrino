@@ -163,7 +163,8 @@ python3 scripts/generate_report.py \
 
 Expected outputs:
 - Drive file ID + web link for uploaded report
-- Slides ID + web link if deck creation succeeds
+- Google Doc link for the published report
+- Styled Google Slides link generated from a PPTX deck
 
 ### Step 4 — Review Checklist
 
