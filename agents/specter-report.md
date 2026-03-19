@@ -20,3 +20,15 @@ Your reports are saved in the engagement directory:
 - Do NOT echo main session history (skillcrafter builds, MEMORY updates, etc.)
 - Report ONLY from your engagement output directory
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
+
+## Google Publishing
+If asked to publish your deliverables and `gog` auth is available, you may:
+- upload the final markdown report to Google Drive
+- create a Google Slides deck from the markdown report
+- return the resulting Drive / Slides links in your handoff
+
+Preferred workflow:
+1. Generate `REPORT_FINAL_<YYYY-MM-DD_HHMM>.md` in `engagements/<target>/reporting/`
+2. Use `reporting/scripts/generate_report.py --upload-drive --gdrive-account <email>`
+3. If presentation output is requested, also use `--create-slides --slides-title "Pentest Report — <target>"`
+4. Save any share links in the reporting directory or include them in your final summary

@@ -7,6 +7,8 @@ with all required sections including security enhancement recommendations.
 
 Usage:
     python3 generate_report.py --target <target> --findings <findings.json> --output <report.md>
+    python3 generate_report.py --target <target> --findings <findings.json> --output <report.md> --upload-drive --gdrive-account hatlesswhite@gmail.com
+    python3 generate_report.py --target <target> --findings <findings.json> --output <report.md> --create-slides --slides-title "Pentest Report"
 
 Findings JSON format:
 {
@@ -18,10 +20,47 @@ Findings JSON format:
 
 import json
 import argparse
+import subprocess
 from datetime import datetime
 
 
 SEVERITY_ORDER = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
+
+
+def run_gog(command):
+    """Run a gog command and return parsed JSON when possible."""
+    result = subprocess.run(command, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(result.stderr.strip() or result.stdout.strip() or "gog command failed")
+
+    stdout = result.stdout.strip()
+    if not stdout:
+        return None
+
+    try:
+        return json.loads(stdout)
+    except json.JSONDecodeError:
+        return stdout
+
+
+def upload_to_drive(path, account=None, parent=None):
+    """Upload a file to Google Drive via gog."""
+    cmd = ["gog", "drive", "upload", path, "--json"]
+    if account:
+        cmd.extend(["-a", account])
+    if parent:
+        cmd.extend(["--parent", parent])
+    return run_gog(cmd)
+
+
+def create_slides_from_markdown(title, content_file, account=None, parent=None):
+    """Create Google Slides deck from markdown via gog."""
+    cmd = ["gog", "slides", "create-from-markdown", title, "--content-file", content_file, "--json"]
+    if account:
+        cmd.extend(["-a", account])
+    if parent:
+        cmd.extend(["--parent", parent])
+    return run_gog(cmd)
 
 
 def generate_executive_summary(findings, enhancements):
@@ -163,6 +202,11 @@ def main():
     parser.add_argument("--target", required=True, help="Target name/IP for report header")
     parser.add_argument("--findings", required=True, help="Path to findings JSON file")
     parser.add_argument("--output", required=True, help="Output report path (markdown)")
+    parser.add_argument("--upload-drive", action="store_true", help="Upload generated report to Google Drive via gog")
+    parser.add_argument("--gdrive-account", help="Google account email for gog operations")
+    parser.add_argument("--gdrive-parent", help="Optional parent Drive folder ID")
+    parser.add_argument("--create-slides", action="store_true", help="Create a Google Slides deck from the generated markdown")
+    parser.add_argument("--slides-title", help="Slides title (default: Penetration Test Report — <target>)")
     args = parser.parse_args()
 
     with open(args.findings) as f:
@@ -177,6 +221,41 @@ def main():
     print(f"     Target: {args.target}")
     print(f"     Findings: {len(data.get('findings', []))}")
     print(f"     Enhancements: {len(data.get('enhancements', []))}")
+
+    if args.upload_drive:
+        try:
+            upload_result = upload_to_drive(args.output, account=args.gdrive_account, parent=args.gdrive_parent)
+            file_data = upload_result.get("file", upload_result) if isinstance(upload_result, dict) else upload_result
+            if isinstance(file_data, dict):
+                print(f"[OK] Drive upload: {file_data.get('name', args.output)}")
+                if file_data.get("id"):
+                    print(f"     Drive File ID: {file_data['id']}")
+                if file_data.get("webViewLink"):
+                    print(f"     Drive Link: {file_data['webViewLink']}")
+            else:
+                print(f"[OK] Drive upload completed: {file_data}")
+        except Exception as e:
+            print(f"[WARN] Drive upload failed: {e}")
+
+    if args.create_slides:
+        slides_title = args.slides_title or f"Penetration Test Report — {args.target}"
+        try:
+            slides_result = create_slides_from_markdown(slides_title, args.output, account=args.gdrive_account, parent=args.gdrive_parent)
+            pres = None
+            if isinstance(slides_result, dict):
+                pres = slides_result.get("presentation") or slides_result.get("file") or slides_result
+            if isinstance(pres, dict):
+                print(f"[OK] Slides created: {pres.get('name', slides_title)}")
+                if pres.get("presentationId"):
+                    print(f"     Slides ID: {pres['presentationId']}")
+                elif pres.get("id"):
+                    print(f"     Slides ID: {pres['id']}")
+                if pres.get("webViewLink"):
+                    print(f"     Slides Link: {pres['webViewLink']}")
+            else:
+                print(f"[OK] Slides created: {slides_result}")
+        except Exception as e:
+            print(f"[WARN] Slides creation failed: {e}")
 
 
 if __name__ == "__main__":

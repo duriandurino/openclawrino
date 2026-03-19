@@ -137,7 +137,35 @@ python3 scripts/generate_report.py \
   --output engagements/<target>/reporting/report-<target>-<date>.md
 ```
 
-### Step 3 — Review Checklist
+### Step 3 — Optional Google Drive / Slides Publish
+
+If `gog` auth is working, the reporting agent may publish deliverables directly:
+
+```bash
+# Upload markdown report to Drive
+python3 scripts/generate_report.py \
+  --target <TARGET> \
+  --findings engagements/<target>/reporting/findings-<target>.json \
+  --output engagements/<target>/reporting/REPORT_FINAL_<date>.md \
+  --upload-drive \
+  --gdrive-account hatlesswhite@gmail.com
+
+# Upload report and generate Google Slides in one step
+python3 scripts/generate_report.py \
+  --target <TARGET> \
+  --findings engagements/<target>/reporting/findings-<target>.json \
+  --output engagements/<target>/reporting/REPORT_FINAL_<date>.md \
+  --upload-drive \
+  --create-slides \
+  --slides-title "Pentest Report — <TARGET>" \
+  --gdrive-account hatlesswhite@gmail.com
+```
+
+Expected outputs:
+- Drive file ID + web link for uploaded report
+- Slides ID + web link if deck creation succeeds
+
+### Step 4 — Review Checklist
 
 Before delivering:
 - [ ] Every finding has severity, evidence, remediation, and hardening

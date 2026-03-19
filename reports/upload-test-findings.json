@@ -1,0 +1,24 @@
+{
+  "target": "upload-test.local",
+  "findings": [
+    {
+      "id": "V-TEST-001",
+      "title": "Sample Finding",
+      "severity": "Low",
+      "cvss": 3.1,
+      "affected": "upload-test.local:443",
+      "description": "Synthetic test finding used to validate Drive and Slides publishing.",
+      "evidence": "test evidence",
+      "impact": "Low impact validation path only.",
+      "remediation": "No action needed; remove test artifact after validation.",
+      "hardening": "Keep auth working and maintain documented publishing workflow.",
+      "references": ["https://docs.openclaw.ai"]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Automation",
+      "recommendation": "Allow the report agent to publish finished reports to Drive after generation."
+    }
+  ]
+}
