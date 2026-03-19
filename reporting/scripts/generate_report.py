@@ -22,6 +22,9 @@ import json
 import argparse
 import subprocess
 import sys
+import shutil
+import tempfile
+import os
 from pathlib import Path
 from datetime import datetime
 
@@ -47,6 +50,22 @@ except Exception:
 
 DOC_TEMPLATE = ROOT / "assets" / "docs" / "ncompass-reference.docx"
 LOGO_PATH = ROOT / "assets" / "branding" / "ncompass-logo.png"
+
+
+def export_doc_to_pdf(doc_id, account=None, output=None):
+    if output is None:
+        fd, path = tempfile.mkstemp(suffix=".pdf")
+        os.close(fd)
+        output = Path(path)
+    else:
+        output = Path(output)
+    cmd = ["gog", "docs", "export", doc_id, "--format", "pdf", "--out", str(output)]
+    if account:
+        cmd.extend(["-a", account])
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    if result.returncode != 0:
+        raise RuntimeError(f"gog docs export failed: {result.stderr.strip()}")
+    return output
 
 
 def build_docx(data, output_path):
@@ -383,6 +402,10 @@ def main():
     parser.add_argument("--output", required=True, help="Output report path (markdown)")
     parser.add_argument("--upload-drive", action="store_true", help="Upload generated report to Google Drive via gog")
     parser.add_argument("--create-doc", action="store_true", help="Create a native Google Doc from the generated markdown")
+    parser.add_argument("--export-pdf", dest="export_pdf", action="store_true", default=True,
+                        help="Export the generated Google Doc to PDF for preview (default: on)")
+    parser.add_argument("--no-export-pdf", dest="export_pdf", action="store_false",
+                        help="Do not export a PDF preview")
     parser.add_argument("--gdrive-account", help="Google account email for gog operations")
     parser.add_argument("--gdrive-parent", help="Optional parent Drive folder ID")
     parser.add_argument("--create-slides", action="store_true", help="Create a Google Slides deck from the generated markdown")
@@ -407,9 +430,11 @@ def main():
         "drive_link": None,
         "doc_link": None,
         "slides_link": None,
+        "pdf_link": None,
         "drive_id": None,
         "doc_id": None,
         "slides_id": None,
+        "pdf_id": None,
     }
 
     if args.upload_drive:
@@ -449,6 +474,24 @@ def main():
         except Exception as e:
             print(f"[WARN] Google Doc creation failed: {e}")
 
+    if args.create_doc and args.export_pdf and publish_summary.get("doc_id"):
+        try:
+            pdf_path = export_doc_to_pdf(publish_summary["doc_id"], account=args.gdrive_account)
+            pdf_result = upload_to_drive(str(pdf_path), account=args.gdrive_account, parent=args.gdrive_parent)
+            pdf_data = pdf_result.get("file", pdf_result) if isinstance(pdf_result, dict) else pdf_result
+            if isinstance(pdf_data, dict):
+                publish_summary["pdf_id"] = pdf_data.get("id")
+                publish_summary["pdf_link"] = pdf_data.get("webViewLink")
+                print(f"[OK] PDF preview uploaded: {pdf_data.get('name', pdf_path)}")
+                if pdf_data.get("webViewLink"):
+                    print(f"     PDF Link: {pdf_data['webViewLink']}")
+            else:
+                print(f"[OK] PDF preview uploaded: {pdf_data}")
+            if pdf_path.exists():
+                pdf_path.unlink()
+        except Exception as e:
+            print(f"[WARN] PDF export/upload failed: {e}")
+
     if args.create_slides:
         slides_title = args.slides_title or f"Penetration Test Report — {args.target}"
         try:
@@ -477,6 +520,8 @@ def main():
         print(f"Local file: {publish_summary['local_file']}")
         if publish_summary["doc_link"]:
             print(f"Docs: {publish_summary['doc_link']}")
+        if publish_summary["pdf_link"]:
+            print(f"PDF preview: {publish_summary['pdf_link']}")
         if publish_summary["slides_link"]:
             print(f"Slides: {publish_summary['slides_link']}")
         if publish_summary["drive_link"]:
