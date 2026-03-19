@@ -1,0 +1,54 @@
+{
+  "target": "N-Compass TV Vault Decryption",
+  "findings": [
+    {
+      "id": "V-012",
+      "title": "Hardcoded Vault Passphrase",
+      "severity": "Critical",
+      "cvss": 9.8,
+      "affected": "N-Compass TV Vault (vault.img)",
+      "description": "The LUKS vault is unlocked by a passphrase embedded in hardware_lock.py and derived from the Raspberry Pi serial number.",
+      "evidence": "hardware_lock.py revealed AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\" and .bash_history contained the exact echo command used for decryption.",
+      "impact": "Any attacker with local access can decrypt vault.img and access player-server backups, logs, and database snapshots.",
+      "remediation": "Move key material off device, prompt for passphrase entry on device console, avoid storing credentials in source code, and rotate passphrase per device.",
+      "hardening": "Use TPM or secure enclave to seal keys to hardware, require two-factor confirmation for decryption, and monitor /usr/local/bin for unauthorized modifications.",
+      "references": ["CWE-798", "Hardcoded Credentials"]
+    },
+    {
+      "id": "V-013",
+      "title": "Newline-Sensitive Passphrase Flow",
+      "severity": "High",
+      "cvss": 7.5,
+      "affected": "Vault unlock script",
+      "description": "Vault unlock requires `echo \"passphrase\" | sudo cryptsetup open ...` and fails if the newline is omitted, revealing fragile automation. Attackers could replicate this flow with minimal tools.",
+      "evidence": "Attempts using `echo -n` failed while exact recorded command worked; script uses `echo` with newline when piping into cryptsetup.",
+      "impact": "A local user or script with sudo privileges can decrypt vault.img instantly; the automation detail lowers the barrier for replication.",
+      "remediation": "Use key files or protected key slots instead of echoing passphrases, and remove super-user scripting around sensitive operations.",
+      "hardening": "Implement passphrase validation with key files, store secrets in encrypted keystore, and audit sudo scripts for unsafe echo usage.",
+      "references": ["CWE-117", "Cryptsetup best practices"]
+    },
+    {
+      "id": "V-014",
+      "title": "Device-Bound Vault Key Exposure",
+      "severity": "High",
+      "cvss": 7.2,
+      "affected": "Player source tree",
+      "description": "The device unlock key relies solely on the Raspberry Pi serial number which is public, so any cloned player can decrypt other vaults if the scripts remain unchanged.",
+      "evidence": "unlock_vault.py and hardware_lock.py derive the passphrase simply from /proc/cpuinfo serial; Serial `ffb6d42807368154` decoded to the passphrase used for recovery.",
+      "impact": "Possessing a single authorized Pi or a buildable clone allows decrypting any vault produced by the same factory script.",
+      "remediation": "Use per-device key material stored securely, incorporate tamper detection, and enforce hardware unique unlocking (TPM / HSM).",
+      "hardening": "Add code signing for unlock scripts, enforce encrypted key retrieval from a secure service that binds to device identity, and monitor for unauthorized copies in deployment.",
+      "references": ["Supply chain hardening guidance"]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Secret Management",
+      "recommendation": "Store vault passphrases in dedicated KMS/TPM hardware instead of plaintext scripts, and rotate keys using authorized deployments only."
+    },
+    {
+      "category": "Local Access Controls",
+      "recommendation": "Limit which accounts can execute cryptsetup and remove convenience sudo entries from scripts to prevent misuse by less-privileged users."
+    }
+  ]
+}
