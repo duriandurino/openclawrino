@@ -43,13 +43,15 @@ def run_gog(command):
         return stdout
 
 
-def upload_to_drive(path, account=None, parent=None):
+def upload_to_drive(path, account=None, parent=None, convert_to=None):
     """Upload a file to Google Drive via gog."""
     cmd = ["gog", "drive", "upload", path, "--json"]
     if account:
         cmd.extend(["-a", account])
     if parent:
         cmd.extend(["--parent", parent])
+    if convert_to:
+        cmd.extend(["--convert-to", convert_to])
     return run_gog(cmd)
 
 
@@ -203,6 +205,7 @@ def main():
     parser.add_argument("--findings", required=True, help="Path to findings JSON file")
     parser.add_argument("--output", required=True, help="Output report path (markdown)")
     parser.add_argument("--upload-drive", action="store_true", help="Upload generated report to Google Drive via gog")
+    parser.add_argument("--create-doc", action="store_true", help="Create a native Google Doc from the generated markdown")
     parser.add_argument("--gdrive-account", help="Google account email for gog operations")
     parser.add_argument("--gdrive-parent", help="Optional parent Drive folder ID")
     parser.add_argument("--create-slides", action="store_true", help="Create a Google Slides deck from the generated markdown")
@@ -222,11 +225,23 @@ def main():
     print(f"     Findings: {len(data.get('findings', []))}")
     print(f"     Enhancements: {len(data.get('enhancements', []))}")
 
+    publish_summary = {
+        "local_file": args.output,
+        "drive_link": None,
+        "doc_link": None,
+        "slides_link": None,
+        "drive_id": None,
+        "doc_id": None,
+        "slides_id": None,
+    }
+
     if args.upload_drive:
         try:
             upload_result = upload_to_drive(args.output, account=args.gdrive_account, parent=args.gdrive_parent)
             file_data = upload_result.get("file", upload_result) if isinstance(upload_result, dict) else upload_result
             if isinstance(file_data, dict):
+                publish_summary["drive_id"] = file_data.get("id")
+                publish_summary["drive_link"] = file_data.get("webViewLink")
                 print(f"[OK] Drive upload: {file_data.get('name', args.output)}")
                 if file_data.get("id"):
                     print(f"     Drive File ID: {file_data['id']}")
@@ -237,6 +252,23 @@ def main():
         except Exception as e:
             print(f"[WARN] Drive upload failed: {e}")
 
+    if args.create_doc:
+        try:
+            doc_result = upload_to_drive(args.output, account=args.gdrive_account, parent=args.gdrive_parent, convert_to="doc")
+            doc_data = doc_result.get("file", doc_result) if isinstance(doc_result, dict) else doc_result
+            if isinstance(doc_data, dict):
+                publish_summary["doc_id"] = doc_data.get("id")
+                publish_summary["doc_link"] = doc_data.get("webViewLink")
+                print(f"[OK] Google Doc created: {doc_data.get('name', args.output)}")
+                if doc_data.get("id"):
+                    print(f"     Doc ID: {doc_data['id']}")
+                if doc_data.get("webViewLink"):
+                    print(f"     Doc Link: {doc_data['webViewLink']}")
+            else:
+                print(f"[OK] Google Doc created: {doc_data}")
+        except Exception as e:
+            print(f"[WARN] Google Doc creation failed: {e}")
+
     if args.create_slides:
         slides_title = args.slides_title or f"Penetration Test Report — {args.target}"
         try:
@@ -245,17 +277,31 @@ def main():
             if isinstance(slides_result, dict):
                 pres = slides_result.get("presentation") or slides_result.get("file") or slides_result
             if isinstance(pres, dict):
+                publish_summary["slides_id"] = pres.get("presentationId") or pres.get("id")
+                publish_summary["slides_link"] = pres.get("webViewLink")
+                if not publish_summary["slides_link"] and publish_summary["slides_id"]:
+                    publish_summary["slides_link"] = f"https://docs.google.com/presentation/d/{publish_summary['slides_id']}/edit?usp=drivesdk"
                 print(f"[OK] Slides created: {pres.get('name', slides_title)}")
                 if pres.get("presentationId"):
                     print(f"     Slides ID: {pres['presentationId']}")
                 elif pres.get("id"):
                     print(f"     Slides ID: {pres['id']}")
-                if pres.get("webViewLink"):
-                    print(f"     Slides Link: {pres['webViewLink']}")
+                if publish_summary["slides_link"]:
+                    print(f"     Slides Link: {publish_summary['slides_link']}")
             else:
                 print(f"[OK] Slides created: {slides_result}")
         except Exception as e:
             print(f"[WARN] Slides creation failed: {e}")
+
+    if any(publish_summary[k] for k in ("drive_link", "doc_link", "slides_link")):
+        print("\n=== PUBLISHED LINKS ===")
+        print(f"Local file: {publish_summary['local_file']}")
+        if publish_summary["doc_link"]:
+            print(f"Docs: {publish_summary['doc_link']}")
+        if publish_summary["slides_link"]:
+            print(f"Slides: {publish_summary['slides_link']}")
+        if publish_summary["drive_link"]:
+            print(f"Drive file: {publish_summary['drive_link']}")
 
 
 if __name__ == "__main__":
