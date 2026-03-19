@@ -1,0 +1,101 @@
+{
+  "target": "N-Compass TV Digital Signage Network",
+  "findings": [
+    {
+      "id": "VULN-001",
+      "title": "Unauthenticated Player API",
+      "severity": "Critical",
+      "cvss": 9.8,
+      "affected": "192.168.0.161:3215 (Player fleet pattern)",
+      "description": "A Node.js Express API exposed device information, playlists, content URLs, and update-related endpoints without any authentication. Confirmed endpoints included /ping, /api/device, /api/playlist, /api/content, and /api/update.",
+      "evidence": "curl -s http://192.168.0.161:3215/api/device\ncurl -s http://192.168.0.161:3215/api/playlist\ncurl -s http://192.168.0.161:3215/api/content",
+      "impact": "Any attacker on the same network can enumerate players, collect operational data, extract content URLs, and map the fleet without credentials.",
+      "remediation": "Restrict the API to localhost or a management interface only, enforce authentication and authorization on all endpoints, and block port 3215 from untrusted networks using host firewall rules or segmentation.",
+      "hardening": "Implement mutual authentication between the Electron app and backend API, add API gateway controls, and continuously scan fleet builds to ensure local-only services are not exposed on the LAN.",
+      "references": ["CWE-306", "OWASP API1:2023"]
+    },
+    {
+      "id": "VULN-002",
+      "title": "Public CloudFront CDN Access",
+      "severity": "High",
+      "cvss": 7.5,
+      "affected": "d193aoclwas08l.cloudfront.net",
+      "description": "Ad and media content hosted behind CloudFront was publicly downloadable when the object URL was known, allowing direct unauthenticated retrieval of signage content.",
+      "evidence": "Direct HTTP GET requests to discovered CloudFront object URLs returned content without authentication.",
+      "impact": "Attackers can steal media assets, analyze campaign material, and potentially support broader supply-chain or defacement planning.",
+      "remediation": "Require signed URLs or signed cookies for CDN delivery, reduce object exposure windows, and ensure origin access is restricted to trusted delivery paths.",
+      "hardening": "Separate public marketing assets from operational signage content, add access logging and alerting for bulk downloads, and rotate content URLs when exposure is suspected.",
+      "references": ["AWS CloudFront signed URLs documentation"]
+    },
+    {
+      "id": "VULN-003",
+      "title": "Backend Server Service Exposure",
+      "severity": "High",
+      "cvss": 8.1,
+      "affected": "192.168.0.103 (MySQL, RDP, WinRM, AnyDesk, APIs)",
+      "description": "The backend Windows server exposed multiple management and data services directly on the same flat network as player devices, including MySQL, RDP, WinRM, AnyDesk, and application APIs.",
+      "evidence": "Nmap service discovery identified 17+ open services on 192.168.0.103, including 3306/3307, 3389, 5985, 7070, 82, and 42052.",
+      "impact": "A compromise of any internal foothold can be leveraged to target administrative services, attempt credential attacks, and expand to server takeover or data exfiltration.",
+      "remediation": "Move backend management services to a restricted admin network or VPN-only segment, close unnecessary ports, and allow access only from explicitly approved management hosts.",
+      "hardening": "Deploy host-based firewall policy, enforce tiered network segmentation between players and servers, and require MFA or bastion access for remote administration.",
+      "references": ["Microsoft WinRM hardening guidance", "CIS Network Segmentation guidance"]
+    },
+    {
+      "id": "VULN-004",
+      "title": "OAuth2 Authentication Flow Weakness",
+      "severity": "High",
+      "cvss": 7.2,
+      "affected": "192.168.0.103:42052/api/auth/login",
+      "description": "An OAuth2 authorization-code style flow was active on the backend API. While not directly exploitable without valid codes, its exposure on the internal network increases risk if codes or redirect paths are intercepted or abused.",
+      "evidence": "Backend auth endpoint at 192.168.0.103:42052/api/auth/login confirmed active during testing.",
+      "impact": "If valid authorization codes or redirect handling weaknesses are abused, attackers may achieve account takeover or obtain backend API access.",
+      "remediation": "Restrict auth endpoints to intended trust boundaries, validate redirect URIs strictly, shorten code lifetimes, and bind authorization flows to PKCE and trusted clients only.",
+      "hardening": "Add anomaly detection for OAuth exchanges, require secure client registration controls, and isolate identity endpoints from player-accessible network segments.",
+      "references": ["OAuth 2.0 Security Best Current Practice", "RFC 7636 (PKCE)"]
+    },
+    {
+      "id": "VULN-005",
+      "title": "CORS Misconfiguration",
+      "severity": "Medium",
+      "cvss": 5.3,
+      "affected": "192.168.0.103:82",
+      "description": "The backend Kestrel service presented permissive cross-origin behavior, including Access-Control-Allow-Origin: * in a context that could support unsafe browser-based interactions.",
+      "evidence": "HTTP responses from the service exposed permissive CORS headers during manual testing.",
+      "impact": "Malicious websites visited by a user on the same network may be able to trigger cross-origin requests against the backend API depending on browser/client behavior and authentication state.",
+      "remediation": "Replace wildcard origins with an explicit allowlist, disable credentialed cross-origin access where not required, and review all CORS middleware defaults.",
+      "hardening": "Add automated security header testing to CI/CD, standardize a secure reverse-proxy policy for all APIs, and monitor for unexpected Origin headers in logs.",
+      "references": ["OWASP CORS Misconfiguration guidance"]
+    },
+    {
+      "id": "VULN-006",
+      "title": "VNC Service Exposed on Player",
+      "severity": "Medium",
+      "cvss": 5.9,
+      "affected": "192.168.0.161:5900",
+      "description": "A VNC service was reachable on the player device. Testing showed authentication rate limiting, but the service remained exposed and reachable to the local network.",
+      "evidence": "Port 5900 was open and reachable; authentication attempts triggered rate limiting after repeated tries.",
+      "impact": "If credentials are discovered elsewhere or controls weaken, attackers may gain direct visual/interactive access to the player.",
+      "remediation": "Disable VNC where not operationally required, bind remote desktop services to a management-only network, and enforce strong authentication plus IP restrictions.",
+      "hardening": "Require remote support through a brokered support channel instead of direct LAN exposure, and alert on repeated failed VNC authentication attempts.",
+      "references": ["CIS Raspberry Pi hardening guidance"]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Network Segmentation",
+      "recommendation": "Separate player devices, backend servers, and administrative workstations into distinct VLANs or firewall zones. Player subnets should not have direct lateral access to backend administration ports."
+    },
+    {
+      "category": "Service Exposure Reduction",
+      "recommendation": "Audit every listening service on players and backend hosts and remove or firewall services that are not essential for the runtime mission of each device."
+    },
+    {
+      "category": "Application Security",
+      "recommendation": "Treat internal APIs as hostile-by-default: require authentication, authorization, input validation, and explicit trust boundaries even for services primarily consumed by local desktop applications."
+    },
+    {
+      "category": "Monitoring and Detection",
+      "recommendation": "Log and alert on port scans, repeated authentication attempts, bulk CDN downloads, unusual API enumeration, and access to management endpoints from non-admin segments."
+    }
+  ]
+}
