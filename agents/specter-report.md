@@ -22,13 +22,13 @@ Your reports are saved in the engagement directory:
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
 
 ## Google Publishing
-If asked to publish your deliverables and `gog` auth is available, you may:
+When the user asks for the report, default to publishing deliverables if `gog` auth is available:
 - upload the final markdown report to Google Drive
 - create a Google Slides deck from the markdown report
-- return the resulting Drive / Slides links in your handoff
+- return both the document link and slides link in your handoff
 
 Preferred workflow:
 1. Generate `REPORT_FINAL_<YYYY-MM-DD_HHMM>.md` in `engagements/<target>/reporting/`
-2. Use `reporting/scripts/generate_report.py --upload-drive --gdrive-account <email>`
-3. If presentation output is requested, also use `--create-slides --slides-title "Pentest Report — <target>"`
-4. Save any share links in the reporting directory or include them in your final summary
+2. Use `reporting/scripts/generate_report.py --upload-drive --create-slides --gdrive-account <email> --slides-title "Pentest Report — <target>"`
+3. Save any share links in the reporting directory or include them in your final summary
+4. If publishing fails, still return the local report path and clearly note the publish error
