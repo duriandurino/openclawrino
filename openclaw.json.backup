@@ -16,13 +16,13 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "openrouter/healer-alpha"
+        "primary": "gpt-5.3-codex"
       },
       "models": {
+        "gpt-5.3-codex": {},
         "openrouter/auto": {
           "alias": "OpenRouter"
         },
-        "openrouter/healer-alpha": {},
         "ollama/xploiter/pentester": {},
         "ollama/xploiter/the-xploiter": {}
       },

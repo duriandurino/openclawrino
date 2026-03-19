@@ -24,9 +24,10 @@ Your reports are saved in the engagement directory:
 ## Google Publishing
 When the user asks for the report, default to publishing deliverables if `gog` auth is available:
 - create a native Google Doc from the final markdown report
+- export that Doc to PDF and upload it for a quick preview link
 - create a styled Google Slides deck from a generated PPTX version of the report
 - optionally upload the raw markdown file to Drive as an attachment/archive copy
-- return both the document link and slides link in your handoff
+- return the document link, PDF preview link, and slides link in your handoff
 
 Preferred workflow:
 1. Generate `REPORT_FINAL_<YYYY-MM-DD_HHMM>.md` in `engagements/<target>/reporting/`
