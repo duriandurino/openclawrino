@@ -173,6 +173,16 @@ def severity_counts(findings):
     return counts
 
 
+def smart_truncate(text, limit=120):
+    text = " ".join(str(text or "").split())
+    if len(text) <= limit:
+        return text
+    cut = text[:limit].rstrip()
+    if " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    return cut + "…"
+
+
 def build_styled_pptx(data, output_path, title=None):
     """Create a styled PPTX deck from report data."""
     if PentestPPTXGenerator is None:
@@ -219,7 +229,7 @@ def build_styled_pptx(data, output_path, title=None):
             f.get("id", "V-???"),
             f.get("severity", "Info").upper(),
             str(f.get("cvss", "-")),
-            f.get("title", "Untitled")[:48],
+            smart_truncate(f.get("title", "Untitled"), 48),
         ])
     if rows:
         gen.add_table_slide("Top Findings", ["ID", "Severity", "CVSS", "Finding"], rows)
@@ -228,29 +238,29 @@ def build_styled_pptx(data, output_path, title=None):
         content = [
             f"{f.get('severity', 'Info').upper()} — CVSS {f.get('cvss', 'N/A')}",
             "",
-            f"What: {f.get('description', 'No description provided')[:180]}",
+            f"What: {smart_truncate(f.get('description', 'No description provided'), 165)}",
             "",
-            f"Impact: {f.get('impact', 'No impact assessment')[:180]}",
+            f"Impact: {smart_truncate(f.get('impact', 'No impact assessment'), 165)}",
             "",
-            f"Fix: {f.get('remediation', 'No remediation provided')[:180]}",
+            f"Fix: {smart_truncate(f.get('remediation', 'No remediation provided'), 165)}",
         ]
         hardening = f.get("hardening")
         if hardening:
-            content.extend(["", f"Hardening: {str(hardening)[:180]}"])
-        gen.add_content_slide(f"{f.get('id', 'V-???')} — {f.get('title', 'Untitled')[:50]}", content)
+            content.extend(["", f"Hardening: {smart_truncate(hardening, 165)}"])
+        gen.add_content_slide(f"{f.get('id', 'V-???')} — {smart_truncate(f.get('title', 'Untitled'), 50)}", content)
 
     immediate = []
     short_term = []
     for f in findings:
         sev = f.get("severity", "Info")
-        item = f"{f.get('id', 'V-???')}: {f.get('remediation', 'No remediation')[:80]}"
-        if sev in ("Critical", "High") and len(immediate) < 5:
+        item = f"{f.get('id', 'V-???')}: {smart_truncate(f.get('remediation', 'No remediation'), 68)}"
+        if sev in ("Critical", "High") and len(immediate) < 4:
             immediate.append(item)
-        elif sev in ("Medium", "Low", "Info") and len(short_term) < 5:
+        elif sev in ("Medium", "Low", "Info") and len(short_term) < 4:
             short_term.append(item)
     if enhancements:
-        for enh in enhancements[:3]:
-            short_term.append(f"{enh.get('category', 'General')}: {enh.get('recommendation', '')[:70]}")
+        for enh in enhancements[:2]:
+            short_term.append(f"{enh.get('category', 'General')}: {smart_truncate(enh.get('recommendation', ''), 58)}")
     gen.add_two_column_slide(
         "Remediation Roadmap",
         "Immediate Priority",
