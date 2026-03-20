@@ -180,26 +180,86 @@ def smart_truncate(text, limit=120):
     cut = text[:limit].rstrip()
     if " " in cut:
         cut = cut.rsplit(" ", 1)[0]
-    return cut + "…"
+    return cut
 
 
-def to_slide_bullet(text, limit=62):
-    text = " ".join(str(text or "").split())
-    if not text:
-        return ""
-    for prefix in ["Description:", "Impact:", "Remediation:", "Hardening:", "Evidence:", "What:", "Fix:"]:
-        if text.startswith(prefix):
-            text = text[len(prefix):].strip()
-    text = text.rstrip(". ;:")
-    return smart_truncate(text, limit)
+def clean_text(text):
+    return " ".join(str(text or "").split()).strip(" .;:")
+
+
+def concise_phrase(text, limit=56):
+    text = clean_text(text)
+    if len(text) <= limit:
+        return text
+    cut = text[:limit].rstrip()
+    if " " in cut:
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.strip(" .;:")
+
+
+def summarize_exposure(affected):
+    affected = clean_text(affected)
+    if not affected:
+        return "Exposure not specified"
+    return concise_phrase(affected, 48)
+
+
+def summarize_fix(text):
+    text = clean_text(text)
+    lower = text.lower()
+    patterns = [
+        ("require smb signing", "Require SMB signing"),
+        ("restrict access", "Restrict access to admin hosts"),
+        ("host firewall", "Restrict with host firewall"),
+        ("network segmentation", "Segment admin services from LAN"),
+        ("disable", "Disable service if not required"),
+        ("vpn", "Require VPN or jump host access"),
+        ("mfa", "Require MFA for remote administration"),
+        ("monitor", "Monitor remote access activity"),
+        ("patch", "Keep the service fully patched"),
+    ]
+    for needle, summary in patterns:
+        if needle in lower:
+            return summary
+    words = text.split()
+    return " ".join(words[:8]).strip(" .;:")
+
+
+def summarize_hardening(text):
+    text = clean_text(text)
+    lower = text.lower()
+    patterns = [
+        ("admin", "Limit access to admin systems only"),
+        ("monitor", "Alert on suspicious remote access"),
+        ("segment", "Keep management ports off the user LAN"),
+        ("mfa", "Protect admin access with MFA"),
+        ("vpn", "Use VPN or bastion for remote access"),
+        ("signing", "Enforce secure protocol settings"),
+    ]
+    for needle, summary in patterns:
+        if needle in lower:
+            return summary
+    words = text.split()
+    return " ".join(words[:8]).strip(" .;:")
+
+
+def summarize_title(title):
+    title = clean_text(title)
+    replacements = {
+        "SMB Signing Not Required": "SMB signing is optional",
+        "Multiple Remote Administration Services Exposed": "Remote admin surface is broad",
+        "RDP Reveals Domain and Host Metadata": "RDP leaks host metadata",
+        "No Confirmed Legacy SMB Vulnerabilities in Safe NSE Pass": "No legacy SMB flaw confirmed",
+    }
+    return replacements.get(title, concise_phrase(title, 42))
 
 
 def finding_slide_summary(finding):
     return [
-        f"Impact: {to_slide_bullet(finding.get('impact', 'No impact recorded'), 58)}",
-        f"Exposure: {to_slide_bullet(finding.get('affected', 'Not specified'), 58)}",
-        f"Fix: {to_slide_bullet(finding.get('remediation', 'No remediation provided'), 58)}",
-        f"Harden: {to_slide_bullet(finding.get('hardening', 'No hardening guidance'), 58)}",
+        f"Risk: {summarize_title(finding.get('title', 'Untitled'))}",
+        f"Exposure: {summarize_exposure(finding.get('affected', 'Not specified'))}",
+        f"Fix: {summarize_fix(finding.get('remediation', 'No remediation provided'))}",
+        f"Harden: {summarize_hardening(finding.get('hardening', 'No hardening guidance'))}",
     ]
 
 
@@ -222,15 +282,15 @@ def build_styled_pptx(data, output_path, title=None):
 
     top_findings = findings[:3]
     exec_lines = [
-        f"Target: {to_slide_bullet(target, 48)}",
-        f"Findings: {len(findings)} total across enum and vuln review",
+        f"Target: {concise_phrase(target, 42)}",
+        f"Findings: {len(findings)} issues identified",
         f"Highest risk: {overall.upper()}",
         "",
     ]
     for f in top_findings:
-        exec_lines.append(f"• {f.get('id', 'V-???')}: {to_slide_bullet(f.get('title', 'Untitled'), 48)}")
+        exec_lines.append(f"• {f.get('id', 'V-???')}: {summarize_title(f.get('title', 'Untitled'))}")
     if enhancements:
-        exec_lines.extend(["", f"• {len(enhancements)} security enhancement themes included"])
+        exec_lines.extend(["", f"• {len(enhancements)} hardening themes included"])
     gen.add_content_slide("Executive Summary", exec_lines)
 
     left = [
@@ -254,7 +314,7 @@ def build_styled_pptx(data, output_path, title=None):
             f.get("id", "V-???"),
             f.get("severity", "Info").upper(),
             str(f.get("cvss", "-")),
-            smart_truncate(f.get("title", "Untitled"), 48),
+            summarize_title(f.get("title", "Untitled")),
         ])
     if rows:
         gen.add_table_slide("Top Findings", ["ID", "Severity", "CVSS", "Finding"], rows)
@@ -265,20 +325,20 @@ def build_styled_pptx(data, output_path, title=None):
             "",
             *finding_slide_summary(f),
         ]
-        gen.add_content_slide(f"{f.get('id', 'V-???')} — {smart_truncate(f.get('title', 'Untitled'), 50)}", content)
+        gen.add_content_slide(f"{f.get('id', 'V-???')} — {summarize_title(f.get('title', 'Untitled'))}", content)
 
     immediate = []
     short_term = []
     for f in findings:
         sev = f.get("severity", "Info")
-        item = f"{f.get('id', 'V-???')}: {to_slide_bullet(f.get('remediation', 'No remediation'), 54)}"
+        item = f"{f.get('id', 'V-???')}: {summarize_fix(f.get('remediation', 'No remediation'))}"
         if sev in ("Critical", "High") and len(immediate) < 4:
             immediate.append(item)
         elif sev in ("Medium", "Low", "Info") and len(short_term) < 4:
             short_term.append(item)
     if enhancements:
         for enh in enhancements[:2]:
-            short_term.append(f"{enh.get('category', 'General')}: {to_slide_bullet(enh.get('recommendation', ''), 46)}")
+            short_term.append(f"{enh.get('category', 'General')}: {summarize_hardening(enh.get('recommendation', ''))}")
     gen.add_two_column_slide(
         "Remediation Roadmap",
         "Immediate Priority",
