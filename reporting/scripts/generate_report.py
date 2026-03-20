@@ -183,6 +183,26 @@ def smart_truncate(text, limit=120):
     return cut + "…"
 
 
+def to_slide_bullet(text, limit=62):
+    text = " ".join(str(text or "").split())
+    if not text:
+        return ""
+    for prefix in ["Description:", "Impact:", "Remediation:", "Hardening:", "Evidence:", "What:", "Fix:"]:
+        if text.startswith(prefix):
+            text = text[len(prefix):].strip()
+    text = text.rstrip(". ;:")
+    return smart_truncate(text, limit)
+
+
+def finding_slide_summary(finding):
+    return [
+        f"Impact: {to_slide_bullet(finding.get('impact', 'No impact recorded'), 58)}",
+        f"Exposure: {to_slide_bullet(finding.get('affected', 'Not specified'), 58)}",
+        f"Fix: {to_slide_bullet(finding.get('remediation', 'No remediation provided'), 58)}",
+        f"Harden: {to_slide_bullet(finding.get('hardening', 'No hardening guidance'), 58)}",
+    ]
+
+
 def build_styled_pptx(data, output_path, title=None):
     """Create a styled PPTX deck from report data."""
     if PentestPPTXGenerator is None:
@@ -201,11 +221,16 @@ def build_styled_pptx(data, output_path, title=None):
     gen.add_title_slide(deck_title, "Security Assessment Results", date_str, overall)
 
     top_findings = findings[:3]
-    exec_lines = [f"Assessment identified {len(findings)} finding(s) on {target}.", ""]
+    exec_lines = [
+        f"Target: {to_slide_bullet(target, 48)}",
+        f"Findings: {len(findings)} total across enum and vuln review",
+        f"Highest risk: {overall.upper()}",
+        "",
+    ]
     for f in top_findings:
-        exec_lines.append(f"• {f.get('id', 'V-???')}: {f.get('title', 'Untitled')} ({f.get('severity', 'Info').upper()})")
+        exec_lines.append(f"• {f.get('id', 'V-???')}: {to_slide_bullet(f.get('title', 'Untitled'), 48)}")
     if enhancements:
-        exec_lines.extend(["", f"• {len(enhancements)} cross-cutting hardening recommendation(s) included"])
+        exec_lines.extend(["", f"• {len(enhancements)} security enhancement themes included"])
     gen.add_content_slide("Executive Summary", exec_lines)
 
     left = [
@@ -216,10 +241,10 @@ def build_styled_pptx(data, output_path, title=None):
         f"Info: {counts['Info']}",
     ]
     right = [
-        "Reconnaissance completed",
-        "Enumeration and service analysis performed",
-        "Vulnerabilities validated",
-        "Impact and remediation documented",
+        "Host reachable and fingerprinted",
+        "Services enumerated with versions",
+        "Safe vulnerability checks executed",
+        "Report and remediation prepared",
     ]
     gen.add_two_column_slide("Risk Overview", "Severity Counts", left, "Assessment Scope", right)
 
@@ -238,29 +263,22 @@ def build_styled_pptx(data, output_path, title=None):
         content = [
             f"{f.get('severity', 'Info').upper()} — CVSS {f.get('cvss', 'N/A')}",
             "",
-            f"What: {smart_truncate(f.get('description', 'No description provided'), 165)}",
-            "",
-            f"Impact: {smart_truncate(f.get('impact', 'No impact assessment'), 165)}",
-            "",
-            f"Fix: {smart_truncate(f.get('remediation', 'No remediation provided'), 165)}",
+            *finding_slide_summary(f),
         ]
-        hardening = f.get("hardening")
-        if hardening:
-            content.extend(["", f"Hardening: {smart_truncate(hardening, 165)}"])
         gen.add_content_slide(f"{f.get('id', 'V-???')} — {smart_truncate(f.get('title', 'Untitled'), 50)}", content)
 
     immediate = []
     short_term = []
     for f in findings:
         sev = f.get("severity", "Info")
-        item = f"{f.get('id', 'V-???')}: {smart_truncate(f.get('remediation', 'No remediation'), 68)}"
+        item = f"{f.get('id', 'V-???')}: {to_slide_bullet(f.get('remediation', 'No remediation'), 54)}"
         if sev in ("Critical", "High") and len(immediate) < 4:
             immediate.append(item)
         elif sev in ("Medium", "Low", "Info") and len(short_term) < 4:
             short_term.append(item)
     if enhancements:
         for enh in enhancements[:2]:
-            short_term.append(f"{enh.get('category', 'General')}: {smart_truncate(enh.get('recommendation', ''), 58)}")
+            short_term.append(f"{enh.get('category', 'General')}: {to_slide_bullet(enh.get('recommendation', ''), 46)}")
     gen.add_two_column_slide(
         "Remediation Roadmap",
         "Immediate Priority",
