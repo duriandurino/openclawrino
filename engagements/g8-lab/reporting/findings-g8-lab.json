@@ -1,0 +1,71 @@
+{
+  "target": "G8 (192.168.0.104)",
+  "findings": [
+    {
+      "id": "G8-001",
+      "title": "SMB Signing Not Required",
+      "severity": "Medium",
+      "cvss": 5.3,
+      "affected": "192.168.0.104:445",
+      "description": "SMB2 security mode indicates signing is enabled but not required. In environments where NTLM relay conditions exist, this weakens protection against certain relay and man-in-the-middle scenarios.",
+      "evidence": "nmap smb2-security-mode reported: Message signing enabled but not required",
+      "impact": "If a relay path exists elsewhere in the network, attackers may be able to leverage SMB authentication flows more effectively than on hosts requiring signing.",
+      "remediation": "Require SMB signing on the host and through domain or local policy, then verify with smb2-security-mode or equivalent tooling.",
+      "hardening": "Reduce unnecessary SMB exposure to trusted admin segments only, disable legacy protocols, and monitor for NTLM relay-style behavior.",
+      "references": ["Microsoft SMB signing guidance"]
+    },
+    {
+      "id": "G8-002",
+      "title": "Multiple Remote Administration Services Exposed",
+      "severity": "Medium",
+      "cvss": 5.8,
+      "affected": "192.168.0.104:135,139,445,3389,5985,7070",
+      "description": "The workstation exposes several remote administration and management services including RPC, NetBIOS/SMB, RDP, WinRM, and a likely AnyDesk service over TLS.",
+      "evidence": "Nmap detected open services on 135/tcp, 139/tcp, 445/tcp, 3389/tcp, 5985/tcp, and 7070/tcp with Windows/RDP/HTTPAPI/AnyDesk indicators.",
+      "impact": "This increases the attack surface for credential attacks, lateral movement, remote management abuse, and reconnaissance against an internal workstation.",
+      "remediation": "Limit exposed remote management services to those operationally required. Restrict access via host firewall and network segmentation to authorized admin systems only.",
+      "hardening": "Require VPN or jump-host access for administration, review AnyDesk necessity, and enforce strong authentication and monitoring on RDP/WinRM.",
+      "references": ["Microsoft RDP hardening guidance", "Microsoft WinRM security guidance"]
+    },
+    {
+      "id": "G8-003",
+      "title": "RDP Reveals Domain and Host Metadata",
+      "severity": "Low",
+      "cvss": 3.7,
+      "affected": "192.168.0.104:3389",
+      "description": "RDP NTLM information exposed the NetBIOS name, DNS hostname, domain name, and Windows build metadata during enumeration.",
+      "evidence": "rdp-ntlm-info returned NetBIOS_Computer_Name=G8, DNS_Computer_Name=G8.nctv360.com, DNS_Domain_Name=nctv360.com, Product_Version=10.0.26100.",
+      "impact": "This aids attacker reconnaissance and supports tailored credential attacks or environment mapping.",
+      "remediation": "Restrict RDP exposure to trusted administration sources and disable it if not needed.",
+      "hardening": "Place RDP behind VPN or bastion access, enforce NLA and MFA where possible, and monitor failed logons and RDP connection attempts.",
+      "references": ["CIS Microsoft Windows hardening recommendations"]
+    },
+    {
+      "id": "G8-004",
+      "title": "No Confirmed Legacy SMB Vulnerabilities in Safe NSE Pass",
+      "severity": "Info",
+      "cvss": 0.0,
+      "affected": "192.168.0.104:445",
+      "description": "A safe NSE vulnerability pass did not confirm MS10-054 or identify a clear exploitable legacy SMB issue. Some vuln scripts failed negotiation rather than proving exposure.",
+      "evidence": "smb-vuln-ms10-054: false; smb-vuln-ms10-061 and samba-vuln-cve-2012-1182 did not negotiate successfully.",
+      "impact": "This reduces confidence in obvious legacy SMB exposure but does not prove the host is hardened against other auth or configuration issues.",
+      "remediation": "Keep SMB fully patched and confirm hardening with authenticated Windows security review if needed.",
+      "hardening": "Continue patch management, restrict SMB to trusted peers, and validate with authenticated assessment during a deeper review.",
+      "references": ["Nmap NSE smb-vuln script outputs"]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Network Segmentation",
+      "recommendation": "Restrict workstation administration ports (RDP, WinRM, SMB, AnyDesk) to a dedicated admin subnet or jump host instead of leaving them broadly reachable on the LAN."
+    },
+    {
+      "category": "Windows Hardening",
+      "recommendation": "Review SMB signing policy, enforce least-privilege remote administration, and disable remote services that are not actively required."
+    },
+    {
+      "category": "Monitoring",
+      "recommendation": "Alert on repeated RDP, SMB, or WinRM authentication attempts and watch for abnormal remote management access patterns from non-admin systems."
+    }
+  ]
+}
