@@ -1,0 +1,403 @@
+<!doctype html><html><head><meta charset="utf-8"><title>NTV Turnover Report</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:900px;margin:40px auto;line-height:1.5;color:#111;padding:0 20px}
+h1,h2,h3{color:#111} pre{white-space:pre-wrap;font-family:monospace} code{font-family:monospace}
+</style></head><body><h1>NTV Phoenix &amp; Hardware Lock — Turnover Report</h1>
+<h2>Purpose</h2>
+<p>This document consolidates the turnover materials for the NTV360 Raspberry Pi player platform, focusing on the <strong>Hardware Lock</strong> system, the <strong>Phoenix recovery workflow</strong>, and the surrounding <strong>player runtime</strong> needed to operate and maintain the deployment.</p>
+<p>This is an internal handoff document intended to help a new maintainer understand what exists today, how the parts fit together, and what should be validated next.</p>
+<hr />
+<h2>Executive Summary</h2>
+<p>The system appears to be built around three operational layers:</p>
+<ol>
+<li><strong>NTV360 Player Runtime</strong></li>
+<li>Raspberry Pi 5 signage stack using Node.js, PM2, Chromium kiosk, NGINX, and a web dashboard/cloud backend.</li>
+<li>
+<p>Core app directories are under <code>/home/pi/n-compasstv/</code> and <code>/var/www/html/ui</code>.</p>
+</li>
+<li>
+<p><strong>Hardware Lock</strong></p>
+</li>
+<li>A boot-time integrity and anti-cloning mechanism.</li>
+<li>Validates the Raspberry Pi serial and SD card CID.</li>
+<li>If validation succeeds, the secure runtime is unlocked and PM2 services are started.</li>
+<li>
+<p>If validation fails, the secure content is unmounted/locked and a Chromium lock screen is shown.</p>
+</li>
+<li>
+<p><strong>Phoenix Recovery / Repair Tool</strong></p>
+</li>
+<li>A field-recovery concept intended to revive or repair broken players from a USB-based recovery environment.</li>
+<li>Designed for two scenarios:<ul>
+<li>temporary standalone operation from USB if SD media is dead</li>
+<li>automated repair/reimage of a corrupted SD card</li>
+</ul>
+</li>
+</ol>
+<p>Together, these layers aim to make the players:
+- resistant to simple SD cloning
+- self-healing or repairable in the field
+- manageable through a dashboard-driven control plane</p>
+<hr />
+<h2>Source Materials Reviewed</h2>
+<p>Primary sources were taken from the shared Google Drive turnover folder and downloaded into:</p>
+<ul>
+<li><code>research/ntv-hardware-lock/source/drive/root/</code></li>
+<li><code>research/ntv-hardware-lock/source/drive/kent_turnover/</code></li>
+</ul>
+<p>Key files reviewed:</p>
+<ul>
+<li><code>NTV-Phoenix &amp; Hardware-Lock .md</code></li>
+<li><code>player_pi (pi player documentation).md</code></li>
+<li><code>web_dashboard (dashboard website documentation).md</code></li>
+<li><code>scripts_and_services (NTV_Phoenix &amp; Hardware-Lock).md</code></li>
+<li><code>setup (executable sudo).sh</code></li>
+<li><code>setup (phoenix &amp; hardware-lock) (not fully working).sh</code></li>
+<li><code>installer.sh</code></li>
+<li><code>pm2-starter.sh</code></li>
+<li><code>watchdog-starter.sh</code></li>
+<li><code>config.json</code></li>
+<li><code>Installing Player (Read Thoroughly) (old version).txt</code></li>
+<li><code>improvements.md</code></li>
+</ul>
+<hr />
+<h2>System Overview</h2>
+<h3>1. Player Runtime</h3>
+<p>The NTV360 player turns a Raspberry Pi 5 into a digital signage appliance.</p>
+<p>Documented runtime characteristics include:</p>
+<ul>
+<li><strong>Player Server</strong>: Node.js/Express app</li>
+<li><strong>UI</strong>: Web UI served locally, then displayed in Chromium kiosk</li>
+<li><strong>NGINX</strong>: local web serving layer</li>
+<li><strong>PM2</strong>: process supervisor for multiple player processes</li>
+<li><strong>Chromium kiosk</strong>: fullscreen player interface</li>
+<li><strong>SQLite / local data</strong>: used by the player stack</li>
+<li><strong>AnyDesk</strong>: remote support access</li>
+<li><strong>HDMI-CEC</strong>: TV power/input control</li>
+<li><strong>Watchdog + scheduled reboots</strong>: unattended resilience measures</li>
+</ul>
+<p>From the ecosystem config, the expected PM2-managed apps include:</p>
+<ul>
+<li><code>player-server</code></li>
+<li><code>player-puppeteer</code></li>
+<li><code>player-electron</code></li>
+<li><code>player-chromium</code></li>
+</ul>
+<h3>2. Control Plane / Dashboard</h3>
+<p>The dashboard is the cloud control plane for the players.</p>
+<p>Documented functions include:</p>
+<ul>
+<li>player/license assignment</li>
+<li>content and playlist management</li>
+<li>scheduling</li>
+<li>remote device actions</li>
+<li>telemetry and screenshots</li>
+<li>status and reporting</li>
+</ul>
+<p>The <strong>license key</strong> appears to be the bridge between the physical player and the cloud platform.</p>
+<h3>3. Security &amp; Resilience Layer</h3>
+<p>The custom security/resilience layer adds:</p>
+<ul>
+<li>hardware verification at boot</li>
+<li>secure vault unlock flow</li>
+<li>watchdog response if critical directories disappear</li>
+<li>a Phoenix USB recovery model for repair/revival</li>
+</ul>
+<hr />
+<h2>Hardware Lock — What It Does</h2>
+<p>The Hardware Lock is the anti-cloning and secure-boot gate for the player runtime.</p>
+<h3>Main components</h3>
+<p>Documented components include:</p>
+<ul>
+<li><code>/usr/local/bin/hardware_lock.py</code></li>
+<li><code>/usr/local/bin/unlock_vault.py</code></li>
+<li><code>/etc/systemd/system/hardware-check.service</code></li>
+<li><code>/etc/systemd/system/vault-mount.service</code></li>
+</ul>
+<h3>Boot-time behavior</h3>
+<p>At a high level:</p>
+<ol>
+<li>the graphical target is reached</li>
+<li><code>hardware-check.service</code> runs <code>hardware_lock.py</code></li>
+<li>the script reads:</li>
+<li>Raspberry Pi serial from <code>/proc/cpuinfo</code></li>
+<li>SD card CID from <code>/sys/block/mmcblk0/device/cid</code></li>
+<li>values are compared with authorized values</li>
+<li>if valid:</li>
+<li>vault unlock flow is triggered</li>
+<li>secure PM2 stack is started</li>
+<li>if invalid:</li>
+<li>PM2/services are stopped</li>
+<li>secure mount is unmounted/closed</li>
+<li>Chromium lockout UI is launched</li>
+</ol>
+<h3>Security intent</h3>
+<p>The design goal is to stop someone from cloning the player SD card and running proprietary software on unauthorized hardware.</p>
+<h3>Observed implementation details</h3>
+<p>From the turnover scripts:</p>
+<ul>
+<li>authorized hardware values are hardcoded in script text in at least one version</li>
+<li>one implementation starts secure services from <code>/home/pi/n-compasstv-secure/</code></li>
+<li>failed verification leads to a kiosk lock page (<code>file:///home/pi/lockout.html</code>)</li>
+<li>the service environment is tuned for graphical boot on Raspberry Pi (<code>DISPLAY=:0</code>, <code>WAYLAND_DISPLAY=wayland-0</code>, <code>XDG_RUNTIME_DIR=/run/user/1000</code>)</li>
+</ul>
+<h3>Operational meaning</h3>
+<p>If you are maintaining this system, the hardware lock is not just a UI lock — it directly controls whether the protected runtime is allowed to mount/unlock and start.</p>
+<hr />
+<h2>Vault / Secure Runtime Flow</h2>
+<p>The turnover materials indicate a protected runtime or protected data area.</p>
+<h3>Documented behavior</h3>
+<ul>
+<li><code>unlock_vault.py</code> uses <code>cryptsetup</code></li>
+<li><code>vault.img</code> is mounted to <code>/home/pi/n-compasstv-secure</code></li>
+<li>one turnover note claims the Pi serial is used as the decryption key</li>
+<li>the success path then starts PM2 services from the secure location</li>
+</ul>
+<h3>Interpretation</h3>
+<p>The design appears to be:</p>
+<ul>
+<li>keep sensitive runtime/data in an encrypted container</li>
+<li>only unlock it on authorized hardware</li>
+<li>start protected services after successful verification</li>
+</ul>
+<h3>Important note</h3>
+<p>Some turnover files show different hardcoded identifiers across versions. That means there may be:</p>
+<ul>
+<li>multiple generations of the implementation</li>
+<li>outdated notes mixed with newer scripts</li>
+<li>copied examples that do not exactly match production</li>
+</ul>
+<p>This must be validated on a live player before treating any specific key path as authoritative.</p>
+<hr />
+<h2>Phoenix Recovery System — What It Does</h2>
+<p>Phoenix is described as a USB-based recovery model for field repair.</p>
+<h3>Main components</h3>
+<p>Documented components include:</p>
+<ul>
+<li><code>/usr/local/bin/repairman.sh</code></li>
+<li><code>/etc/systemd/system/repairman.service</code></li>
+</ul>
+<h3>Intended scenarios</h3>
+<p>Phoenix is described as covering at least two major failure modes:</p>
+<h4>1. Emergency Standalone Mode</h4>
+<p>If the SD card is completely unreadable or absent:</p>
+<ul>
+<li>boot from USB</li>
+<li>run recovery logic</li>
+<li>detect missing <code>/dev/mmcblk0</code></li>
+<li>start a temporary player directly from the USB environment</li>
+<li>keep the display alive while waiting for replacement media</li>
+</ul>
+<h4>2. Surgery / Repair Mode</h4>
+<p>If the SD card exists but the installed system is corrupted:</p>
+<ul>
+<li>boot from USB</li>
+<li>detect the internal SD card</li>
+<li>run filesystem repair and/or reimage logic</li>
+<li>restore a known-good image onto the SD card</li>
+<li>rewrite boot configuration</li>
+<li>reboot back to SD-based normal operation</li>
+</ul>
+<h3>Boot assumption behind Phoenix</h3>
+<p>The turnover material references a Raspberry Pi EEPROM boot order that prefers USB in at least some conditions. The docs mention a boot order string like <code>0xf461</code>, which aligns with the idea that the device can boot into a recovery USB environment when needed.</p>
+<h3>Why Phoenix matters operationally</h3>
+<p>Phoenix reduces dependence on a fully manual rebuild. Instead of deep troubleshooting on-site, a minimally trained tech can potentially:</p>
+<ul>
+<li>insert recovery USB</li>
+<li>power-cycle device</li>
+<li>let scripted recovery handle the rest</li>
+</ul>
+<p>That is a major operational advantage for distributed field deployments.</p>
+<hr />
+<h2>Watchdog / Dead Man’s Switch</h2>
+<p>The turnover docs also describe a watchdog-style recovery trigger.</p>
+<h3>Main components</h3>
+<ul>
+<li><code>/usr/local/bin/nctv-watchdog.sh</code></li>
+<li><code>/etc/systemd/system/nctv-watchdog.service</code></li>
+<li>Raspberry Pi hardware watchdog enablement via <code>/boot/config.txt</code></li>
+<li>Linux watchdog package/service</li>
+</ul>
+<h3>Intended logic</h3>
+<p>The watchdog monitors for catastrophic corruption conditions, especially the loss of <code>/home/pi/n-compasstv</code>.</p>
+<p>If the expected application directory disappears, the system is intended to avoid running in a broken zombie state. Instead, it escalates into a recoverable failure condition that signals the need for Phoenix repair.</p>
+<h3>Additional resilience</h3>
+<p>The broader player docs also describe:</p>
+<ul>
+<li>PM2 checks every ~7 minutes</li>
+<li>nightly reboot</li>
+<li>uptime-triggered reboot</li>
+<li>hardware watchdog for hangs</li>
+</ul>
+<p>These form a layered resilience model:</p>
+<ul>
+<li>process restart</li>
+<li>service restart</li>
+<li>reboot</li>
+<li>recovery mode</li>
+<li>USB repair path</li>
+</ul>
+<hr />
+<h2>Installation / Deployment Flow</h2>
+<p>Based on the turnover materials, a typical fresh setup appears to be:</p>
+<ol>
+<li>flash Raspberry Pi OS onto SD card</li>
+<li>configure display sleep/screensaver behavior</li>
+<li>install AnyDesk</li>
+<li>run installer package/scripts</li>
+<li>install runtime dependencies:</li>
+<li>nginx</li>
+<li>nodejs</li>
+<li>npm</li>
+<li>pm2</li>
+<li>chromium</li>
+<li>gnome-terminal</li>
+<li>scrot</li>
+<li>unclutter</li>
+<li>cec-utils</li>
+<li>deploy player server and player UI</li>
+<li>configure PM2 startup</li>
+<li>configure watchdog</li>
+<li>reboot and enter/apply license key</li>
+<li>connect to dashboard and pull operational content</li>
+</ol>
+<h3>Important version drift</h3>
+<p>The docs include both older and newer installation references:</p>
+<ul>
+<li>older instructions mention Buster and Node 12-era assumptions</li>
+<li>newer scripts mention Pi 5 / newer distro compatibility and Node 20</li>
+</ul>
+<p>This strongly suggests historical drift. A maintainer should not assume all install docs refer to the same live baseline.</p>
+<hr />
+<h2>Key Files / Paths Worth Knowing</h2>
+<h3>Runtime paths</h3>
+<ul>
+<li><code>/home/pi/n-compasstv/</code></li>
+<li><code>/home/pi/n-compasstv/player-server/</code></li>
+<li><code>/var/www/html/ui</code></li>
+<li><code>/home/pi/.pm2</code></li>
+<li><code>/home/pi/.config/lxpanel/LXDE-pi/panels/</code></li>
+</ul>
+<h3>Security / recovery paths</h3>
+<ul>
+<li><code>/usr/local/bin/hardware_lock.py</code></li>
+<li><code>/usr/local/bin/unlock_vault.py</code></li>
+<li><code>/usr/local/bin/nctv-watchdog.sh</code></li>
+<li><code>/usr/local/bin/repairman.sh</code></li>
+<li><code>/etc/systemd/system/hardware-check.service</code></li>
+<li><code>/etc/systemd/system/vault-mount.service</code></li>
+<li><code>/etc/systemd/system/nctv-watchdog.service</code></li>
+<li><code>/etc/systemd/system/repairman.service</code></li>
+<li><code>file:///home/pi/lockout.html</code></li>
+</ul>
+<h3>Configuration artifacts seen in docs</h3>
+<ul>
+<li><code>ecosystem.config.js</code></li>
+<li><code>config.json</code></li>
+<li><code>panel</code></li>
+<li>potential <code>.env</code> files in player runtime directories</li>
+</ul>
+<hr />
+<h2>Likely Operational Flow</h2>
+<h3>Normal boot</h3>
+<ol>
+<li>Pi boots</li>
+<li>graphical environment becomes available</li>
+<li>hardware verification runs</li>
+<li>vault/protected runtime unlocks if authorized</li>
+<li>PM2 starts player services</li>
+<li>Chromium kiosk displays signage UI</li>
+<li>player communicates with cloud dashboard</li>
+</ol>
+<h3>Unauthorized clone boot</h3>
+<ol>
+<li>Pi boots on wrong hardware</li>
+<li>serial/CID mismatch occurs</li>
+<li>secure runtime is not allowed to run</li>
+<li>existing mounts/services are shut down</li>
+<li>lockout page is displayed</li>
+</ol>
+<h3>Corruption event</h3>
+<ol>
+<li>core player directory disappears or system becomes unstable</li>
+<li>watchdog/escalation logic triggers</li>
+<li>device halts or enters recoverable broken state</li>
+<li>technician uses Phoenix USB workflow</li>
+</ol>
+<h3>Phoenix repair</h3>
+<ol>
+<li>recovery USB inserted</li>
+<li>Pi boots recovery environment</li>
+<li>script chooses standalone mode or surgery mode</li>
+<li>system either temporarily runs from USB or repairs SD</li>
+<li>final reboot returns player to normal state</li>
+</ol>
+<hr />
+<h2>Risks and Maintenance Concerns</h2>
+<h3>1. Hardcoded secrets / identifiers</h3>
+<p>The turnover docs explicitly show hardcoded serials, CIDs, and config values in scripts. That creates maintainability and security issues.</p>
+<h3>2. Documentation drift</h3>
+<p>There are multiple generations of setup guidance and scripts. Some files are clearly marked “not fully working,” and some old docs target older OS/package assumptions.</p>
+<h3>3. Single-developer knowledge concentration</h3>
+<p>A lot of the system logic appears custom and operationally important. If the original developer is gone, loss of tacit knowledge becomes the main risk.</p>
+<h3>4. Recovery path confidence gap</h3>
+<p>Phoenix is described well conceptually, but its real-world reliability should be verified end-to-end on test hardware.</p>
+<h3>5. Version sprawl</h3>
+<p>The environment spans:
+- Raspberry Pi bootloader settings
+- systemd services
+- shell scripts
+- Python scripts
+- Node.js/PM2 app stack
+- web dashboard integration</p>
+<p>Without a canonical version map, troubleshooting will be harder.</p>
+<hr />
+<h2>Recommended Next Actions for Handoff</h2>
+<h3>Priority 1 — Build a validated lab baseline</h3>
+<p>Set up one known-good Pi and document:</p>
+<ul>
+<li>exact OS version</li>
+<li>Node version</li>
+<li>package versions</li>
+<li>PM2 config</li>
+<li>systemd units</li>
+<li>active scripts</li>
+<li>actual boot order / EEPROM config</li>
+<li>whether secure vault path is active in production</li>
+</ul>
+<h3>Priority 2 — Verify boot and failure scenarios live</h3>
+<p>Test, document, and record outcomes for:</p>
+<ul>
+<li>normal boot</li>
+<li>hardware mismatch boot</li>
+<li>deleted runtime directory</li>
+<li>failed player process</li>
+<li>Phoenix standalone boot</li>
+<li>Phoenix SD repair flow</li>
+</ul>
+<h3>Priority 3 — Create a canonical maintainer runbook</h3>
+<p>Convert the current mixed turnover docs into one maintained operational source of truth.</p>
+<h3>Priority 4 — Remove hardcoded hardware identity from code</h3>
+<p>The turnover <code>improvements.md</code> is correct to flag this. Long-term, dynamic provisioning or per-device sealed config is more maintainable than static literals embedded in scripts.</p>
+<h3>Priority 5 — Establish asset inventory</h3>
+<p>Track for each field unit:</p>
+<ul>
+<li>Pi serial</li>
+<li>SD CID</li>
+<li>license key / device mapping</li>
+<li>AnyDesk ID</li>
+<li>software version</li>
+<li>last successful Phoenix test</li>
+</ul>
+<hr />
+<h2>Conclusion</h2>
+<p>The turnover docs describe a fairly sophisticated Raspberry Pi signage platform with a layered approach to runtime control, anti-cloning, recovery, and fleet operations.</p>
+<p>The most important concepts to retain are:</p>
+<ul>
+<li><strong>Player runtime</strong> powers signage and cloud connectivity</li>
+<li><strong>Hardware Lock</strong> gates execution to authorized hardware</li>
+<li><strong>Vault flow</strong> protects sensitive runtime/data</li>
+<li><strong>Watchdog</strong> detects catastrophic corruption conditions</li>
+<li><strong>Phoenix</strong> provides USB-based field recovery and repair</li>
+</ul>
+<p>The biggest gap is not absence of ideas — it is the lack of a single validated source of truth. The next step is to convert these turnover notes into tested operational knowledge on a real player.</p></body></html>

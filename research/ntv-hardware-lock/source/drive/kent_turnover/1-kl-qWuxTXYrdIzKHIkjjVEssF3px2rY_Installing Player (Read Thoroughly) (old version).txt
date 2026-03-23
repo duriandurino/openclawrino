@@ -1,0 +1,211 @@
+Installing Player (Read Thoroughly)
+
+
+By Vhin Gabuat
+Feb 02, 2024
+Step 1
+Install a fresh Raspbian OS on your SD card, make sure to use the Legacy version called Buster. Connect with Admin for more info.
+
+
+Step 2 - Install XScreensaver
+
+Install xscreensaver to disable raspberry pi from sleeping or showing a screensaver. Make sure you’re connected to the internet.
+
+
+
+sudo apt install xscreensaver -y
+Once installed, you should now see Screensaver menu on Start > Preferences
+
+
+Open the Screensaver app, if you see a pop up that says something about XScreenSaver daemon not running and suggesting to launch it, click OK.
+
+
+Select Disable Screen Saver via the Mode select field.
+
+
+Exit the app. Changes should take effect on the next reboot.
+
+
+Step 3 - Installing Anydesk
+
+We’re using a specific version of Anydesk which is 6.1.1. For this to install properly we need to install something first.
+
+ Open up terminal and run the following command
+
+
+
+sudo apt install libminizip1
+wget https://download.anydesk.com/rpi/anydesk_6.1.1-1_armhf.deb
+sudo dpkg -i anydesk_6.1.1-1_armhf.deb
+ 
+
+Step 4 - Run Installer Script
+To download the script, open terminal and run:
+
+
+
+curl -O https://ncompasstv-prod-player-apps.s3.amazonaws.com/nctv-installer/04142023/nctv-installer.zip
+Note: You might need to confirm with your admin if the url above is the latest one.
+
+A zip file should be download in the home/pi folder named nctv-installer.zip.  You can confirm via Anydesk by using its file manager tool.
+
+On the terminal, unzip the downloaded zip file via
+
+
+
+unzip nctv-installer.zip
+
+Then run the installer script via
+
+
+
+sh nctv-installer/installer.sh
+
+The installer script will install the following required programs along with the player-server and player-ui app. After a reboot open the terminal and verify if the following programs are installed by running the highlighted commands below, you can use this as a checklist for tracking:
+
+
+NGINX -  nginx -v
+
+NodeJS - node -v
+
+NPM - npm -v
+
+N - Node Version Manager - sudo n 12
+
+PM2 - pm2 status
+
+Chromium Browser - chromium-browser --version
+
+GNome Terminal - gnome-terminal --version
+
+SCROT - scrot --version
+
+Unclutter - See if the mouse pointer hides after 10 seconds of inactivity 
+
+CEC Utils - echo 'scan' | cec-client -s -d 1
+
+Player Server Latest Version
+
+Open Filemanager Go to n-compasstv folder
+
+player-server folder exists
+
+ecosystem-config.js exists
+
+Go to player-server folder
+
+ node_modules folder exists
+
+src folder exists
+
+nct-vistar-1.0.1.tgz exists
+
+package.json exists
+
+Press CTRL + H  →  .env file should show up
+
+Player UI Latest Version
+
+On the terminal, enter cd /var/www/html/ui
+
+Then enter ls , this should show a list of files within the ui folder
+
+Step 5 - PM2 Starter Script
+To get the player run on startup we need to run the next script pm2-starter.sh included in the nctv-installer folder, go ahead and open up terminal via CTRL + ALT + T and enter the command below
+
+
+
+sh nctv-installer/pm2-starter.sh
+This will start the player and will ask for a license key, but before we do that, let’s do another reboot to make sure that the pm2-starter script has been configured properly.
+
+
+
+sudo reboot;
+
+Step 6 - Watchdog Script
+If the player ran on start up then we were able to setup startup rules successfully! Now I know you’re itching to get that license key in there but hold on to that for now, we have one last script to run, this is also included in the nctv-installer folder. This script watchdog-starter.sh will setup watchdog service which is responsible for emergency rebooting the Pi when it hangs or get stuck all of a sudden.
+
+Go ahead and open up terminal CTRL + ALT + T and run the command below, note that this needs to be ran with sudo
+
+
+
+sudo sh nctv-installer/watchdog-starter.sh
+Once all is done, terminal will tell you to run the crash simulator command → Done, now run the crash simulator command, this is to see if watchdog has been configured properly. On the terminal run the command below.
+
+
+
+sudo bash -c ':(){ :|:& };:'
+Player will hang and reboot after a few seconds. Then it should normally start the player. Congratulations! You have a fresh installed player, you can now proceed with entering your license key.
+
+Checklist:
+
+
+New Wallpaper
+
+Player should run on startup
+
+Screensaver Disabled
+
+Mouse Pointer hides after a few seconds
+
+Keyboard shortcuts should work. 
+
+CTRL + SHIFT + P
+
+CTRL + SHIFT + K
+
+CTRL + SHIFT + R
+
+User should be able to enter a license key
+
+Socket Controls should be working via Single License Page
+
+Screenshot
+
+Reboot Player
+
+Reboot Pi
+
+Content Update
+
+Restart Anydesk
+
+Reset Anydesk ID
+
+Speedtest
+
+CEC Controls
+Cloning a complete Pi/Player (Optional)
+Before cloning a complete running image, do the following first:
+
+
+Stop the player-chromium 
+
+
+
+pm2 stop player-chromium
+ 
+
+Reset the player’s database
+
+
+
+curl http://localhost:3215/api/content/reset
+ 
+
+Stop Anydesk Service
+
+
+
+sudo systemctl stop anydesk
+ 
+
+Reset the Anydesk ID
+
+
+
+sudo rm /etc/anydesk/service.conf 
+ 
+
+You can now turn off the player via sudo shutdown command and create a clone out of it.
+
