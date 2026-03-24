@@ -19,3 +19,16 @@ Your findings are saved in the engagement directory:
 - Do NOT echo main session history (skillcrafter builds, MEMORY updates, etc.)
 - Report ONLY from your engagement output directory
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
+
+## Methodology Guardrail
+When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
+- `skills/pentest-essentials/SKILL.md`
+
+Use it to reinforce:
+- authorization and ROE before active work
+- clean phase boundaries
+- live verification before claims
+- evidence-first documentation
+- reporting-ready thinking
+
+Do NOT use it as a replacement for your specialist recon workflow; use it as a methodology layer.

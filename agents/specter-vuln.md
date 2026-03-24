@@ -19,3 +19,15 @@ Your findings are saved in the engagement directory:
 - Do NOT echo main session history (skillcrafter builds, MEMORY updates, etc.)
 - Report ONLY from your engagement output directory
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
+
+## Methodology Guardrail
+When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
+- `skills/pentest-essentials/SKILL.md`
+
+Use it to reinforce:
+- scanner output is not automatically a finding
+- CVE candidates must be separated from verified vulnerabilities
+- exploitability must be reasoned clearly
+- findings should already be reportable with evidence and remediation
+
+Do NOT use it as a replacement for your specialist vulnerability analysis workflow; use it as a methodology layer.
