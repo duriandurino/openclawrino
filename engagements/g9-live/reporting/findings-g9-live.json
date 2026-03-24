@@ -1,0 +1,35 @@
+{
+  "target": "G9 (192.168.0.227)",
+  "findings": [
+    {
+      "id": "G9-001",
+      "title": "RDP supports legacy TLS 1.0 and TLS 1.1",
+      "severity": "Low",
+      "cvss": 3.1,
+      "affected": "192.168.0.227:3389 (RDP)",
+      "description": "The Remote Desktop service on G9 supports deprecated TLS protocol versions 1.0 and 1.1 in addition to modern versions. Legacy TLS support weakens transport security posture and may expose the service to downgrade and compatibility risks.",
+      "evidence": "Live verification via Nmap SSL/TLS enumeration confirmed TLSv1.0 and TLSv1.1 support on 3389/tcp.",
+      "impact": "An attacker positioned to intercept or downgrade traffic may benefit from weaker legacy cryptographic settings. While this did not result in direct compromise during testing, it represents avoidable exposure on a management service.",
+      "remediation": "Disable TLS 1.0 and TLS 1.1 for RDP via Group Policy or SCHANNEL registry settings. Enforce TLS 1.2 or higher and validate with a repeat SSL/TLS enumeration scan after the change.",
+      "hardening": "Restrict RDP access to dedicated administration hosts, require MFA for remote administration, and continuously monitor remote-access events for unusual activity.",
+      "references": [
+        "Microsoft SCHANNEL/TLS hardening guidance",
+        "RDP service configuration review"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Remote Administration Exposure",
+      "recommendation": "Limit exposure of RDP and WinRM to approved administrator systems or a management VLAN. If remote administration is needed across sites, require VPN or a bastion host instead of exposing management ports broadly on the local LAN."
+    },
+    {
+      "category": "Legacy Protocol Reduction",
+      "recommendation": "Disable NetBIOS over TCP/IP if no legacy dependency exists, review SMB protocol configuration, and remove older protocol support that is no longer operationally required."
+    },
+    {
+      "category": "Monitoring and Detection",
+      "recommendation": "Create alerting for repeated RDP/WinRM access attempts, unusual authentication patterns, and new inbound management connections from non-administrative endpoints."
+    }
+  ]
+}

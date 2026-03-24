@@ -37,7 +37,16 @@ Only skip publishing when:
 - Google auth/tooling is unavailable or fails
 
 Preferred workflow:
-1. Generate `REPORT_FINAL_<YYYY-MM-DD_HHMM>.md` in `engagements/<target>/reporting/`
+1. Generate structured findings + enhancements data and use `reporting/scripts/generate_report.py` as the **primary production path** for final deliverables.
 2. Use `reporting/scripts/generate_report.py --create-doc --create-slides --upload-drive --gdrive-account <email> --slides-title "Pentest Report — <target>"`
-3. Ensure the final handoff includes: local report path, Google Doc link, PDF link, and Google Slides link
-4. If publishing fails, still return the local report path and clearly note the publish error
+3. This is the **real branded implementation**. It uses the branding assets and the styled PPTX pipeline in `scripts/pentest_pptx_generator.py`.
+4. Ensure the final handoff includes: local report path, Google Doc link, PDF link, and Google Slides link.
+5. Only use direct `gog docs create --file ...` or `gog slides create-from-markdown ...` as a **fallback path** when the branded generator cannot be used.
+6. If publishing fails, still return the local report path and clearly note the publish error.
+
+## Implementation Truths
+- **Production/branded path:** `reporting/scripts/generate_report.py`
+- **Styled deck generator:** `scripts/pentest_pptx_generator.py`
+- **Brand assets:** `assets/branding/` and `assets/docs/header-banner.png`
+- **Fallback-only path:** raw `gog docs/slides` from markdown
+- **Do not treat `scripts/auto_slides_pipeline.py` as production** — it is a PoC/skeleton, not the default report publishing path.

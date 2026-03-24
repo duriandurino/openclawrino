@@ -128,14 +128,22 @@ cat engagements/<target>/recon/*.md
 cat engagements/<target>/exploit/*.md
 ```
 
-### Step 2 — Generate Report
+### Step 2 — Generate Report (Primary Production Path)
+
+**This is the real implementation.** Use the generator script as the default path for final pentest reports, branded Docs/PDFs, and branded presentations.
 
 ```bash
-python3 scripts/generate_report.py \
+python3 reporting/scripts/generate_report.py \
   --target <TARGET> \
   --findings engagements/<target>/reporting/findings-<target>.json \
-  --output engagements/<target>/reporting/report-<target>-<date>.md
+  --output engagements/<target>/reporting/REPORT_FINAL_<date>.md
 ```
+
+This script is the production publishing path and integrates with:
+- `scripts/pentest_pptx_generator.py` for styled branded PPTX output
+- `assets/branding/` and `assets/docs/header-banner.png` for branding assets
+
+**Do not default to raw `gog docs create --file` or `gog slides create-from-markdown` for final deliverables** unless the production generator path fails.
 
 ### Step 3 — Default Publish for Final Real Engagements
 
