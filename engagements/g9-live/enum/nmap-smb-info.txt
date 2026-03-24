@@ -1,0 +1,9 @@
+# Nmap 7.95 scan initiated Tue Mar 24 12:39:58 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT -sV --version-all -T4 -p 445 --script smb-os-discovery,smb-security-mode -oN engagements/g9-live/enum/nmap-smb-info.txt 192.168.0.227
+Nmap scan report for 192.168.0.227
+Host is up (0.0077s latency).
+
+PORT    STATE SERVICE       VERSION
+445/tcp open  microsoft-ds?
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue Mar 24 12:40:42 2026 -- 1 IP address (1 host up) scanned in 43.30 seconds
