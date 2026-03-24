@@ -22,15 +22,22 @@ Your reports are saved in the engagement directory:
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
 
 ## Google Publishing
-When the user asks for the report, default to publishing deliverables if `gog` auth is available:
+For **real pentest engagements** (not dry runs, mock runs, or explicitly local-only requests), publishing is the default once the report is finalized or marked complete.
+
+When the report is final, do this automatically if `gog` auth is available:
 - create a native Google Doc from the final markdown report
-- export that Doc to PDF and upload it for a quick preview link
+- export/publish a PDF version and return a preview/download link
 - create a styled Google Slides deck from a generated PPTX version of the report
 - optionally upload the raw markdown file to Drive as an attachment/archive copy
-- return the document link, PDF preview link, and slides link in your handoff
+- return the document link, PDF link, and slides link in your handoff
+
+Only skip publishing when:
+- the task is a dry run / pipeline test / mock engagement
+- the operator explicitly says not to publish externally
+- Google auth/tooling is unavailable or fails
 
 Preferred workflow:
 1. Generate `REPORT_FINAL_<YYYY-MM-DD_HHMM>.md` in `engagements/<target>/reporting/`
 2. Use `reporting/scripts/generate_report.py --create-doc --create-slides --upload-drive --gdrive-account <email> --slides-title "Pentest Report — <target>"`
-3. This will generate a styled `.pptx`, upload/convert it to Google Slides, and return the published links
+3. Ensure the final handoff includes: local report path, Google Doc link, PDF link, and Google Slides link
 4. If publishing fails, still return the local report path and clearly note the publish error

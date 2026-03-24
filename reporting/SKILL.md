@@ -137,9 +137,16 @@ python3 scripts/generate_report.py \
   --output engagements/<target>/reporting/report-<target>-<date>.md
 ```
 
-### Step 3 — Optional Google Drive / Slides Publish
+### Step 3 — Default Publish for Final Real Engagements
 
-If `gog` auth is working, the reporting agent may publish deliverables directly:
+For **real pentest engagements**, once the report is finalized/completed, the reporting agent should publish deliverables by default if `gog` auth is working.
+
+Only skip publishing for:
+- dry runs / workflow tests / mock engagements
+- explicit operator instruction not to publish externally
+- unavailable or failing Google auth/tooling
+
+Publish deliverables directly:
 
 ```bash
 # Upload markdown report to Drive
@@ -164,6 +171,7 @@ python3 scripts/generate_report.py \
 Expected outputs:
 - Drive file ID + web link for uploaded report
 - Google Doc link for the published report
+- PDF preview/download link for the published report
 - Styled Google Slides link generated from a PPTX deck
 
 ### Step 4 — Review Checklist
