@@ -1,0 +1,50 @@
+---------------------------------------------- ---------------------------------
+ Exploit Title                                |  Path
+---------------------------------------------- ---------------------------------
+CyberCop Scanner [01;31m[KSmb[m[Kgrind 5.5 - Buffer Overfl | [01;31m[Kwindows[m[K/dos/39452.txt
+DOUBLEPULSAR - Payload Execution and Neutrali | [01;31m[Kwindows[m[K/remote/47456.rb
+DOUBLEPULSAR - Payload Execution and Neutrali | [01;31m[Kwindows[m[K/remote/47456.rb
+Microsoft - [01;31m[KSMB[m[K Server Trans2 Zero Size Pool  | [01;31m[Kwindows[m[K/dos/14607.py
+Microsoft DNS RPC Service - 'extractQuotedCha | [01;31m[Kwindows[m[K/remote/16366.rb
+Microsoft [01;31m[KSMB[m[K Driver - Local Denial of Servic | [01;31m[Kwindows[m[K/dos/28001.c
+Microsoft [01;31m[KWindows[m[K - 'EternalRomance'/'Eternal | [01;31m[Kwindows[m[K/remote/43970.rb
+Microsoft [01;31m[KWindows[m[K - '[01;31m[KSMB[m[K' Transaction Respons | [01;31m[Kwindows[m[K/dos/1065.c
+Microsoft [01;31m[KWindows[m[K - '[01;31m[KSMB[m[KGhost' Remote Code Ex | [01;31m[Kwindows[m[K/remote/48537.py
+Microsoft [01;31m[KWindows[m[K - 'srv2.sys' [01;31m[KSMB[m[K Code Execu | [01;31m[Kwindows[m[K/remote/40280.py
+Microsoft [01;31m[KWindows[m[K - 'srv2.sys' [01;31m[KSMB[m[K Negotiate  | [01;31m[Kwindows[m[K/remote/14674.txt
+Microsoft [01;31m[KWindows[m[K - 'srv2.sys' [01;31m[KSMB[m[K Negotiate  | [01;31m[Kwindows[m[K/remote/16363.rb
+Microsoft [01;31m[KWindows[m[K - 'WRITE_ANDX' [01;31m[KSMB[m[K Command  | [01;31m[Kwindows[m[K/dos/6463.rb
+Microsoft [01;31m[KWindows[m[K - LSASS [01;31m[KSMB[m[K NTLM Exchange N | [01;31m[Kwindows[m[K/dos/40744.txt
+Microsoft [01;31m[KWindows[m[K - [01;31m[KSMB[m[K Client-Side Bug (PoC) | [01;31m[Kwindows[m[K/dos/12258.py
+Microsoft [01;31m[KWindows[m[K - [01;31m[KSMB[m[K Relay Code Execution  | [01;31m[Kwindows[m[K/remote/16360.rb
+Microsoft [01;31m[KWindows[m[K - [01;31m[KSMB[m[K Remote Code Execution | [01;31m[Kwindows[m[K/dos/41891.rb
+Microsoft [01;31m[KWindows[m[K - [01;31m[KSMB[m[K2 Negotiate Protocol ' | [01;31m[Kwindows[m[K/dos/12524.py
+Microsoft [01;31m[KWindows[m[K - [01;31m[KSmb[m[KRelay3 NTLM Replay (MS | [01;31m[Kwindows[m[K/remote/7125.txt
+Microsoft [01;31m[KWindows[m[K 10 (1903/1909) - '[01;31m[KSMB[m[KGhost' | [01;31m[Kwindows[m[K/dos/48216.md
+Microsoft [01;31m[KWindows[m[K 10 (1903/1909) - '[01;31m[KSMB[m[KGhost' | [01;31m[Kwindows[m[K/local/48267.txt
+Microsoft [01;31m[KWindows[m[K 10 - [01;31m[KSMB[m[Kv3 Tree Connect (Po | [01;31m[Kwindows[m[K/dos/41222.py
+Microsoft [01;31m[KWindows[m[K 10.0.17134.648 - HTTP -> SM | [01;31m[Kwindows[m[K/local/47115.txt
+Microsoft [01;31m[KWindows[m[K 2000/XP - [01;31m[KSMB[m[K Authenticatio | [01;31m[Kwindows[m[K/remote/20.txt
+Microsoft [01;31m[KWindows[m[K 2003 SP2 - 'ERRATICGOPHER'  | [01;31m[Kwindows[m[K/remote/41929.py
+Microsoft [01;31m[KWindows[m[K 2003 SP2 - 'RRAS' [01;31m[KSMB[m[K Remot | [01;31m[Kwindows[m[K/remote/44616.py
+Microsoft [01;31m[KWindows[m[K 7/2008 R2 - 'EternalBlue' S | [01;31m[Kwindows[m[K/remote/42031.py
+Microsoft [01;31m[KWindows[m[K 7/2008 R2 - [01;31m[KSMB[m[K Client Tran | [01;31m[Kwindows[m[K/dos/12273.py
+Microsoft [01;31m[KWindows[m[K 7/8.1/2008 R2/2012 R2/2016  | [01;31m[Kwindows[m[K/remote/42315.py
+Microsoft [01;31m[KWindows[m[K 8.1/2012 R2 - [01;31m[KSMB[m[Kv3 Null Po | [01;31m[Kwindows[m[K/dos/44189.py
+Microsoft [01;31m[KWindows[m[K 8/8.1/2012 R2 (x64) - 'Eter | [01;31m[Kwindows[m[K_x86-64/remote/42030.py
+Microsoft [01;31m[KWindows[m[K 95/[01;31m[KWindows[m[K for Workgroups - | [01;31m[Kwindows[m[K/remote/20371.txt
+Microsoft [01;31m[KWindows[m[K NT 4.0 SP5 / Terminal Serve | [01;31m[Kwindows[m[K/remote/19197.txt
+Microsoft [01;31m[KWindows[m[K Server 2008 R2 (x64) - 'Srv | [01;31m[Kwindows[m[K_x86-64/remote/41987.py
+Microsoft [01;31m[KWindows[m[K [01;31m[KSMB[m[K Server (v1/v2) - Mount  | [01;31m[Kwindows[m[K/dos/43517.txt
+Microsoft [01;31m[KWindows[m[K Vista/7 - [01;31m[KSMB[m[K2.0 Negotiate  | [01;31m[Kwindows[m[K/dos/9594.txt
+Microsoft [01;31m[KWindows[m[K XP/2000 - 'Mrx[01;31m[Ksmb[m[K.sys' Loca | [01;31m[Kwindows[m[K/local/1911.c
+Microsoft [01;31m[KWindows[m[K XP/2000/NT 4.0 - Network Sh | [01;31m[Kwindows[m[K/dos/21746.c
+Microsoft [01;31m[KWindows[m[K XP/2000/NT 4.0 - Network Sh | [01;31m[Kwindows[m[K/dos/21747.txt
+VideoLAN VLC Client ([01;31m[KWindows[m[K x86) - '[01;31m[Ksmb[m[K://'  | [01;31m[Kwindows[m[K_x86/local/16678.rb
+VideoLAN VLC Media Player 0.8.6f - '[01;31m[Ksmb[m[K://' U | [01;31m[Kwindows[m[K/remote/9303.c
+VideoLAN VLC Media Player 0.8.6f - '[01;31m[Ksmb[m[K://' U | [01;31m[Kwindows[m[K/remote/9318.py
+VideoLAN VLC Media Player 0.9.9 - '[01;31m[Ksmb[m[K://' UR | [01;31m[Kwindows[m[K/dos/9029.rb
+VideoLAN VLC Media Player 1.0.0/1.0.1 - '[01;31m[Ksmb[m[K: | [01;31m[Kwindows[m[K/dos/9427.py
+VideoLAN VLC Media Player 1.0.2 - '[01;31m[Ksmb[m[K://' UR | [01;31m[Kwindows[m[K/remote/9816.py
+VideoLAN VLC Media Player 1.0.3 - '[01;31m[Ksmb[m[K://' UR | [01;31m[Kwindows[m[K/dos/10333.py
+VideoLAN VLC Media Player < 1.1.4 - '.xspf sm | [01;31m[Kwindows[m[K/dos/14892.py

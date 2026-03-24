@@ -1,0 +1,12 @@
+# Nmap 7.95 scan initiated Tue Mar 24 12:45:19 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT --script smb-vuln* -p 445 -oN nmap-smb-vuln.txt 192.168.0.227
+Nmap scan report for 192.168.0.227
+Host is up (0.0089s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+
+Host script results:
+|_smb-vuln-ms10-061: Could not negotiate a connection:SMB: Failed to receive bytes: ERROR
+|_smb-vuln-ms10-054: false
+
+# Nmap done at Tue Mar 24 12:45:24 2026 -- 1 IP address (1 host up) scanned in 5.29 seconds

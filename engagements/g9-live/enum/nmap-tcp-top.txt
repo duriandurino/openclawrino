@@ -1,0 +1,25 @@
+# Nmap 7.95 scan initiated Tue Mar 24 12:39:00 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT --open -T4 -p- --max-retries 2 --min-rate 100 --max-parallelism 50 -oN engagements/g9-live/enum/nmap-tcp-top.txt 192.168.0.227
+Nmap scan report for 192.168.0.227
+Host is up (0.010s latency).
+Not shown: 65518 filtered tcp ports (no-response)
+Some closed ports may be reported as filtered due to --defeat-rst-ratelimit
+PORT      STATE SERVICE
+135/tcp   open  msrpc
+139/tcp   open  netbios-ssn
+445/tcp   open  microsoft-ds
+1236/tcp  open  bvcontrol
+3389/tcp  open  ms-wbt-server
+5357/tcp  open  wsdapi
+5985/tcp  open  wsman
+9223/tcp  open  unknown
+47001/tcp open  winrm
+49664/tcp open  unknown
+49665/tcp open  unknown
+49666/tcp open  unknown
+49667/tcp open  unknown
+49668/tcp open  unknown
+49669/tcp open  unknown
+49670/tcp open  unknown
+49673/tcp open  unknown
+
+# Nmap done at Tue Mar 24 12:43:42 2026 -- 1 IP address (1 host up) scanned in 281.78 seconds

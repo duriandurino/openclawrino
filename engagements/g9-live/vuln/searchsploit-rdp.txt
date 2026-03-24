@@ -1,0 +1,30 @@
+---------------------------------------------- ---------------------------------
+ Exploit Title                                |  Path
+---------------------------------------------- ---------------------------------
+2X Client for [01;31m[KRDP[m[K 10.1.1204 - ClientSystem Cl | [01;31m[Kwindows[m[K/remote/18624.txt
+Cain & Abel 4.9.23 - '.[01;31m[Krdp[m[K' Buffer Overflow ( | [01;31m[Kwindows[m[K/dos/7297.py
+Cain & Abel 4.9.23 - '.[01;31m[Krdp[m[K' Local Buffer Over | [01;31m[Kwindows[m[K/local/7329.py
+Cain & Abel 4.9.24 - '.[01;31m[Krdp[m[K' Local Stack Overf | [01;31m[Kwindows[m[K/local/7309.pl
+Cho[01;31m[KrdP[m[Kulse 1.4 - Denial of Service            | [01;31m[Kwindows[m[K/dos/14511.pl
+Corel Wo[01;31m[KrdP[m[Kerfect Office X5 15.0.0.357 - 'wpd | [01;31m[Kwindows[m[K/dos/14344.c
+Corel Wo[01;31m[KrdP[m[Kerfect X3 13.0.0.565 - '.prs' Loca | [01;31m[Kwindows[m[K/local/3593.c
+Integard Home and Pro 2 - Remote HTTP Buffer  | [01;31m[Kwindows[m[K_x86/remote/14941.rb
+Integard Pro 2.2.0.9026 - [01;31m[KWindows[m[K 7 ROP-Code  | [01;31m[Kwindows[m[K/remote/15016.rb
+Microsoft Edge - 'CssParser::Reco[01;31m[KrdP[m[Kroperty'  | [01;31m[Kwindows[m[K/dos/42246.html
+Microsoft Edge Chakra JIT - Backwa[01;31m[KrdP[m[Kass::Rem | [01;31m[Kwindows[m[K/dos/43467.js
+Microsoft [01;31m[KWindows[m[K - BlueKeep [01;31m[KRDP[m[K Remote Windo | [01;31m[Kwindows[m[K/remote/47416.rb
+Microsoft [01;31m[KWindows[m[K - BlueKeep [01;31m[KRDP[m[K Remote Windo | [01;31m[Kwindows[m[K/remote/47416.rb
+Microsoft [01;31m[KWindows[m[K 7 (x86) - 'BlueKeep' Remote | [01;31m[Kwindows[m[K_x86/remote/47683.py
+Microsoft [01;31m[KWindows[m[K 98a/98b/98SE / Solaris 2.6  | multiple/remote/19451.txt
+Microsoft [01;31m[KWindows[m[K NT/2000 - Terminal Server S | [01;31m[Kwindows[m[K/dos/21123.txt
+Microsoft [01;31m[KWindows[m[K Wo[01;31m[Krdp[m[Kad - '.doc' File Local | [01;31m[Kwindows[m[K/dos/6560.txt
+Microsoft [01;31m[KWindows[m[K XP SP2 - '[01;31m[Krdp[m[Kwd.sys' Remote | [01;31m[Kwindows[m[K/dos/1143.sys
+Microsoft Wo[01;31m[Krdp[m[Kad 5.1 - '.doc' Null Pointer D | [01;31m[Kwindows[m[K/dos/18952.txt
+Microsoft Wo[01;31m[Krdp[m[Kad on winXP SP3 - Local Crash  | [01;31m[Kwindows[m[K/dos/9423.pl
+Microsoft Wo[01;31m[KrdP[m[Kerfect - Converter Buffer Over | [01;31m[Kwindows[m[K/local/23096.txt
+Microsoft Wo[01;31m[KrdP[m[Kerfect Document Converter (Win | [01;31m[Kwindows[m[K/remote/92.c
+[01;31m[KRDP[m[K Manager 4.9.9.3 - Denial-of-Service (PoC) | [01;31m[Kwindows[m[K/local/50484.txt
+Wo[01;31m[KrdP[m[Kress Plugin [01;31m[KWindows[m[K Desktop and iPhone P | php/webapps/36691.txt
+---------------------------------------------- ---------------------------------
+---------------------------------------------- ---------------------------------
+ Shellcode Title                              |  Path

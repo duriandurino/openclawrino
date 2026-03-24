@@ -1,0 +1,8 @@
+# Nmap 7.95 scan initiated Tue Mar 24 12:45:19 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT --script rdp-vuln* -p 3389 -oN nmap-rdp-vuln.txt 192.168.0.227
+Nmap scan report for 192.168.0.227
+Host is up (0.014s latency).
+
+PORT     STATE SERVICE
+3389/tcp open  ms-wbt-server
+
+# Nmap done at Tue Mar 24 12:45:19 2026 -- 1 IP address (1 host up) scanned in 0.35 seconds
