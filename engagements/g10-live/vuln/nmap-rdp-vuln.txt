@@ -1,0 +1,17 @@
+# Nmap 7.95 scan initiated Tue Mar 24 13:25:47 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT -p3389 --script rdp-vuln-ms12-020,rdp-ntlm-info --script-timeout 30s -oN /home/dukali/.openclaw/workspace/engagements/g10-live/vuln/nmap-rdp-vuln.txt 192.168.0.21
+Nmap scan report for 192.168.0.21
+Host is up (0.016s latency).
+
+PORT     STATE SERVICE
+3389/tcp open  ms-wbt-server
+| rdp-ntlm-info: 
+|   Target_Name: NCTV360
+|   NetBIOS_Domain_Name: NCTV360
+|   NetBIOS_Computer_Name: G10
+|   DNS_Domain_Name: nctv360.com
+|   DNS_Computer_Name: G10.nctv360.com
+|   DNS_Tree_Name: nctv360.com
+|   Product_Version: 10.0.26100
+|_  System_Time: 2026-03-24T05:25:36+00:00
+
+# Nmap done at Tue Mar 24 13:25:47 2026 -- 1 IP address (1 host up) scanned in 0.53 seconds

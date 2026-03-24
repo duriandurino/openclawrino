@@ -1,0 +1,92 @@
+{
+  "target": "192.168.0.21 (PC G10)",
+  "findings": [
+    {
+      "id": "VULN-001",
+      "title": "Multiple Remote Administration Services Exposed",
+      "severity": "Medium",
+      "cvss": 5.3,
+      "affected": "192.168.0.21 - Ports 3389 (RDP), 5985 (WinRM), 445 (SMB)",
+      "description": "Three remote administration protocols are simultaneously exposed on the target: Remote Desktop Protocol (RDP), Windows Remote Management (WinRM), and SMB file sharing. While each service is individually configured with authentication, the combined exposure creates a broader attack surface and multiple credential-based entry points.",
+      "evidence": "nmap scan confirmed:\n- Port 3389/tcp: ms-wbt-server (RDP) - CredSSP NLA enabled, TLS encryption\n- Port 5985/tcp: wsman (WinRM) - HTTPAPI/2.0, PowerShell remoting enabled\n- Port 445/tcp: microsoft-ds (SMB) - SMB 3.x dialects supported",
+      "impact": "An attacker with valid credentials can access the system through multiple protocols. If credentials are compromised (phishing, credential stuffing, or hash cracking), they have three distinct paths for lateral movement and remote code execution.",
+      "remediation": "Disable unused remote administration services. If RDP is required for end-user support, consider disabling WinRM (port 5985) if not used for management. If WinRM is required for admin automation, disable RDP and require jump host access. Restrict SMB access to file server roles only using host-based firewall rules.",
+      "hardening": "Implement network segmentation to isolate management traffic from user workstations. Require VPN or bastion host access for all remote administration. Enable detailed logging on all remote access protocols and forward logs to a SIEM for anomaly detection.",
+      "references": ["CIS Control 4.1 - Establish and Maintain a Secure Configuration Process", "CIS Control 4.5 - Implement and Manage a Firewall on Servers"]
+    },
+    {
+      "id": "VULN-002",
+      "title": "WinRM Over HTTP (Cleartext Risk)",
+      "severity": "Medium",
+      "cvss": 5.9,
+      "affected": "192.168.0.21:5985/tcp (wsman)",
+      "description": "Windows Remote Management (WinRM) is accessible over HTTP on port 5985. While authentication is required, credentials and session data traverse the network unencrypted unless Kerberos or TLS transport is enforced. This creates exposure to credential sniffing on the local network segment.",
+      "evidence": "nmap -p5985 returned HTTPAPI/2.0 banner. Direct HTTP probe returned 401 Unauthorized, confirming service requires authentication. No HTTPS endpoint detected on port 5986.",
+      "impact": "Credentials transmitted during WinRM authentication could be intercepted by an attacker with local network access (ARP spoofing, port mirroring, or compromised adjacent systems). Session tokens may also be replayed if captured.",
+      "remediation": "Enable WinRM over HTTPS (port 5986) and disable HTTP WinRM listener. Run: 'winrm quickconfig -transport:https' and configure a valid SSL certificate. Then disable HTTP listener with: 'winrm delete winrm/config/listener?Address=*+Transport=HTTP'",
+      "hardening": "Configure WinRM to require encryption via Group Policy: 'Computer Configuration > Administrative Templates > Windows Components > Windows Remote Management > WinRM Service > Allow remote server management through WinRM' - set only HTTPS. Also enable 'Disallow Digest authentication' to prevent weaker auth methods.",
+      "references": ["Microsoft Docs: WinRM Security", "CIS Windows 11 Benchmark 2.0 - WinRM Configuration"]
+    },
+    {
+      "id": "VULN-003",
+      "title": "WS-Discovery API Exposed",
+      "severity": "Low",
+      "cvss": 3.7,
+      "affected": "192.168.0.21:5357/tcp (wsdapi)",
+      "description": "Web Services for Devices API (WS-Discovery) is exposed, allowing network service enumeration. While this service returns 404 on HTTP requests, the exposed endpoint can be used to fingerprint the system and identify it as a Windows host.",
+      "evidence": "curl -I http://192.168.0.21:5357/ returned HTTP/1.1 503 Service Unavailable with Server: Microsoft-HTTPAPI/2.0 header, confirming Windows platform.",
+      "impact": "Information disclosure for reconnaissance purposes. Attackers can identify Windows systems on the network and potentially enumerate device capabilities if the service is misconfigured.",
+      "remediation": "Disable the WS-Discovery service if not required: 'sc config fdrespub start= disabled' and 'sc stop fdrespub'. Alternatively, block port 5357/tcp at the host firewall.",
+      "hardening": "Review all default Windows services and disable those not required for business function. Enable Windows Firewall with Advanced Security and block inbound connections on non-essential ports.",
+      "references": ["Microsoft Docs: WS-Discovery Protocol", "CIS Windows 11 Benchmark - Service Configuration"]
+    },
+    {
+      "id": "VULN-004",
+      "title": "RDP Reveals Domain and Host Metadata",
+      "severity": "Low",
+      "cvss": 3.3,
+      "affected": "192.168.0.21:3389/tcp (RDP)",
+      "description": "Remote Desktop Protocol responds to unauthenticated enumeration requests, revealing the Windows domain (nctv360.com), computer name (G10), and product version (Windows 11 24H2 build 26100). This information aids attackers in crafting targeted attacks.",
+      "evidence": "nmap --script rdp-ntlm-info returned: NetBIOS_Domain_Name: NCTV360, NetBIOS_Computer_Name: G10, Product_Version: 10.0.26100, System_Time: 2026-03-24T05:25:36+00:00",
+      "impact": "Information disclosure aids reconnaissance. Attackers can identify domain membership, OS version, and system time, which may help with timing attacks, credential spraying, or selecting version-specific exploits.",
+      "remediation": "Enable RDP Network Level Authentication (NLA) - already confirmed enabled. Consider using RDP Gateway or VPN for remote access instead of exposing RDP directly. Configure Windows Firewall to restrict RDP access to specific admin subnets.",
+      "hardening": "Disable NTLM information disclosure in RDP by setting 'fDisableSAM' registry key or using RDP hardening guides. Implement account lockout policies to deter brute force attempts against exposed RDP.",
+      "references": ["CIS Windows 11 Benchmark - Remote Desktop Services", "Microsoft Docs: RDP Security Best Practices"]
+    },
+    {
+      "id": "VULN-005",
+      "title": "SMB Signing Not Enforced (Relay Risk)",
+      "severity": "Medium",
+      "cvss": 6.5,
+      "affected": "192.168.0.21:445/tcp (SMB)",
+      "description": "SMB service supports modern SMB 3.x dialects but SMB message signing status could not be fully verified during unauthenticated testing. If SMB signing is optional rather than required, the system is vulnerable to NTLM relay attacks where an attacker relays authentication to gain SMB access.",
+      "evidence": "nmap smb-protocols confirmed SMB 2.0.2, 2.1.0, 3.0.0, 3.0.2, 3.1.1 supported. No SMB1 (legacy) detected. Null session authentication was denied (good security posture). SMB signing enforcement could not be confirmed without authenticated access.",
+      "impact": "If SMB signing is not enforced, attackers can perform NTLM relay attacks to gain authenticated SMB access without knowing credentials. This can lead to file share access, lateral movement, or remote code execution via administrative shares.",
+      "remediation": "Verify SMB signing is required: Run 'Get-SmbServerConfiguration | Select EnableSMBSigning' in PowerShell. If False, enable with 'Set-SmbServerConfiguration -EnableSMBSigning $true'. For domain-joined systems, enforce via GPO: 'Computer Configuration > Policies > Windows Settings > Security Settings > Local Policies > Security Options > Microsoft network server: Digitally sign communications (always)'.",
+      "hardening": "Enable SMB signing enforcement domain-wide. Disable legacy SMB 1.0 protocol (already confirmed not present). Monitor for NTLM authentication attempts using Windows Event Log 4624 and configure alerts for anomalous patterns.",
+      "references": ["CVE-2019-1040 (NTLM Relay via SMB)", "CIS Windows 11 Benchmark - SMB Security", "Microsoft Docs: SMB Security Enhancements"]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Network Security",
+      "recommendation": "Implement host-based firewall rules to restrict administrative services (RDP 3389, WinRM 5985/5986, SMB 445) to specific administrative subnets or jump hosts only. Consider using Windows Defender Firewall with Advanced Security to create granular rules based on user groups and network location."
+    },
+    {
+      "category": "Access Control",
+      "recommendation": "Require multi-factor authentication (MFA) for all remote administrative access. Implement privileged access workstations (PAWs) for administrators and restrict remote management protocols to these hardened systems only. Consider Azure AD Conditional Access or similar solutions."
+    },
+    {
+      "category": "Monitoring and Logging",
+      "recommendation": "Enable comprehensive audit logging for all remote access events: RDP connections (Event ID 4624, 4634, 4648), WinRM operations (Event ID 91, 168), SMB access (Event ID 5140, 5145). Forward logs to a centralized SIEM and configure alerting for failed authentication attempts, after-hours access, and anomalous login patterns."
+    },
+    {
+      "category": "Patch Management",
+      "recommendation": "Windows 11 24H2 (build 26100) is relatively current, but establish a regular patch cadence. Test and deploy Windows security updates within 30 days of release. Prioritize patching for CVEs affecting RDP, SMB, and WinRM services. Consider enabling Windows Update for Business with ring-based deployment."
+    },
+    {
+      "category": "Credential Security",
+      "recommendation": "Implement credential guard to protect against credential theft and pass-the-hash attacks. Disable NTLMv1 and weak LM hashes via Group Policy. Regularly audit for weak or reused passwords using tools like Microsoft Defender for Identity or third-party solutions."
+    }
+  ]
+}

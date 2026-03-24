@@ -1,0 +1,13 @@
+# Nmap 7.95 scan initiated Tue Mar 24 13:24:57 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT -p3389 --script rdp-enum-encryption -oN engagements/g10-live/enum/nmap-rdp.txt 192.168.0.21
+Nmap scan report for 192.168.0.21
+Host is up (0.18s latency).
+
+PORT     STATE SERVICE
+3389/tcp open  ms-wbt-server
+| rdp-enum-encryption: 
+|   Security layer
+|     CredSSP (NLA): SUCCESS
+|     CredSSP with Early User Auth: SUCCESS
+|_    RDSTLS: SUCCESS
+
+# Nmap done at Tue Mar 24 13:24:59 2026 -- 1 IP address (1 host up) scanned in 1.74 seconds

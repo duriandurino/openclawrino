@@ -1,0 +1,10 @@
+# Nmap 7.95 scan initiated Tue Mar 24 13:25:47 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT -p5985 --script http-winrm --script-timeout 30s -oN /home/dukali/.openclaw/workspace/engagements/g10-live/vuln/nmap-winrm-detailed.txt 192.168.0.21
+NSE: failed to initialize the script engine:
+/usr/share/nmap/nse_main.lua:829: 'http-winrm' did not match a category, filename, or directory
+stack traceback:
+	[C]: in function 'error'
+	/usr/share/nmap/nse_main.lua:829: in local 'get_chosen_scripts'
+	/usr/share/nmap/nse_main.lua:1364: in main chunk
+	[C]: in ?
+
+QUITTING!

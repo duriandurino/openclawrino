@@ -1,0 +1,8 @@
+# Nmap 7.95 scan initiated Tue Mar 24 13:25:47 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT -p445 --script smb-os-discovery,smb-security-mode,smb-enum-shares -oN /home/dukali/.openclaw/workspace/engagements/g10-live/vuln/nmap-smb-detailed.txt 192.168.0.21
+Nmap scan report for 192.168.0.21
+Host is up (0.0095s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+
+# Nmap done at Tue Mar 24 13:25:47 2026 -- 1 IP address (1 host up) scanned in 0.43 seconds

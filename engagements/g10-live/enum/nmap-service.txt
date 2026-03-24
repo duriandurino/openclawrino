@@ -1,0 +1,15 @@
+# Nmap 7.95 scan initiated Tue Mar 24 13:24:14 2026 as: /usr/lib/nmap/nmap --privileged -Pn -sT -sV --version-intensity 5 -p 135,139,445,3389,5357,5985 --script=banner -oN engagements/g10-live/enum/nmap-service.txt 192.168.0.21
+Nmap scan report for 192.168.0.21
+Host is up (0.034s latency).
+
+PORT     STATE SERVICE       VERSION
+135/tcp  open  msrpc         Microsoft Windows RPC
+139/tcp  open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp  open  microsoft-ds?
+3389/tcp open  ms-wbt-server
+5357/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+5985/tcp open  http          Microsoft HTTPAPI httpd 2.0 (SSDP/UPnP)
+Service Info: OS: Windows; CPE: cpe:/o:microsoft:windows
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Tue Mar 24 13:24:46 2026 -- 1 IP address (1 host up) scanned in 31.76 seconds
