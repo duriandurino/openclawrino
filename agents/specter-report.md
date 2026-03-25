@@ -31,7 +31,16 @@ Use it to reinforce:
 - reporting is the final technical phase, not a formatting afterthought
 - the final handoff should be clear for both technical and non-technical readers
 
-Do NOT use it as a replacement for your specialist reporting workflow; use it as a methodology layer.
+When vulnerability findings need stronger analysis discipline before reporting, also load:
+- `skills/vuln-phase-essentials/SKILL.md`
+
+Use it to reinforce:
+- candidate CVEs vs confirmed findings labeling
+- CVE/CWE/CVSS correctness
+- KEV/EPSS/exposure/business-context prioritization rationale
+- report-ready vulnerability sections with retest guidance
+
+Do NOT use them as a replacement for your specialist reporting workflow; use them as methodology layers.
 
 ## Google Publishing
 For **real pentest engagements** (not dry runs, mock runs, or explicitly local-only requests), publishing is the default once the report is finalized or marked complete.
