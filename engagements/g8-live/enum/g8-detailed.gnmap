@@ -1,0 +1,4 @@
+# Nmap 7.95 scan initiated Wed Mar 25 14:29:43 2026 as: /usr/lib/nmap/nmap --privileged -sV -sC -p 135,139,445,3306,3389,49153 --script smb-enum-shares,smb-enum-users,smb-os-discovery,mysql-info,rdp-enum-encryption --max-retries 2 -oA engagements/g8-live/enum/g8-detailed 192.168.0.108
+Host: 192.168.0.108 ()	Status: Up
+Host: 192.168.0.108 ()	Ports: 135/open/tcp//msrpc//Microsoft Windows RPC/, 139/open/tcp//netbios-ssn//Microsoft Windows netbios-ssn/, 445/open/tcp//microsoft-ds?///, 3306/open/tcp//mysql//MySQL 8.4.8/, 3389/open/tcp//ms-wbt-server///, 49153/open/tcp//tcpwrapped///
+# Nmap done at Wed Mar 25 14:29:55 2026 -- 1 IP address (1 host up) scanned in 12.70 seconds

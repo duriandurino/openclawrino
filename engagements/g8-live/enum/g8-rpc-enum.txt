@@ -1,0 +1,10 @@
+# Nmap 7.95 scan initiated Wed Mar 25 14:32:43 2026 as: /usr/lib/nmap/nmap --privileged --script msrpc-enum,rpc-grind -p 135,49153 -oN enum/g8-rpc-enum.txt 192.168.0.108
+Nmap scan report for 192.168.0.108
+Host is up (0.00073s latency).
+
+PORT      STATE SERVICE
+135/tcp   open  msrpc
+49153/tcp open  unknown
+MAC Address: 58:02:05:2D:05:CC (Unknown)
+
+# Nmap done at Wed Mar 25 14:32:43 2026 -- 1 IP address (1 host up) scanned in 0.31 seconds

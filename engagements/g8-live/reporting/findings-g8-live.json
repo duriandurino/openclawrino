@@ -1,0 +1,82 @@
+{
+  "target": "PC G8 (192.168.0.108)",
+  "engagement": "G8 Live",
+  "scope": "192.168.0.108 (PC G8) on local network",
+  "date": "2026-03-25",
+  "findings": [
+    {
+      "id": "VULN-001",
+      "title": "RDP NTLM Information Disclosure",
+      "severity": "Low",
+      "cvss": 3.7,
+      "affected": "192.168.0.108:3389 (RDP Service)",
+      "description": "The RDP service with NLA enabled leaks internal domain structure, hostname, and OS version via NTLM authentication handshake. This information disclosure occurs before successful authentication and reveals: NetBIOS domain name (NCTV360), DNS domain (nctv360.com), FQDN (G8.nctv360.com), and OS version (Windows 11 24H2 Build 26100).",
+      "evidence": "Nmap rdp-ntlm-info script output:\n- Target_Name: NCTV360\n- NetBIOS_Domain_Name: NCTV360\n- DNS_Domain_Name: nctv360.com\n- DNS_Computer_Name: G8.nctv360.com\n- DNS_Tree_Name: nctv360.com\n- Product_Version: 10.0.26100 (Windows 11 24H2)",
+      "impact": "Information disclosure aids reconnaissance and potential credential-based attacks. Domain structure, hostname, and OS version can be used for targeted attacks, lateral movement planning, and timing attacks if Kerberos is in use.",
+      "remediation": "Configure RDP to reduce information disclosure via Group Policy:\n1. Open Group Policy Editor (gpedit.msc)\n2. Navigate to: Computer Configuration → Administrative Templates → Windows Components → Remote Desktop Services → Remote Desktop Session Host → Security\n3. Set 'Require use of specific security layer for remote (RDP) connections' to SSL/TLS\n4. Enable 'Require user authentication for remote connections by using Network Level Authentication'\n5. Apply policy and restart RDP service: `Restart-Service TermService -Force`",
+      "hardening": "Additional hardening recommendations:\n- Deploy RDP Gateway or VPN for remote access instead of exposing RDP directly\n- Implement IP whitelisting for RDP at the firewall level\n- Enable RDP session auditing and log monitoring\n- Consider disabling RDP if not required: `Set-ItemProperty -Path 'HKLM:\\System\\CurrentControlSet\\Control\\Terminal Server' -name 'fDenyTSConnections' -value 1`",
+      "references": [
+        "https://docs.microsoft.com/en-us/windows/security/threat-protection/security-settings/network-level-authentication",
+        "https://docs.microsoft.com/en-us/windows-server/remote/remote-desktop-services/clients/rdp-files"
+      ]
+    },
+    {
+      "id": "VULN-002",
+      "title": "MySQL Database Service Exposed on Network",
+      "severity": "Medium",
+      "cvss": 5.3,
+      "affected": "192.168.0.108:3306 (MySQL 8.4.8)",
+      "description": "MySQL 8.4.8 is exposed on the network interface. While authentication is required, database services on workstations increase attack surface. Thread ID 50632 indicates active database usage, suggesting this is a production or development database.",
+      "evidence": "Nmap mysql-info script output:\n- Version: 8.4.8\n- Protocol: 10\n- Thread ID: 50632 (suggests active connections)\n- Auth Plugin: caching_sha2_password\n- SSL: Supported (capabilities flag)\n- Anonymous login: Denied (ERROR 1045)\n- Root/no-password: Denied",
+      "impact": "If credentials are compromised, an attacker could:\n- Access sensitive data in MySQL databases\n- Modify or delete database contents\n- Potentially escalate privileges via MySQL UDF or stored procedures\n- Use as pivot point for lateral movement within the network",
+      "remediation": "Restrict MySQL network exposure:\n1. Edit MySQL configuration: `sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf` (Linux) or my.ini (Windows)\n2. Set `bind-address = 127.0.0.1` to listen only on localhost\n3. If remote access required, restrict via firewall: `New-NetFirewallRule -DisplayName 'MySQL Restrict' -Direction Inbound -LocalPort 3306 -RemoteAddress 192.168.0.0/24 -Action Allow`\n4. Restart MySQL service\n5. Verify: `netstat -an | findstr 3306` should show 127.0.0.1 only",
+      "hardening": "Database hardening recommendations:\n- Enforce SSL/TLS for all MySQL connections: `REQUIRE SSL` on user accounts\n- Review and remove unnecessary MySQL user accounts\n- Implement principle of least privilege for database users\n- Enable MySQL audit logging: `SET GLOBAL general_log = 'ON'`\n- Consider database firewall (MySQL Enterprise Firewall) or proxy\n- Regular backup and test restoration procedures",
+      "references": [
+        "https://dev.mysql.com/doc/refman/8.4/en/security-against-attack.html",
+        "https://dev.mysql.com/doc/refman/8.4/en/encrypted-connections.html"
+      ]
+    },
+    {
+      "id": "VULN-003",
+      "title": "SMB and RPC Services Exposed Without SMB Signing Enforcement",
+      "severity": "Medium",
+      "cvss": 5.3,
+      "affected": "192.168.0.108:445 (SMB), 192.168.0.108:135 (RPC)",
+      "description": "SMB service is accessible on the network. While NULL sessions and anonymous access are denied (good security posture), SMB signing enforcement could not be verified without authentication. Legacy SMB vulnerabilities (EternalBlue, Conficker, etc.) are confirmed patched.",
+      "evidence": "Enumeration results:\n- NULL session: DENIED (NT_STATUS_ACCESS_DENIED)\n- Anonymous enumeration: DENIED\n- Guest access: DENIED\n- SMB vulnerabilities tested: MS17-010, MS08-067, MS06-025, MS07-029, CVE-2009-3103, WebExec - ALL NOT VULNERABLE\n- OS: Windows 11 24H2 (Build 26100)",
+      "impact": "If SMB signing is not enforced:\n- SMB relay attacks possible if NTLM authentication is captured\n- Man-in-the-middle could modify SMB traffic\n- Pass-the-hash attacks if credentials are compromised\nNote: Target shows good security with anonymous access denied and all legacy CVEs patched.",
+      "remediation": "Enforce SMB signing via Group Policy:\n1. Open Group Policy Editor\n2. Navigate to: Computer Configuration → Windows Settings → Security Settings → Local Policies → Security Options\n3. Enable 'Microsoft network server: Digitally sign communications (always)'\n4. Enable 'Microsoft network client: Digitally sign communications (always)'\n5. Run: `gpupdate /force`\n6. Verify with: `Get-SmbServerConfiguration | Select RequireSecuritySignature`",
+      "hardening": "Additional SMB hardening:\n- Disable SMBv1: `Set-SmbServerConfiguration -EnableSMB1Protocol $false`\n- Ensure SMBv3 encryption is enabled: `Set-SmbServerConfiguration -EncryptData $true`\n- Restrict SMB access to authorized subnets only\n- Monitor SMB access logs for suspicious activity\n- Consider disabling file sharing if not required",
+      "references": [
+        "https://docs.microsoft.com/en-us/windows-server/storage/file-server/smb-security",
+        "https://docs.microsoft.com/en-us/windows/security/threat-protection/security-settings/security-policy-settings"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Network Segmentation",
+      "recommendation": "Implement network segmentation to isolate development/production database services from the general user network. Consider placing database servers in a separate VLAN with restricted access controls. Apply firewall rules that block inbound connections to administrative services (MySQL 3306, SMB 445, RDP 3389) from user workstations."
+    },
+    {
+      "category": "Patch Management",
+      "recommendation": "Maintain a regular patching schedule for both Windows OS and third-party software (MySQL). Subscribe to Oracle Critical Patch Updates for MySQL and Microsoft Security Bulletins. Test patches in a staging environment before production deployment. Consider automated patch management solutions."
+    },
+    {
+      "category": "Access Control",
+      "recommendation": "Implement principle of least privilege across all services. For MySQL, review user accounts and remove unnecessary privileges. For SMB, restrict share access using NTFS and share permissions. For RDP, require VPN or bastion host access instead of direct exposure. Consider implementing MFA for administrative access."
+    },
+    {
+      "category": "Monitoring and Logging",
+      "recommendation": "Enable and centralize security logs for all services. Configure Windows Event Forwarding for RDP and SMB access events. Enable MySQL general query log and audit plugin for connection tracking. Implement SIEM rules to alert on suspicious activity: multiple failed RDP logins, unusual MySQL connection patterns, SMB access from unexpected sources."
+    }
+  ],
+  "cleanup_status": {
+    "tester_artifacts_introduced": "No persistent tester artifacts were introduced during this engagement. All reconnaissance and enumeration activities were non-intrusive network scans.",
+    "artifacts_removed": "Not applicable - no persistent artifacts created.",
+    "artifacts_remaining": "None. All scan data and evidence files are stored locally in the engagement directory and have not been placed on the target system.",
+    "system_state": "Target system state is unchanged from pre-engagement. No files modified, no accounts created, no services installed or reconfigured by testing activities."
+  },
+  "residual_risk": "Following this assessment, residual risks include:\n1. Credential-based attacks - If weak credentials exist on MySQL, SMB, or RDP, an attacker with valid credentials could gain access\n2. Unverified patch status - While major CVEs are confirmed patched, latest cumulative updates were not verified\n3. Information disclosure - Domain structure remains exposed via RDP NTLM handshake\n4. Network exposure - Administrative services remain exposed on the network segment\n\nOverall residual risk: MEDIUM - The target shows good security practices but credential compromise remains a concern.",
+  "retest_guidance": "Recommended retest activities:\n1. Verify RDP NTLM information disclosure is mitigated (re-run nmap rdp-ntlm-info script)\n2. Verify MySQL network binding is restricted to localhost if applicable\n3. Verify SMB signing enforcement using authenticated scan\n4. Review MySQL patch level against latest Oracle CPU\n5. Review Windows 11 patch status against latest cumulative update\n6. If credential audit is authorized, test for weak credentials on exposed services\n\nRetest should be scheduled after remediation completion, ideally within 30-90 days."
+}

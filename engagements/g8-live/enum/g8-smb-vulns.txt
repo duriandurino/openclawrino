@@ -1,0 +1,76 @@
+# Nmap 7.95 scan initiated Wed Mar 25 14:32:17 2026 as: /usr/lib/nmap/nmap --privileged --script smb-vuln* --script-args vulns.showall -p 445 -oN enum/g8-smb-vulns.txt 192.168.0.108
+Nmap scan report for 192.168.0.108
+Host is up (0.00045s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+| smb-vuln-webexec: 
+|   NOT VULNERABLE:
+|   Remote Code Execution vulnerability in WebExService
+|     State: NOT VULNERABLE
+|     IDs:  CVE:CVE-2018-15442
+|     References:
+|       https://webexec.org
+|       https://blog.skullsecurity.org/2018/technical-rundown-of-webexec
+|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15442
+MAC Address: 58:02:05:2D:05:CC (Unknown)
+
+Host script results:
+| smb-vuln-ms06-025: 
+|   NOT VULNERABLE:
+|   RRAS Memory Corruption vulnerability (MS06-025)
+|     State: NOT VULNERABLE
+|     IDs:  CVE:CVE-2006-2370
+|     References:
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2006-2370
+|_      https://technet.microsoft.com/en-us/library/security/ms06-025.aspx
+| smb-vuln-regsvc-dos: 
+|   NOT VULNERABLE:
+|   Service regsvc in Microsoft Windows systems vulnerable to denial of service
+|_    State: NOT VULNERABLE
+|_smb-vuln-ms10-061: Could not negotiate a connection:SMB: Failed to receive bytes: ERROR
+| smb-vuln-ms17-010: 
+|   NOT VULNERABLE:
+|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
+|     State: NOT VULNERABLE
+|     IDs:  CVE:CVE-2017-0143
+|     References:
+|       https://blogs.technet.microsoft.com/msrc/2017/05/12/customer-guidance-for-wannacrypt-attacks/
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143
+|_      https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
+| smb-vuln-ms08-067: 
+|   NOT VULNERABLE:
+|   Microsoft Windows system vulnerable to remote code execution (MS08-067)
+|     State: NOT VULNERABLE
+|     IDs:  CVE:CVE-2008-4250
+|     References:
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2008-4250
+|_      https://technet.microsoft.com/en-us/library/security/ms08-067.aspx
+| smb-vuln-conficker: 
+|   NOT VULNERABLE:
+|   Microsoft Windows system infected by Conficker
+|     State: NOT VULNERABLE
+|     IDs:  CVE:2008-4250
+|     References:
+|       http://www.microsoft.com/security/portal/threat/encyclopedia/entry.aspx?Name=Win32%2fConficker
+|       https://technet.microsoft.com/en-us/library/security/ms08-067.aspx
+|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=2008-4250
+| smb-vuln-ms07-029: 
+|   NOT VULNERABLE:
+|   Windows DNS RPC Interface Could Allow Remote Code Execution (MS07-029)
+|     State: NOT VULNERABLE
+|     IDs:  CVE:CVE-2007-1748
+|     References:
+|       https://technet.microsoft.com/en-us/library/security/ms07-029.aspx
+|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-1748
+|_smb-vuln-ms10-054: false
+| smb-vuln-cve2009-3103: 
+|   NOT VULNERABLE:
+|   SMBv2 exploit (CVE-2009-3103, Microsoft Security Advisory 975497)
+|     State: NOT VULNERABLE
+|     IDs:  CVE:CVE-2009-3103
+|     References:
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3103
+|_      http://www.cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2009-3103
+
+# Nmap done at Wed Mar 25 14:32:22 2026 -- 1 IP address (1 host up) scanned in 5.34 seconds

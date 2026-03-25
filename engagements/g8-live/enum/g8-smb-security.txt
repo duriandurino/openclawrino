@@ -1,0 +1,9 @@
+# Nmap 7.95 scan initiated Wed Mar 25 14:30:01 2026 as: /usr/lib/nmap/nmap --privileged --script smb-security-mode -p 445 -oN engagements/g8-live/enum/g8-smb-security.txt 192.168.0.108
+Nmap scan report for 192.168.0.108
+Host is up (0.0021s latency).
+
+PORT    STATE SERVICE
+445/tcp open  microsoft-ds
+MAC Address: 58:02:05:2D:05:CC (Unknown)
+
+# Nmap done at Wed Mar 25 14:30:01 2026 -- 1 IP address (1 host up) scanned in 0.29 seconds

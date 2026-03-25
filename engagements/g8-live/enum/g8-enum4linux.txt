@@ -1,0 +1,32 @@
+Starting enum4linux v0.9.1 ( http://labs.portcullis.co.uk/application/enum4linux/ ) on Wed Mar 25 14:32:29 2026
+
+[34m =========================================( [0m[32mTarget Information[0m[34m )=========================================
+
+[0mTarget ........... 192.168.0.108
+RID Range ........ 500-550,1000-1050
+Username ......... ''
+Password ......... ''
+Known Usernames .. administrator, guest, krbtgt, domain admins, root, bin, none
+
+
+[34m ===========================( [0m[32mEnumerating Workgroup/Domain on 192.168.0.108[0m[34m )===========================
+
+[0m[33m
+[+] [0m[32mGot domain/workgroup name: NCTV360
+
+[0m
+[34m ===============================( [0m[32mNbtstat Information for 192.168.0.108[0m[34m )===============================
+
+[0mLooking up status of 192.168.0.108
+	G8              <00> -         B <ACTIVE>  Workstation Service
+	NCTV360         <00> - <GROUP> B <ACTIVE>  Domain/Workgroup Name
+	G8              <20> -         B <ACTIVE>  File Server Service
+
+	MAC Address = 58-02-05-2D-05-CC
+
+[34m ===================================( [0m[32mSession Check on 192.168.0.108[0m[34m )===================================
+
+[0m[33m
+[E] [0m[31mServer doesn't allow session using username '', password ''.  Aborting remainder of tests.
+
+[0m

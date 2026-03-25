@@ -1,0 +1,5 @@
+Doing NBT name scan for addresses from 192.168.0.108
+
+IP address       NetBIOS Name     Server    User             MAC address      
+------------------------------------------------------------------------------
+192.168.0.108    G8               <server>  <unknown>        58:02:05:2d:05:cc

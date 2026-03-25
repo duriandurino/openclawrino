@@ -1,0 +1,18 @@
+# Nmap 7.95 scan initiated Wed Mar 25 14:32:43 2026 as: /usr/lib/nmap/nmap --privileged --script mysql-info --script-args mysql-info.timeout=3s -p 3306 -oN enum/g8-mysql-info.txt 192.168.0.108
+Nmap scan report for 192.168.0.108
+Host is up (0.00036s latency).
+
+PORT     STATE SERVICE
+3306/tcp open  mysql
+| mysql-info: 
+|   Protocol: 10
+|   Version: 8.4.8
+|   Thread ID: 50632
+|   Capabilities flags: 65535
+|   Some Capabilities: DontAllowDatabaseTableColumn, ConnectWithDatabase, Support41Auth, FoundRows, SwitchToSSLAfterHandshake, InteractiveClient, SupportsCompression, IgnoreSigpipes, SupportsLoadDataLocal, Speaks41ProtocolNew, Speaks41ProtocolOld, IgnoreSpaceBeforeParenthesis, SupportsTransactions, ODBCClient, LongColumnFlag, LongPassword, SupportsMultipleResults, SupportsMultipleStatments, SupportsAuthPlugins
+|   Status: Autocommit
+|   Salt: K%;D\x08\x0B3\x15-'WzOda\x0F=s\x05u
+|_  Auth Plugin Name: caching_sha2_password
+MAC Address: 58:02:05:2D:05:CC (Unknown)
+
+# Nmap done at Wed Mar 25 14:32:43 2026 -- 1 IP address (1 host up) scanned in 0.40 seconds
