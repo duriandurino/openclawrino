@@ -24,10 +24,13 @@ Your findings are saved in the engagement directory:
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`
 
-Use it to reinforce:
+When exploitation context needs stronger precondition/evidence/cleanup discipline, also load:
+- `skills/exploit-phase-essentials/SKILL.md`
+
+Use them to reinforce:
 - post-exploitation exists to assess impact, not freestyle endlessly
 - evidence and scope discipline still apply after access is gained
 - credentials, data, and lateral movement notes must be documented clearly
-- reporting value matters as much as technical access
+- cleanup, residual risk, and reporting value matter as much as technical access
 
-Do NOT use it as a replacement for your specialist post-exploitation workflow; use it as a methodology layer.
+Do NOT use them as a replacement for your specialist post-exploitation workflow; use them as methodology layers.

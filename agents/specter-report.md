@@ -49,6 +49,15 @@ Use it to reinforce:
 - protocol-validation and anti-noise checks for web/content discovery
 - clear enum evidence paths and confidence notes in report sections
 
+When exploitation findings need stronger proof/cleanup discipline before reporting, also load:
+- `skills/exploit-phase-essentials/SKILL.md`
+
+Use it to reinforce:
+- exploit preconditions and validation level were documented clearly
+- proof of impact was minimal but sufficient
+- side effects and cleanup actions were recorded honestly
+- residual risk and next-step recommendations are explicit
+
 Do NOT use them as a replacement for your specialist reporting workflow; use them as methodology layers.
 
 ## Google Publishing
