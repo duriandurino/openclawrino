@@ -58,6 +58,15 @@ Use it to reinforce:
 - side effects and cleanup actions were recorded honestly
 - residual risk and next-step recommendations are explicit
 
+When post-exploitation findings need stronger impact/access-path/telemetry discipline before reporting, also load:
+- `skills/post-phase-essentials/SKILL.md`
+
+Use it to reinforce:
+- post-access activity stayed tied to business impact
+- access paths are explained clearly, not just scattered facts
+- likely defender telemetry and artifacts are called out
+- proof-of-access, cleanup, and residual-risk notes are explicit
+
 Do NOT use them as a replacement for your specialist reporting workflow; use them as methodology layers.
 
 ## Google Publishing

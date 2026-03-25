@@ -27,10 +27,13 @@ When a task needs pentest fundamentals, phase discipline, safety framing, docume
 When exploitation context needs stronger precondition/evidence/cleanup discipline, also load:
 - `skills/exploit-phase-essentials/SKILL.md`
 
+When post-exploitation needs stronger impact/access-path/telemetry discipline specifically, also load:
+- `skills/post-phase-essentials/SKILL.md`
+
 Use them to reinforce:
 - post-exploitation exists to assess impact, not freestyle endlessly
 - evidence and scope discipline still apply after access is gained
 - credentials, data, and lateral movement notes must be documented clearly
-- cleanup, residual risk, and reporting value matter as much as technical access
+- cleanup, residual risk, defender relevance, and reporting value matter as much as technical access
 
 Do NOT use them as a replacement for your specialist post-exploitation workflow; use them as methodology layers.
