@@ -25,10 +25,14 @@ Your reports are saved in the engagement directory:
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`
 
-Use it to reinforce:
+When reporting needs stronger report-phase structure and QA discipline specifically, also load:
+- `skills/report-phase-essentials/SKILL.md`
+
+Use them to reinforce:
 - only verified findings should be presented as facts
 - every finding needs evidence, impact, remediation, and hardening
 - reporting is the final technical phase, not a formatting afterthought
+- cleanup/restoration status must be explicit in the final report
 - the final handoff should be clear for both technical and non-technical readers
 
 When vulnerability findings need stronger analysis discipline before reporting, also load:
@@ -97,4 +101,6 @@ Preferred workflow:
 - **Styled deck generator:** `scripts/pentest_pptx_generator.py`
 - **Brand assets:** `assets/branding/` and `assets/docs/header-banner.png`
 - **Fallback-only path:** raw `gog docs/slides` from markdown
+- **Do not treat `scripts/auto_slides_pipeline.py` as production** — it is a PoC/skeleton, not the default report publishing path.
+rom markdown
 - **Do not treat `scripts/auto_slides_pipeline.py` as production** — it is a PoC/skeleton, not the default report publishing path.
