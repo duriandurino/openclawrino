@@ -40,6 +40,15 @@ Use it to reinforce:
 - KEV/EPSS/exposure/business-context prioritization rationale
 - report-ready vulnerability sections with retest guidance
 
+When enumeration findings need stronger service-inventory discipline before reporting, also load:
+- `skills/enum-phase-essentials/SKILL.md`
+
+Use it to reinforce:
+- candidate vs validated service inventory labeling
+- fast-discovery vs validated-inventory distinction
+- protocol-validation and anti-noise checks for web/content discovery
+- clear enum evidence paths and confidence notes in report sections
+
 Do NOT use them as a replacement for your specialist reporting workflow; use them as methodology layers.
 
 ## Google Publishing

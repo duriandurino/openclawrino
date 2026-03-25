@@ -21,14 +21,18 @@ Your findings are saved in the engagement directory:
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
 
 ## Methodology Guardrail
-When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
+When a task needs broad pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`
 
-Use it to reinforce:
+When a task needs stronger enumeration-phase discipline specifically, load:
+- `skills/enum-phase-essentials/SKILL.md`
+
+Use them to reinforce:
 - authorization and ROE before active work
 - separation of scanning vs enumeration vs vuln analysis
-- live verification before claims
+- fast-discovery then targeted-validation workflows
+- protocol-specific deep dives only after service triggers
 - evidence capture during active probing
-- clear handoff writing for the next phase
+- clean handoff writing for the next phase
 
-Do NOT use it as a replacement for your specialist enumeration workflow; use it as a methodology layer.
+Do NOT use them as a replacement for your specialist enumeration workflow; use them as methodology layers.
