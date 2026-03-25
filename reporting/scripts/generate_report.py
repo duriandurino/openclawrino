@@ -187,6 +187,18 @@ def clean_text(text):
     return " ".join(str(text or "").split()).strip(" .;:")
 
 
+def extract_summary_lead(text):
+    raw = str(text or "").strip()
+    if not raw:
+        return ""
+    first_line = raw.splitlines()[0].strip()
+    if first_line:
+        return first_line.rstrip(" :;.-")
+    cleaned = clean_text(raw)
+    cleaned = re.split(r"\b1\.\s+", cleaned, maxsplit=1)[0].strip()
+    return cleaned.rstrip(" :;.-")
+
+
 def concise_phrase(text, limit=56):
     text = clean_text(text)
     if len(text) <= limit:
@@ -205,8 +217,19 @@ def summarize_exposure(affected):
 
 
 def summarize_fix(text):
+    lead = extract_summary_lead(text)
     text = clean_text(text)
     lower = text.lower()
+    lead_lower = lead.lower()
+    if lead:
+        direct_patterns = [
+            "enforce smb signing via group policy",
+            "restrict mysql network exposure",
+            "configure rdp to reduce information disclosure via group policy",
+        ]
+        for pattern in direct_patterns:
+            if pattern in lead_lower:
+                return lead
     patterns = [
         ("require smb signing", "Require SMB signing"),
         ("restrict access", "Restrict access to admin hosts"),
@@ -226,8 +249,22 @@ def summarize_fix(text):
 
 
 def summarize_hardening(text):
+    lead = extract_summary_lead(text)
     text = clean_text(text)
     lower = text.lower()
+    lead_lower = lead.lower()
+    if lead:
+        direct_patterns = [
+            "additional hardening recommendations",
+            "database hardening recommendations",
+            "additional smb hardening",
+        ]
+        for pattern in direct_patterns:
+            if pattern in lead_lower:
+                break
+        else:
+            if len(lead.split()) <= 10:
+                return lead
     patterns = [
         ("admin", "Limit access to admin systems only"),
         ("monitor", "Alert on suspicious remote access"),
@@ -235,10 +272,15 @@ def summarize_hardening(text):
         ("mfa", "Protect admin access with MFA"),
         ("vpn", "Use VPN or bastion for remote access"),
         ("signing", "Enforce secure protocol settings"),
+        ("patch", "Maintain a regular patching schedule"),
+        ("database", "Harden database access and monitoring"),
+        ("rdp", "Restrict and monitor remote desktop access"),
     ]
     for needle, summary in patterns:
         if needle in lower:
             return summary
+    if lead:
+        return concise_phrase(lead, 56)
     words = text.split()
     return " ".join(words[:8]).strip(" .;:")
 
@@ -372,7 +414,8 @@ def generate_executive_summary(findings, enhancements):
     if sorted_findings:
         lines.append(f"\n### Priority Actions\n")
         for i, f in enumerate(sorted_findings[:3], 1):
-            lines.append(f"{i}. **{f.get('title', 'Untitled')}** ({f.get('severity', 'N/A')}) — {f.get('impact', 'No impact description')[:120]}")
+            impact_summary = smart_truncate(f.get('impact', 'No impact description'), 140)
+            lines.append(f"{i}. **{f.get('title', 'Untitled')}** ({f.get('severity', 'N/A')}) — {impact_summary}")
 
     return "\n".join(lines)
 
@@ -616,6 +659,10 @@ def main():
             print(f"Slides: {publish_summary['slides_link']}")
         if publish_summary["drive_link"]:
             print(f"Drive file: {publish_summary['drive_link']}")
+
+
+if __name__ == "__main__":
+    main()
 
 
 if __name__ == "__main__":
