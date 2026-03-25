@@ -24,11 +24,15 @@ Your findings are saved in the engagement directory:
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`
 
-Use it to reinforce:
+When a real engagement needs authorization/scope/ROE discipline before active work, also load:
+- `skills/preengagement-essentials/SKILL.md`
+
+Use them to reinforce:
 - authorization and ROE before active work
 - clean phase boundaries
+- scope and third-party boundaries are real constraints
 - live verification before claims
 - evidence-first documentation
 - reporting-ready thinking
 
-Do NOT use it as a replacement for your specialist recon workflow; use it as a methodology layer.
+Do NOT use them as a replacement for your specialist recon workflow; use them as methodology layers.

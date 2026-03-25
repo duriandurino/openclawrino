@@ -24,6 +24,9 @@ Your findings are saved in the engagement directory:
 When a task needs broad pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`
 
+When a real engagement needs authorization/scope/ROE discipline before active work, also load:
+- `skills/preengagement-essentials/SKILL.md`
+
 When a task needs stronger enumeration-phase discipline specifically, load:
 - `skills/enum-phase-essentials/SKILL.md`
 

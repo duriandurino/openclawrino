@@ -28,11 +28,15 @@ When a task needs pentest fundamentals, phase discipline, safety framing, docume
 When reporting needs stronger report-phase structure and QA discipline specifically, also load:
 - `skills/report-phase-essentials/SKILL.md`
 
+When engagement governance/scope/ROE gaps need to be reflected in the report, also load:
+- `skills/preengagement-essentials/SKILL.md`
+
 Use them to reinforce:
 - only verified findings should be presented as facts
 - every finding needs evidence, impact, remediation, and hardening
 - reporting is the final technical phase, not a formatting afterthought
 - cleanup/restoration status must be explicit in the final report
+- scope, authorization, and engagement limitations should be documented honestly
 - the final handoff should be clear for both technical and non-technical readers
 
 When vulnerability findings need stronger analysis discipline before reporting, also load:
