@@ -2,12 +2,65 @@
 from __future__ import annotations
 
 import argparse
-import re
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+
+IGNORED_PREFIXES = (
+    "engagement:",
+    "target:",
+    "status:",
+    "generated:",
+    "profile:",
+    "mode:",
+    "steps executed:",
+    "open ports / services:",
+    "none captured by automation",
+    "n/a in this phase",
+    "access level achieved:",
+    "method of access:",
+    "credentials obtained:",
+    "raw:",
+    "parsed:",
+    "summaries:",
+)
+
+IGNORED_CONTAINS = (
+    "generated from standardized phase artifacts",
+    "review and refine before treating as final handoff",
+    "pivoted from:",
+    "pivoted to:",
+    "reason: n/a",
+    "**overall:**",
+    "**network findings:**",
+    "**service identification:**",
+    "**vulnerability assessment:**",
+    "no significant structured findings captured by automation",
+    "none captured",
+)
+
+POSITIVE_SIGNALS = (
+    "cve-",
+    "missing ",
+    "exposed",
+    "subdomain:",
+    "title:",
+    "whatweb:",
+    "server banner",
+    "banner:",
+    "unauthenticated",
+    "auth bypass",
+    "weak credential",
+    "open ",
+    "rdp",
+    "smb",
+    "winrm",
+    "mysql",
+    "http",
+    "https",
+)
 
 
 def latest_file(directory: Path, pattern: str) -> Path | None:
@@ -28,6 +81,21 @@ def severity_for_line(line: str) -> str:
     return "Info"
 
 
+def is_candidate_line(content: str) -> bool:
+    text = content.strip().lower()
+    if not text:
+        return False
+    if text.startswith("**next phase:**") or text.startswith("**vector:**") or text.startswith("**reason:**"):
+        return False
+    if text.startswith(IGNORED_PREFIXES):
+        return False
+    if any(fragment in text for fragment in IGNORED_CONTAINS):
+        return False
+    if text.startswith("checked:"):
+        return any(signal in text for signal in ("not vulnerable", "patched", "missing", "exposed", "access denied", "anonymous", "null session"))
+    return any(signal in text for signal in POSITIVE_SIGNALS)
+
+
 def extract_candidate_lines(path: Path | None) -> list[dict]:
     if not path or not path.exists():
         return []
@@ -36,19 +104,18 @@ def extract_candidate_lines(path: Path | None) -> list[dict]:
         line = raw.strip()
         if not line.startswith("-"):
             continue
-        if any(prefix in line for prefix in ["**Next Phase:**", "**Vector:**", "**Reason:**"]):
-            continue
         content = line.lstrip("- ").strip()
-        if not content:
-            continue
-        if content.lower().startswith(("engagement:", "target:", "status:", "generated:", "profile:")):
+        if not is_candidate_line(content):
             continue
         severity = severity_for_line(content)
         confidence = "candidate"
-        if "not vulnerable" in content.lower() or "patched" in content.lower():
+        lowered = content.lower()
+        if "not vulnerable" in lowered or "patched" in lowered:
             confidence = "observed-defensive"
-        elif "missing" in content.lower() or "exposed" in content.lower() or "cve-" in content.lower():
+        elif any(token in lowered for token in ["missing", "exposed", "cve-", "weak credential", "unauthenticated"]):
             confidence = "candidate"
+        elif any(token in lowered for token in ["title:", "whatweb:", "subdomain:"]):
+            confidence = "observed"
         candidates.append({"finding": content, "severity": severity, "confidence": confidence})
     return candidates
 
@@ -60,7 +127,7 @@ def executive_summary(profile: str, target: str, mode: str, counts: Counter, tot
         lines.append("- This suggests either a relatively clean exposed surface or limited visibility from low-impact triage checks.")
     else:
         highest = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev)), "Info")
-        lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and captured {total} candidate observations, with highest provisional severity `{highest}`.")
+        lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and captured {total} meaningful candidate observations, with highest provisional severity `{highest}`.")
         lines.append("- These results are triage-oriented and should be manually validated before being treated as confirmed vulnerabilities.")
     lines.append("")
     return lines
@@ -185,11 +252,7 @@ def main() -> int:
             report_lines.append(f"| {item['severity']} | {item['source']} | {item['confidence']} | {safe_finding} |")
     else:
         report_lines.append("| Info | none | none | No notable candidate findings captured from current summaries. |")
-    report_lines.extend([
-        "",
-        "## What Needs Manual Validation",
-        "",
-    ])
+    report_lines.extend(["", "## What Needs Manual Validation", ""])
     if candidates:
         report_lines.extend([f"- Validate: {item['finding']}" for item in candidates[:12]])
     else:
