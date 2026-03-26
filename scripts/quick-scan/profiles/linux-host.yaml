@@ -1,0 +1,25 @@
+name: linux-host
+kind: quick-scan
+description: Fast Linux host triage with SSH/FTP follow-up and vuln candidate mapping.
+steps:
+  - phase: enum
+    script: enum/ports/scan_ports_fast.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/ports/scan_ports_service.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/ssh/ssh_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+    optional: true
+  - phase: enum
+    script: enum/ftp/ftp_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+    optional: true
+  - phase: vuln
+    script: vuln/cve-mapping/map_versions_to_cves.py
+    args: ["--input", "{{latest_enum_json}}", "--engagement", "{{engagement}}"]
+  - phase: vuln
+    script: vuln/cve-mapping/searchsploit_auto.sh
+    args: ["--input", "{{latest_enum_json}}", "--engagement", "{{engagement}}"]
+    optional: true

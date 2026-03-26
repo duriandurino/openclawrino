@@ -29,6 +29,16 @@ MODE_DEFAULTS = {
     },
 }
 
+PREFERRED_ENUM_JSON_PATTERNS = [
+    "nmap-service-*.json",
+    "nmap-fast-*.json",
+    "web-basic-*.json",
+    "smb-basic-*.json",
+    "rdp-probe-*.json",
+    "winrm-probe-*.json",
+    "*.json",
+]
+
 
 def load_quick_manifest(path: Path) -> dict:
     data: dict = {"steps": []}
@@ -71,8 +81,11 @@ def latest_enum_json(engagement: str) -> str:
     parsed_dir = ROOT / "engagements" / engagement / "enum" / "parsed"
     if not parsed_dir.exists():
         return ""
-    candidates = sorted(parsed_dir.glob("*.json"), key=lambda p: p.stat().st_mtime)
-    return str(candidates[-1]) if candidates else ""
+    for pattern in PREFERRED_ENUM_JSON_PATTERNS:
+        candidates = sorted(parsed_dir.glob(pattern), key=lambda p: p.stat().st_mtime)
+        if candidates:
+            return str(candidates[-1])
+    return ""
 
 
 def ensure_reporting_dir(engagement: str) -> Path:
