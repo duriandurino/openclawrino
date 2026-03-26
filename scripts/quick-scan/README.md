@@ -11,6 +11,7 @@ Fast security triage profiles that reuse recon/enum/vuln wrappers and generate a
 - `pc` - workstation/Windows-oriented quick check
 - `player` - IoT / player quick check
 - `player-pulselink` - PulseLink/player-oriented quick triage
+- `iot-mqtt` - IoT/MQTT quick triage with broker exposure checks
 - `windows-host` - Windows-focused quick host triage
 - `linux-host` - Linux-focused quick host triage
 
@@ -39,5 +40,5 @@ engagements/<engagement>/
 - This is rapid triage, not a full pentest.
 - Findings are candidate-oriented unless explicitly verified.
 - Use `--mode fast` to skip optional follow-up probes where supported.
-- Prefer `webapp-deep`, `api-auth`, or `player-pulselink` when the target type is already known.
+- Prefer `webapp-deep`, `api-auth`, `player-pulselink`, or `iot-mqtt` when the target type is already known.
 - See `scripts/quick-scan/DISPATCH.md` for the decision path between quick scan and full pentest workflows.

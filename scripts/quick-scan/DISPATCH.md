@@ -40,6 +40,7 @@ Use quick scan if the user wants:
 | Linux host | `linux-host` |
 | Generic player / IoT | `player` |
 | PulseLink player | `player-pulselink` |
+| MQTT / IoT broker surface | `iot-mqtt` |
 
 ### Default quick-scan entry point
 
