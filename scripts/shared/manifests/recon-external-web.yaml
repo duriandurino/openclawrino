@@ -1,0 +1,10 @@
+name: external-web
+phase: recon
+description: Passive-first recon profile for an external web target.
+steps:
+  - script: recon/dns/recon_dns_baseline.py
+    args: ["--domain", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: recon/whois/recon_whois_summary.sh
+    args: ["--domain", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: recon/web/recon_http_fingerprint.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]

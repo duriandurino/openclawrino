@@ -1,0 +1,10 @@
+name: web-service
+phase: vuln
+description: Safe baseline vulnerability triage for a web-exposed service.
+steps:
+  - script: vuln/cve-mapping/map_versions_to_cves.py
+    args: ["--input", "{{input}}", "--engagement", "{{engagement}}"]
+  - script: vuln/cve-mapping/searchsploit_auto.sh
+    args: ["--input", "{{input}}", "--engagement", "{{engagement}}"]
+  - script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

@@ -1,0 +1,14 @@
+name: windows-host
+phase: enum
+description: Standard internal enumeration workflow for a likely Windows workstation or server.
+steps:
+  - script: enum/ports/scan_ports_fast.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/ports/scan_ports_service.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/smb/enum_smb_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - script: enum/rdp/rdp_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/winrm/winrm_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
