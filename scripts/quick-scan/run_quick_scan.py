@@ -14,6 +14,22 @@ if str(ROOT) not in sys.path:
 from scripts.orchestration.run_enum_profile import substitute
 
 
+MODE_DEFAULTS = {
+    "safe": {
+        "safe_flag": "--safe",
+        "fast_flag": "",
+        "skip_optional_recon": "false",
+        "skip_optional_vuln": "false",
+    },
+    "fast": {
+        "safe_flag": "--safe",
+        "fast_flag": "--fast",
+        "skip_optional_recon": "true",
+        "skip_optional_vuln": "false",
+    },
+}
+
+
 def load_quick_manifest(path: Path) -> dict:
     data: dict = {"steps": []}
     current: dict | None = None
@@ -75,11 +91,19 @@ def resolve_profile(profile: str) -> Path:
     raise FileNotFoundError(profile)
 
 
+def should_skip_step(step: dict, mode: str) -> bool:
+    optional = step.get("optional", "false").lower() == "true"
+    if mode == "fast" and optional:
+        return True
+    return False
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run quick security scan profile")
     parser.add_argument("--profile", required=True, help="Quick-scan profile name or path")
     parser.add_argument("--target", required=True, help="Target host, URL, or domain")
     parser.add_argument("--engagement", default="", help="Engagement folder name (defaults to quick-<profile>-<timestamp>)")
+    parser.add_argument("--mode", choices=["safe", "fast"], default="safe", help="Execution mode")
     args = parser.parse_args()
 
     manifest_path = resolve_profile(args.profile)
@@ -89,19 +113,28 @@ def main() -> int:
 
     print(f"[*] Running quick scan profile: {manifest.get('name', manifest_path.stem)}")
     print(f"[*] Engagement: {engagement}")
+    print(f"[*] Mode: {args.mode}")
 
-    for idx, step in enumerate(manifest.get("steps", []), start=1):
+    steps = manifest.get("steps", [])
+    executed_steps = 0
+    for idx, step in enumerate(steps, start=1):
+        if should_skip_step(step, args.mode):
+            print(f"[{idx}/{len(steps)}] SKIP optional step in {args.mode} mode: {step.get('script')}")
+            continue
         mapping = {
             "target": args.target,
             "engagement": engagement,
             "latest_enum_json": latest_enum_json(engagement),
+            "mode": args.mode,
+            **MODE_DEFAULTS[args.mode],
         }
-        argv = [str(ROOT / "scripts" / step["script"])] + substitute(step.get("args", []), mapping)
-        print(f"[{idx}/{len(manifest['steps'])}] {' '.join(argv)}")
+        argv = [str(ROOT / "scripts" / step["script"])] + [arg for arg in substitute(step.get("args", []), mapping) if arg]
+        print(f"[{idx}/{len(steps)}] {' '.join(argv)}")
         result = subprocess.run(argv, cwd=ROOT)
         if result.returncode != 0:
             print(f"[!] Step failed with exit code {result.returncode}: {step['script']}", file=sys.stderr)
             return result.returncode
+        executed_steps += 1
 
     for phase in ["recon", "enum", "vuln"]:
         phase_dir = ROOT / "engagements" / engagement / phase / "parsed"
@@ -118,7 +151,7 @@ def main() -> int:
     report_script = ROOT / "scripts" / "quick-scan" / "generate_quick_report.py"
     if report_script.exists():
         subprocess.run([
-            "python3", str(report_script), "--engagement", engagement, "--profile", manifest.get("name", manifest_path.stem), "--target", args.target
+            "python3", str(report_script), "--engagement", engagement, "--profile", manifest.get("name", manifest_path.stem), "--target", args.target, "--mode", args.mode, "--steps", str(executed_steps)
         ], cwd=ROOT, check=False)
 
     print(f"[✓] Quick scan complete: engagements/{engagement}/")

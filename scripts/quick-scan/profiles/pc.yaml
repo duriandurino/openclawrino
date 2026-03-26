@@ -11,3 +11,4 @@ steps:
   - phase: vuln
     script: vuln/cve-mapping/searchsploit_auto.sh
     args: ["--input", "{{latest_enum_json}}", "--engagement", "{{engagement}}"]
+    optional: true

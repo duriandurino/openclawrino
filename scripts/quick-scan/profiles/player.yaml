@@ -10,7 +10,8 @@ steps:
     args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
   - phase: enum
     script: enum/web/enum_web_basic.sh
-    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
+    optional: true
   - phase: vuln
     script: vuln/web/web_baseline.sh
-    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
