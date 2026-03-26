@@ -1,0 +1,10 @@
+name: validation-web
+kind: validation
+description: Focused post-quick-scan validation for web or Kestrel-style surfaces.
+steps:
+  - phase: enum
+    script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

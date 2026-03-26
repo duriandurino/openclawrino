@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 from datetime import datetime
@@ -10,7 +11,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ACCOUNT = "hatlesswhite@gmail.com"
+DEFAULT_GOG_KEYRING_PASSWORD = "openclaw-gog-file-keyring"
 SEVERITY_ORDER = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
+
+IGNORE_PATTERNS = [
+    re.compile(r"apache\s+2\.4\.(49|50|51)", re.I),
+    re.compile(r"cve-2021-41773", re.I),
+    re.compile(r"cve-2021-42013", re.I),
+]
 
 
 def latest_file(directory: Path, pattern: str) -> Path | None:
@@ -63,6 +71,44 @@ def parse_candidate_rows(text: str) -> list[dict]:
     return unique
 
 
+def likely_generic_false_positive(row: dict) -> bool:
+    finding = row["finding"]
+    lower = finding.lower()
+    for pattern in IGNORE_PATTERNS:
+        if pattern.search(finding):
+            return True
+    if "apache" in lower and any(token in lower for token in ["microsoft-httpapi", "httpapi", "kestrel"]):
+        return True
+    return False
+
+
+def normalize_row(row: dict) -> dict | None:
+    if likely_generic_false_positive(row):
+        return None
+    finding = row["finding"]
+    lower = finding.lower()
+    severity = row["severity"]
+    confidence = row["confidence"]
+
+    if "smb signing" in lower:
+        severity = "High"
+        confidence = "observed"
+    elif "rdp" in lower and "metadata" in lower:
+        severity = "Medium"
+        confidence = "observed"
+    elif "winrm" in lower or "5985" in lower:
+        severity = "High"
+        confidence = "observed"
+    elif "mysql" in lower or "3306" in lower:
+        severity = "High"
+        confidence = "observed"
+    elif "kestrel" in lower or "access-control-allow-origin: *" in lower:
+        severity = "Medium"
+        confidence = "observed"
+
+    return {**row, "severity": severity, "confidence": confidence}
+
+
 def remediation_for(finding: str, severity: str) -> str:
     lower = finding.lower()
     if "smb" in lower and "signing" in lower:
@@ -71,8 +117,10 @@ def remediation_for(finding: str, severity: str) -> str:
         return "Restrict RDP to approved admin hosts, require MFA/VPN in front of remote access, and verify Network Level Authentication plus account lockout controls are enforced."
     if "winrm" in lower or "5985" in lower:
         return "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management."
-    if "http" in lower and "apache" in lower:
-        return "Manually validate the underlying product/version before acting on this candidate match. If confirmed, patch the affected service and re-test the specific issue path."
+    if "mysql" in lower or "3306" in lower:
+        return "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service."
+    if "kestrel" in lower or "access-control-allow-origin: *" in lower:
+        return "Review the exposed web/API service for intended authentication and CORS scope. Restrict allowed origins/methods and validate whether the service should be reachable from the current segment."
     if "missing " in lower:
         return "Apply the missing security control, then verify the header/control is present in a follow-up scan."
     if severity in ("Critical", "High"):
@@ -84,19 +132,21 @@ def hardening_for(finding: str) -> str:
     lower = finding.lower()
     if any(x in lower for x in ["rdp", "winrm", "smb"]):
         return "Segment management services away from user networks, monitor remote administration events centrally, and enforce least-privilege access for all admin paths."
-    if "http" in lower or "apache" in lower:
+    if "mysql" in lower:
+        return "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set."
+    if any(x in lower for x in ["http", "kestrel", "api", "cors"]):
         return "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts."
     return "Keep exposed services minimized, monitor access patterns, and document expected network exposure so deviations stand out quickly."
 
 
 def impact_for(severity: str, finding: str) -> str:
     if severity == "Critical":
-        return f"If this candidate is confirmed, it could allow severe compromise of the target service or remote code execution."
+        return "If this candidate is confirmed, it could allow severe compromise of the target service or remote code execution."
     if severity == "High":
-        return f"If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative access paths."
+        return "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths."
     if severity == "Medium":
-        return f"This may reveal useful attacker information or weaken defensive posture if left unaddressed."
-    return f"This is currently a lower-confidence or lower-impact observation, but it may still aid attacker reconnaissance or chaining."
+        return "This may reveal useful attacker information or weaken defensive posture if left unaddressed."
+    return "This is currently a lower-confidence or lower-impact observation, but it may still aid attacker reconnaissance or chaining."
 
 
 def title_for(finding: str) -> str:
@@ -104,12 +154,13 @@ def title_for(finding: str) -> str:
     if len(cleaned) <= 80:
         return cleaned
     short = cleaned[:80].rsplit(" ", 1)[0]
-    return short.strip(" -:;,.\t")
+    return short.strip(" -:;,.	")
 
 
 def build_findings_json(report_info: dict, rows: list[dict]) -> dict:
     findings = []
-    for idx, row in enumerate(rows, start=1):
+    normalized_rows = [row for row in (normalize_row(r) for r in rows) if row is not None]
+    for idx, row in enumerate(normalized_rows, start=1):
         findings.append({
             "id": f"QS-{idx:03d}",
             "title": title_for(row["finding"]),
@@ -167,7 +218,9 @@ def main() -> int:
         "--gdrive-account", args.account,
     ]
 
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    env = os.environ.copy()
+    env.setdefault("GOG_KEYRING_PASSWORD", DEFAULT_GOG_KEYRING_PASSWORD)
+    result = subprocess.run(cmd, capture_output=True, text=True, env=env)
     if result.returncode != 0:
         raise SystemExit(result.stderr.strip() or result.stdout.strip() or "report generator publish failed")
 

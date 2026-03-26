@@ -1,0 +1,13 @@
+name: validation-windows-host
+kind: validation
+description: Focused post-quick-scan validation for Windows remote admin surface.
+steps:
+  - phase: enum
+    script: enum/smb/enum_smb_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - phase: enum
+    script: enum/rdp/rdp_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/winrm/winrm_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]

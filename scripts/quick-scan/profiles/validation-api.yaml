@@ -1,0 +1,13 @@
+name: validation-api
+kind: validation
+description: Focused post-quick-scan validation for API/auth surfaces.
+steps:
+  - phase: recon
+    script: recon/web/api_auth_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - phase: enum
+    script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
