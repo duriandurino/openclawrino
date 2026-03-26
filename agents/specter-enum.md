@@ -48,6 +48,7 @@ When you use the new automation layer:
 - keep outputs inside `engagements/<target>/enum/{raw,parsed,summaries}/`
 - use the parsed JSON as input for later vuln analysis when possible
 - do not overstate service identification beyond what the scan actually confirmed
+- use `python3 scripts/orchestration/generate_phase_summary.py --engagement <engagement> --phase enum` to draft the handoff, then refine it for final delivery
 
 ## Methodology Guardrail
 When a task needs broad pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:

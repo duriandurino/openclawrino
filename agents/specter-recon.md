@@ -46,6 +46,7 @@ When you use the new automation layer:
 - keep outputs inside `engagements/<target>/recon/{raw,parsed,summaries}/`
 - read the generated parsed/summary artifacts before writing your handoff
 - treat script output as evidence, not as a substitute for judgment
+- use `python3 scripts/orchestration/generate_phase_summary.py --engagement <engagement> --phase recon` to draft the handoff, then refine it for final delivery
 
 ## Methodology Guardrail
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:

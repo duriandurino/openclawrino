@@ -45,6 +45,7 @@ When you use the new automation layer:
 - keep outputs inside `engagements/<target>/vuln/{raw,parsed,summaries}/`
 - treat all automated matches as candidate evidence until validated
 - separate observed misconfigurations from inferred CVE matches
+- use `python3 scripts/orchestration/generate_phase_summary.py --engagement <engagement> --phase vuln` to draft the handoff, then refine it for final delivery
 
 ## Methodology Guardrail
 When a task needs broad pentest fundamentals, phase discipline, safety framing, or beginner-style methodology grounding, load:
