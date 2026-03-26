@@ -21,6 +21,24 @@ Fast security triage profiles that reuse recon/enum/vuln wrappers and generate a
 python3 scripts/quick-scan/run_quick_scan.py --profile webapp --target https://example.com
 ```
 
+## Profile recommender
+
+```bash
+python3 scripts/quick-scan/recommend_profile.py --hint "windows workstation with smb and rdp"
+python3 scripts/quick-scan/recommend_profile.py --hint "mqtt broker on an iot device" --json
+```
+
+## Report export
+
+```bash
+python3 scripts/quick-scan/export_quick_report.py --engagement <engagement>
+```
+
+Current export behavior:
+- always creates `.txt`
+- always creates `.html`
+- creates `.pdf` when a supported converter is available
+
 ## Outputs
 
 ```text
@@ -35,6 +53,9 @@ engagements/<engagement>/
 ## Deliverables
 - `QUICK_SCAN_SUMMARY_<YYYY-MM-DD_HHMM>.md`
 - `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.md`
+- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.txt`
+- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.html`
+- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.pdf` (optional when converter available)
 
 ## Notes
 - This is rapid triage, not a full pentest.

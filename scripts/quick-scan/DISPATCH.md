@@ -42,6 +42,14 @@ Use quick scan if the user wants:
 | PulseLink player | `player-pulselink` |
 | MQTT / IoT broker surface | `iot-mqtt` |
 
+### Need help choosing a profile?
+
+Use the recommender:
+
+```bash
+python3 scripts/quick-scan/recommend_profile.py --hint "windows host with smb and rdp"
+```
+
 ### Default quick-scan entry point
 
 ```bash
@@ -100,6 +108,18 @@ A quick scan can escalate into a full pentest when:
 Suggested wording:
 
 > Quick scan found enough signal to justify a full pentest workflow. Next step: create an engagement directory and continue with pentest orchestration.
+
+---
+
+## Report Sharing / Export
+
+After a quick scan finishes, export the latest report with:
+
+```bash
+python3 scripts/quick-scan/export_quick_report.py --engagement <engagement>
+```
+
+This produces shareable formats from the markdown report and can be used before sending or publishing the result elsewhere.
 
 ---
 
