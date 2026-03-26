@@ -40,3 +40,4 @@ engagements/<engagement>/
 - Findings are candidate-oriented unless explicitly verified.
 - Use `--mode fast` to skip optional follow-up probes where supported.
 - Prefer `webapp-deep`, `api-auth`, or `player-pulselink` when the target type is already known.
+- See `scripts/quick-scan/DISPATCH.md` for the decision path between quick scan and full pentest workflows.

@@ -137,6 +137,12 @@ Reactions are lightweight social signals. Humans use them constantly — they sa
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
 
+### Quick Scan vs Full Pentest
+
+When a user asks for rapid triage, a quick vulnerability check, or an antivirus-like assessment, prefer the quick-scan path documented in `scripts/quick-scan/DISPATCH.md`.
+
+When a user asks for a full engagement, methodology-driven testing, exploitation, or formal pentest reporting, use the structured pentest path and orchestrator.
+
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
 **📝 Platform Formatting:**
