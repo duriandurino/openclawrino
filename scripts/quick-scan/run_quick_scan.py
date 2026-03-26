@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import subprocess
 import sys
 from datetime import datetime
@@ -38,6 +39,16 @@ PREFERRED_ENUM_JSON_PATTERNS = [
     "winrm-probe-*.json",
     "*.json",
 ]
+
+
+def load_recommender():
+    module_path = ROOT / "scripts" / "quick-scan" / "recommend_profile.py"
+    spec = importlib.util.spec_from_file_location("quickscan_recommend_profile", module_path)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"unable to load recommender from {module_path}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def load_quick_manifest(path: Path) -> dict:
@@ -111,20 +122,35 @@ def should_skip_step(step: dict, mode: str) -> bool:
     return False
 
 
+def choose_profile(profile: str | None, hint: str | None) -> tuple[str, dict | None]:
+    if profile:
+        return profile, None
+    if hint:
+        recommender = load_recommender()
+        recommendation = recommender.recommend(hint)
+        return recommendation["profile"], recommendation
+    raise ValueError("either --profile or --hint is required")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run quick security scan profile")
-    parser.add_argument("--profile", required=True, help="Quick-scan profile name or path")
+    parser.add_argument("--profile", default="", help="Quick-scan profile name or path")
+    parser.add_argument("--hint", default="", help="Free-text target description used to auto-select a profile")
     parser.add_argument("--target", required=True, help="Target host, URL, or domain")
     parser.add_argument("--engagement", default="", help="Engagement folder name (defaults to quick-<profile>-<timestamp>)")
     parser.add_argument("--mode", choices=["safe", "fast"], default="safe", help="Execution mode")
     args = parser.parse_args()
 
-    manifest_path = resolve_profile(args.profile)
+    chosen_profile, recommendation = choose_profile(args.profile or None, args.hint or None)
+    manifest_path = resolve_profile(chosen_profile)
     manifest = load_quick_manifest(manifest_path)
     engagement = args.engagement or f"quick-{manifest.get('name', manifest_path.stem)}-{datetime.now().strftime('%Y-%m-%d_%H%M')}"
     ensure_reporting_dir(engagement)
 
     print(f"[*] Running quick scan profile: {manifest.get('name', manifest_path.stem)}")
+    if recommendation:
+        print(f"[*] Auto-selected from hint: {args.hint}")
+        print(f"[*] Selection reason: {recommendation['reason']}")
     print(f"[*] Engagement: {engagement}")
     print(f"[*] Mode: {args.mode}")
 
