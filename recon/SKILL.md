@@ -41,41 +41,60 @@ Run DNS enumeration, subdomain discovery, WHOIS, MX/TXT record analysis.
 
 Resolve first, then run IP-based checks on resolved addresses.
 
-## Workflows
+## Automation-First Workflows
+
+Prefer the standardized wrappers under `scripts/` before falling back to legacy scripts or ad-hoc commands.
+
+### Recommended Default Profile
+
+For common external web/domain recon:
+
+```bash
+python3 scripts/orchestration/run_recon_profile.py \
+  --profile recon-external-web \
+  --target <DOMAIN> \
+  --engagement <target-name>
+```
 
 ### Quick Recon (Single Target)
 
 For a fast overview of one target:
 
 ```bash
-# 1. Reverse DNS
-dig -x <TARGET> +short
+# DNS baseline
+python3 scripts/recon/dns/recon_dns_baseline.py --domain <DOMAIN> --engagement <target-name>
 
-# 2. WHOIS (redact sensitive fields in output)
-whois <TARGET> 2>/dev/null | head -40
+# WHOIS summary
+scripts/recon/whois/recon_whois_summary.sh --domain <DOMAIN> --engagement <target-name>
 
-# 3. Shodan search (if API key available)
-python3 scripts/shodan_query.py <TARGET>
+# HTTP fingerprint
+scripts/recon/web/recon_http_fingerprint.sh --target <DOMAIN> --engagement <target-name>
 ```
 
 ### Full Recon (Domain Target)
 
-For thorough domain analysis:
+For a more complete passive domain workflow:
 
 ```bash
-# 1. DNS records — capture all record types
-for type in A AAAA MX NS TXT SOA CNAME; do
-  echo "=== $type ===" && dig <DOMAIN> $type +short
-done
+# Run the standard profile
+python3 scripts/orchestration/run_recon_profile.py \
+  --profile recon-external-web \
+  --target <DOMAIN> \
+  --engagement <target-name>
 
-# 2. Subdomain enumeration via DNS
-python3 scripts/dns_enum.py <DOMAIN>
+# Optional expanded subdomain collection
+scripts/recon/subdomains/subdomain_collect.sh --domain <DOMAIN> --engagement <target-name>
+```
 
-# 3. WHOIS registration data
-python3 scripts/whois_lookup.py <DOMAIN>
+### Legacy / Fallback Helpers
 
-# 4. Certificate transparency (find subdomains via CT logs)
-python3 scripts/ct_lookup.py <DOMAIN>
+Use these when you need a more manual or specialized path:
+
+```bash
+python3 recon/scripts/dns_enum.py <DOMAIN>
+python3 recon/scripts/whois_lookup.py <DOMAIN>
+python3 recon/scripts/ct_lookup.py <DOMAIN>
+python3 recon/scripts/shodan_query.py <TARGET>
 ```
 
 ### Network Range Recon

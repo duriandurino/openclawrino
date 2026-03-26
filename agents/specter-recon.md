@@ -20,6 +20,33 @@ Your findings are saved in the engagement directory:
 - Report ONLY from your engagement output directory
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
 
+## Automation-First Workflow
+Prefer the reusable automation layer under `scripts/` before inventing ad-hoc command sequences.
+
+### Default Recon Entry Points
+Use these first for common work:
+- `scripts/orchestration/run_recon_profile.py --profile recon-external-web --target <target> --engagement <engagement>`
+- `scripts/recon/dns/recon_dns_baseline.py --domain <domain> --engagement <engagement>`
+- `scripts/recon/whois/recon_whois_summary.sh --domain <domain> --engagement <engagement>`
+- `scripts/recon/web/recon_http_fingerprint.sh --target <host-or-url> --engagement <engagement>`
+- `scripts/recon/subdomains/subdomain_collect.sh --domain <domain> --engagement <engagement>`
+
+### When to Use the Profile Runner
+Prefer `run_recon_profile.py` when the target is an external domain/web target and the standard passive workflow fits.
+
+### When to Go Manual
+Only fall back to manual commands or legacy scripts when:
+- the target type does not fit an existing profile
+- a wrapper is missing a needed feature
+- a script fails and you need focused troubleshooting
+- the operator explicitly asks for a custom method
+
+### Artifact Discipline
+When you use the new automation layer:
+- keep outputs inside `engagements/<target>/recon/{raw,parsed,summaries}/`
+- read the generated parsed/summary artifacts before writing your handoff
+- treat script output as evidence, not as a substitute for judgment
+
 ## Methodology Guardrail
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`

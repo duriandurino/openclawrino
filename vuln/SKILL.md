@@ -27,23 +27,56 @@ Analyze discovered services and versions against known CVEs. Identify what's exp
 - Post-compromise work → use post skill
 - Passive recon → use recon skill
 
-## Workflow
+## Automation-First Workflow
 
-### Step 1 — Review Enum Results
+Prefer the standardized wrappers under `scripts/` before doing one-off research commands.
 
-Start from what enumeration found:
+### Recommended Default Profile
+
+For web-facing service analysis with parsed enum artifacts:
 
 ```bash
-# Read enum results
-cat engagements/<target>/enum/enum-<target>-*.json
-cat engagements/<target>/enum/enum-<target>-detail-*.nmap
+python3 scripts/orchestration/run_vuln_profile.py \
+  --profile vuln-web-service \
+  --target <TARGET-OR-URL> \
+  --engagement <target-name> \
+  --input <parsed-enum-json>
 ```
 
-Extract the service/version pairs for analysis.
+### Step 1 — Review Parsed Enum Results
 
-### Step 2 — Nmap Vulnerability Scripts
+Start from the structured enum artifacts when available:
 
-Run targeted nmap NSE vulnerability scripts:
+```bash
+cat engagements/<target>/enum/parsed/*.json
+cat engagements/<target>/enum/summaries/*.md
+```
+
+### Step 2 — Version-to-CVE Candidate Mapping
+
+```bash
+python3 scripts/vuln/cve-mapping/map_versions_to_cves.py \
+  --input <parsed-enum-json> \
+  --engagement <target-name>
+```
+
+### Step 3 — Searchsploit Automation
+
+```bash
+scripts/vuln/cve-mapping/searchsploit_auto.sh \
+  --input <parsed-enum-json> \
+  --engagement <target-name>
+```
+
+### Step 4 — Web Baseline Checks
+
+```bash
+scripts/vuln/web/web_baseline.sh --target <TARGET-OR-URL> --engagement <target-name> --safe
+```
+
+### Legacy / Manual Research
+
+Use manual commands when wrappers do not cover the case or you need deeper confirmation:
 
 ```bash
 # All vuln scripts against discovered ports
@@ -52,32 +85,12 @@ nmap -sV --script vuln -p <PORTS> <TARGET>
 # Specific vulnerability checks
 nmap -sV --script ssl-heartbleed,ssl-poodle,http-shellshock,smb-vuln-ms17-010 -p <PORTS> <TARGET>
 
-# HTTP vulnerability scripts
-nmap -sV --script http-vuln*,http-sql-injection,http-xss* -p 80,443,8080 <TARGET>
-```
-
-### Step 3 — Searchsploit / CVE Research
-
-```bash
-# Search for exploits by service/version
+# Direct searchsploit use
 searchsploit openssh 8.2
 searchsploit vsftpd 3.0.3
 
-# Get exploit details
-searchsploit -x 49757
-
-# Mirror exploit to loot for review
-searchsploit -m 49757 --loot
-```
-
-### Step 4 — Online CVE Databases
-
-```bash
-# NVD API (no key needed for basic queries)
+# Direct CVE database lookups
 curl -s "https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=openssh+8.2&resultsPerPage=5"
-
-# Vulners API (free, good for quick lookups)
-curl -s "https://vulners.com/api/v3/search/id/?id=CVE-2024-6387"
 ```
 
 ### Step 5 — Risk Assessment

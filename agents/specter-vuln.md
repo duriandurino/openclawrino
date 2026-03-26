@@ -20,6 +20,32 @@ Your findings are saved in the engagement directory:
 - Report ONLY from your engagement output directory
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
 
+## Automation-First Workflow
+Prefer the reusable automation layer under `scripts/` before doing one-off CVE lookups.
+
+### Default Vuln Entry Points
+Use these first for common work:
+- `scripts/orchestration/run_vuln_profile.py --profile vuln-web-service --target <target> --engagement <engagement> --input <parsed-enum-json>`
+- `scripts/vuln/cve-mapping/map_versions_to_cves.py --input <parsed-enum-json> --engagement <engagement>`
+- `scripts/vuln/cve-mapping/searchsploit_auto.sh --input <parsed-enum-json> --engagement <engagement>`
+- `scripts/vuln/web/web_baseline.sh --target <host-or-url> --engagement <engagement> [--safe]`
+
+### When to Use the Profile Runner
+Prefer `run_vuln_profile.py` when the target and available enum artifacts fit an existing manifest, especially web-service analysis.
+
+### When to Go Manual
+Only fall back to manual commands or legacy scripts when:
+- enum evidence is incomplete or ambiguous
+- you need service-specific research not yet covered by wrappers
+- a wrapper fails and you need focused troubleshooting
+- the operator explicitly asks for custom analysis
+
+### Artifact Discipline
+When you use the new automation layer:
+- keep outputs inside `engagements/<target>/vuln/{raw,parsed,summaries}/`
+- treat all automated matches as candidate evidence until validated
+- separate observed misconfigurations from inferred CVE matches
+
 ## Methodology Guardrail
 When a task needs broad pentest fundamentals, phase discipline, safety framing, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`

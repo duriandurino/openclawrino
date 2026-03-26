@@ -32,35 +32,54 @@ Active scanning and service enumeration. This is the phase where you touch the t
 
 Active scanning generates network traffic and may trigger IDS/IPS alerts. **Confirm scope authorization before running any scan.**
 
-## Scanning Strategy
+## Automation-First Scanning Strategy
 
-Always escalate scan intensity. Start subtle, then go loud.
+Always prefer the standardized wrappers under `scripts/` before building custom scans.
 
-### Step 1 — Ping Sweep (Discover Live Hosts)
+### Recommended Default Profile
+
+For a likely Windows host or generic internal workstation/server:
 
 ```bash
-# ARP scan (local network only, most reliable)
+python3 scripts/orchestration/run_enum_profile.py \
+  --profile enum-windows-host \
+  --target <TARGET> \
+  --engagement <target-name>
+```
+
+### Step 1 — Quick Port Scan (Top 1000)
+
+```bash
+scripts/enum/ports/scan_ports_fast.sh --target <TARGET> --engagement <target-name>
+```
+
+### Step 2 — Follow-up Service Scan
+
+```bash
+scripts/enum/ports/scan_ports_service.sh --target <TARGET> --engagement <target-name>
+```
+
+### Step 3 — Service-Specific Baselines
+
+```bash
+scripts/enum/web/enum_web_basic.sh --target <TARGET> --engagement <target-name> --safe
+scripts/enum/smb/enum_smb_basic.sh --target <TARGET> --engagement <target-name> --safe
+scripts/enum/rdp/rdp_probe.sh --target <TARGET> --engagement <target-name>
+scripts/enum/winrm/winrm_probe.sh --target <TARGET> --engagement <target-name>
+```
+
+### Legacy / Manual Escalation
+
+Use manual commands when the wrappers do not fit the service mix or you need deeper coverage:
+
+```bash
+# ARP scan / discovery
 sudo nmap -sn 192.168.1.0/24
 
-# ICMP ping sweep
-sudo nmap -sn -PE 192.168.1.0/24
-```
-
-### Step 2 — Quick Port Scan (Top 1000)
-
-```bash
-nmap -sV -sC --top-ports 1000 <TARGET>
-```
-
-### Step 3 — Full Port Scan
-
-```bash
+# Full manual service scan
 nmap -sV -sC -p- <TARGET>
-```
 
-### Step 4 — Aggressive Service Detection
-
-```bash
+# Aggressive focused follow-up
 nmap -sV -sC -A -p <OPEN_PORTS> <TARGET>
 ```
 
