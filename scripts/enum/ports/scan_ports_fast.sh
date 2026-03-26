@@ -54,8 +54,8 @@ ports = parsed.get("open_ports", [])
 summary = [
     f"# Fast Port Scan — ${TARGET}",
     "",
-    f"- Engagement: `${ENGAGEMENT}`",
-    f"- Target: `${TARGET}`",
+    "- Engagement: ${ENGAGEMENT}",
+    "- Target: ${TARGET}",
     f"- Open ports: {len(ports)}",
     "",
     "## Open ports",
@@ -66,9 +66,9 @@ else:
     summary.append("- No open ports found in top 1000 scan")
 summary.append("")
 summary.append("## Artifacts")
-summary.append(f"- Raw: `{${RAW_PATH@Q}}`")
-summary.append(f"- Parsed: `{${PARSED_PATH@Q}}`")
-summary.append(f"- Summary: `{${SUMMARY_PATH@Q}}`")
+summary.append("- Raw: ${RAW_PATH}")
+summary.append("- Parsed: ${PARSED_PATH}")
+summary.append("- Summary: ${SUMMARY_PATH}")
 Path(${SUMMARY_PATH@Q}).write_text("\n".join(summary) + "\n", encoding="utf-8")
 PY
 
