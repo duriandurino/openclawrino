@@ -1,0 +1,21 @@
+name: player-pulselink
+kind: quick-scan
+description: Fast PulseLink/player triage with host exposure checks plus PulseLink-specific HTTP indicator probing.
+steps:
+  - phase: enum
+    script: enum/ports/scan_ports_fast.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/ports/scan_ports_service.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: recon
+    script: recon/web/pulselink_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+    optional: true
+  - phase: enum
+    script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
+    optional: true
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]

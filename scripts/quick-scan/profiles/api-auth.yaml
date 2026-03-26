@@ -1,0 +1,17 @@
+name: api-auth
+kind: quick-scan
+description: API-focused quick triage with docs/auth surface checks and safe web baseline testing.
+steps:
+  - phase: recon
+    script: recon/web/recon_http_fingerprint.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+    optional: true
+  - phase: recon
+    script: recon/web/api_auth_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
+  - phase: enum
+    script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
