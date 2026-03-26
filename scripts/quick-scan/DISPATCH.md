@@ -121,6 +121,8 @@ python3 scripts/quick-scan/export_quick_report.py --engagement <engagement>
 
 This produces shareable formats from the markdown report and can be used before sending or publishing the result elsewhere.
 
+Quick scans now also route publishing through the main pentest report generator so branded Docs/PDF/Slides can be produced from quick-scan findings.
+
 ---
 
 ## Operator Rule of Thumb

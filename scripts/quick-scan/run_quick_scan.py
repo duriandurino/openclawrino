@@ -132,6 +132,15 @@ def choose_profile(profile: str | None, hint: str | None) -> tuple[str, dict | N
     raise ValueError("either --profile or --hint is required")
 
 
+def run_optional(command: list[str], cwd: Path, label: str):
+    result = subprocess.run(command, cwd=cwd, capture_output=True, text=True)
+    if result.returncode == 0:
+        if result.stdout.strip():
+            print(result.stdout.strip())
+    else:
+        print(f"[WARN] {label} failed: {result.stderr.strip() or result.stdout.strip()}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run quick security scan profile")
     parser.add_argument("--profile", default="", help="Quick-scan profile name or path")
@@ -139,6 +148,8 @@ def main() -> int:
     parser.add_argument("--target", required=True, help="Target host, URL, or domain")
     parser.add_argument("--engagement", default="", help="Engagement folder name (defaults to quick-<profile>-<timestamp>)")
     parser.add_argument("--mode", choices=["safe", "fast"], default="safe", help="Execution mode")
+    parser.add_argument("--account", default="hatlesswhite@gmail.com", help="Google account used for quick report publishing")
+    parser.add_argument("--no-publish", action="store_true", help="Skip export/publish after report generation")
     args = parser.parse_args()
 
     chosen_profile, recommendation = choose_profile(args.profile or None, args.hint or None)
@@ -192,6 +203,14 @@ def main() -> int:
         subprocess.run([
             "python3", str(report_script), "--engagement", engagement, "--profile", manifest.get("name", manifest_path.stem), "--target", args.target, "--mode", args.mode, "--steps", str(executed_steps)
         ], cwd=ROOT, check=False)
+
+    if not args.no_publish:
+        export_script = ROOT / "scripts" / "quick-scan" / "export_quick_report.py"
+        publish_script = ROOT / "scripts" / "quick-scan" / "publish_quick_report.py"
+        if export_script.exists():
+            run_optional(["python3", str(export_script), "--engagement", engagement], ROOT, "quick report export")
+        if publish_script.exists():
+            run_optional(["python3", str(publish_script), "--engagement", engagement, "--account", args.account], ROOT, "quick report publish")
 
     print(f"[✓] Quick scan complete: engagements/{engagement}/")
     return 0

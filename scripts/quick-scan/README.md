@@ -34,10 +34,11 @@ python3 scripts/quick-scan/recommend_profile.py --hint "mqtt broker on an iot de
 python3 scripts/quick-scan/export_quick_report.py --engagement <engagement>
 ```
 
-Current export behavior:
+Current export/publish behavior:
 - always creates `.txt`
 - always creates `.html`
-- creates `.pdf` when a supported converter is available
+- publishes through the main pentest report generator path when quick scan runs normally
+- creates branded Google Doc / PDF preview / Slides via the production reporting flow when Google auth is available
 
 ## Outputs
 
