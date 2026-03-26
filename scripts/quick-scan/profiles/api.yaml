@@ -1,0 +1,13 @@
+name: api
+kind: quick-scan
+description: Fast API surface triage using safe HTTP-focused checks.
+steps:
+  - phase: recon
+    script: recon/web/recon_http_fingerprint.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

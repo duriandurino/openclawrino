@@ -1,0 +1,13 @@
+name: pc
+kind: quick-scan
+description: Fast Windows/desktop-oriented triage with common remote-service probes.
+steps:
+  - phase: enum
+    script: orchestration/run_enum_profile.py
+    args: ["--profile", "enum-windows-host", "--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: vuln
+    script: vuln/cve-mapping/map_versions_to_cves.py
+    args: ["--input", "{{latest_enum_json}}", "--engagement", "{{engagement}}"]
+  - phase: vuln
+    script: vuln/cve-mapping/searchsploit_auto.sh
+    args: ["--input", "{{latest_enum_json}}", "--engagement", "{{engagement}}"]

@@ -1,0 +1,16 @@
+name: player
+kind: quick-scan
+description: Fast IoT/player triage with host and web-safe checks.
+steps:
+  - phase: enum
+    script: enum/ports/scan_ports_fast.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/ports/scan_ports_service.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - phase: enum
+    script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

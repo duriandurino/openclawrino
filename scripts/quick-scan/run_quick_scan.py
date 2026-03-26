@@ -1,0 +1,129 @@
+#!/usr/bin/env python3
+from __future__ import annotations
+
+import argparse
+import subprocess
+import sys
+from datetime import datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from scripts.orchestration.run_enum_profile import substitute
+
+
+def load_quick_manifest(path: Path) -> dict:
+    data: dict = {"steps": []}
+    current: dict | None = None
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.rstrip()
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if not line.startswith(" ") and stripped == "steps:":
+            data["steps"] = []
+            current = None
+            continue
+        if not line.startswith(" ") and ":" in stripped:
+            key, value = stripped.split(":", 1)
+            data[key.strip()] = value.strip().strip('"')
+            continue
+        if stripped.startswith("-"):
+            current = {}
+            data.setdefault("steps", []).append(current)
+            entry = stripped[1:].strip()
+            if ":" in entry:
+                key, value = entry.split(":", 1)
+                current[key.strip()] = value.strip().strip('"')
+            continue
+        if current is not None and stripped.startswith("args:"):
+            rest = stripped.split(":", 1)[1].strip()
+            if rest.startswith("[") and rest.endswith("]"):
+                items = [item.strip().strip('"') for item in rest[1:-1].split(",") if item.strip()]
+                current["args"] = items
+            continue
+        if current is not None and ":" in stripped:
+            key, value = stripped.split(":", 1)
+            current[key.strip()] = value.strip().strip('"')
+            continue
+    return data
+
+
+def latest_enum_json(engagement: str) -> str:
+    parsed_dir = ROOT / "engagements" / engagement / "enum" / "parsed"
+    if not parsed_dir.exists():
+        return ""
+    candidates = sorted(parsed_dir.glob("*.json"), key=lambda p: p.stat().st_mtime)
+    return str(candidates[-1]) if candidates else ""
+
+
+def ensure_reporting_dir(engagement: str) -> Path:
+    path = ROOT / "engagements" / engagement / "quick-scan" / "reporting"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def resolve_profile(profile: str) -> Path:
+    candidate = Path(profile)
+    if candidate.exists():
+        return candidate
+    candidate = ROOT / "scripts" / "quick-scan" / "profiles" / f"{profile}.yaml"
+    if candidate.exists():
+        return candidate
+    raise FileNotFoundError(profile)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Run quick security scan profile")
+    parser.add_argument("--profile", required=True, help="Quick-scan profile name or path")
+    parser.add_argument("--target", required=True, help="Target host, URL, or domain")
+    parser.add_argument("--engagement", default="", help="Engagement folder name (defaults to quick-<profile>-<timestamp>)")
+    args = parser.parse_args()
+
+    manifest_path = resolve_profile(args.profile)
+    manifest = load_quick_manifest(manifest_path)
+    engagement = args.engagement or f"quick-{manifest.get('name', manifest_path.stem)}-{datetime.now().strftime('%Y-%m-%d_%H%M')}"
+    ensure_reporting_dir(engagement)
+
+    print(f"[*] Running quick scan profile: {manifest.get('name', manifest_path.stem)}")
+    print(f"[*] Engagement: {engagement}")
+
+    for idx, step in enumerate(manifest.get("steps", []), start=1):
+        mapping = {
+            "target": args.target,
+            "engagement": engagement,
+            "latest_enum_json": latest_enum_json(engagement),
+        }
+        argv = [str(ROOT / "scripts" / step["script"])] + substitute(step.get("args", []), mapping)
+        print(f"[{idx}/{len(manifest['steps'])}] {' '.join(argv)}")
+        result = subprocess.run(argv, cwd=ROOT)
+        if result.returncode != 0:
+            print(f"[!] Step failed with exit code {result.returncode}: {step['script']}", file=sys.stderr)
+            return result.returncode
+
+    for phase in ["recon", "enum", "vuln"]:
+        phase_dir = ROOT / "engagements" / engagement / phase / "parsed"
+        if phase_dir.exists() and any(phase_dir.glob("*.json")):
+            subprocess.run([
+                "python3",
+                str(ROOT / "scripts" / "orchestration" / "generate_phase_summary.py"),
+                "--engagement",
+                engagement,
+                "--phase",
+                phase,
+            ], cwd=ROOT, check=False)
+
+    report_script = ROOT / "scripts" / "quick-scan" / "generate_quick_report.py"
+    if report_script.exists():
+        subprocess.run([
+            "python3", str(report_script), "--engagement", engagement, "--profile", manifest.get("name", manifest_path.stem), "--target", args.target
+        ], cwd=ROOT, check=False)
+
+    print(f"[✓] Quick scan complete: engagements/{engagement}/")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

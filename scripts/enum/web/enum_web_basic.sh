@@ -124,9 +124,9 @@ else:
     summary.append("- No notable web findings captured")
 summary.append("")
 summary.append("## Artifacts")
-summary.append(f"- Raw: `{${RAW_PATH@Q}}`")
-summary.append(f"- Parsed: `{${PARSED_PATH@Q}}`")
-summary.append(f"- Summary: `{${SUMMARY_PATH@Q}}`")
+summary.append("- Raw: ${RAW_PATH}")
+summary.append("- Parsed: ${PARSED_PATH}")
+summary.append("- Summary: ${SUMMARY_PATH}")
 Path(${SUMMARY_PATH@Q}).write_text("\n".join(summary) + "\n", encoding='utf-8')
 PY
 
