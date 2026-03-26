@@ -1,0 +1,7 @@
+{
+  "target": "192.168.0.227",
+  "open_ports": [
+    {"port": 80, "protocol": "tcp", "service": "http", "version": "Apache httpd 2.4.58"},
+    {"port": 445, "protocol": "tcp", "service": "samba", "version": "Samba 4.6.2"}
+  ]
+}
