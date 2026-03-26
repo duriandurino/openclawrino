@@ -1,0 +1,343 @@
+<!doctype html><html><head><meta charset="utf-8"><title>OPEN QUESTIONS</title><style>
+body { font-family: Arial, sans-serif; line-height: 1.55; color: #111; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+h1,h2,h3,h4 { color: #111; margin-top: 1.2em; }
+pre, code { font-family: "DejaVu Sans Mono", monospace; }
+pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; }
+code { background: #f5f5f5; padding: 1px 4px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+blockquote { border-left: 4px solid #ddd; margin: 1em 0; padding: 0.2em 1em; color: #555; }
+hr { border: 0; border-top: 1px solid #ddd; margin: 2em 0; }
+ul, ol { margin-left: 1.5em; }
+</style></head><body><h1 id="ntv-phoenix-hardware-lock-open-questions">NTV Phoenix &amp; Hardware Lock — Open Questions</h1>
+<p><strong>Known gaps, uncertainties, and future improvement areas</strong><br />
+<strong>Last Updated:</strong> March 2026</p>
+<hr />
+<h2 id="critical-uncertainties">🔴 Critical Uncertainties</h2>
+<h3 id="1-hardware-serialcid-management">1. Hardware Serial/CID Management</h3>
+<p><strong>Question:</strong> How are authorized serial/CID pairs managed across production?</p>
+<p><strong>Current State:</strong>
+- Hardcoded in <code>/usr/local/bin/hardware_lock.py</code>
+- Two different serial/CID pairs found in documentation:
+  - Root doc: <code>ffb6d42807368154</code> / <code>1b534d45423151543089c65df4015a00</code>
+  - Kent turnover: <code>10000000d58ec40c</code> / <code>1b534d4542315154305bde6365015a00</code></p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ Are these per-device, per-batch, or per-deployment?
+- ⚠️ How is the "gold master" image updated with new serials?
+- ⚠️ What happens when a Pi needs replacement (different serial)?
+- ⚠️ Is there a centralized database of authorized hardware?</p>
+<p><strong>Risks:</strong>
+- Locked out devices if serials don't match
+- Maintenance overhead for each hardware change
+- No clear process for Pi replacement</p>
+<hr />
+<h3 id="2-vault-distribution">2. Vault Distribution</h3>
+<p><strong>Question:</strong> How is the encrypted vault.img distributed?</p>
+<p><strong>Current State:</strong>
+- Vault is LUKS-encrypted container
+- Requires Pi serial to decrypt
+- Contains complete application stack</p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ How is vault.img initially created and populated?
+- ⚠️ How are updates to the application deployed?
+- ⚠️ Is vault.img cloned from a master or generated per-device?
+- ⚠️ What's the process for updating player-server version?</p>
+<p><strong>Evidence:</strong>
+- <code>installer.sh</code> downloads player-server-2.6.0.zip and player-ui-2.4.1.zip
+- No clear evidence of vault creation in installer
+- Phoenix <code>repairman.sh</code> rsyncs from USB to SD</p>
+<hr />
+<h3 id="3-phoenix-usb-creation-process">3. Phoenix USB Creation Process</h3>
+<p><strong>Question:</strong> What is the canonical process for creating Phoenix USBs?</p>
+<p><strong>Current State:</strong>
+- <code>repairman.sh</code> script exists with recovery logic
+- Expects boot from USB (sdb)
+- Contains rsync-based restore logic</p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ How is the USB initially prepared/flashed?
+- ⚠️ What OS version is on the USB?
+- ⚠️ How are USB contents updated with new software versions?
+- ⚠️ Is there a build script for creating Phoenix USB images?
+- ⚠️ How many USBs should field techs carry?</p>
+<p><strong>Risks:</strong>
+- Inconsistent USB preparation
+- Outdated recovery software
+- Field tech confusion</p>
+<hr />
+<h2 id="technical-questions">🟡 Technical Questions</h2>
+<h3 id="4-eeprom-boot-order-conflicts">4. EEPROM Boot Order Conflicts</h3>
+<p><strong>Question:</strong> What happens if EEPROM boot order changes?</p>
+<p><strong>Current State:</strong>
+- <code>BOOT_ORDER=0xf461</code> (USB before SD)
+- Set via <code>rpi-eeprom-config</code>
+- Phoenix repairman resets to <code>0xf461</code></p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ What if EEPROM update fails?
+- ⚠️ What if boot order is accidentally changed?
+- ⚠️ Is there a fallback if EEPROM is corrupted?
+- ⚠️ How is EEPROM version managed across fleet?</p>
+<p><strong>Evidence:</strong>
+- Document shows duplicate: <code>BOOT_ORDER=BOOT_ORDER=BOOT_ORDER=0xf461</code>
+- Suggests possible EEPROM config issues</p>
+<hr />
+<h3 id="5-vault-corruption-handling">5. Vault Corruption Handling</h3>
+<p><strong>Question:</strong> What happens if vault.img is corrupted?</p>
+<p><strong>Current State:</strong>
+- Vault is LUKS-encrypted file on SD
+- Hardware lock unlocks and mounts it
+- Watchdog monitors mounted directory</p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ How is vault corruption detected?
+- ⚠️ What recovery options exist for corrupted vault?
+- ⚠️ Is there vault backup/replication?
+- ⚠️ Can Phoenix repairman fix vault corruption?</p>
+<p><strong>Current Gap:</strong>
+- <code>repairman.sh</code> rsyncs filesystem, but may not handle vault-specific corruption
+- No explicit vault repair logic found</p>
+<hr />
+<h3 id="6-network-recovery-limitations">6. Network Recovery Limitations</h3>
+<p><strong>Question:</strong> Can any recovery happen without physical access?</p>
+<p><strong>Current State:</strong>
+- All recovery requires USB insertion
+- No network-based recovery mechanism
+- Cloud dashboard provides remote commands but not recovery</p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ Is physical access always available?
+- ⚠️ What are SLA implications for failed devices?
+- ⚠️ Could TFTP/Netboot be used for recovery?</p>
+<hr />
+<h3 id="7-watchdog-false-trigger-risk">7. Watchdog False Trigger Risk</h3>
+<p><strong>Question:</strong> Can watchdog trigger falsely?</p>
+<p><strong>Current State:</strong>
+- Monitors <code>/home/pi/n-compasstv</code> every 20s
+- 60s grace period at boot
+- Renames <code>config.txt</code> before reboot</p>
+<p><strong>Uncertainties:</strong>
+- ⚠️ What if directory is temporarily unavailable (I/O spike)?
+- ⚠️ Is 20s check interval appropriate?
+- ⚠️ Could a slow SD card cause false triggers?
+- ⚠️ Is there a way to "disarm" watchdog temporarily?</p>
+<p><strong>Evidence:</strong>
+- Script uses simple <code>[ ! -d "$CHECK_DIR" ]</code> check
+- No retry logic or "soft" check</p>
+<hr />
+<h2 id="improvement-opportunities">🟢 Improvement Opportunities</h2>
+<h3 id="8-configuration-management">8. Configuration Management</h3>
+<p><strong>Current:</strong> Hardcoded values in Python scripts
+<strong>Proposed:</strong> External configuration file</p>
+<pre><code class="language-python"># Instead of:
+AUTHORIZED_PI_SERIAL = &quot;ffb6d42807368154&quot;
+
+# Use:
+import json
+with open('/etc/nctv/hardware-lock.json') as f:
+    config = json.load(f)
+AUTHORIZED_PI_SERIAL = config['authorized_serial']
+</code></pre>
+<p><strong>Benefits:</strong>
+- Easier per-device customization
+- Centralized management
+- No code changes for new hardware</p>
+<hr />
+<h3 id="9-hardware-lock-logging">9. Hardware Lock Logging</h3>
+<p><strong>Current:</strong> Print statements, systemd journal
+<strong>Gap:</strong> No persistent audit log of lock events</p>
+<p><strong>Proposed:</strong> SQLite or file-based audit log</p>
+<pre><code class="language-python"># Log to persistent storage
+def log_lock_event(event_type, serial, cid, result):
+    with open('/var/log/nctv-hardware-lock.log', 'a') as f:
+        f.write(f&quot;{timestamp} {event_type} serial={serial} cid={cid} result={result}\n&quot;)
+</code></pre>
+<hr />
+<h3 id="10-vault-health-monitoring">10. Vault Health Monitoring</h3>
+<p><strong>Current:</strong> Mount success/failure
+<strong>Gap:</strong> No integrity checks on vault contents</p>
+<p><strong>Proposed:</strong> Periodic hash verification</p>
+<pre><code class="language-bash"># Create manifest on vault creation
+find /home/pi/n-compasstv-secure -type f -exec sha256sum {} \; &gt; /home/pi/vault-manifest.txt
+
+# Verify periodically
+sha256sum -c /home/pi/vault-manifest.txt
+</code></pre>
+<hr />
+<h3 id="11-multi-hardware-support">11. Multi-Hardware Support</h3>
+<p><strong>Current:</strong> Single serial/CID pair
+<strong>Proposed:</strong> Allow list approach</p>
+<pre><code class="language-python"># Support multiple authorized devices
+AUTHORIZED_DEVICES = [
+    {&quot;serial&quot;: &quot;ffb6d42807368154&quot;, &quot;cid&quot;: &quot;1b534d...&quot;},
+    {&quot;serial&quot;: &quot;10000000d58ec40c&quot;, &quot;cid&quot;: &quot;1b534d...&quot;},
+]
+</code></pre>
+<hr />
+<h2 id="documentation-gaps">📋 Documentation Gaps</h2>
+<h3 id="12-missing-documentation">12. Missing Documentation</h3>
+<table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Status</th>
+<th>Priority</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Phoenix USB creation process</td>
+<td>❌ Not found</td>
+<td>🔴 Critical</td>
+</tr>
+<tr>
+<td>Vault creation procedure</td>
+<td>❌ Not found</td>
+<td>🔴 Critical</td>
+</tr>
+<tr>
+<td>Serial/CID management workflow</td>
+<td>❌ Not found</td>
+<td>🔴 Critical</td>
+</tr>
+<tr>
+<td>Fleet update process</td>
+<td>❌ Not found</td>
+<td>🟡 High</td>
+</tr>
+<tr>
+<td>Troubleshooting runbook</td>
+<td>❌ Not found</td>
+<td>🟡 High</td>
+</tr>
+<tr>
+<td>Security incident response</td>
+<td>❌ Not found</td>
+<td>🟡 High</td>
+</tr>
+<tr>
+<td>Performance tuning guide</td>
+<td>❌ Not found</td>
+<td>🟢 Medium</td>
+</tr>
+<tr>
+<td>Monitoring/alerting setup</td>
+<td>❌ Not found</td>
+<td>🟢 Medium</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ambiguities-found-in-source">🔍 Ambiguities Found in Source</h2>
+<h3 id="a-duplicate-eeprom-config">A. Duplicate EEPROM Config</h3>
+<p><strong>Location:</strong> Scripts and Services doc<br />
+<strong>Issue:</strong></p>
+<pre><code>BOOT_ORDER=BOOT_ORDER=BOOT_ORDER=0xf461
+</code></pre>
+<p><strong>Question:</strong> Is this intentional or a documentation error?</p>
+<hr />
+<h3 id="b-multiple-serialcid-pairs">B. Multiple Serial/CID Pairs</h3>
+<p><strong>Location:</strong> Different files<br />
+<strong>Finding:</strong>
+- Root doc: <code>ffb6d42807368154</code>
+- Kent turnover: <code>10000000d58ec40c</code></p>
+<p><strong>Question:</strong> Are these different environments or different versions?</p>
+<hr />
+<h3 id="c-service-name-inconsistency">C. Service Name Inconsistency</h3>
+<p><strong>Location:</strong> systemd service files<br />
+<strong>Finding:</strong>
+- <code>setup.sh</code> references <code>pm2-pi</code> and <code>watchdog</code>
+- But actual service files have different names</p>
+<p><strong>Question:</strong> Are there legacy service names still in use?</p>
+<hr />
+<h2 id="future-considerations">🚀 Future Considerations</h2>
+<h3 id="remote-management">Remote Management</h3>
+<ul>
+<li>Network-based vault unlock (secure key escrow?)</li>
+<li>OTA updates for vault contents</li>
+<li>Remote diagnostics beyond socket commands</li>
+</ul>
+<h3 id="security-enhancements">Security Enhancements</h3>
+<ul>
+<li>TPM integration for Pi 5</li>
+<li>Signed vault images</li>
+<li>Certificate-based hardware attestation</li>
+</ul>
+<h3 id="scalability">Scalability</h3>
+<ul>
+<li>Automated vault generation</li>
+<li>CI/CD for USB image creation</li>
+<li>Fleet management dashboard</li>
+</ul>
+<hr />
+<h2 id="action-items">Action Items</h2>
+<table>
+<thead>
+<tr>
+<th>Priority</th>
+<th>Item</th>
+<th>Owner</th>
+<th>Due</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>🔴 P0</td>
+<td>Document serial/CID management process</td>
+<td>?</td>
+<td>ASAP</td>
+</tr>
+<tr>
+<td>🔴 P0</td>
+<td>Document Phoenix USB creation</td>
+<td>?</td>
+<td>ASAP</td>
+</tr>
+<tr>
+<td>🔴 P0</td>
+<td>Document vault creation procedure</td>
+<td>?</td>
+<td>ASAP</td>
+</tr>
+<tr>
+<td>🟡 P1</td>
+<td>Create external config for hardware lock</td>
+<td>Dev</td>
+<td>?</td>
+</tr>
+<tr>
+<td>🟡 P1</td>
+<td>Add audit logging to hardware lock</td>
+<td>Dev</td>
+<td>?</td>
+</tr>
+<tr>
+<td>🟡 P1</td>
+<td>Clarify EEPROM boot order handling</td>
+<td>Dev</td>
+<td>?</td>
+</tr>
+<tr>
+<td>🟢 P2</td>
+<td>Create fleet update runbook</td>
+<td>Ops</td>
+<td>?</td>
+</tr>
+<tr>
+<td>🟢 P2</td>
+<td>Document troubleshooting procedures</td>
+<td>Support</td>
+<td>?</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="open-questions-summary">Open Questions Summary</h2>
+<p><strong>Total Open Questions:</strong> 11<br />
+<strong>Critical (🔴):</strong> 3<br />
+<strong>High (🟡):</strong> 4<br />
+<strong>Medium (🟢):</strong> 4</p>
+<p><strong>Key Areas:</strong>
+1. Hardware binding management
+2. Vault lifecycle
+3. Recovery process standardization
+4. Configuration externalization
+5. Documentation completeness</p>
+<hr />
+<p><strong>End of Open Questions</strong></p></body></html>

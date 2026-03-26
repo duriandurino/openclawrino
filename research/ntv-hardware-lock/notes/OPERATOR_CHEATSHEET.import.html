@@ -1,0 +1,530 @@
+<!doctype html><html><head><meta charset="utf-8"><title>OPERATOR CHEATSHEET</title><style>
+body { font-family: Arial, sans-serif; line-height: 1.55; color: #111; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+h1,h2,h3,h4 { color: #111; margin-top: 1.2em; }
+pre, code { font-family: "DejaVu Sans Mono", monospace; }
+pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; }
+code { background: #f5f5f5; padding: 1px 4px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+blockquote { border-left: 4px solid #ddd; margin: 1em 0; padding: 0.2em 1em; color: #555; }
+hr { border: 0; border-top: 1px solid #ddd; margin: 2em 0; }
+ul, ol { margin-left: 1.5em; }
+</style></head><body><h1 id="ntv-phoenix-hardware-lock-operator-cheatsheet">NTV Phoenix &amp; Hardware Lock — Operator Cheatsheet</h1>
+<p><strong>Quick reference for technicians and operators</strong><br />
+<strong>Last Updated:</strong> March 2026</p>
+<hr />
+<h2 id="quick-status-check">Quick Status Check</h2>
+<pre><code class="language-bash"># Check if all services are running
+sudo systemctl status hardware-check.service vault-mount.service nctv-watchdog.service
+
+# Check PM2 processes
+pm2 status
+
+# Check vault mount
+ls -la /home/pi/n-compasstv-secure/
+df -h | grep n-compasstv-secure
+
+# Check hardware fingerprint
+grep Serial /proc/cpuinfo
+cat /sys/block/mmcblk0/device/cid
+</code></pre>
+<hr />
+<h2 id="service-commands">Service Commands</h2>
+<h3 id="check-service-status">Check Service Status</h3>
+<pre><code class="language-bash"># Individual service status
+sudo systemctl status hardware-check.service
+sudo systemctl status vault-mount.service
+sudo systemctl status nctv-watchdog.service
+
+# View logs
+sudo journalctl -u hardware-check.service -f
+sudo journalctl -u nctv-watchdog.service -f
+sudo journalctl -u vault-mount.service -f
+</code></pre>
+<h3 id="startstoprestart-services">Start/Stop/Restart Services</h3>
+<pre><code class="language-bash"># Restart hardware check (triggers vault mount)
+sudo systemctl restart hardware-check.service
+
+# Restart watchdog
+sudo systemctl restart nctv-watchdog.service
+
+# Stop services
+sudo systemctl stop hardware-check.service
+sudo systemctl stop nctv-watchdog.service
+</code></pre>
+<h3 id="enabledisable-services">Enable/Disable Services</h3>
+<pre><code class="language-bash"># Enable services (start on boot)
+sudo systemctl enable hardware-check.service
+sudo systemctl enable vault-mount.service
+sudo systemctl enable nctv-watchdog.service
+
+# Disable services (don't start on boot)
+sudo systemctl disable repairman.service  # Usually disabled on SD
+</code></pre>
+<hr />
+<h2 id="vault-operations">Vault Operations</h2>
+<h3 id="manual-vault-unlock-emergency">Manual Vault Unlock (Emergency)</h3>
+<pre><code class="language-bash"># Get Pi serial
+SERIAL=$(grep Serial /proc/cpuinfo | cut -d: -f2 | tr -d ' ')
+echo &quot;Serial: $SERIAL&quot;
+
+# Open vault
+echo -n &quot;$SERIAL&quot; | sudo cryptsetup open /home/pi/vault.img nctv_data --key-file -
+
+# Mount vault
+sudo mkdir -p /home/pi/n-compasstv-secure
+sudo mount /dev/mapper/nctv_data /home/pi/n-compasstv-secure
+sudo chown -R pi:pi /home/pi/n-compasstv-secure
+
+# Verify
+ls /home/pi/n-compasstv-secure/
+</code></pre>
+<h3 id="close-vault">Close Vault</h3>
+<pre><code class="language-bash"># Unmount
+sudo umount /home/pi/n-compasstv-secure
+
+# Close crypt device
+sudo cryptsetup close nctv_data
+
+# Verify closed
+ls /dev/mapper/nctv_data  # Should not exist
+</code></pre>
+<h3 id="vault-status">Vault Status</h3>
+<pre><code class="language-bash"># Check if vault is mounted
+mount | grep n-compasstv-secure
+
+# Check cryptsetup status
+sudo cryptsetup status nctv_data
+
+# List mapped devices
+ls /dev/mapper/
+</code></pre>
+<hr />
+<h2 id="pm2-commands">PM2 Commands</h2>
+<h3 id="basic-pm2-operations">Basic PM2 Operations</h3>
+<pre><code class="language-bash"># View process status
+pm2 status
+pm2 list
+
+# View logs
+pm2 logs
+pm2 logs player-server
+pm2 logs player-chromium
+
+# Restart processes
+pm2 restart player-server
+pm2 restart player-chromium
+pm2 restart all
+
+# Stop processes
+pm2 stop player-server
+pm2 stop all
+
+# Start ecosystem
+pm2 start /home/pi/n-compasstv/ecosystem.config.js
+</code></pre>
+<h3 id="pm2-startup-registration">PM2 Startup Registration</h3>
+<pre><code class="language-bash"># Register PM2 startup (run once during install)
+pm2 startup
+sudo env PATH=$PATH:/usr/local/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u pi --hp /home/pi
+
+# Save PM2 config (persists across reboots)
+pm2 save
+</code></pre>
+<hr />
+<h2 id="recovery-procedures">Recovery Procedures</h2>
+<h3 id="scenario-1-player-wont-start">Scenario 1: Player Won't Start</h3>
+<pre><code class="language-bash"># Check if vault is mounted
+mount | grep n-compasstv
+
+# If not mounted, check hardware lock logs
+sudo journalctl -u hardware-check.service --no-pager
+
+# Check for serial mismatch
+grep Serial /proc/cpuinfo
+cat /sys/block/mmcblk0/device/cid
+
+# Verify against authorized values in /usr/local/bin/hardware_lock.py
+</code></pre>
+<h3 id="scenario-2-watchdog-triggered-recovery">Scenario 2: Watchdog Triggered Recovery</h3>
+<pre><code class="language-bash"># Check if config.txt was renamed
+ls -la /boot/firmware/config.txt*
+
+# If config.txt.bak exists, restore it
+sudo mv /boot/firmware/config.txt.bak /boot/firmware/config.txt
+
+# Reboot normally
+sudo reboot
+</code></pre>
+<h3 id="scenario-3-sd-card-failure">Scenario 3: SD Card Failure</h3>
+<pre><code class="language-bash"># Check if SD is detected
+ls -la /dev/mmcblk0
+
+# If not present, use Phoenix USB:
+# 1. Insert USB drive with Phoenix image
+# 2. Power cycle Pi
+# 3. Wait for emergency mode or surgery mode
+</code></pre>
+<h3 id="scenario-4-phoenix-surgery-mode-sd-present">Scenario 4: Phoenix Surgery Mode (SD Present)</h3>
+<pre><code class="language-bash"># Boot from USB, let repairman.sh run automatically
+# Check TTY1 for progress:
+# - &quot;MODE: SYSTEM SURGEON (SD Detected)&quot;
+# - fsck progress
+# - rsync progress
+# - &quot;REPAIR COMPLETE. REBOOTING...&quot;
+</code></pre>
+<hr />
+<h2 id="hardware-lock-debugging">Hardware Lock Debugging</h2>
+<h3 id="check-hardware-fingerprints">Check Hardware Fingerprints</h3>
+<pre><code class="language-bash"># Get current Pi serial
+grep Serial /proc/cpuinfo
+# Output: Serial: xxxxxxxx (e.g., ffb6d42807368154)
+
+# Get SD CID
+cat /sys/block/mmcblk0/device/cid
+# Output: 32-character hex string
+
+# View authorized values
+grep &quot;AUTHORIZED_&quot; /usr/local/bin/hardware_lock.py
+</code></pre>
+<h3 id="test-lock-mechanism">Test Lock Mechanism</h3>
+<pre><code class="language-bash"># Simulate hardware mismatch (CAUTION: will lock!)
+# Edit hardware_lock.py with wrong serial, then:
+sudo systemctl restart hardware-check.service
+
+# Unlock after test
+# Restore correct serial in hardware_lock.py
+sudo systemctl restart hardware-check.service
+</code></pre>
+<h3 id="force-unlock-emergency-only">Force Unlock (Emergency Only)</h3>
+<pre><code class="language-bash"># Skip hardware check and manually start vault
+sudo python3 /usr/local/bin/unlock_vault.py
+
+# Start PM2 manually
+export PM2_HOME=/home/pi/.pm2
+pm2 start /home/pi/n-compasstv-secure/ecosystem.config.js
+</code></pre>
+<hr />
+<h2 id="boot-configuration">Boot Configuration</h2>
+<h3 id="check-eeprom-settings">Check EEPROM Settings</h3>
+<p>```bashn# Read current EEPROM config
+sudo rpi-eeprom-config</p>
+<h1 id="look-for">Look for:</h1>
+<h1 id="boot_order0xf461">BOOT_ORDER=0xf461</h1>
+<h1 id="wdt_timeout15000">WDT_TIMEOUT=15000</h1>
+<h1 id="halt_on_error0">HALT_ON_ERROR=0</h1>
+<pre><code>
+### Update EEPROM
+
+```bash
+# Create config filecat &gt; /tmp/pieeprom.conf &lt;&lt; 'EOF'
+[all]
+BOOT_UART=1
+BOOT_ORDER=0xf461
+NET_INSTALL_AT_POWER_ON=1
+PSU_MAX_CURRENT=5000
+HALT_ON_ERROR=0
+WDT_TIMEOUT=15000
+EOF
+
+# Apply
+sudo rpi-eeprom-config --apply /tmp/pieeprom.conf
+</code></pre>
+<h3 id="boot-partition">Boot Partition</h3>
+<pre><code class="language-bash"># Mount boot partition
+sudo mount /dev/mmcblk0p1 /boot/firmware
+
+# View boot config
+cat /boot/firmware/config.txt
+
+# Common settings:
+# hdmi_force_hotplug=1
+# hdmi_drive=2
+# dtparam=watchdog=on
+</code></pre>
+<hr />
+<h2 id="log-locations">Log Locations</h2>
+<h3 id="system-logs">System Logs</h3>
+<pre><code class="language-bash"># systemd journal
+sudo journalctl -b  # Current boot
+sudo journalctl -b -1  # Previous boot
+
+# Specific services
+sudo journalctl -u hardware-check.service --no-pager
+sudo journalctl -u vault-mount.service --no-pager
+sudo journalctl -u nctv-watchdog.service --no-pager
+</code></pre>
+<h3 id="application-logs">Application Logs</h3>
+<pre><code class="language-bash"># PM2 logs
+~/.pm2/logs/
+
+# Player server logs (if running)
+ls /home/pi/n-compasstv-secure/player-server/src/logs/
+
+# Database location
+ls /home/pi/n-compasstv-secure/player-server/src/db/_data.db
+</code></pre>
+<hr />
+<h2 id="network-diagnostics">Network Diagnostics</h2>
+<h3 id="check-connectivity">Check Connectivity</h3>
+<pre><code class="language-bash"># Basic connectivity
+ping -c 4 google.com
+ping -c 4 nctvapi2.n-compass.online
+
+# Check API
+ curl -I https://nctvapi2.n-compass.online
+
+# Check socket connection
+ curl -I https://nctvsocket.n-compass.online
+</code></pre>
+<h3 id="player-api">Player API</h3>
+<pre><code class="language-bash"># Health check
+curl http://localhost:3215/ping
+
+# Reset content
+curl http://localhost:3215/api/content/reset
+
+# Device info
+curl http://localhost:3215/api/device
+</code></pre>
+<hr />
+<h2 id="common-issues-fixes">Common Issues &amp; Fixes</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Symptoms</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardware mismatch</td>
+<td>Lockout screen, Chromium kiosk</td>
+<td>Check serial/CID match in hardware_lock.py</td>
+</tr>
+<tr>
+<td>Vault not mounting</td>
+<td>PM2 not starting, missing directory</td>
+<td>Check unlock_vault.py logs; verify vault.img exists</td>
+</tr>
+<tr>
+<td>Watchdog reboot loop</td>
+<td>Constant reboots</td>
+<td>Check /home/pi/n-compasstv exists; restore from backup</td>
+</tr>
+<tr>
+<td>SD not detected</td>
+<td>Emergency USB mode</td>
+<td>Replace SD card; run surgery mode</td>
+</tr>
+<tr>
+<td>PM2 not starting</td>
+<td>Black screen</td>
+<td>pm2 status; pm2 resurrect; pm2 save</td>
+</tr>
+<tr>
+<td>Chromium not launching</td>
+<td>No display</td>
+<td>Check DISPLAY=:0; check .env file</td>
+</tr>
+<tr>
+<td>Can't enter license</td>
+<td>UI not responding</td>
+<td>Ctrl+Shift+K; check socket connection</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="keyboard-shortcuts">Keyboard Shortcuts</h2>
+<h3 id="player-shortcuts-chromium-kiosk">Player Shortcuts (Chromium Kiosk)</h3>
+<table>
+<thead>
+<tr>
+<th>Shortcut</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl + Shift + P</code></td>
+<td>Open player settings/status panel</td>
+</tr>
+<tr>
+<td><code>Ctrl + Shift + K</code></td>
+<td>Enter license key</td>
+</tr>
+<tr>
+<td><code>Ctrl + Shift + R</code></td>
+<td>Restart/reload player UI</td>
+</tr>
+</tbody>
+</table>
+<h3 id="system-shortcuts">System Shortcuts</h3>
+<table>
+<thead>
+<tr>
+<th>Shortcut</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Ctrl + Alt + T</code></td>
+<td>Open terminal</td>
+</tr>
+<tr>
+<td><code>Ctrl + Alt + F1</code></td>
+<td>Switch to TTY1 (console)</td>
+</tr>
+<tr>
+<td><code>Ctrl + Alt + F7</code></td>
+<td>Switch to graphical display</td>
+</tr>
+<tr>
+<td><code>Ctrl + C</code></td>
+<td>Cancel running command</td>
+</tr>
+<tr>
+<td><code>Ctrl + Z</code></td>
+<td>Suspend process (then <code>fg</code> to resume)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="file-locations-quick-reference">File Locations Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>Path</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>/usr/local/bin/hardware_lock.py</code></td>
+<td>Hardware verification script</td>
+</tr>
+<tr>
+<td><code>/usr/local/bin/unlock_vault.py</code></td>
+<td>Vault unlock script</td>
+</tr>
+<tr>
+<td><code>/usr/local/bin/nctv-watchdog.sh</code></td>
+<td>Watchdog script</td>
+</tr>
+<tr>
+<td><code>/usr/local/bin/repairman.sh</code></td>
+<td>Phoenix recovery script</td>
+</tr>
+<tr>
+<td><code>/etc/systemd/system/hardware-check.service</code></td>
+<td>Hardware check service</td>
+</tr>
+<tr>
+<td><code>/etc/systemd/system/vault-mount.service</code></td>
+<td>Vault mount service</td>
+</tr>
+<tr>
+<td><code>/etc/systemd/system/nctv-watchdog.service</code></td>
+<td>Watchdog service</td>
+</tr>
+<tr>
+<td><code>/etc/systemd/system/repairman.service</code></td>
+<td>Phoenix service</td>
+</tr>
+<tr>
+<td><code>/home/pi/vault.img</code></td>
+<td>Encrypted vault container</td>
+</tr>
+<tr>
+<td><code>/home/pi/n-compasstv-secure/</code></td>
+<td>Decrypted vault mount</td>
+</tr>
+<tr>
+<td><code>/home/pi/lockout.html</code></td>
+<td>Lockout screen HTML</td>
+</tr>
+<tr>
+<td><code>/boot/firmware/config.txt</code></td>
+<td>Boot configuration</td>
+</tr>
+<tr>
+<td><code>/boot/firmware/config.txt.bak</code></td>
+<td>Backup (created by watchdog)</td>
+</tr>
+<tr>
+<td><code>/proc/cpuinfo</code></td>
+<td>Pi serial number</td>
+</tr>
+<tr>
+<td><code>/sys/block/mmcblk0/device/cid</code></td>
+<td>SD card CID</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="emergency-contacts-escalation">Emergency Contacts / Escalation</h2>
+<table>
+<thead>
+<tr>
+<th>Issue</th>
+<th>Contact</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardware failure</td>
+<td>Field technician</td>
+<td>Replace Pi/SD</td>
+</tr>
+<tr>
+<td>Software bug</td>
+<td>Dev team</td>
+<td>Check logs, file issue</td>
+</tr>
+<tr>
+<td>Security incident</td>
+<td>Security team</td>
+<td>Lockout, audit</td>
+</tr>
+<tr>
+<td>Cloud API issues</td>
+<td>Platform team</td>
+<td>Check dashboard status</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="script-quick-deploy">Script Quick Deploy</h2>
+<h3 id="deploy-hardware-lock-on-new-pi">Deploy Hardware Lock on New Pi</h3>
+<pre><code class="language-bash">#!/bin/bash
+# Run as root
+
+# 1. Update authorized values
+SERIAL=&quot;YOUR_PI_SERIAL&quot;
+CID=&quot;YOUR_SD_CID&quot;
+sed -i &quot;s/AUTHORIZED_PI_SERIAL.*/AUTHORIZED_PI_SERIAL = \&quot;$SERIAL\&quot;/&quot; /usr/local/bin/hardware_lock.py
+sed -i &quot;s/AUTHORIZED_SD_CID.*/AUTHORIZED_SD_CID = \&quot;$CID\&quot;/&quot; /usr/local/bin/hardware_lock.py
+
+# 2. Create vault
+dd if=/dev/zero of=/home/pi/vault.img bs=1M count=4096
+SERIAL=$(grep Serial /proc/cpuinfo | cut -d: -f2 | tr -d ' ')
+echo -n &quot;$SERIAL&quot; | cryptsetup luksFormat /home/pi/vault.img --key-file -
+echo -n &quot;$SERIAL&quot; | cryptsetup open /home/pi/vault.img nctv_data --key-file -
+mkfs.ext4 /dev/mapper/nctv_data
+
+# 3. Enable services
+systemctl enable hardware-check.service
+systemctl enable vault-mount.service
+systemctl enable nctv-watchdog.service
+
+# 4. Copy application to vault
+mount /dev/mapper/nctv_data /home/pi/n-compasstv-secure
+cp -r /path/to/player/* /home/pi/n-compasstv-secure/
+umount /home/pi/n-compasstv-secure
+cryptsetup close nctv_data
+</code></pre>
+<hr />
+<p><strong>End of Operator Cheatsheet</strong></p></body></html>

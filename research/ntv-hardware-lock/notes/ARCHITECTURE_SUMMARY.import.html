@@ -1,0 +1,734 @@
+<!doctype html><html><head><meta charset="utf-8"><title>ARCHITECTURE SUMMARY</title><style>
+body { font-family: Arial, sans-serif; line-height: 1.55; color: #111; max-width: 900px; margin: 40px auto; padding: 0 20px; }
+h1,h2,h3,h4 { color: #111; margin-top: 1.2em; }
+pre, code { font-family: "DejaVu Sans Mono", monospace; }
+pre { background: #f5f5f5; padding: 12px; border-radius: 6px; overflow-x: auto; }
+code { background: #f5f5f5; padding: 1px 4px; border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+blockquote { border-left: 4px solid #ddd; margin: 1em 0; padding: 0.2em 1em; color: #555; }
+hr { border: 0; border-top: 1px solid #ddd; margin: 2em 0; }
+ul, ol { margin-left: 1.5em; }
+</style></head><body><h1 id="ntv-phoenix-hardware-lock-architecture-summary">NTV Phoenix &amp; Hardware Lock — Architecture Summary</h1>
+<p><strong>System:</strong> NCompass TV NTV360 Player Infrastructure<br />
+<strong>Date:</strong> March 2026<br />
+<strong>Scope:</strong> Component architecture, data flow, and security model</p>
+<hr />
+<h2 id="1-system-component-map">1. System Component Map</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────────┐
+│                              RASPBERRY PI 5 HARDWARE                            │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐         │
+│  │   EEPROM     │  │  SD Card     │  │    USB       │  │   HDMI/TV    │         │
+│  │  (Boot ROM)  │  │ (Primary OS) │  │  (Phoenix)   │  │  (Display)   │         │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘         │
+└─────────┼─────────────────┼─────────────────┼─────────────────┼──────────────────┘
+          │                 │                 │                 │
+          ▼                 ▼                 ▼                 ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           BOOTLOADER / BOOT SEQUENCE                            │
+│                                                                                 │
+│   ┌──────────────────────────────────────────────────────────────────────┐       │
+│   │ BOOT_ORDER=0xf461  (USB → SD fallback)                             │       │
+│   │   • Try USB mass storage first                                       │       │
+│   │   • Fall back to SD card if USB unavailable                        │       │
+│   └──────────────────────────────────────────────────────────────────────┘       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                         SYSTEMD SERVICE LAYER                                  │
+│                                                                                 │
+│   ┌────────────────────────┐    ┌────────────────────────┐                       │
+│   │  hardware-check.srv  │───→│   vault-mount.srv      │                       │
+│   │  ├─ hardware_lock.py │    │   ├─ unlock_vault.py   │                       │
+│   │  ├─ Verify Serial    │    │   ├─ cryptsetup LUKS   │                       │
+│   │  └─ Verify SD CID    │    │   └─ mount /dev/mapper │                       │
+│   └────────────────────────┘    └───────────┬────────────┘                       │
+│                                             │                                   │
+│   ┌────────────────────────┐    ┌───────────▼────────────┐                       │
+│   │  nctv-watchdog.srv   │    │      pm2-pi.srv        │                       │
+│   │  ├─ Dead man's switch│    │      ├─ player-server  │                       │
+│   │  ├─ Monitor /n-cstv  │    │      └─ player-chromium │                       │
+│   │  └─ Nuclear recovery │    └─────────────────────────┘                       │
+│   └────────────────────────┘                                                   │
+│                                                                             │
+│   ┌────────────────────────┐                                                   │
+│   │   repairman.srv        │  (USB boot only)                                  │
+│   │   ├─ Emergency Player  │                                                   │
+│   │   ├─ Surgery Mode      │                                                   │
+│   │   └─ rsync restore     │                                                   │
+│   └────────────────────────┘                                                   │
+└─────────────────────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           APPLICATION LAYER                                    │
+│                                                                                 │
+│   ┌────────────────────────────────────────────────────────────────────────┐     │
+│   │                    LUKS ENCRYPTED VAULT                               │     │
+│   │  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐  │     │
+│   │  │   vault.img     │───→│  /dev/mapper/   │───→│ n-compasstv-sec │  │     │
+│   │  │  (AES-encrypted)│    │  nctv_data      │    │   ure/            │  │     │
+│   │  └─────────────────┘    └─────────────────┘    └─────────────────┘  │     │
+│   │           ▲                                    ┌───────────────┐      │     │
+│   │           │                                    │ player-server │      │     │
+│   │           │         Key = Pi Serial Number     │ ├─ Node.js/   │      │     │
+│   │           └────────────────────────────────────│ │   Express     │      │     │
+│   │                                              │ │ ├─ Socket.IO    │      │     │
+│   │                                              │ │ ├─ SQLite DB    │      │     │
+│   │                                              │ │ └─ API routes   │      │     │
+│   │                                              │ └───────────────┘      │     │
+│   │                                              │ ┌───────────────┐       │     │
+│   │                                              │ │player-chromium│       │     │
+│   │                                              │ │ ├─ Kiosk mode │       │     │
+│   │                                              │ │ ├─ Wayland/X11│       │     │
+│   │                                              │ │ └─ http://local│       │     │
+│   │                                              │ │   host/ui       │       │     │
+│   │                                              │ └───────────────┘       │     │
+│   └────────────────────────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────────────────────────┘
+          │
+          ▼
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                           CLOUD CONNECTIVITY                                   │
+│                                                                                 │
+│   ┌────────────────────────┐    ┌────────────────────────┐                       │
+│   │   REST API             │    │   Socket.IO            │                       │
+│   │   nctvapi2.n-compass   │◄──→│   nctvsocket.n-compass │                       │
+│   │   .online              │    │   .online              │                       │
+│   │                        │    │                        │                       │
+│   │   ├─ Content sync      │    │   ├─ Screenshot        │                       │
+│   │   ├─ Playlists         │    │   ├─ Reboot            │                       │
+│   │   ├─ License check     │    │   ├─ Content update    │                       │
+│   │   └─ Telemetry         │    │   ├─ CEC control       │                       │
+│   └────────────────────────┘    │   └─ Speedtest         │                       │
+│                                 └────────────────────────┘                       │
+└─────────────────────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr />
+<h2 id="2-component-specifications">2. Component Specifications</h2>
+<h3 id="21-hardware-layer">2.1 Hardware Layer</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Specification</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Raspberry Pi 5</td>
+<td>4GB+ RAM, ARM64</td>
+<td>Primary compute</td>
+</tr>
+<tr>
+<td>EEPROM</td>
+<td>512KB Boot ROM</td>
+<td>Boot order configuration</td>
+</tr>
+<tr>
+<td>SD Card</td>
+<td>16GB+ microSD</td>
+<td>Primary storage (encrypted vault)</td>
+</tr>
+<tr>
+<td>USB Drive</td>
+<td>16GB+ USB 3.0</td>
+<td>Phoenix recovery media</td>
+</tr>
+<tr>
+<td>HDMI Output</td>
+<td>CEC-enabled</td>
+<td>TV control and display</td>
+</tr>
+</tbody>
+</table>
+<h3 id="22-security-components">2.2 Security Components</h3>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Technology</th>
+<th>Input</th>
+<th>Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardware Fingerprint</td>
+<td>CPU Serial + SD CID</td>
+<td><code>/proc/cpuinfo</code>, <code>/sys/block/mmcblk0/device/cid</code></td>
+<td>Match/Mismatch decision</td>
+</tr>
+<tr>
+<td>Vault Encryption</td>
+<td>LUKS (dm-crypt)</td>
+<td>Pi Serial Number</td>
+<td><code>/dev/mapper/nctv_data</code></td>
+</tr>
+<tr>
+<td>Lockout UI</td>
+<td>Chromium Kiosk</td>
+<td><code>file:///home/pi/lockout.html</code></td>
+<td>Visual lockout screen</td>
+</tr>
+</tbody>
+</table>
+<h3 id="23-systemd-services">2.3 Systemd Services</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Type</th>
+<th>Trigger</th>
+<th>Dependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hardware-check.service</code></td>
+<td>Idle</td>
+<td><code>graphical.target</code></td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>vault-mount.service</code></td>
+<td>Oneshot</td>
+<td><code>hardware-check.service</code></td>
+<td><code>hardware-check.service</code></td>
+</tr>
+<tr>
+<td><code>nctv-watchdog.service</code></td>
+<td>Simple</td>
+<td><code>multi-user.target</code></td>
+<td><code>network.target</code></td>
+</tr>
+<tr>
+<td><code>repairman.service</code></td>
+<td>Simple</td>
+<td><code>multi-user.target</code> (USB only)</td>
+<td><code>network.target</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="24-application-stack">2.4 Application Stack</h3>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Technology</th>
+<th>Version</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Runtime</td>
+<td>Node.js</td>
+<td>v20.x</td>
+<td>Player server execution</td>
+</tr>
+<tr>
+<td>Process Mgr</td>
+<td>PM2</td>
+<td>Latest</td>
+<td>Service orchestration</td>
+</tr>
+<tr>
+<td>Database</td>
+<td>SQLite3</td>
+<td>3.x+</td>
+<td>Local data storage</td>
+</tr>
+<tr>
+<td>Web Server</td>
+<td>NGINX</td>
+<td>Latest</td>
+<td>Static asset serving</td>
+</tr>
+<tr>
+<td>Browser</td>
+<td>Chromium</td>
+<td>Latest</td>
+<td>Kiosk display</td>
+</tr>
+<tr>
+<td>TV Control</td>
+<td>CEC Utils</td>
+<td>Latest</td>
+<td>HDMI-CEC commands</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-data-flow-diagrams">3. Data Flow Diagrams</h2>
+<h3 id="31-normal-boot-flow">3.1 Normal Boot Flow</h3>
+<pre><code>┌─────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌─────────┐
+│  Power  │───→│  EEPROM Boot │───→│  SD Card     │───→│  systemd     │───→│ Graphical│
+│  On     │    │  (0xf461)    │    │  Mounted     │    │  Init        │    │ Target  │
+└─────────┘    └──────────────┘    └──────────────┘    └──────────────┘    └────┬────┘
+                                                                               │
+                                    ┌──────────────────────────────────────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │ hardware-check   │
+                           │ .service starts  │
+                           └────────┬─────────┘
+                                    │
+                                    ▼
+                           ┌──────────────────┐
+                           │ hardware_lock.py │
+                           │ ├─ Read Serial   │
+                           │ ├─ Read SD CID   │
+                           │ └─ Compare       │
+                           └────────┬─────────┘
+                                    │
+                         ┌──────────┴──────────┐
+                         │                     │
+                    Match ▼                Mismatch ▼
+                         │                     │
+                         ▼                     ▼
+                ┌─────────────────┐   ┌─────────────────┐
+                │ unlock_vault.py │   │ Lock System     │
+                │ ├─ cryptsetup   │   │ ├─ Stop PM2     │
+                │ ├─ mount        │   │ ├─ Stop svcs    │
+                │ └─ chown        │   │ └─ Kiosk Lock   │
+                └────────┬────────┘   └─────────────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ PM2 Starts       │
+                │ ├─ player-server │
+                │ └─ player-chrom  │
+                │    ium           │
+                └────────┬────────┘
+                         │
+                         ▼
+                ┌─────────────────┐
+                │ Content Plays  │
+                │ on TV          │
+                └─────────────────┘
+</code></pre>
+<h3 id="32-phoenix-recovery-flow">3.2 Phoenix Recovery Flow</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                           PHOENIX USB BOOT FLOW                              │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────┐    ┌──────────────┐    ┌──────────────────────────────────────┐
+│ Power On +   │───→│ EEPROM sees  │───→│ repairman.service executes           │
+│ USB Inserted │    │ USB (sdb)    │    └──────────────┬───────────────────────┘
+└──────────────┘    └──────────────┘                   │
+                                                       ▼
+                                  ┌──────────────────────────────────────┐
+                                  │ Check /dev/mmcblk0                   │
+                                  │ (SD card presence)                   │
+                                  └──────────────┬───────────────────────┘
+                                                 │
+                              ┌──────────────────┴──────────────────┐
+                              │                                      │
+                       Absent ▼                             Present ▼
+                              │                                      │
+                    ┌─────────┴──────────┐              ┌─────────────┴────────────┐
+                    │ EMERGENCY MODE     │              │ SURGERY MODE             │
+                    │                    │              │                          │
+                    │ TTY Display:     │              │ 1. fsck boot partition   │
+                    │ &quot;EMERGENCY         │              │ 2. fsck root partition   │
+                    │  STANDALONE        │              │ 3. rsync USB→SD        │
+                    │  PLAYER&quot;           │              │ 4. Rebuild fstab        │
+                    │                    │              │ 5. Reset boot order     │
+                    │ Actions:           │              │ 6. Force GUI target     │
+                    │ ├─ pm2 start       │              │ 7. Reboot to SD         │
+                    │ ├─ player-server   │              │                          │
+                    │ └─ player-chrom    │              └────────────┬─────────────┘
+                    │                    │                           │
+                    └─────────┬──────────┘                           │
+                              │                                      │
+                              ▼                                      ▼
+                    ┌─────────────────┐                   ┌─────────────────┐
+                    │ Player runs from  │                   │ Repaired SD     │
+                    │ USB temporarily   │                   │ boots normally  │
+                    └─────────────────┘                   └─────────────────┘
+</code></pre>
+<h3 id="33-hardware-lock-verification-flow">3.3 Hardware Lock Verification Flow</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                        HARDWARE LOCK STATE MACHINE                           │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                         ┌─────────────┐
+                         │    START    │
+                         └──────┬──────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │ Read /proc/cpuinfo    │
+                    │ Extract Serial        │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │ Read /sys/block/      │
+                    │ mmcblk0/device/cid    │
+                    │ Extract SD CID        │
+                    └───────────┬───────────┘
+                                │
+                                ▼
+                    ┌───────────────────────┐
+                    │ Compare against       │
+                    │ hardcoded values      │
+                    └───────────┬───────────┘
+                                │
+              ┌─────────────────┴─────────────────┐
+              │                                   │
+        Match ▼                             Mismatch ▼
+              │                                   │
+    ┌─────────┴──────────┐            ┌──────────┴───────────┐
+    │ AUTHORIZED PATH    │            │ LOCKOUT PATH         │
+    │                    │            │                      │
+    │ ├─ Call unlock_    │            │ ├─ Stop pm2-pi       │
+    │ │   vault.py       │            │ ├─ Stop watchdog     │
+    │ ├─ Mount vault     │            │ ├─ Stop all PM2      │
+    │ └─ Start PM2 svcs  │            │ ├─ Launch Chromium   │
+    │                    │            │ └─ Display lockout   │
+    └─────────┬──────────┘            │    .html             │
+              │                       └──────────────────────┘
+              ▼
+    ┌─────────────────┐
+    │ System Operational
+    └─────────────────┘
+</code></pre>
+<h3 id="34-watchdog-monitoring-flow">3.4 Watchdog Monitoring Flow</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                        DEAD MAN'S SWITCH LOGIC                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────┐
+│   Boot Start    │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐     ┌─────────────────┐
+│ 60s Grace Period │────→│ Countdown to    │
+│ (allow boot)    │     │ Arm Watchdog    │
+└─────────────────┘     └────────┬────────┘
+                                   │
+                                   ▼
+                         ┌─────────────────┐
+                    ┌───→│ Check /home/pi/ │
+                    │    │ n-compasstv    │
+                    │    │ exists?         │
+                    │    └────────┬────────┘
+                    │             │
+              No ┌──┴──┐ Yes     │
+                 │     └──────────┘
+                 ▼                 │
+        ┌─────────────────┐        │
+        │ 5s TTY Warning  │        │
+        │ &quot;PREPARING      │        │
+        │  NUCLEAR...&quot;    │        │
+        └────────┬────────┘        │
+                 │                │
+                 ▼                │
+        ┌─────────────────┐       │
+        │ Mount /boot/      │       │
+        │ firmware          │       │
+        │ Rename config.txt │       │
+        │ → config.txt.bak  │       │
+        └────────┬────────┘       │
+                 │                │
+                 ▼                │
+        ┌─────────────────┐       │
+        │    REBOOT       │       │
+        │ (Recovery Mode) │       │
+        └─────────────────┘       │
+                                  │
+                                  ▼
+                         ┌─────────────────┐
+                         │ Sleep 20s      │
+                         │ Loop back      │
+                         └─────────────────┘
+</code></pre>
+<hr />
+<h2 id="4-security-model">4. Security Model</h2>
+<h3 id="41-threat-model">4.1 Threat Model</h3>
+<table>
+<thead>
+<tr>
+<th>Threat</th>
+<th>Mitigation</th>
+<th>Component</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SD cloning to unauthorized Pi</td>
+<td>Hardware fingerprint check</td>
+<td><code>hardware_lock.py</code></td>
+</tr>
+<tr>
+<td>Vault extraction from SD</td>
+<td>LUKS encryption with hardware-derived key</td>
+<td><code>unlock_vault.py</code></td>
+</tr>
+<tr>
+<td>Application tampering</td>
+<td>Encrypted vault + integrity checks</td>
+<td>Watchdog + vault</td>
+</tr>
+<tr>
+<td>Filesystem corruption</td>
+<td>Dead man's switch recovery</td>
+<td><code>nctv-watchdog.sh</code></td>
+</tr>
+<tr>
+<td>Complete SD failure</td>
+<td>USB emergency fallback</td>
+<td><code>repairman.sh</code></td>
+</tr>
+<tr>
+<td>Boot-time attack</td>
+<td>EEPROM boot order enforcement</td>
+<td>EEPROM config</td>
+</tr>
+</tbody>
+</table>
+<h3 id="42-encryption-details">4.2 Encryption Details</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                         VAULT ENCRYPTION DETAILS                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Vault Container: /home/pi/vault.img
+├── Format: LUKS (Linux Unified Key Setup)
+├── Cipher: AES-XTS-PLAIN64 (default dm-crypt)
+├── Key Size: 256-bit
+├── Passphrase: Raspberry Pi Serial Number
+│   └── Source: /proc/cpuinfo (hex string)
+│   └── Example: &quot;ffb6d42807368154&quot;
+│
+└── Mount Chain:
+    1. cryptsetup open vault.img nctv_data --key-file -
+       └─ Creates /dev/mapper/nctv_data
+    2. mount /dev/mapper/nctv_data /home/pi/n-compasstv-secure
+       └─ Decrypted filesystem available
+
+Security Properties:
+├── Vault is bound to specific Pi (serial-derived key)
+├── Cloned vault cannot be decrypted on different Pi
+├── No stored key material (derived at runtime)
+└── cryptsetup close wipes key from kernel on unmount
+</code></pre>
+<h3 id="43-boot-security">4.3 Boot Security</h3>
+<pre><code>┌─────────────────────────────────────────────────────────────────────────────┐
+│                         BOOT SECURITY CHAIN                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+Boot Order: 0xf461 (hex)
+├─ 4 = USB mass storage
+├─ 6 = USB device boot (MSD)
+├─ 1 = SD card (MMC)
+└─ f = Restart (loop)
+
+Priority: USB first, then SD
+
+Use Cases:
+├── Normal boot: SD card (fails USB check, falls through)
+├── Recovery boot: USB present, boots from USB
+└── Forced recovery: watchdog renames config.txt
+
+EEPROM Protection:
+├── WDT_TIMEOUT=15000 (15s hardware watchdog)
+├── HALT_ON_ERROR=0 (reboot on error)
+└── BOOT_ORDER locked until reset
+</code></pre>
+<hr />
+<h2 id="5-service-dependencies">5. Service Dependencies</h2>
+<h3 id="51-startup-dependency-graph">5.1 Startup Dependency Graph</h3>
+<pre><code>graph TD
+    A[systemd] --&gt; B[graphical.target]
+    A --&gt; C[multi-user.target]
+
+    B --&gt; D[hardware-check.service]
+    D --&gt; E[vault-mount.service]
+    E --&gt; F[pm2-pi.service]
+
+    C --&gt; G[nctv-watchdog.service]
+    C --&gt; H[repairman.service]
+
+    D -.-&gt;|Requires| I[Local FS]
+    E -.-&gt;|Requires| D
+    E -.-&gt;|Before| F
+
+    style D fill:#f9f,stroke:#333
+    style E fill:#f9f,stroke:#333
+    style G fill:#ff9,stroke:#333
+    style H fill:#99f,stroke:#333
+</code></pre>
+<h3 id="52-conditional-execution">5.2 Conditional Execution</h3>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Condition</th>
+<th>Action if Skipped</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>hardware-check.service</code></td>
+<td>Always</td>
+<td>System cannot decrypt vault</td>
+</tr>
+<tr>
+<td><code>vault-mount.service</code></td>
+<td>Hardware check passes</td>
+<td>PM2 starts without vault</td>
+</tr>
+<tr>
+<td><code>nctv-watchdog.service</code></td>
+<td>Always</td>
+<td>No corruption monitoring</td>
+</tr>
+<tr>
+<td><code>repairman.service</code></td>
+<td>Boot device = USB</td>
+<td>N/A (SD boot skip)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-configuration-reference">6. Configuration Reference</h2>
+<h3 id="61-critical-configuration-files">6.1 Critical Configuration Files</h3>
+<table>
+<thead>
+<tr>
+<th>File</th>
+<th>Location</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EEPROM config</td>
+<td><code>/usr/bin/rpi-eeprom-config</code></td>
+<td>Boot order, watchdog timeout</td>
+</tr>
+<tr>
+<td>Boot config</td>
+<td><code>/boot/firmware/config.txt</code></td>
+<td>Display, kernel parameters</td>
+</tr>
+<tr>
+<td>Service configs</td>
+<td><code>/etc/systemd/system/*.service</code></td>
+<td>Startup behavior</td>
+</tr>
+<tr>
+<td>Hardware lock</td>
+<td><code>/usr/local/bin/hardware_lock.py</code></td>
+<td>Authorized serial/CID</td>
+</tr>
+<tr>
+<td>Vault script</td>
+<td><code>/usr/local/bin/unlock_vault.py</code></td>
+<td>Decryption logic</td>
+</tr>
+<tr>
+<td>PM2 ecosystem</td>
+<td><code>/home/pi/n-compasstv-secure/ecosystem.config.js</code></td>
+<td>Process definitions</td>
+</tr>
+</tbody>
+</table>
+<h3 id="62-environment-variables">6.2 Environment Variables</h3>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Set By</th>
+<th>Used By</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PM2_HOME</code></td>
+<td><code>hardware_lock.py</code></td>
+<td>PM2 process manager</td>
+</tr>
+<tr>
+<td><code>DISPLAY=:0</code></td>
+<td>systemd service files</td>
+<td>Chromium kiosk</td>
+</tr>
+<tr>
+<td><code>WAYLAND_DISPLAY=wayland-0</code></td>
+<td>systemd service files</td>
+<td>Pi 5 display</td>
+</tr>
+<tr>
+<td><code>XDG_RUNTIME_DIR</code></td>
+<td>systemd service files</td>
+<td>Wayland/X11</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="7-monitoring-telemetry">7. Monitoring &amp; Telemetry</h2>
+<h3 id="71-health-check-points">7.1 Health Check Points</h3>
+<table>
+<thead>
+<tr>
+<th>Check</th>
+<th>Script</th>
+<th>Frequency</th>
+<th>Failure Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Hardware fingerprint</td>
+<td><code>hardware_lock.py</code></td>
+<td>Boot only</td>
+<td>Lockout kiosk</td>
+</tr>
+<tr>
+<td>Vault mount</td>
+<td><code>unlock_vault.py</code></td>
+<td>Boot only</td>
+<td>Exit with error</td>
+</tr>
+<tr>
+<td>Directory existence</td>
+<td><code>nctv-watchdog.sh</code></td>
+<td>Every 20s</td>
+<td>Nuclear reboot</td>
+</tr>
+<tr>
+<td>PM2 process status</td>
+<td><code>pm2-watchdog.sh</code></td>
+<td>Every 7 min</td>
+<td>Restart processes</td>
+</tr>
+<tr>
+<td>System uptime</td>
+<td><code>check-uptime.sh</code></td>
+<td>Every 8 hours</td>
+<td>Force reboot</td>
+</tr>
+</tbody>
+</table>
+<h3 id="72-log-aggregation">7.2 Log Aggregation</h3>
+<pre><code>Log Sources:
+├── systemd journal: journalctl -u &lt;service&gt;
+├── PM2 logs: ~/.pm2/logs/
+├── Player logs: /home/pi/n-compasstv-secure/player-server/src/logs/
+└── Application DB: /home/pi/n-compasstv-secure/player-server/src/db/_data.db
+
+Key Tables (SQLite):
+├── error_logs: Application errors
+├── computer_usage: CPU/RAM/uptime telemetry
+├── internet_logs: Speed test results
+└── content_play_log: Playback history
+</code></pre>
+<hr />
+<p><strong>End of Architecture Summary</strong></p></body></html>
