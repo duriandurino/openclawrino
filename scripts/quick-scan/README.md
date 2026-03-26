@@ -51,11 +51,13 @@ engagements/<engagement>/
 ```
 
 ## Deliverables
-- `QUICK_SCAN_SUMMARY_<YYYY-MM-DD_HHMM>.md`
-- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.md`
-- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.txt`
-- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.html`
-- `QUICK_SCAN_REPORT_<YYYY-MM-DD_HHMM>.pdf` (optional when converter available)
+- `EXECUTIVE_SUMMARY_QUICK_SCAN_<YYYY-MM-DD_HHMM>.md`
+- `REPORT_QUICK_SCAN_<YYYY-MM-DD_HHMM>.md`
+- `EXECUTIVE_SUMMARY_QUICK_SCAN_<YYYY-MM-DD_HHMM>.txt`
+- `EXECUTIVE_SUMMARY_QUICK_SCAN_<YYYY-MM-DD_HHMM>.html`
+- `REPORT_QUICK_SCAN_<YYYY-MM-DD_HHMM>.txt`
+- `REPORT_QUICK_SCAN_<YYYY-MM-DD_HHMM>.html`
+- `*.pdf` variants when converter support exists
 
 ## Notes
 - This is rapid triage, not a full pentest.

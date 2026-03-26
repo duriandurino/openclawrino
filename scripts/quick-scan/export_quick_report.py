@@ -3,7 +3,6 @@ from __future__ import annotations
 
 import argparse
 import html
-import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -21,15 +20,17 @@ def markdown_to_html(markdown_text: str, title: str) -> str:
     body = []
     in_list = False
     in_table = False
+    saw_table_header = False
 
     def close_blocks():
-        nonlocal in_list, in_table
+        nonlocal in_list, in_table, saw_table_header
         if in_list:
             body.append("</ul>")
             in_list = False
         if in_table:
             body.append("</table>")
             in_table = False
+            saw_table_header = False
 
     for raw in lines:
         line = raw.rstrip()
@@ -53,8 +54,9 @@ def markdown_to_html(markdown_text: str, title: str) -> str:
                 close_blocks()
                 body.append("<table border='1' cellspacing='0' cellpadding='6'>")
                 in_table = True
-            tag = "th" if not any("<td" in row for row in body[-3:]) else "td"
+            tag = "th" if not saw_table_header else "td"
             body.append("<tr>" + "".join(f"<{tag}>{cell}</{tag}>" for cell in cells) + "</tr>")
+            saw_table_header = True
         elif line.startswith("- "):
             if not in_list:
                 close_blocks()
@@ -95,6 +97,22 @@ def export_pdf_if_possible(markdown_path: Path, pdf_path: Path) -> bool:
     return False
 
 
+def export_one(markdown_path: Path) -> list[Path]:
+    text = markdown_path.read_text(encoding="utf-8", errors="ignore")
+    stem = markdown_path.stem
+    txt_path = markdown_path.with_suffix(".txt")
+    html_path = markdown_path.with_suffix(".html")
+    pdf_path = markdown_path.with_suffix(".pdf")
+
+    txt_path.write_text(text, encoding="utf-8")
+    html_path.write_text(markdown_to_html(text, stem), encoding="utf-8")
+
+    outputs = [txt_path, html_path]
+    if export_pdf_if_possible(markdown_path, pdf_path):
+        outputs.append(pdf_path)
+    return outputs
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Export the latest quick scan report into shareable formats")
     parser.add_argument("--engagement", required=True)
@@ -105,25 +123,19 @@ def main() -> int:
     if not reporting_dir.exists():
         raise SystemExit(f"reporting directory not found: {reporting_dir}")
 
-    report_path = Path(args.report) if args.report else latest_file(reporting_dir, "QUICK_SCAN_REPORT_*.md")
+    report_path = Path(args.report) if args.report else latest_file(reporting_dir, "REPORT_QUICK_SCAN_*.md")
     if not report_path or not report_path.exists():
         raise SystemExit("no quick scan report markdown found")
 
-    text = report_path.read_text(encoding="utf-8", errors="ignore")
-    stem = report_path.stem
-    txt_path = reporting_dir / f"{stem}.txt"
-    html_path = reporting_dir / f"{stem}.html"
-    pdf_path = reporting_dir / f"{stem}.pdf"
+    summary_path = latest_file(reporting_dir, "EXECUTIVE_SUMMARY_QUICK_SCAN_*.md")
 
-    txt_path.write_text(text, encoding="utf-8")
-    html_path.write_text(markdown_to_html(text, stem), encoding="utf-8")
+    outputs = []
+    if summary_path and summary_path.exists():
+        outputs.extend(export_one(summary_path))
+    outputs.extend(export_one(report_path))
 
-    pdf_created = export_pdf_if_possible(report_path, pdf_path)
-
-    print(txt_path)
-    print(html_path)
-    if pdf_created:
-        print(pdf_path)
+    for path in outputs:
+        print(path)
     return 0
 
 

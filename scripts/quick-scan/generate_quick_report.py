@@ -190,11 +190,11 @@ def main() -> int:
     candidates = unique
     counts = Counter(item["severity"] for item in candidates)
 
-    quick_summary = reporting_dir / f"QUICK_SCAN_SUMMARY_{ts}.md"
-    quick_report = reporting_dir / f"QUICK_SCAN_REPORT_{ts}.md"
+    executive_summary_path = reporting_dir / f"EXECUTIVE_SUMMARY_QUICK_SCAN_{ts}.md"
+    report_path = reporting_dir / f"REPORT_QUICK_SCAN_{ts}.md"
 
     summary_lines = [
-        f"# Quick Scan Summary — {args.target}",
+        f"# Executive Summary (Quick Scan) — {args.target}",
         "",
         f"- Profile: `{args.profile}`",
         f"- Mode: `{args.mode}`",
@@ -210,14 +210,14 @@ def main() -> int:
         f"- Info: {counts.get('Info', 0)}",
         "",
         "## Assessment Note",
-        "- This is a rapid triage output, not a full penetration test report.",
+        "- This is a rapid triage output presented in pentest-report style.",
         "- Review candidate findings manually before treating them as confirmed vulnerabilities.",
         "",
     ]
-    quick_summary.write_text("\n".join(summary_lines), encoding="utf-8")
+    executive_summary_path.write_text("\n".join(summary_lines), encoding="utf-8")
 
     report_lines = [
-        f"# Quick Security Scan Report — {args.target}",
+        f"# Penetration Test Report (Quick Scan) — {args.target}",
         "",
         f"- Profile: `{args.profile}`",
         f"- Mode: `{args.mode}`",
@@ -228,7 +228,7 @@ def main() -> int:
         "## Scope",
         "- Rapid triage / hygiene / exposure assessment",
         "- Safe or low-impact checks where possible unless a profile explicitly broadens coverage",
-        "- Not a substitute for a full pentest",
+        "- This is not a substitute for a full pentest",
         "",
     ]
     report_lines.extend(executive_summary(args.profile, args.target, args.mode, counts, len(candidates)))
@@ -270,10 +270,10 @@ def main() -> int:
         "- Preserve engagement artifacts for follow-up analysis and retesting.",
         "",
     ])
-    quick_report.write_text("\n".join(report_lines), encoding="utf-8")
+    report_path.write_text("\n".join(report_lines), encoding="utf-8")
 
-    print(quick_summary)
-    print(quick_report)
+    print(executive_summary_path)
+    print(report_path)
     return 0
 
 
