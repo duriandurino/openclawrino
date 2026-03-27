@@ -20,6 +20,24 @@ PROFILE_RULES = [
         "reason": "Target hints suggest MQTT or IoT messaging exposure.",
     },
     {
+        "profile": "nestjs-api",
+        "score": 96,
+        "tokens": ["nestjs", "nest.js", "swagger", "openapi", "controller", "guard", "decorator"],
+        "reason": "Target hints suggest a NestJS API with framework/docs surface to triage.",
+    },
+    {
+        "profile": "graphql",
+        "score": 94,
+        "tokens": ["graphql", "graphiql", "apollo", "schema", "introspection", "mutation"],
+        "reason": "Target hints suggest a GraphQL surface that should be triaged directly.",
+    },
+    {
+        "profile": "webhook",
+        "score": 92,
+        "tokens": ["webhook", "callback", "signature", "signing secret", "x-hub-signature", "stripe-signature"],
+        "reason": "Target hints suggest webhook/callback handling that should be triaged directly.",
+    },
+    {
         "profile": "api-auth",
         "score": 90,
         "tokens": ["api auth", "api-auth", "swagger", "openapi", "token", "bearer", "jwt", "auth"],
@@ -28,7 +46,7 @@ PROFILE_RULES = [
     {
         "profile": "api",
         "score": 80,
-        "tokens": ["api", "/v1", "endpoint", "rest", "graphql"],
+        "tokens": ["api", "/v1", "endpoint", "rest"],
         "reason": "Target hints suggest an API surface.",
     },
     {

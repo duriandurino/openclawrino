@@ -7,6 +7,9 @@ Fast security triage profiles that reuse recon/enum/vuln wrappers and generate a
 - `webapp-deep` - deeper webapp triage with active path discovery
 - `api` - safe API-focused quick check
 - `api-auth` - API triage with docs/auth surface probing
+- `graphql` - GraphQL endpoint and baseline security triage
+- `nestjs-api` - NestJS/Swagger/OpenAPI-oriented API triage
+- `webhook` - webhook/callback endpoint triage
 - `host` - generic host/service quick check
 - `pc` - workstation/Windows-oriented quick check
 - `player` - IoT / player quick check

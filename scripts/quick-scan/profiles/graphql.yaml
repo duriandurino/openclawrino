@@ -1,0 +1,10 @@
+name: graphql
+kind: quick-scan
+description: Safe GraphQL endpoint triage with enum and baseline vuln checks.
+steps:
+  - phase: enum
+    script: enum/web/enum_graphql_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
+  - phase: vuln
+    script: vuln/web/vuln_graphql_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]

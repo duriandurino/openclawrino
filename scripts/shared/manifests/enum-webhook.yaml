@@ -1,0 +1,6 @@
+name: webhook
+phase: enum
+description: Baseline webhook endpoint discovery and method/signature surface enumeration.
+steps:
+  - script: enum/web/enum_webhook_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

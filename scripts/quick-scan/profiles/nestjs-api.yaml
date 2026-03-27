@@ -1,0 +1,10 @@
+name: nestjs-api
+kind: quick-scan
+description: Safe NestJS API triage with docs, framework, and baseline web checks.
+steps:
+  - phase: enum
+    script: enum/web/enum_nestjs_api.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
+  - phase: vuln
+    script: vuln/web/web_baseline.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]

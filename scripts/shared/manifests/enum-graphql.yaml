@@ -1,0 +1,6 @@
+name: graphql
+phase: enum
+description: Baseline GraphQL endpoint discovery and safe enumeration.
+steps:
+  - script: enum/web/enum_graphql_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

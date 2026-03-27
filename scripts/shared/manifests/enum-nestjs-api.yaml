@@ -1,0 +1,6 @@
+name: nestjs-api
+phase: enum
+description: Baseline NestJS API discovery and docs/CORS surface enumeration.
+steps:
+  - script: enum/web/enum_nestjs_api.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]
