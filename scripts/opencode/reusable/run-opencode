@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+OPENCODE_BIN="${OPENCODE_BIN:-$HOME/.opencode/bin/opencode}"
+
+if [[ ! -x "$OPENCODE_BIN" ]]; then
+  echo "OpenCode binary not executable at: $OPENCODE_BIN" >&2
+  echo "Set OPENCODE_BIN=/full/path/to/opencode and retry." >&2
+  exit 1
+fi
+
+exec "$OPENCODE_BIN" "$@"
