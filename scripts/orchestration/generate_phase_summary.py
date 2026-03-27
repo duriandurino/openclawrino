@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generate standardized phase handoff summaries from phase artifacts.
 
-Initial support: recon, enum, vuln.
+Initial support: recon, enum, vuln, exploit, post-exploit.
 Designed to be reusable later for quick-scan reporting flows.
 """
 
@@ -26,6 +26,8 @@ PHASE_META = {
     "recon": {"title": "Reconnaissance", "agent": "specter-recon", "next": "specter-enum", "vector": "network"},
     "enum": {"title": "Enumeration", "agent": "specter-enum", "next": "specter-vuln", "vector": "network"},
     "vuln": {"title": "Vulnerability Analysis", "agent": "specter-vuln", "next": "specter-exploit", "vector": "network"},
+    "exploit": {"title": "Exploitation", "agent": "specter-exploit", "next": "specter-post", "vector": "network"},
+    "post-exploit": {"title": "Post-Exploitation", "agent": "specter-post", "next": "specter-report", "vector": "impact"},
 }
 
 
@@ -118,6 +120,14 @@ def summarize_not_found(phase: str, json_payloads: list[dict[str, Any]]) -> list
         findings = extract_recon_findings(json_payloads)
         if not findings:
             negatives.append("Checked: DNS/WHOIS/HTTP passive recon → Result: limited or no structured findings captured")
+    if phase == "exploit":
+        findings = extract_action_findings(json_payloads)
+        if not findings:
+            negatives.append("Checked: exploit planning/attempt artifacts → Result: no exploit attempts or access results captured")
+    if phase == "post-exploit":
+        findings = extract_action_findings(json_payloads)
+        if not findings:
+            negatives.append("Checked: post-exploit evidence artifacts → Result: no session facts or loot references captured")
     return negatives or ["Checked: current automated artifacts → Result: no additional negative results explicitly captured"]
 
 
@@ -133,7 +143,41 @@ def confidence_for_phase(phase: str, json_payloads: list[dict[str, Any]]) -> dic
         return {"Overall": overall, "Network findings": "medium", "Service identification": "n/a", "Vulnerability assessment": "n/a"}
     if phase == "enum":
         return {"Overall": overall, "Network findings": overall, "Service identification": overall, "Vulnerability assessment": "n/a"}
-    return {"Overall": overall, "Network findings": "n/a", "Service identification": "medium", "Vulnerability assessment": overall}
+    if phase == "vuln":
+        return {"Overall": overall, "Network findings": "n/a", "Service identification": "medium", "Vulnerability assessment": overall}
+    if phase == "exploit":
+        return {"Overall": overall, "Exploit execution": overall, "Access achieved": "medium" if status_counter.get("success") else "low", "Evidence quality": overall}
+    return {"Overall": overall, "Session facts": overall, "Loot indexing": overall, "Impact assessment": "medium" if status_counter.get("success") else "low"}
+
+
+def extract_action_findings(json_payloads: list[dict[str, Any]]) -> list[str]:
+    findings = []
+    for payload in json_payloads:
+        for item in payload.get("findings", []):
+            if not isinstance(item, dict):
+                continue
+            item_type = item.get("type", "finding")
+            value = item.get("value") or item.get("candidate") or item.get("title")
+            if not value:
+                continue
+            if item_type == "attempt":
+                findings.append(f"Attempt: {value} ({item.get('result', payload.get('status', 'unknown'))})")
+            elif item_type == "access":
+                findings.append(f"Access: {value}")
+            elif item_type == "credential":
+                findings.append(f"Credential reference: {value}")
+            elif item_type == "evidence":
+                findings.append(f"Evidence: {value}")
+            else:
+                if item_type == "fact" and item.get("key"):
+                    findings.append(f"Fact: {item['key']}={value}")
+                else:
+                    findings.append(f"{item_type.replace('-', ' ').title()}: {value}")
+    deduped = []
+    for item in findings:
+        if item not in deduped:
+            deduped.append(item)
+    return deduped
 
 
 def phase_findings(phase: str, json_payloads: list[dict[str, Any]]) -> list[str]:
@@ -143,6 +187,8 @@ def phase_findings(phase: str, json_payloads: list[dict[str, Any]]) -> list[str]
         return extract_open_ports(json_payloads)
     if phase == "vuln":
         return extract_vuln_findings(json_payloads)
+    if phase in {"exploit", "post-exploit"}:
+        return extract_action_findings(json_payloads)
     return []
 
 
@@ -155,6 +201,9 @@ def build_key_data(phase: str, engagement: str, json_payloads: list[dict[str, An
     elif phase == "recon":
         rec = extract_recon_findings(json_payloads)
         lines.append(f"- Attack surface clues: {', '.join(rec[:8]) if rec else 'none captured'}")
+    else:
+        actions = extract_action_findings(json_payloads)
+        lines.append(f"- Action artifacts: {', '.join(actions[:8]) if actions else 'none captured'}")
     lines.extend(["", "### Credentials", "- None captured by automation", "", "### CVEs / Vulnerabilities"])
     if phase == "vuln":
         vulns = extract_vuln_findings(json_payloads)
@@ -180,6 +229,10 @@ def recommend_next(phase: str, findings: list[str]) -> tuple[str, str, str]:
         return ("specter-vuln", "network", "Enumeration captured little attack surface; analyze collected evidence before deciding to pivot or stop.")
     if phase == "vuln" and not findings:
         return ("specter-report", "network", "No clear exploit candidates were captured; summarize defensive posture and report remaining unknowns.")
+    if phase == "exploit" and not findings:
+        return ("specter-post", "impact", "No exploit attempt results were captured; confirm whether execution was skipped, blocked, or still pending.")
+    if phase == "post-exploit" and not findings:
+        return ("specter-report", "impact", "No post-exploit evidence was captured; summarize current access and residual uncertainty before reporting.")
     return (meta["next"], meta["vector"], f"Automated {phase} artifacts produced reusable evidence for the next phase.")
 
 
@@ -261,7 +314,7 @@ def main() -> int:
         return 2
 
     now = datetime.now().strftime("%Y-%m-%d_%H%M")
-    prefix = {"recon": "RECON_SUMMARY", "enum": "ENUM_SUMMARY", "vuln": "VULN_SUMMARY"}[args.phase]
+    prefix = {"recon": "RECON_SUMMARY", "enum": "ENUM_SUMMARY", "vuln": "VULN_SUMMARY", "exploit": "EXPLOIT_SUMMARY", "post-exploit": "POST_EXPLOIT_SUMMARY"}[args.phase]
     output_path = Path(args.output) if args.output else phase_dir / f"{prefix}_{now}.md"
     content = render_summary(args.engagement, args.phase, json_payloads, phase_dir, args.status)
     write_text(output_path, content + "\n")

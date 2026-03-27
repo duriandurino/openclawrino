@@ -1,0 +1,8 @@
+name: post-evidence-first
+phase: post-exploit
+description: Record post-exploit session facts and loot inventory in a standardized format.
+steps:
+  - script: post-exploit/evidence/collect_session_facts.py
+    args: ["--engagement", "{{engagement}}", "--target", "{{target}}"]
+  - script: post-exploit/evidence/index_loot.py
+    args: ["--engagement", "{{engagement}}", "--target", "{{target}}"]
