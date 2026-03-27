@@ -54,12 +54,22 @@ POSITIVE_SIGNALS = (
     "auth bypass",
     "weak credential",
     "open ",
-    "rdp",
-    "smb",
-    "winrm",
-    "mysql",
-    "http",
-    "https",
+)
+
+BARE_PORT_SERVICE_PATTERNS = (
+    "open rdp", "open smb", "open winrm", "open mysql", "open http",
+    "open https", "open ssh", "open ftp", "open telnet",
+    "rdp/", "smb/", "winrm/", "mysql/", "http/", "https/",
+    "ssh ", "ftp ", "telnet ", "rdp ", "smb ", "winrm ",
+    "port ", "open port", "service: ", "version: ",
+    "3306", "3389", "5985", "5986", "445", "22",
+)
+
+MANAGEMENT_EXPOSURES = (
+    ("3389/tcp", "RDP exposed", "High", "observed"),
+    ("445/tcp", "SMB exposed", "High", "observed"),
+    ("5985/tcp", "WinRM/HTTP management surface exposed", "High", "observed"),
+    ("3306/tcp", "MySQL service exposed", "Medium", "observed"),
 )
 
 
@@ -72,13 +82,17 @@ def severity_for_line(line: str) -> str:
     text = line.lower()
     if any(token in text for token in ["rce", "critical", "exploit available", "unauthenticated"]):
         return "Critical"
-    if any(token in text for token in ["cve-", "missing hsts", "missing csp", "smb", "rdp", "winrm", "mysql"]):
+    if any(token in text for token in ["cve-", "missing hsts", "missing csp"]):
         return "High"
-    if any(token in text for token in ["banner exposed", "server banner", "title:", "whatweb", "subdomain"]):
+    if any(token in text for token in ["smb", "rdp", "winrm"]):
+        sev = "High"
+    elif any(token in text for token in ["banner exposed", "server banner", "title:", "whatweb", "subdomain"]):
         return "Medium"
-    if any(token in text for token in ["info", "observed", "header", "robots"]):
+    elif any(token in text for token in ["info", "observed", "header", "robots"]):
         return "Low"
-    return "Info"
+    else:
+        return "Info"
+    return sev
 
 
 def is_candidate_line(content: str) -> bool:
@@ -90,6 +104,8 @@ def is_candidate_line(content: str) -> bool:
     if text.startswith(IGNORED_PREFIXES):
         return False
     if any(fragment in text for fragment in IGNORED_CONTAINS):
+        return False
+    if any(pat in text for pat in BARE_PORT_SERVICE_PATTERNS):
         return False
     if text.startswith("checked:"):
         return any(signal in text for signal in ("not vulnerable", "patched", "missing", "exposed", "access denied", "anonymous", "null session"))
@@ -118,6 +134,17 @@ def extract_candidate_lines(path: Path | None) -> list[dict]:
             confidence = "observed"
         candidates.append({"finding": content, "severity": severity, "confidence": confidence})
     return candidates
+
+
+def extract_management_exposures(path: Path | None) -> list[dict]:
+    if not path or not path.exists():
+        return []
+    text = path.read_text(encoding="utf-8", errors="ignore")
+    findings = []
+    for indicator, finding, severity, confidence in MANAGEMENT_EXPOSURES:
+        if indicator.lower() in text.lower():
+            findings.append({"finding": finding, "severity": severity, "confidence": confidence})
+    return findings
 
 
 def executive_summary(profile: str, target: str, mode: str, counts: Counter, total: int) -> list[str]:
@@ -178,6 +205,10 @@ def main() -> int:
         for item in extract_candidate_lines(summary):
             item["source"] = source_name
             candidates.append(item)
+
+    for item in extract_management_exposures(enum_summary):
+        item["source"] = "enum"
+        candidates.append(item)
 
     unique = []
     seen = set()
