@@ -100,7 +100,7 @@ def normalize_row(row: dict) -> dict | None:
         severity = "High"
         confidence = "observed"
     elif "mysql" in lower or "3306" in lower:
-        severity = "High"
+        severity = "Medium"
         confidence = "observed"
     elif "kestrel" in lower or "access-control-allow-origin: *" in lower:
         severity = "Medium"
