@@ -10,6 +10,11 @@ Fast security triage profiles that reuse recon/enum/vuln wrappers and generate a
 - `graphql` - GraphQL endpoint and baseline security triage
 - `nestjs-api` - NestJS/Swagger/OpenAPI-oriented API triage
 - `webhook` - webhook/callback endpoint triage
+
+Target-aware vuln baselines now exist for:
+- GraphQL
+- NestJS API
+- Webhooks
 - `host` - generic host/service quick check
 - `pc` - workstation/Windows-oriented quick check
 - `player` - IoT / player quick check

@@ -1,10 +1,10 @@
 name: webhook
 kind: quick-scan
-description: Safe webhook endpoint triage with webhook-specific enum and baseline web checks.
+description: Safe webhook endpoint triage with webhook-specific enum and webhook baseline checks.
 steps:
   - phase: enum
     script: enum/web/enum_webhook_basic.sh
     args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
   - phase: vuln
-    script: vuln/web/web_baseline.sh
+    script: vuln/web/vuln_webhook_baseline.sh
     args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]
