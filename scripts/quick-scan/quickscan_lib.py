@@ -11,6 +11,12 @@ from pathlib import Path
 from typing import Callable, List, Optional, Dict, Any, Tuple
 from datetime import datetime
 
+# Ensure module is properly registered for dataclass support
+if __name__ == "__main__":
+    import importlib
+    if "quickscan_lib" not in sys.modules:
+        sys.modules["quickscan_lib"] = importlib.import_module(__name__)
+
 # Try to import yaml, fallback to simple parser if unavailable
 try:
     import yaml

@@ -1,18 +1,63 @@
 #!/usr/bin/env python3
+"""Run quick security scan profile.
+
+Refactored to use quickscan_lib.py for shared functionality.
+"""
 from __future__ import annotations
 
 import argparse
 import importlib.util
-import os
 import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
 
+# Add workspace root to path for quickscan_lib import
 ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+# Import shared library functionality
+def _load_quickscan_lib():
+    """Load quickscan_lib using importlib to avoid module path issues."""
+    import importlib.util
+    import types
+    
+    lib_path = ROOT / "scripts" / "quick-scan" / "quickscan_lib.py"
+    if not lib_path.exists():
+        return None
+    
+    # Pre-register module to fix dataclass __module__ issues
+    if "quickscan_lib" not in sys.modules:
+        sys.modules["quickscan_lib"] = types.ModuleType("quickscan_lib")
+    
+    spec = importlib.util.spec_from_file_location("quickscan_lib", lib_path)
+    if spec is None or spec.loader is None:
+        return None
+    
+    module = importlib.util.module_from_spec(spec)
+    sys.modules["quickscan_lib"] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+try:
+    _quickscan_lib = _load_quickscan_lib()
+    if _quickscan_lib:
+        load_manifest = _quickscan_lib.load_manifest
+        resolve_profile = _quickscan_lib.resolve_profile
+        StepExecutor = _quickscan_lib.StepExecutor
+        get_workspace_root = _quickscan_lib.get_workspace_root
+        get_engagements_dir = _quickscan_lib.get_engagements_dir
+        latest_file = _quickscan_lib.latest_file
+        HAS_LIB = True
+    else:
+        HAS_LIB = False
+except Exception as e:
+    print(f"[WARN] Could not import quickscan_lib: {e}", file=sys.stderr)
+    HAS_LIB = False
+
+# Legacy fallback imports (used when quickscan_lib is not available)
 from scripts.orchestration.run_enum_profile import substitute
 
 
@@ -43,6 +88,7 @@ PREFERRED_ENUM_JSON_PATTERNS = [
 
 
 def load_recommender():
+    """Load the profile recommender module dynamically."""
     module_path = ROOT / "scripts" / "quick-scan" / "recommend_profile.py"
     spec = importlib.util.spec_from_file_location("quickscan_recommend_profile", module_path)
     if spec is None or spec.loader is None:
@@ -52,7 +98,8 @@ def load_recommender():
     return module
 
 
-def load_quick_manifest(path: Path) -> dict:
+def _legacy_load_quick_manifest(path: Path) -> dict:
+    """Legacy manifest loader for backward compatibility."""
     data: dict = {"steps": []}
     current: dict | None = None
     for raw_line in path.read_text(encoding="utf-8").splitlines():
@@ -89,7 +136,54 @@ def load_quick_manifest(path: Path) -> dict:
     return data
 
 
+def _legacy_resolve_profile(profile: str) -> Path:
+    """Legacy profile resolver for backward compatibility."""
+    candidate = Path(profile)
+    if candidate.exists():
+        return candidate
+    candidate = ROOT / "scripts" / "quick-scan" / "profiles" / f"{profile}.yaml"
+    if candidate.exists():
+        return candidate
+    raise FileNotFoundError(profile)
+
+
+def load_quick_manifest(path: Path) -> dict:
+    """Load manifest using shared library or legacy fallback."""
+    if HAS_LIB:
+        try:
+            manifest = _quickscan_lib.load_manifest(path)
+            # Convert dataclass to dict for backward compatibility
+            return {
+                "name": manifest.name,
+                "kind": manifest.kind,
+                "description": manifest.description,
+                "steps": [
+                    {
+                        "phase": step.phase,
+                        "script": step.script,
+                        "args": step.args,
+                        "optional": step.optional,
+                    }
+                    for step in manifest.steps
+                ],
+            }
+        except Exception as e:
+            print(f"[WARN] Shared library manifest load failed: {e}", file=sys.stderr)
+    return _legacy_load_quick_manifest(path)
+
+
+def resolve_profile_path(profile: str) -> Path:
+    """Resolve profile using shared library or legacy fallback."""
+    if HAS_LIB:
+        try:
+            return _quickscan_lib.resolve_profile(profile)
+        except Exception as e:
+            print(f"[WARN] Shared library profile resolution failed: {e}", file=sys.stderr)
+    return _legacy_resolve_profile(profile)
+
+
 def latest_enum_json(engagement: str) -> str:
+    """Find the latest enum JSON file for an engagement."""
     parsed_dir = ROOT / "engagements" / engagement / "enum" / "parsed"
     if not parsed_dir.exists():
         return ""
@@ -101,29 +195,24 @@ def latest_enum_json(engagement: str) -> str:
 
 
 def ensure_reporting_dir(engagement: str) -> Path:
+    """Ensure the reporting directory exists for an engagement."""
     path = ROOT / "engagements" / engagement / "quick-scan" / "reporting"
     path.mkdir(parents=True, exist_ok=True)
     return path
 
 
-def resolve_profile(profile: str) -> Path:
-    candidate = Path(profile)
-    if candidate.exists():
-        return candidate
-    candidate = ROOT / "scripts" / "quick-scan" / "profiles" / f"{profile}.yaml"
-    if candidate.exists():
-        return candidate
-    raise FileNotFoundError(profile)
-
-
 def should_skip_step(step: dict, mode: str) -> bool:
-    optional = step.get("optional", "false").lower() == "true"
+    """Determine if a step should be skipped based on mode."""
+    optional = step.get("optional", False)
+    if isinstance(optional, str):
+        optional = optional.lower() == "true"
     if mode == "fast" and optional:
         return True
     return False
 
 
 def choose_profile(profile: str | None, hint: str | None) -> tuple[str, dict | None]:
+    """Choose a profile based on explicit name or hint."""
     if profile:
         return profile, None
     if hint:
@@ -134,12 +223,57 @@ def choose_profile(profile: str | None, hint: str | None) -> tuple[str, dict | N
 
 
 def run_optional(command: list[str], cwd: Path, label: str):
+    """Run an optional command and report status."""
     result = subprocess.run(command, cwd=cwd, capture_output=True, text=True)
     if result.returncode == 0:
         if result.stdout.strip():
             print(result.stdout.strip())
     else:
         print(f"[WARN] {label} failed: {result.stderr.strip() or result.stdout.strip()}")
+
+
+def run_step_with_lib(step: dict, context: dict, index: int, total: int) -> bool:
+    """Execute a step using the shared library StepExecutor."""
+    ManifestStep = _quickscan_lib.ManifestStep
+    
+    executor = _quickscan_lib.StepExecutor()
+    manifest_step = ManifestStep(
+        phase=step.get("phase", "unknown"),
+        script=step["script"],
+        args=step.get("args", []),
+        optional=step.get("optional", False),
+    )
+    
+    result = executor.run_step(manifest_step, context, index)
+    
+    if not result.success:
+        print(f"[!] Step failed with exit code {result.returncode}: {step['script']}", file=sys.stderr)
+        if result.stderr:
+            print(f"    stderr: {result.stderr}", file=sys.stderr)
+        return False
+    
+    return True
+
+
+def run_step_legacy(step: dict, context: dict, index: int, total: int) -> bool:
+    """Execute a step using legacy subprocess approach."""
+    argv = [str(ROOT / "scripts" / step["script"])] + [arg for arg in substitute(step.get("args", []), context) if arg]
+    print(f"[{index}/{total}] {' '.join(argv)}")
+    result = subprocess.run(argv, cwd=ROOT)
+    if result.returncode != 0:
+        print(f"[!] Step failed with exit code {result.returncode}: {step['script']}", file=sys.stderr)
+        return False
+    return True
+
+
+def run_step(step: dict, context: dict, index: int, total: int) -> bool:
+    """Execute a step using shared library or legacy fallback."""
+    if HAS_LIB:
+        try:
+            return run_step_with_lib(step, context, index, total)
+        except Exception as e:
+            print(f"[WARN] Shared library step execution failed: {e}", file=sys.stderr)
+    return run_step_legacy(step, context, index, total)
 
 
 def main() -> int:
@@ -151,10 +285,11 @@ def main() -> int:
     parser.add_argument("--mode", choices=["safe", "fast"], default="safe", help="Execution mode")
     parser.add_argument("--account", default="hatlesswhite@gmail.com", help="Google account used for quick report publishing")
     parser.add_argument("--no-publish", action="store_true", help="Skip export/publish after report generation")
+    parser.add_argument("--dry-run", action="store_true", help="Show what would be executed without running")
     args = parser.parse_args()
 
     chosen_profile, recommendation = choose_profile(args.profile or None, args.hint or None)
-    manifest_path = resolve_profile(chosen_profile)
+    manifest_path = resolve_profile_path(chosen_profile)
     manifest = load_quick_manifest(manifest_path)
     engagement = args.engagement or f"quick-{manifest.get('name', manifest_path.stem)}-{datetime.now().strftime('%Y-%m-%d_%H%M')}"
     ensure_reporting_dir(engagement)
@@ -165,28 +300,38 @@ def main() -> int:
         print(f"[*] Selection reason: {recommendation['reason']}")
     print(f"[*] Engagement: {engagement}")
     print(f"[*] Mode: {args.mode}")
+    if args.dry_run:
+        print(f"[*] DRY-RUN: No commands will actually execute")
 
     steps = manifest.get("steps", [])
     executed_steps = 0
+    
+    # Build execution context
+    context = {
+        "target": args.target,
+        "engagement": engagement,
+        "latest_enum_json": latest_enum_json(engagement),
+        "mode": args.mode,
+        **MODE_DEFAULTS[args.mode],
+    }
+    
     for idx, step in enumerate(steps, start=1):
         if should_skip_step(step, args.mode):
             print(f"[{idx}/{len(steps)}] SKIP optional step in {args.mode} mode: {step.get('script')}")
             continue
-        mapping = {
-            "target": args.target,
-            "engagement": engagement,
-            "latest_enum_json": latest_enum_json(engagement),
-            "mode": args.mode,
-            **MODE_DEFAULTS[args.mode],
-        }
-        argv = [str(ROOT / "scripts" / step["script"])] + [arg for arg in substitute(step.get("args", []), mapping) if arg]
-        print(f"[{idx}/{len(steps)}] {' '.join(argv)}")
-        result = subprocess.run(argv, cwd=ROOT)
-        if result.returncode != 0:
-            print(f"[!] Step failed with exit code {result.returncode}: {step['script']}", file=sys.stderr)
-            return result.returncode
-        executed_steps += 1
+        
+        if args.dry_run:
+            argv = [str(ROOT / "scripts" / step["script"])] + [arg for arg in substitute(step.get("args", []), context) if arg]
+            print(f"[{idx}/{len(steps)}] DRY-RUN: {' '.join(argv)}")
+            executed_steps += 1
+            continue
+        
+        if run_step(step, context, idx, len(steps)):
+            executed_steps += 1
+        else:
+            return 1
 
+    # Generate phase summaries for recon, enum, vuln
     for phase in ["recon", "enum", "vuln"]:
         phase_dir = ROOT / "engagements" / engagement / phase / "parsed"
         if phase_dir.exists() and any(phase_dir.glob("*.json")):
@@ -199,13 +344,20 @@ def main() -> int:
                 phase,
             ], cwd=ROOT, check=False)
 
+    # Generate quick report
     report_script = ROOT / "scripts" / "quick-scan" / "generate_quick_report.py"
     if report_script.exists():
         subprocess.run([
-            "python3", str(report_script), "--engagement", engagement, "--profile", manifest.get("name", manifest_path.stem), "--target", args.target, "--mode", args.mode, "--steps", str(executed_steps)
+            "python3", str(report_script), 
+            "--engagement", engagement, 
+            "--profile", manifest.get("name", manifest_path.stem), 
+            "--target", args.target, 
+            "--mode", args.mode, 
+            "--steps", str(executed_steps)
         ], cwd=ROOT, check=False)
 
-    if not args.no_publish:
+    # Export and publish (unless disabled)
+    if not args.no_publish and not args.dry_run:
         export_script = ROOT / "scripts" / "quick-scan" / "export_quick_report.py"
         publish_script = ROOT / "scripts" / "quick-scan" / "publish_quick_report.py"
         if export_script.exists():
