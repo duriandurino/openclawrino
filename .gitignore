@@ -28,7 +28,10 @@ Thumbs.db
 *.nmap
 *.xml
 *_output.txt
+__pycache__/
 skillcrafter/scripts/__pycache__/
 recon/scripts/__pycache__/
 reporting/scripts/__pycache__/
 client_secret_*.json
+credentials.json
+.google-creds
