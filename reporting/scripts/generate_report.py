@@ -25,6 +25,7 @@ import sys
 import shutil
 import tempfile
 import os
+import re
 from pathlib import Path
 from datetime import datetime
 
@@ -187,6 +188,16 @@ def clean_text(text):
     return " ".join(str(text or "").split()).strip(" .;:")
 
 
+def extract_complete_sentence(text):
+    text = clean_text(text)
+    if not text:
+        return ""
+    parts = re.split(r"(?<=[.!?])\s+", text)
+    if parts and parts[0].strip():
+        return parts[0].strip().rstrip(" .;:")
+    return text
+
+
 def extract_summary_lead(text):
     raw = str(text or "").strip()
     if not raw:
@@ -218,9 +229,11 @@ def summarize_exposure(affected):
 
 def summarize_fix(text):
     lead = extract_summary_lead(text)
+    sentence = extract_complete_sentence(text)
     text = clean_text(text)
     lower = text.lower()
     lead_lower = lead.lower()
+    sentence_lower = sentence.lower()
     if lead:
         direct_patterns = [
             "enforce smb signing via group policy",
@@ -231,25 +244,31 @@ def summarize_fix(text):
             if pattern in lead_lower:
                 return lead
     patterns = [
-        ("require smb signing", "Require SMB signing"),
-        ("restrict access", "Restrict access to admin hosts"),
-        ("host firewall", "Restrict with host firewall"),
-        ("network segmentation", "Segment admin services from LAN"),
-        ("disable", "Disable service if not required"),
-        ("vpn", "Require VPN or jump host access"),
+        ("missing security control", "Apply the missing security header or control and verify it in a follow-up scan"),
+        ("verify the header/control is present", "Apply the missing security header or control and verify it in a follow-up scan"),
+        ("validate the observation manually", "Validate the exposure manually and harden the service if it is unnecessary"),
+        ("restrict access", "Restrict access to trusted admin hosts"),
+        ("host firewall", "Restrict exposure with host firewall rules"),
+        ("network segmentation", "Segment administrative services from the user LAN"),
+        ("disable", "Disable the service if it is not required"),
+        ("vpn", "Require VPN or jump-host access"),
         ("mfa", "Require MFA for remote administration"),
         ("monitor", "Monitor remote access activity"),
         ("patch", "Keep the service fully patched"),
     ]
     for needle, summary in patterns:
-        if needle in lower:
+        if needle in lower or needle in sentence_lower:
             return summary
-    words = text.split()
-    return " ".join(words[:8]).strip(" .;:")
+    if sentence and len(sentence.split()) <= 14:
+        return sentence
+    if lead and len(lead.split()) <= 12:
+        return lead
+    return "Remediate the issue and confirm the fix in a follow-up validation scan"
 
 
 def summarize_hardening(text):
     lead = extract_summary_lead(text)
+    sentence = extract_complete_sentence(text)
     text = clean_text(text)
     lower = text.lower()
     lead_lower = lead.lower()
@@ -267,22 +286,25 @@ def summarize_hardening(text):
                 return lead
     patterns = [
         ("admin", "Limit access to admin systems only"),
-        ("monitor", "Alert on suspicious remote access"),
+        ("monitor", "Alert on suspicious access patterns"),
         ("segment", "Keep management ports off the user LAN"),
         ("mfa", "Protect admin access with MFA"),
-        ("vpn", "Use VPN or bastion for remote access"),
+        ("vpn", "Use VPN or a bastion for remote access"),
         ("signing", "Enforce secure protocol settings"),
         ("patch", "Maintain a regular patching schedule"),
         ("database", "Harden database access and monitoring"),
         ("rdp", "Restrict and monitor remote desktop access"),
+        ("expected network exposure", "Document expected exposure and alert on deviations"),
+        ("exposed services minimized", "Minimize exposed services and monitor for unexpected access"),
     ]
     for needle, summary in patterns:
         if needle in lower:
             return summary
-    if lead:
-        return concise_phrase(lead, 56)
-    words = text.split()
-    return " ".join(words[:8]).strip(" .;:")
+    if sentence and len(sentence.split()) <= 14:
+        return sentence
+    if lead and len(lead.split()) <= 12:
+        return lead
+    return "Reduce unnecessary exposure and monitor for unexpected access"
 
 
 def summarize_title(title):
