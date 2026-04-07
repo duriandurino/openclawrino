@@ -38,3 +38,13 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 ---
 
 Add whatever helps you do your job. This is your cheat sheet.
+
+### OpenCode
+
+- CLI path: `~/.opencode/bin/opencode`
+- PATH shim created at: `~/.local/bin/opencode`
+- Quick checks:
+  - `opencode --version`
+  - `opencode models`
+  - `opencode run -m opencode/minimax-m2.5-free --format json "Reply with exactly: OK"`
+- If OpenCode appears unavailable, check PATH first before assuming model/provider failure.

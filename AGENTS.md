@@ -137,6 +137,26 @@ Reactions are lightweight social signals. Humans use them constantly — they sa
 
 Skills provide your tools. When you need one, check its `SKILL.md`. Keep local notes (camera names, SSH details, voice preferences) in `TOOLS.md`.
 
+### Coding / Refactor Workflow Rule
+
+For coding-heavy implementation work, do not default to editing directly in the main session.
+
+Use this pattern unless the task is tiny:
+1. spawn a sub-agent for the implementation pass
+2. have that sub-agent use the `opencode-utility` skill for planning/building/refactoring
+3. review, verify, and integrate the result in the main session
+
+Use this especially for:
+- multi-file refactors
+- reusable scripting/helpers
+- automation/framework changes
+- parser/report generator changes
+- medium-to-large implementation tasks where coding is the bottleneck
+
+Rule of thumb:
+- **Main session** = direction, review, verification, integration
+- **Sub-agent + OpenCode** = coding-heavy implementation work
+
 ### Quick Scan vs Full Pentest
 
 When a user asks for rapid triage, a quick vulnerability check, or an antivirus-like assessment, prefer the quick-scan path documented in `scripts/quick-scan/DISPATCH.md`.
