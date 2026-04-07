@@ -8,7 +8,6 @@ import sys
 import time
 from dataclasses import dataclass, asdict
 from pathlib import Path
-from typing import Any
 
 
 @dataclass
@@ -24,6 +23,8 @@ class WatchResult:
     final_text: str
     error: str | None
     command: list[str]
+    partial_text: str = ""
+    log_path: str | None = None
 
 
 def build_command(model: str, prompt: str, cwd: str | None, thinking: bool) -> list[str]:
@@ -43,7 +44,15 @@ def build_command(model: str, prompt: str, cwd: str | None, thinking: bool) -> l
     return cmd
 
 
-def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, stall_timeout: float, thinking: bool) -> WatchResult:
+def append_event_log(log_path: Path | None, line: str) -> None:
+    if not log_path:
+        return
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("a", encoding="utf-8") as fh:
+        fh.write(line + "\n")
+
+
+def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, stall_timeout: float, thinking: bool, log_path: Path | None = None) -> WatchResult:
     command = build_command(model, prompt, cwd, thinking)
     started = time.monotonic()
     proc = subprocess.Popen(
@@ -63,6 +72,10 @@ def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, sta
     error: str | None = None
     saw_error_event = False
 
+    if log_path:
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        log_path.write_text("", encoding="utf-8")
+
     assert proc.stdout is not None
     assert proc.stderr is not None
 
@@ -73,10 +86,12 @@ def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, sta
         now = time.monotonic()
         if now - started > total_timeout:
             error = f"total timeout after {total_timeout:.1f}s"
+            append_event_log(log_path, json.dumps({"watcher": "timeout", "kind": "total", "seconds": total_timeout}))
             proc.kill()
             break
         if now - last_event_at > stall_timeout:
             error = f"stall timeout after {stall_timeout:.1f}s without JSON event"
+            append_event_log(log_path, json.dumps({"watcher": "timeout", "kind": "stall", "seconds": stall_timeout}))
             proc.kill()
             break
 
@@ -88,6 +103,8 @@ def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, sta
         line = line.strip()
         if not line:
             continue
+
+        append_event_log(log_path, line)
 
         try:
             event = json.loads(line)
@@ -116,6 +133,7 @@ def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, sta
         _, stderr = proc.communicate(timeout=2)
         if stderr:
             stderr_parts.append(stderr.strip())
+            append_event_log(log_path, json.dumps({"watcher": "stderr", "value": stderr.strip()}))
     except Exception:
         pass
 
@@ -151,6 +169,8 @@ def run_once(model: str, prompt: str, cwd: str | None, total_timeout: float, sta
         final_text=final_text,
         error=error,
         command=command,
+        partial_text=final_text,
+        log_path=str(log_path) if log_path else None,
     )
 
 
@@ -166,6 +186,8 @@ def print_human(result: WatchResult) -> None:
         print(result.final_text)
     if result.error:
         print(f"error: {result.error}")
+    if result.log_path:
+        print(f"log_path: {result.log_path}")
 
 
 def main() -> int:
@@ -179,17 +201,22 @@ def main() -> int:
     parser.add_argument("--thinking", action="store_true", help="Enable OpenCode thinking output")
     parser.add_argument("--json", action="store_true", help="Emit final result as JSON")
     parser.add_argument("--save", default="", help="Optional path to save the JSON result")
+    parser.add_argument("--event-log", default="", help="Optional path to save raw event/log output during the run")
     args = parser.parse_args()
 
     cwd = args.cwd or None
-    primary = run_once(args.model, args.prompt, cwd, args.timeout, args.stall_timeout, args.thinking)
+    event_log = Path(args.event_log) if args.event_log else None
+    primary = run_once(args.model, args.prompt, cwd, args.timeout, args.stall_timeout, args.thinking, event_log)
     result = primary
 
     fallback_allowed = bool(args.fallback_model and args.fallback_model != args.model)
     should_fallback = primary.status != "success"
 
     if should_fallback and fallback_allowed:
-        fallback = run_once(args.fallback_model, args.prompt, cwd, args.timeout, args.stall_timeout, args.thinking)
+        fallback_log = None
+        if event_log:
+            fallback_log = event_log.with_name(event_log.stem + "-fallback" + event_log.suffix)
+        fallback = run_once(args.fallback_model, args.prompt, cwd, args.timeout, args.stall_timeout, args.thinking, fallback_log)
         fallback.fallback_used = True
         result = fallback
         if primary.error and not fallback.error:

@@ -169,7 +169,28 @@ Choose:
 - **build** if code is needed now
 - **plan → build** for medium or large work
 
-### Step 4 — Use a focused prompt
+### Step 4 — Prefer the watcher-backed task wrapper
+
+Default to the watcher-backed wrapper instead of raw `opencode run` when the task is more than trivial.
+
+Preferred path:
+
+```bash
+python3 scripts/opencode/reusable/opencode_task.py \
+  --mode plan|build \
+  --utility-class throwaway|session|reusable \
+  --task "..."
+```
+
+Why:
+- watcher-backed execution is observable
+- it detects stall/timeout conditions
+- it supports fallback models
+- it is safer for nested coding workflows and subagent use
+
+Use raw `opencode run` only for tiny manual checks or when you explicitly do not need supervision.
+
+### Step 5 — Use a focused prompt
 
 Prefer prompts that are narrow, explicit, and dependency-light.
 
@@ -185,7 +206,7 @@ Build prompt shape:
 Build this coding utility for an authorized security workflow. Prefer MiniMax. Make it minimal but practical, preserve simplicity, avoid unnecessary dependencies, and provide a concise summary of what was created, expected inputs, outputs, and how it can be reused.
 ```
 
-### Step 5 — Save and review the result
+### Step 6 — Save and review the result
 
 Before adopting the output:
 - verify it matches the scope
@@ -193,6 +214,7 @@ Before adopting the output:
 - confirm the dependency footprint is reasonable
 - place it in the correct `scripts/opencode/` bucket
 - run a basic sanity test where appropriate
+- prefer storing watcher JSON output when the run may need auditing or follow-up
 
 ## Phase-Agent Guidance
 

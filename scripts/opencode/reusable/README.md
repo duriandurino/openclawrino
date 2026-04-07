@@ -73,6 +73,36 @@ This keeps OpenCode use:
 - easier to automate safely
 - less brittle for nested coding workflows
 
+## OpenCode Task Wrapper
+
+**File:** `opencode_task.py`
+
+A thin wrapper on top of `opencode_watch.py` for repeatable nested coding workflows.
+
+### Usage
+
+```bash
+# Plan a reusable utility
+python3 scripts/opencode/reusable/opencode_task.py \
+  --mode plan \
+  --utility-class reusable \
+  --task "Design a small parser for this JSON output and explain the structure"
+
+# Build with watcher-backed execution
+python3 scripts/opencode/reusable/opencode_task.py \
+  --mode build \
+  --utility-class reusable \
+  --task "Build a tiny argparse-based helper and summarize usage" \
+  --json
+```
+
+### What it does
+
+- wraps a task into a coding-oriented OpenCode prompt
+- loads project-local mode guidance
+- calls `opencode_watch.py` underneath
+- keeps invocation more consistent for main-session and subagent use
+
 ## Adding New Utilities
 
 When adding new reusable utilities:
