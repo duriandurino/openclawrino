@@ -137,7 +137,7 @@ def detect_from_services(enum_text: str, vuln_text: str) -> dict:
     }
 
 
-def build_overlay(profile: str, fp: dict) -> dict:
+def build_overlay(profile: str, fp: dict, executed_steps: list[dict] | None = None) -> dict:
     extra_steps: list[dict] = []
     report_focus: list[str] = []
     profiles_considered: list[str] = []
@@ -147,28 +147,60 @@ def build_overlay(profile: str, fp: dict) -> dict:
     traits = set(fp.get("traits", []))
     deployments = set(fp.get("deployments", []))
 
+    # Build set of already-executed script patterns to avoid duplication
+    executed_scripts: set[str] = set()
+    executed_patterns: set[str] = set()
+    if executed_steps:
+        for step in executed_steps:
+            script = step.get("script", "")
+            executed_scripts.add(script)
+            # Also track by pattern (e.g., enum_graphql_basic.sh -> graphql)
+            if "graphql" in script:
+                executed_patterns.add("graphql")
+            if "nestjs" in script:
+                executed_patterns.add("nestjs")
+            if "swagger" in script or "openapi" in script:
+                executed_patterns.add("api-docs")
+            if "webhook" in script:
+                executed_patterns.add("webhook")
+
     if profile in {"webapp", "webapp-deep", "api", "api-auth"}:
         if "graphql" in frameworks or "graphql" in surfaces:
-            profiles_considered.append("graphql")
-            extra_steps.extend([
-                {"phase": "enum", "script": "enum/web/enum_graphql_basic.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
-                {"phase": "vuln", "script": "vuln/web/vuln_graphql_baseline.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
-            ])
-            report_focus.append("graphql surface and schema exposure")
+            # Skip if GraphQL steps already executed
+            if "graphql" not in executed_patterns:
+                profiles_considered.append("graphql")
+                extra_steps.extend([
+                    {"phase": "enum", "script": "enum/web/enum_graphql_basic.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
+                    {"phase": "vuln", "script": "vuln/web/vuln_graphql_baseline.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
+                ])
+                report_focus.append("graphql surface and schema exposure")
+            else:
+                report_focus.append("graphql surface (already covered by base profile)")
+                
         if "nestjs" in frameworks or "api-docs" in surfaces:
-            profiles_considered.append("nestjs-api")
-            extra_steps.extend([
-                {"phase": "enum", "script": "enum/web/enum_nestjs_api.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
-                {"phase": "vuln", "script": "vuln/web/vuln_nestjs_baseline.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
-            ])
-            report_focus.append("swagger/openapi and framework-specific exposure")
+            # Skip if NestJS/Swagger steps already executed
+            if "nestjs" not in executed_patterns and "api-docs" not in executed_patterns:
+                profiles_considered.append("nestjs-api")
+                extra_steps.extend([
+                    {"phase": "enum", "script": "enum/web/enum_nestjs_api.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
+                    {"phase": "vuln", "script": "vuln/web/vuln_nestjs_baseline.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
+                ])
+                report_focus.append("swagger/openapi and framework-specific exposure")
+            else:
+                report_focus.append("swagger/openapi framework indicators (already covered)")
+                
         if "webhook" in surfaces:
-            profiles_considered.append("webhook")
-            extra_steps.extend([
-                {"phase": "enum", "script": "enum/web/enum_webhook_basic.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
-                {"phase": "vuln", "script": "vuln/web/vuln_webhook_baseline.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
-            ])
-            report_focus.append("callback authenticity and webhook trust boundaries")
+            # Skip if webhook steps already executed
+            if "webhook" not in executed_patterns:
+                profiles_considered.append("webhook")
+                extra_steps.extend([
+                    {"phase": "enum", "script": "enum/web/enum_webhook_basic.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
+                    {"phase": "vuln", "script": "vuln/web/vuln_webhook_baseline.sh", "args": ["--target", "{{target}}", "--engagement", "{{engagement}}", "{{safe_flag}}"]},
+                ])
+                report_focus.append("callback authenticity and webhook trust boundaries")
+            else:
+                report_focus.append("webhook surface (already covered by base profile)")
+                
         if "vercel" in deployments:
             report_focus.append("deployment-layer clues from vercel hosting")
         if "cloudfront" in deployments:
@@ -197,11 +229,24 @@ def main() -> int:
     parser.add_argument("--engagement", required=True)
     parser.add_argument("--profile", required=True)
     parser.add_argument("--target", required=True)
+    parser.add_argument("--executed-steps-context", default="", help="JSON-encoded dict of phase->steps already executed (for deduplication)")
     args = parser.parse_args()
 
     base = ROOT / "engagements" / args.engagement
     quickscan_dir = base / "quick-scan"
     quickscan_dir.mkdir(parents=True, exist_ok=True)
+
+    # Parse executed steps context for deduplication
+    executed_steps: list[dict] = []
+    if args.executed_steps_context:
+        try:
+            phase_artifacts = json.loads(args.executed_steps_context)
+            # Flatten phase->steps into single list
+            for phase, steps in phase_artifacts.items():
+                if isinstance(steps, list):
+                    executed_steps.extend(steps)
+        except json.JSONDecodeError:
+            pass  # Continue without deduplication
 
     recon_json = latest_file(base / "recon" / "parsed", "*.json") if (base / "recon" / "parsed").exists() else None
     enum_summary = latest_file(base / "enum", "ENUM_SUMMARY_*.md") if (base / "enum").exists() else None
@@ -220,7 +265,7 @@ def main() -> int:
     else:
         fp = detect_from_services(enum_text, vuln_text)
 
-    overlay = build_overlay(args.profile, fp)
+    overlay = build_overlay(args.profile, fp, executed_steps)
     data = {
         "target": args.target,
         "normalized_target": normalized,
@@ -234,6 +279,10 @@ def main() -> int:
         "profiles_considered": overlay["profiles_considered"],
         "report_focus": overlay["report_focus"],
         "extra_steps": overlay["extra_steps"],
+        "deduplication": {
+            "executed_steps_analyzed": len(executed_steps),
+            "overlays_skipped_due_to_dedup": len(overlay.get("extra_steps", [])) == 0 and len(overlay["profiles_considered"]) > 0
+        },
         "generated": datetime.now().astimezone().isoformat(),
     }
 

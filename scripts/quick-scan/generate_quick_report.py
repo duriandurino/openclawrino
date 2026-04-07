@@ -165,6 +165,8 @@ def describe_fingerprint(fp: dict) -> list[str]:
     surfaces = fp.get("surfaces", [])
     traits = fp.get("traits", [])
     titles = fp.get("titles", [])
+    dedup = fp.get("deduplication", {})
+    
     if frameworks:
         lines.append(f"- Observed framework indicators: {', '.join(f'`{x}`' for x in frameworks)}")
     if deployments:
@@ -175,6 +177,13 @@ def describe_fingerprint(fp: dict) -> list[str]:
         lines.append(f"- Target traits inferred from artifacts: {', '.join(f'`{x}`' for x in traits)}")
     if titles:
         lines.append(f"- Title hints: {', '.join(f'`{x}`' for x in titles)}")
+    
+    # Add deduplication info if relevant
+    if dedup.get("overlays_skipped_due_to_dedup"):
+        lines.append("- Adaptive overlays: Skipped (target-specific checks already covered by base profile)")
+    elif dedup.get("executed_steps_analyzed", 0) > 0:
+        lines.append(f"- Adaptive overlays: Analyzed {dedup['executed_steps_analyzed']} executed steps for deduplication")
+    
     return lines
 
 

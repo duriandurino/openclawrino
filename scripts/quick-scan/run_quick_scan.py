@@ -206,17 +206,37 @@ def load_fingerprint(engagement: str) -> dict:
         return {}
 
 
-def run_fingerprint(engagement: str, profile: str, target: str) -> dict:
-    """Run target fingerprinting and return adaptive hints."""
+def run_fingerprint(engagement: str, profile: str, target: str, phase_artifacts: dict | None = None) -> dict:
+    """Run target fingerprinting and return adaptive hints.
+    
+    Args:
+        engagement: Engagement folder name
+        profile: Quick-scan profile name
+        target: Target host/URL
+        phase_artifacts: Optional dict of phase->list of executed step dicts for deduplication
+    """
     script = ROOT / "scripts" / "quick-scan" / "fingerprint_target.py"
     if not script.exists():
         return {}
-    subprocess.run([
+    
+    # Build command with optional deduplication context
+    cmd = [
         "python3", str(script),
         "--engagement", engagement,
         "--profile", profile,
         "--target", target,
-    ], cwd=ROOT, check=False)
+    ]
+    
+    # Pass executed steps as JSON for server-side deduplication if library supports it
+    if phase_artifacts and HAS_LIB:
+        try:
+            import json
+            artifacts_json = json.dumps(phase_artifacts)
+            cmd.extend(["--executed-steps-context", artifacts_json])
+        except Exception:
+            pass  # Continue without deduplication hint
+    
+    subprocess.run(cmd, cwd=ROOT, check=False)
     return load_fingerprint(engagement)
 
 
@@ -256,6 +276,18 @@ def run_optional(command: list[str], cwd: Path, label: str):
             print(result.stdout.strip())
     else:
         print(f"[WARN] {label} failed: {result.stderr.strip() or result.stdout.strip()}")
+
+
+def step_key(step: dict) -> str:
+    """Generate a deduplication key for a step based on script and normalized args."""
+    script = step.get("script", "")
+    args = step.get("args", [])
+    # Normalize args by removing template placeholders and flags
+    normalized_args = []
+    for arg in args:
+        if arg and not arg.startswith("{{"):
+            normalized_args.append(arg)
+    return f"{script}:{','.join(normalized_args)}"
 
 
 def run_step_with_lib(step: dict, context: dict, index: int, total: int) -> bool:
@@ -333,6 +365,10 @@ def main() -> int:
     executed_steps = 0
     fingerprint: dict = {}
     
+    # Track executed steps by phase for deduplication
+    executed_by_phase: dict[str, list[dict]] = {}
+    executed_step_keys: set[str] = set()
+    
     # Build execution context
     context = {
         "target": args.target,
@@ -342,11 +378,29 @@ def main() -> int:
         **MODE_DEFAULTS[args.mode],
     }
     
+    # Identify the first recon step for early fingerprinting trigger
+    first_recon_idx = -1
+    for i, step in enumerate(steps):
+        if step.get("phase") == "recon":
+            first_recon_idx = i
+            break
+    
     base_step_count = len(steps)
     idx = 0
+    fingerprint_triggered = False
+    overlay_steps_inserted: set[str] = set()
+    
     while idx < len(steps):
         step = steps[idx]
         display_idx = idx + 1
+        
+        # Generate dedup key and check for duplicates
+        step_key_val = step_key(step)
+        if step_key_val in executed_step_keys:
+            print(f"[{display_idx}/{len(steps)}] SKIP duplicate step: {step.get('script')}")
+            idx += 1
+            continue
+        
         if should_skip_step(step, args.mode):
             print(f"[{display_idx}/{len(steps)}] SKIP optional step in {args.mode} mode: {step.get('script')}")
             idx += 1
@@ -356,20 +410,55 @@ def main() -> int:
             argv = [str(ROOT / "scripts" / step["script"])] + [arg for arg in substitute(step.get("args", []), context) if arg]
             print(f"[{display_idx}/{len(steps)}] DRY-RUN: {' '.join(argv)}")
             executed_steps += 1
+            executed_step_keys.add(step_key_val)
             idx += 1
             continue
         
         if run_step(step, context, display_idx, len(steps)):
             executed_steps += 1
+            executed_step_keys.add(step_key_val)
+            # Track by phase for fingerprint deduplication
+            phase = step.get("phase", "unknown")
+            executed_by_phase.setdefault(phase, []).append(step)
         else:
             return 1
 
-        if idx == base_step_count - 1:
-            fingerprint = run_fingerprint(engagement, manifest.get("name", manifest_path.stem), args.target)
+        # Trigger fingerprinting after first recon step completes (for web profiles)
+        # This enables early branching before enum/vuln phases
+        if idx == first_recon_idx and not fingerprint_triggered and not args.dry_run:
+            fingerprint = run_fingerprint(engagement, manifest.get("name", manifest_path.stem), args.target, executed_by_phase)
             extra_steps = fingerprint.get("extra_steps", []) if isinstance(fingerprint, dict) else []
             if extra_steps:
                 print(f"[*] Adaptive quick-scan overlays detected: {', '.join(fingerprint.get('profiles_considered', [])) or 'target-specific checks'}")
-                steps.extend(extra_steps)
+                # Insert overlay steps BEFORE continuing to next phase (enum/vuln)
+                # Filter out steps that duplicate already-executed work
+                deduped_overlay = []
+                for overlay_step in extra_steps:
+                    overlay_key = step_key(overlay_step)
+                    if overlay_key not in executed_step_keys and overlay_key not in overlay_steps_inserted:
+                        deduped_overlay.append(overlay_step)
+                        overlay_steps_inserted.add(overlay_key)
+                
+                if deduped_overlay:
+                    # Insert overlay steps immediately after recon, before enum
+                    remaining = steps[idx+1:]
+                    steps = steps[:idx+1] + deduped_overlay + remaining
+            fingerprint_triggered = True
+        
+        # Legacy: also check at end of base steps for non-web profiles or if fingerprint missed
+        if idx == base_step_count - 1 and not fingerprint_triggered and not args.dry_run:
+            fingerprint = run_fingerprint(engagement, manifest.get("name", manifest_path.stem), args.target, executed_by_phase)
+            extra_steps = fingerprint.get("extra_steps", []) if isinstance(fingerprint, dict) else []
+            if extra_steps:
+                print(f"[*] Adaptive quick-scan overlays detected (late): {', '.join(fingerprint.get('profiles_considered', [])) or 'target-specific checks'}")
+                # Filter duplicates for late overlay too
+                for overlay_step in extra_steps:
+                    overlay_key = step_key(overlay_step)
+                    if overlay_key not in executed_step_keys and overlay_key not in overlay_steps_inserted:
+                        steps.append(overlay_step)
+                        overlay_steps_inserted.add(overlay_key)
+            fingerprint_triggered = True
+            
         idx += 1
 
     # Generate phase summaries for recon, enum, vuln
