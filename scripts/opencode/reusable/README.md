@@ -34,6 +34,45 @@ This wrapper provides:
 - Delegation to the existing `vuln/scripts/cve_lookup.py` implementation
 - Additional `--wrapper-info` flag for debugging
 
+## OpenCode Watcher
+
+**File:** `opencode_watch.py`
+
+A reusable wrapper for supervising `opencode run` in a more reliable way. This is the foundation for "nested vibe coding" workflows, where Hatless White or a subagent uses OpenCode as a live coding helper and wants structured progress/outcome handling instead of blind fire-and-forget execution.
+
+### Usage
+
+```bash
+# Minimal run with JSON result
+python3 scripts/opencode/reusable/opencode_watch.py \
+  --prompt "Reply with exactly: OK" \
+  --json
+
+# Run in workspace with fallback model and saved result
+python3 scripts/opencode/reusable/opencode_watch.py \
+  --cwd /home/dukali/.openclaw/workspace \
+  --model opencode/minimax-m2.5-free \
+  --fallback-model opencode/gpt-5-nano \
+  --prompt "Build a tiny argparse example and summarize it" \
+  --save engagements/tmp/opencode-watch-result.json
+```
+
+### What it does
+
+- launches `opencode run --format json`
+- parses OpenCode JSON events
+- tracks step/text progress
+- detects stall timeout and hard timeout
+- can retry once with a fallback model
+- returns a structured result for the caller
+
+### Why it exists
+
+This keeps OpenCode use:
+- observable
+- easier to automate safely
+- less brittle for nested coding workflows
+
 ## Adding New Utilities
 
 When adding new reusable utilities:
