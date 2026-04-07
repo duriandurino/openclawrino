@@ -474,6 +474,13 @@ def main() -> int:
                 phase,
             ], cwd=ROOT, check=False)
 
+    # Refresh the fingerprint after all base phases complete so the final report
+    # can use richer artifacts than the early-branching pass had available.
+    # This preserves early overlays while ensuring report differentiation is based
+    # on the full quick-scan evidence set.
+    if not args.dry_run:
+        fingerprint = run_fingerprint(engagement, manifest.get("name", manifest_path.stem), args.target, executed_by_phase)
+
     # Generate quick report
     report_script = ROOT / "scripts" / "quick-scan" / "generate_quick_report.py"
     if report_script.exists():

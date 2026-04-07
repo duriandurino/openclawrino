@@ -10,6 +10,8 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).resolve().parents[2]
 
+ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
+
 
 def latest_file(directory: Path, pattern: str) -> Path | None:
     matches = sorted(directory.glob(pattern), key=lambda p: p.stat().st_mtime)
@@ -34,6 +36,39 @@ def normalize_target(target: str) -> tuple[str, str]:
     if re.match(r"^[A-Za-z0-9._-]+\.[A-Za-z]{2,}(:\d+)?$", target):
         return "web", target
     return "host", target
+
+
+def strip_ansi(text: str) -> str:
+    return ANSI_RE.sub("", text or "")
+
+
+def extract_titles_from_whatweb(whatweb_lines: list[str]) -> list[str]:
+    titles: list[str] = []
+    for raw in whatweb_lines:
+        clean = strip_ansi(raw)
+        for match in re.finditer(r"Title\[([^\]]+)\]", clean, re.I):
+            title = match.group(1).strip()
+            if title:
+                titles.append(title)
+    return list(dict.fromkeys(titles))[:3]
+
+
+def extract_titles_from_body(body_text: str) -> list[str]:
+    if not body_text:
+        return []
+    titles: list[str] = []
+    title_match = re.search(r"<title>(.*?)</title>", body_text, re.I | re.S)
+    if title_match:
+        titles.append(re.sub(r"\s+", " ", title_match.group(1)).strip())
+    for meta_name in ["og:title", "twitter:title"]:
+        meta_match = re.search(
+            rf'<meta[^>]+(?:property|name)=["\']{re.escape(meta_name)}["\'][^>]+content=["\']([^"\']+)["\']',
+            body_text,
+            re.I,
+        )
+        if meta_match:
+            titles.append(meta_match.group(1).strip())
+    return list(dict.fromkeys([t for t in titles if t]))[:3]
 
 
 def detect_from_headers(findings: list[dict], body_text: str, raw_headers: str = "", raw_response: str = "") -> dict:
@@ -72,12 +107,16 @@ def detect_from_headers(findings: list[dict], body_text: str, raw_headers: str =
             if match := re.search(r"HTTP/[\d.]+ (\d+)", resp_line[0]):
                 status_code = match.group(1)
     
+    if not titles and whatweb:
+        titles.extend(extract_titles_from_whatweb(whatweb))
+    if not titles and body_text:
+        titles.extend(extract_titles_from_body(body_text))
+
     cookie_blob = "\n".join(cookies).lower()
     header_blob = "\n".join(headers).lower()
     raw_header_blob = "\n".join(raw_header_list)
-    whatweb_blob = "\n".join(whatweb).lower()
+    whatweb_blob = strip_ansi("\n".join(whatweb)).lower()
     body_blob = body_text.lower()
-    url_blob = body_text.lower()
 
     frameworks: list[str] = []
     traits: list[str] = []
@@ -116,7 +155,7 @@ def detect_from_headers(findings: list[dict], body_text: str, raw_headers: str =
         deployments.append("azure-functions")
         surfaces.append("serverless")
 
-    if "next.js" in whatweb_blob or "_next/" in body_blob or "next/static" in body_blob:
+    if any(token in whatweb_blob for token in ["next.js", "x-nextjs-", "next-router", "x-matched-path"]) or "_next/" in body_blob or "next/static" in body_blob:
         frameworks.append("nextjs")
     if "nestjs" in whatweb_blob or "swagger-ui" in body_blob or "/api-json" in body_blob:
         frameworks.append("nestjs")
@@ -125,11 +164,11 @@ def detect_from_headers(findings: list[dict], body_text: str, raw_headers: str =
         surfaces.append("graphql")
     if "openapi" in body_blob or "swagger" in body_blob or "swagger" in whatweb_blob:
         surfaces.append("api-docs")
-    if any(token in url_blob for token in ["/api/v1", "/api/v2", "/api/v3", "/rest/", "/graphql"]):
+    if any(token in body_blob for token in ["/api/v1", "/api/v2", "/api/v3", "/rest/", "/graphql", "/api/"]):
         surfaces.append("api")
     if any(token in body_blob for token in ["webhook", "callback endpoint", "signature verification"]):
         surfaces.append("webhook")
-    if any(token in body_blob for token in ["login", "sign in", "auth", "oauth"]) and any(token in url_blob for token in ["/auth", "/login", "/signin", "/oauth"]):
+    if any(token in body_blob for token in ["login", "sign in", "auth", "oauth"]) and any(token in body_blob for token in ["/auth", "/login", "/signin", "/oauth"]):
         traits.append("auth-facing")
     if any(token in body_blob for token in ["api", "json", "restful"]):
         traits.append("api-backed")
@@ -183,12 +222,19 @@ def detect_from_headers(findings: list[dict], body_text: str, raw_headers: str =
         elif status_code == "301" or status_code == "302" or status_code == "307" or status_code == "308":
             traits.append("redirect-response")
 
+    if titles:
+        title_blob = " ".join(titles).lower()
+        if any(token in title_blob for token in ["portfolio", "engineer", "developer", "designer", "consultant"]):
+            traits.append("portfolio-like")
+        if any(token in title_blob for token in ["book", "library", "catalog", "shop", "store", "market", "fair"]):
+            traits.append("catalog-like")
+
     return {
         "frameworks": sorted(set(frameworks)),
         "deployments": sorted(set(deployments)),
         "surfaces": sorted(set(surfaces)),
         "traits": sorted(set(traits)),
-        "titles": titles[:3],
+        "titles": list(dict.fromkeys(titles))[:3],
         "server_hints": sorted(set(server_hints)),
         "status_code": status_code,
         "cookies_detected": len(cookies),
@@ -356,10 +402,19 @@ def main() -> int:
     recon_json = latest_file(base / "recon" / "parsed", "*.json") if (base / "recon" / "parsed").exists() else None
     enum_summary = latest_file(base / "enum", "ENUM_SUMMARY_*.md") if (base / "enum").exists() else None
     vuln_summary = latest_file(base / "vuln", "VULN_SUMMARY_*.md") if (base / "vuln").exists() else None
-    raw_body_candidates = sorted((base / "vuln" / "raw").glob("*body.txt"), key=lambda p: p.stat().st_mtime) if (base / "vuln" / "raw").exists() else []
-    raw_headers_candidates = sorted((base / "vuln" / "raw").glob("*headers.txt"), key=lambda p: p.stat().st_mtime) if (base / "vuln" / "raw").exists() else []
-    raw_response_candidates = sorted((base / "vuln" / "raw").glob("*response.txt"), key=lambda p: p.stat().st_mtime) if (base / "vuln" / "raw").exists() else []
-    raw_raw_candidates = sorted((base / "vuln" / "raw").glob("*raw.txt"), key=lambda p: p.stat().st_mtime) if (base / "vuln" / "raw").exists() else []
+    recon_raw_dir = base / "recon" / "raw"
+    vuln_raw_dir = base / "vuln" / "raw"
+    raw_body_candidates = []
+    raw_headers_candidates = []
+    raw_response_candidates = []
+    if recon_raw_dir.exists():
+        raw_body_candidates.extend(sorted(recon_raw_dir.glob("*body.txt"), key=lambda p: p.stat().st_mtime))
+        raw_headers_candidates.extend(sorted(recon_raw_dir.glob("*headers.txt"), key=lambda p: p.stat().st_mtime))
+        raw_response_candidates.extend(sorted(recon_raw_dir.glob("*response.txt"), key=lambda p: p.stat().st_mtime))
+    if vuln_raw_dir.exists():
+        raw_body_candidates.extend(sorted(vuln_raw_dir.glob("*body.txt"), key=lambda p: p.stat().st_mtime))
+        raw_headers_candidates.extend(sorted(vuln_raw_dir.glob("*headers.txt"), key=lambda p: p.stat().st_mtime))
+        raw_response_candidates.extend(sorted(vuln_raw_dir.glob("*response.txt"), key=lambda p: p.stat().st_mtime))
 
     target_kind, normalized = normalize_target(args.target)
     recon = load_json(recon_json)

@@ -158,6 +158,58 @@ def extract_management_exposures(path: Path | None) -> list[dict]:
     return findings
 
 
+def classify_target_story(fp: dict) -> tuple[str, list[str], list[str]]:
+    frameworks = set(fp.get("frameworks", []))
+    deployments = set(fp.get("deployments", []))
+    surfaces = set(fp.get("surfaces", []))
+    traits = set(fp.get("traits", []))
+    titles = fp.get("titles", [])
+    title_blob = " ".join(titles).lower()
+    target_blob = str(fp.get("target", "")).lower()
+
+    story = "general web application"
+    emphasis: list[str] = []
+    recommendations: list[str] = []
+    qualifiers: list[str] = []
+
+    if "nextjs" in frameworks and "vercel" in deployments:
+        story = "Vercel-hosted Next.js application"
+        emphasis.append("deployment metadata, response header posture, and frontend routing clues")
+        recommendations.append("Review framework-level security headers in the Vercel/Next.js deployment configuration rather than only at the application code layer.")
+    elif "vercel" in deployments:
+        story = "Vercel-hosted web application"
+        emphasis.append("deployment-layer clues and externally visible response behavior")
+        recommendations.append("Review Vercel edge/header configuration to ensure baseline browser protections are applied consistently.")
+
+    if "auth-facing" in traits:
+        story = f"auth-facing {story}"
+        emphasis.append("authentication surface and access-control-adjacent behavior")
+        recommendations.append("Prioritize login, session, and access-control review if this target is important beyond public brochureware.")
+    if "ssr-or-hybrid" in traits:
+        emphasis.append("server-rendered route behavior and cache/header consistency across rendered pages")
+    if "spa-or-js-heavy" in traits:
+        emphasis.append("client-side behavior and browser-facing hardening")
+    if "api-docs" in surfaces or "graphql" in surfaces:
+        emphasis.append("API exposure clues rather than only page presentation")
+    if "redirect-response" in traits:
+        emphasis.append("redirect behavior, canonical host handling, and edge routing consistency")
+    if "portfolio-like" in traits or any(token in title_blob for token in ["portfolio", "engineer", "developer", "designer", "consultant"]):
+        qualifiers.append("public portfolio-style surface")
+        recommendations.append("Treat public profile and contact metadata as part of the exposed surface, especially if it influences impersonation, scraping, or social-engineering risk.")
+    if "catalog-like" in traits or any(token in title_blob for token in ["book", "library", "catalog", "shop", "store", "market", "fair"]) or any(token in target_blob for token in ["book", "library", "catalog", "shop", "store", "market", "fair"]):
+        qualifiers.append("public catalog or content-style surface")
+        recommendations.append("Validate whether search, content, and image-delivery routes expose data or caching behavior beyond the intended public catalog experience.")
+    if titles:
+        recommendations.append(f"Use the discovered title/context ({titles[0]}) to decide whether this is primarily a marketing surface, operational app, or user-facing portal before prioritizing deeper testing.")
+
+    if qualifiers:
+        story = f"{story} serving as a {' and '.join(dict.fromkeys(qualifiers))}"
+
+    emphasis = list(dict.fromkeys(emphasis))
+    recommendations = list(dict.fromkeys(recommendations))
+    return story, emphasis, recommendations
+
+
 def describe_fingerprint(fp: dict) -> list[str]:
     lines: list[str] = []
     frameworks = fp.get("frameworks", [])
@@ -166,7 +218,9 @@ def describe_fingerprint(fp: dict) -> list[str]:
     traits = fp.get("traits", [])
     titles = fp.get("titles", [])
     dedup = fp.get("deduplication", {})
-    
+    story, emphasis, _ = classify_target_story(fp)
+
+    lines.append(f"- Target appears to be a {story}.")
     if frameworks:
         lines.append(f"- Observed framework indicators: {', '.join(f'`{x}`' for x in frameworks)}")
     if deployments:
@@ -177,29 +231,32 @@ def describe_fingerprint(fp: dict) -> list[str]:
         lines.append(f"- Target traits inferred from artifacts: {', '.join(f'`{x}`' for x in traits)}")
     if titles:
         lines.append(f"- Title hints: {', '.join(f'`{x}`' for x in titles)}")
-    
-    # Add deduplication info if relevant
+    if emphasis:
+        lines.append(f"- Report emphasis for this target: {', '.join(emphasis)}")
+
     if dedup.get("overlays_skipped_due_to_dedup"):
         lines.append("- Adaptive overlays: Skipped (target-specific checks already covered by base profile)")
     elif dedup.get("executed_steps_analyzed", 0) > 0:
         lines.append(f"- Adaptive overlays: Analyzed {dedup['executed_steps_analyzed']} executed steps for deduplication")
-    
+
     return lines
 
 
 def executive_summary(profile: str, target: str, mode: str, counts: Counter, total: int, fingerprint: dict) -> list[str]:
     lines = ["## Executive Summary", ""]
+    story, emphasis, _ = classify_target_story(fingerprint or {})
     if total == 0:
-        lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and did not capture notable candidate findings from the current artifact set.")
+        lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and treated the target as a {story}, but did not capture notable candidate findings from the current artifact set.")
         lines.append("- This suggests either a relatively clean exposed surface or limited visibility from low-impact triage checks.")
     else:
         highest = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev)), "Info")
-        lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and captured {total} meaningful candidate observations, with highest provisional severity `{highest}`.")
+        lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and treated the target as a {story}, capturing {total} meaningful candidate observations with highest provisional severity `{highest}`.")
         lines.append("- These results are triage-oriented and should be manually validated before being treated as confirmed vulnerabilities.")
     if fingerprint:
         focus = fingerprint.get("report_focus", [])
-        if focus:
-            lines.append(f"- This quick scan adapted its framing toward: {', '.join(focus)}.")
+        merged_focus = list(dict.fromkeys(emphasis + focus))
+        if merged_focus:
+            lines.append(f"- This quick scan adapted its framing toward: {', '.join(merged_focus)}.")
     lines.append("")
     return lines
 
@@ -212,16 +269,19 @@ def phase_excerpt(path: Path | None, title: str) -> list[str]:
     return [f"## {title}", "", *excerpt, ""]
 
 
-def recommended_next_action(counts: Counter, has_recon: bool, has_enum: bool, has_vuln: bool) -> list[str]:
+def recommended_next_action(counts: Counter, has_recon: bool, has_enum: bool, has_vuln: bool, fingerprint: dict) -> list[str]:
     lines = ["## Recommended Next Action", ""]
+    story, _, recs = classify_target_story(fingerprint or {})
     if counts.get("Critical") or counts.get("High"):
-        lines.append("- Escalate to a full pentest workflow or targeted manual validation immediately for the highest-risk candidates.")
+        lines.append(f"- Escalate to a full pentest workflow or targeted manual validation immediately for the highest-risk candidates on this {story}.")
     elif counts.get("Medium"):
-        lines.append("- Perform focused manual validation on the medium-severity candidates and expand service-specific enumeration where relevant.")
+        lines.append(f"- Perform focused manual validation on the medium-severity candidates and expand service-specific enumeration where relevant for this {story}.")
     elif has_enum or has_vuln:
-        lines.append("- Preserve artifacts and consider a deeper follow-up scan if this target matters operationally.")
+        lines.append(f"- Preserve artifacts and consider a deeper follow-up scan if this {story} matters operationally.")
     else:
-        lines.append("- If higher confidence is needed, rerun with a broader profile or move to a full pentest workflow.")
+        lines.append(f"- If higher confidence is needed, rerun with a broader profile or move to a full pentest workflow for this {story}.")
+    for rec in recs[:2]:
+        lines.append(f"- {rec}")
     lines.append("")
     return lines
 
@@ -323,8 +383,12 @@ def main() -> int:
             report_lines.append(f"- Adaptive overlays considered: {', '.join(fingerprint['profiles_considered'])}")
         report_lines.append("")
         if fingerprint.get("report_focus"):
+            story, emphasis, recs = classify_target_story(fingerprint)
             report_lines.extend(["## Why This Quick Scan Varied", ""])
-            report_lines.extend([f"- Focused on {item}" for item in fingerprint.get("report_focus", [])])
+            report_lines.append(f"- This target was framed as a {story} based on lightweight fingerprint evidence.")
+            report_lines.extend([f"- Focused on {item}" for item in list(dict.fromkeys(emphasis + fingerprint.get("report_focus", [])))])
+            if recs:
+                report_lines.extend([f"- Reporting bias adjusted toward: {item}" for item in recs[:2]])
             report_lines.append("")
     report_lines.extend([
         "## Severity Buckets",
@@ -352,7 +416,7 @@ def main() -> int:
     else:
         report_lines.append("- Validate whether the limited findings are due to clean posture, low-impact mode, or missing service visibility.")
     report_lines.append("")
-    report_lines.extend(recommended_next_action(counts, recon_summary is not None, enum_summary is not None, vuln_summary is not None))
+    report_lines.extend(recommended_next_action(counts, recon_summary is not None, enum_summary is not None, vuln_summary is not None, fingerprint))
     report_lines.extend(phase_excerpt(recon_summary, "Recon Summary"))
     report_lines.extend(phase_excerpt(enum_summary, "Enumeration Summary"))
     report_lines.extend(phase_excerpt(vuln_summary, "Vulnerability Summary"))
@@ -362,6 +426,11 @@ def main() -> int:
         "- Validate candidate findings manually before escalation or reporting as confirmed issues.",
         "- Escalate to a full pentest workflow if exposed services, weak posture, or high-risk candidates are found.",
         "- Preserve engagement artifacts for follow-up analysis and retesting.",
+    ])
+    _, _, tailored_recs = classify_target_story(fingerprint or {})
+    for rec in tailored_recs[:3]:
+        report_lines.append(f"- {rec}")
+    report_lines.extend([
         "",
     ])
     report_path.write_text("\n".join(report_lines), encoding="utf-8")
