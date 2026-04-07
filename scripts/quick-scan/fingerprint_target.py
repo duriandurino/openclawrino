@@ -26,10 +26,12 @@ def load_json(path: Path | None) -> dict:
 
 
 def normalize_target(target: str) -> tuple[str, str]:
-    if re.match(r"^https?://", target, re.I):
+    # Handle URLs with or without scheme
+    if "://" in target:
         parsed = urlparse(target)
-        return "web", parsed.netloc or target
-    if re.match(r"^[A-Za-z0-9._-]+\.[A-Za-z]{2,}$", target):
+        return "web", parsed.netloc or parsed.path or target
+    # Handle bare domains (including those with ports)
+    if re.match(r"^[A-Za-z0-9._-]+\.[A-Za-z]{2,}(:\d+)?$", target):
         return "web", target
     return "host", target
 
@@ -128,7 +130,7 @@ def detect_from_services(enum_text: str, vuln_text: str) -> dict:
 
     return {
         "frameworks": sorted(set(frameworks)),
-        "deployments": deployments,
+        "deployments": sorted(set(deployments)),
         "surfaces": sorted(set(surfaces)),
         "traits": sorted(set(traits)),
         "titles": [],
