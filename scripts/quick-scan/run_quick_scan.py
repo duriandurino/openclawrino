@@ -194,6 +194,32 @@ def latest_enum_json(engagement: str) -> str:
     return ""
 
 
+def load_fingerprint(engagement: str) -> dict:
+    """Load quick-scan fingerprint data if present."""
+    path = ROOT / "engagements" / engagement / "quick-scan" / "fingerprint.json"
+    if not path.exists():
+        return {}
+    try:
+        import json
+        return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+    except Exception:
+        return {}
+
+
+def run_fingerprint(engagement: str, profile: str, target: str) -> dict:
+    """Run target fingerprinting and return adaptive hints."""
+    script = ROOT / "scripts" / "quick-scan" / "fingerprint_target.py"
+    if not script.exists():
+        return {}
+    subprocess.run([
+        "python3", str(script),
+        "--engagement", engagement,
+        "--profile", profile,
+        "--target", target,
+    ], cwd=ROOT, check=False)
+    return load_fingerprint(engagement)
+
+
 def ensure_reporting_dir(engagement: str) -> Path:
     """Ensure the reporting directory exists for an engagement."""
     path = ROOT / "engagements" / engagement / "quick-scan" / "reporting"
@@ -305,6 +331,7 @@ def main() -> int:
 
     steps = manifest.get("steps", [])
     executed_steps = 0
+    fingerprint: dict = {}
     
     # Build execution context
     context = {
@@ -315,21 +342,35 @@ def main() -> int:
         **MODE_DEFAULTS[args.mode],
     }
     
-    for idx, step in enumerate(steps, start=1):
+    base_step_count = len(steps)
+    idx = 0
+    while idx < len(steps):
+        step = steps[idx]
+        display_idx = idx + 1
         if should_skip_step(step, args.mode):
-            print(f"[{idx}/{len(steps)}] SKIP optional step in {args.mode} mode: {step.get('script')}")
+            print(f"[{display_idx}/{len(steps)}] SKIP optional step in {args.mode} mode: {step.get('script')}")
+            idx += 1
             continue
         
         if args.dry_run:
             argv = [str(ROOT / "scripts" / step["script"])] + [arg for arg in substitute(step.get("args", []), context) if arg]
-            print(f"[{idx}/{len(steps)}] DRY-RUN: {' '.join(argv)}")
+            print(f"[{display_idx}/{len(steps)}] DRY-RUN: {' '.join(argv)}")
             executed_steps += 1
+            idx += 1
             continue
         
-        if run_step(step, context, idx, len(steps)):
+        if run_step(step, context, display_idx, len(steps)):
             executed_steps += 1
         else:
             return 1
+
+        if idx == base_step_count - 1:
+            fingerprint = run_fingerprint(engagement, manifest.get("name", manifest_path.stem), args.target)
+            extra_steps = fingerprint.get("extra_steps", []) if isinstance(fingerprint, dict) else []
+            if extra_steps:
+                print(f"[*] Adaptive quick-scan overlays detected: {', '.join(fingerprint.get('profiles_considered', [])) or 'target-specific checks'}")
+                steps.extend(extra_steps)
+        idx += 1
 
     # Generate phase summaries for recon, enum, vuln
     for phase in ["recon", "enum", "vuln"]:

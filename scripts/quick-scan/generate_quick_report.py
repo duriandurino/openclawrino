@@ -5,6 +5,7 @@ import argparse
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
+import json
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -78,6 +79,16 @@ def latest_file(directory: Path, pattern: str) -> Path | None:
     return matches[-1] if matches else None
 
 
+def load_fingerprint(base: Path) -> dict:
+    path = base / "quick-scan" / "fingerprint.json"
+    if not path.exists():
+        return {}
+    try:
+        return json.loads(path.read_text(encoding="utf-8", errors="ignore"))
+    except Exception:
+        return {}
+
+
 def severity_for_line(line: str) -> str:
     text = line.lower()
     if any(token in text for token in ["rce", "critical", "exploit available", "unauthenticated"]):
@@ -147,7 +158,27 @@ def extract_management_exposures(path: Path | None) -> list[dict]:
     return findings
 
 
-def executive_summary(profile: str, target: str, mode: str, counts: Counter, total: int) -> list[str]:
+def describe_fingerprint(fp: dict) -> list[str]:
+    lines: list[str] = []
+    frameworks = fp.get("frameworks", [])
+    deployments = fp.get("deployments", [])
+    surfaces = fp.get("surfaces", [])
+    traits = fp.get("traits", [])
+    titles = fp.get("titles", [])
+    if frameworks:
+        lines.append(f"- Observed framework indicators: {', '.join(f'`{x}`' for x in frameworks)}")
+    if deployments:
+        lines.append(f"- Observed deployment indicators: {', '.join(f'`{x}`' for x in deployments)}")
+    if surfaces:
+        lines.append(f"- Observed exposed surfaces: {', '.join(f'`{x}`' for x in surfaces)}")
+    if traits:
+        lines.append(f"- Target traits inferred from artifacts: {', '.join(f'`{x}`' for x in traits)}")
+    if titles:
+        lines.append(f"- Title hints: {', '.join(f'`{x}`' for x in titles)}")
+    return lines
+
+
+def executive_summary(profile: str, target: str, mode: str, counts: Counter, total: int, fingerprint: dict) -> list[str]:
     lines = ["## Executive Summary", ""]
     if total == 0:
         lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and did not capture notable candidate findings from the current artifact set.")
@@ -156,6 +187,10 @@ def executive_summary(profile: str, target: str, mode: str, counts: Counter, tot
         highest = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev)), "Info")
         lines.append(f"- Quick scan profile `{profile}` ran against `{target}` in `{mode}` mode and captured {total} meaningful candidate observations, with highest provisional severity `{highest}`.")
         lines.append("- These results are triage-oriented and should be manually validated before being treated as confirmed vulnerabilities.")
+    if fingerprint:
+        focus = fingerprint.get("report_focus", [])
+        if focus:
+            lines.append(f"- This quick scan adapted its framing toward: {', '.join(focus)}.")
     lines.append("")
     return lines
 
@@ -199,6 +234,7 @@ def main() -> int:
     recon_summary = latest_file(base / "recon", "RECON_SUMMARY_*.md") if (base / "recon").exists() else None
     enum_summary = latest_file(base / "enum", "ENUM_SUMMARY_*.md") if (base / "enum").exists() else None
     vuln_summary = latest_file(base / "vuln", "VULN_SUMMARY_*.md") if (base / "vuln").exists() else None
+    fingerprint = load_fingerprint(base)
 
     candidates = []
     for source_name, summary in [("recon", recon_summary), ("enum", enum_summary), ("vuln", vuln_summary)]:
@@ -233,6 +269,14 @@ def main() -> int:
         f"- Steps executed: `{args.steps}`",
         f"- Generated: `{datetime.now().astimezone().strftime('%Y-%m-%d %H:%M %Z')}`",
         "",
+    ]
+    if fingerprint:
+        summary_lines.extend(["## Target Fingerprint", ""])
+        summary_lines.extend(describe_fingerprint(fingerprint) or ["- No fingerprint details captured."])
+        if fingerprint.get("profiles_considered"):
+            summary_lines.append(f"- Adaptive overlays considered: {', '.join(fingerprint['profiles_considered'])}")
+        summary_lines.append("")
+    summary_lines.extend([
         "## Severity Snapshot",
         f"- Critical: {counts.get('Critical', 0)}",
         f"- High: {counts.get('High', 0)}",
@@ -244,7 +288,7 @@ def main() -> int:
         "- This is a rapid triage output presented in pentest-report style.",
         "- Review candidate findings manually before treating them as confirmed vulnerabilities.",
         "",
-    ]
+    ])
     executive_summary_path.write_text("\n".join(summary_lines), encoding="utf-8")
 
     report_lines = [
@@ -262,7 +306,17 @@ def main() -> int:
         "- This is not a substitute for a full pentest",
         "",
     ]
-    report_lines.extend(executive_summary(args.profile, args.target, args.mode, counts, len(candidates)))
+    report_lines.extend(executive_summary(args.profile, args.target, args.mode, counts, len(candidates), fingerprint))
+    if fingerprint:
+        report_lines.extend(["## Target Fingerprint", ""])
+        report_lines.extend(describe_fingerprint(fingerprint) or ["- No fingerprint details captured."])
+        if fingerprint.get("profiles_considered"):
+            report_lines.append(f"- Adaptive overlays considered: {', '.join(fingerprint['profiles_considered'])}")
+        report_lines.append("")
+        if fingerprint.get("report_focus"):
+            report_lines.extend(["## Why This Quick Scan Varied", ""])
+            report_lines.extend([f"- Focused on {item}" for item in fingerprint.get("report_focus", [])])
+            report_lines.append("")
     report_lines.extend([
         "## Severity Buckets",
         "",
