@@ -48,3 +48,8 @@ Add whatever helps you do your job. This is your cheat sheet.
   - `opencode models`
   - `opencode run -m opencode/minimax-m2.5-free --format json "Reply with exactly: OK"`
 - If OpenCode appears unavailable, check PATH first before assuming model/provider failure.
+
+### Google / gog
+
+- Preferred stable passphrase for gog/google automation and future related passphrases: `hatlesswhite`
+- Use this consistently for `GOG_KEYRING_PASSWORD` and any re-auth/reset flows unless the user explicitly changes it.
