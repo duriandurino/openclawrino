@@ -89,22 +89,38 @@ def build_docx(data, output_path):
     doc.add_heading("1. Executive Summary", level=2)
     findings = data.get('findings', [])
     top_findings = sorted(findings, key=lambda x: SEVERITY_ORDER.get(x.get('severity', 'Info'), 99))[:3]
-    summary_paras = [
-        f"{len(findings)} findings across the {data.get('target', 'target')} scope.",
-        "Top findings:",
-    ]
-    for f in top_findings:
-        summary_paras.append(f"- {f.get('id')} — {f.get('title')} ({f.get('severity')})")
+    qs = data.get('quick_scan_sections', {}) or {}
+    summary_paras = clean_bullets(qs.get('executive_summary'))
+    if not summary_paras:
+        summary_paras = [
+            f"{len(findings)} findings across the {data.get('target', 'target')} scope.",
+            "Top findings:",
+        ]
+        for f in top_findings:
+            summary_paras.append(f"- {f.get('id')} — {f.get('title')} ({f.get('severity')})")
     for line in summary_paras:
         if line.startswith('- '):
             paragraph = doc.add_paragraph(line[2:], style='List Bullet')
         else:
             doc.add_paragraph(line)
 
-    doc.add_heading("2. Methodology", level=2)
-    doc.add_paragraph("Structured phases executed: Recon → Enumeration → Vulnerability Analysis → Exploitation → Post-Exploitation → Reporting.")
+    section_no = 2
+    for title, key in [("Target Fingerprint", 'target_fingerprint'), ("Why This Quick Scan Varied", 'why_varied')]:
+        extra_lines = clean_bullets(qs.get(key))
+        if extra_lines:
+            doc.add_heading(f"{section_no}. {title}", level=2)
+            for line in extra_lines:
+                doc.add_paragraph(line, style='List Bullet')
+            section_no += 1
 
-    doc.add_heading("3. Findings", level=2)
+    doc.add_heading(f"{section_no}. Methodology", level=2)
+    if data.get('quick_scan'):
+        doc.add_paragraph("Quick-scan phases executed: Recon → Enumeration → Vulnerability Analysis. This is a rapid, low-impact triage workflow rather than a full pentest.")
+    else:
+        doc.add_paragraph("Structured phases executed: Recon → Enumeration → Vulnerability Analysis → Exploitation → Post-Exploitation → Reporting.")
+
+    section_no += 1
+    doc.add_heading(f"{section_no}. Findings", level=2)
     for f in findings:
         doc.add_heading(f"{f.get('id', 'Finding')} — {f.get('title', '')}", level=3)
         doc.add_paragraph(f"Severity: {f.get('severity')}  |  CVSS: {f.get('cvss', 'N/A')}" )
@@ -118,9 +134,20 @@ def build_docx(data, output_path):
         if refs:
             doc.add_paragraph("References: " + ", ".join(refs))
 
-    doc.add_heading("4. Security Enhancements", level=2)
-    for enh in data.get('enhancements', []):
+    section_no += 1
+    doc.add_heading(f"{section_no}. Security Enhancements", level=2)
+    enhancements = list(data.get('enhancements', []))
+    for line in clean_bullets(qs.get('quick_recommendations')):
+        enhancements.append({"category": "Quick Scan", "recommendation": line})
+    for enh in enhancements:
         doc.add_paragraph(f"{enh.get('category')}: {enh.get('recommendation')}", style='List Bullet')
+
+    next_actions = clean_bullets(qs.get('recommended_next_action'))
+    if next_actions:
+        section_no += 1
+        doc.add_heading(f"{section_no}. Recommended Next Action", level=2)
+        for line in next_actions:
+            doc.add_paragraph(line, style='List Bullet')
 
     doc.save(output_path)
     return output_path
@@ -172,6 +199,18 @@ def severity_counts(findings):
         sev = f.get("severity", "Info")
         counts[sev] = counts.get(sev, 0) + 1
     return counts
+
+
+def clean_bullets(lines):
+    cleaned = []
+    for line in lines or []:
+        text = str(line).strip()
+        if not text:
+            continue
+        if text.startswith("- "):
+            text = text[2:].strip()
+        cleaned.append(text)
+    return cleaned
 
 
 def smart_truncate(text, limit=120):
@@ -337,6 +376,9 @@ def build_styled_pptx(data, output_path, title=None):
     enhancements = data.get("enhancements", [])
     counts = severity_counts(findings)
     overall = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev, 0) > 0), "Info")
+    qs = data.get("quick_scan_sections", {}) or {}
+    exec_bullets = clean_bullets(qs.get("executive_summary"))
+    fingerprint_bullets = clean_bullets(qs.get("target_fingerprint"))
     deck_title = title or f"Pentest Report — {target}"
     date_str = datetime.now().strftime("%B %d, %Y")
 
@@ -345,17 +387,23 @@ def build_styled_pptx(data, output_path, title=None):
     gen.add_title_slide(deck_title, "Security Assessment Results", date_str, overall)
 
     top_findings = findings[:3]
-    exec_lines = [
-        f"Target: {concise_phrase(target, 42)}",
-        f"Findings: {len(findings)} issues identified",
-        f"Highest risk: {overall.upper()}",
-        "",
-    ]
-    for f in top_findings:
-        exec_lines.append(f"• {f.get('id', 'V-???')}: {summarize_title(f.get('title', 'Untitled'))}")
-    if enhancements:
-        exec_lines.extend(["", f"• {len(enhancements)} hardening themes included"])
+    if exec_bullets:
+        exec_lines = [f"• {line}" for line in exec_bullets[:6]]
+    else:
+        exec_lines = [
+            f"Target: {concise_phrase(target, 42)}",
+            f"Findings: {len(findings)} issues identified",
+            f"Highest risk: {overall.upper()}",
+            "",
+        ]
+        for f in top_findings:
+            exec_lines.append(f"• {f.get('id', 'V-???')}: {summarize_title(f.get('title', 'Untitled'))}")
+        if enhancements:
+            exec_lines.extend(["", f"• {len(enhancements)} hardening themes included"])
     gen.add_content_slide("Executive Summary", exec_lines)
+
+    if fingerprint_bullets:
+        gen.add_content_slide("Target Fingerprint", [f"• {line}" for line in fingerprint_bullets[:6]])
 
     left = [
         f"Critical: {counts['Critical']}",
@@ -365,10 +413,10 @@ def build_styled_pptx(data, output_path, title=None):
         f"Info: {counts['Info']}",
     ]
     right = [
-        "Host reachable and fingerprinted",
-        "Services enumerated with versions",
-        "Safe vulnerability checks executed",
-        "Report and remediation prepared",
+        "Quick target fingerprint completed",
+        "Safe enumeration completed",
+        "Triage findings and context prepared",
+        "Published report and remediation prepared",
     ]
     gen.add_two_column_slide("Risk Overview", "Severity Counts", left, "Assessment Scope", right)
 
@@ -487,34 +535,73 @@ def generate_report(data):
     lines.append(f"**Findings:** {len(findings)}\n")
     lines.append("---\n")
 
+    qs = data.get("quick_scan_sections", {}) or {}
+    exec_lines = clean_bullets(qs.get("executive_summary"))
+    target_fp_lines = clean_bullets(qs.get("target_fingerprint"))
+    why_varied_lines = clean_bullets(qs.get("why_varied"))
+    next_action_lines = clean_bullets(qs.get("recommended_next_action"))
+    quick_reco_lines = clean_bullets(qs.get("quick_recommendations"))
+
     # Executive Summary
     lines.append("## 1. Executive Summary\n")
-    lines.append(generate_executive_summary(findings, enhancements))
+    if exec_lines:
+        for line in exec_lines:
+            lines.append(f"- {line}")
+        lines.append("")
+    else:
+        lines.append(generate_executive_summary(findings, enhancements))
     lines.append("\n---\n")
 
+    section_no = 2
+    if target_fp_lines:
+        lines.append(f"## {section_no}. Target Fingerprint\n")
+        for line in target_fp_lines:
+            lines.append(f"- {line}")
+        lines.append("\n---\n")
+        section_no += 1
+
+    if why_varied_lines:
+        lines.append(f"## {section_no}. Why This Quick Scan Varied\n")
+        for line in why_varied_lines:
+            lines.append(f"- {line}")
+        lines.append("\n---\n")
+        section_no += 1
+
     # Methodology
-    lines.append("## 2. Methodology\n")
-    lines.append("The assessment followed a structured penetration testing methodology:\n")
-    lines.append("1. **Reconnaissance** — Passive information gathering (DNS, WHOIS, OSINT)")
-    lines.append("2. **Enumeration** — Active service discovery and fingerprinting")
-    lines.append("3. **Vulnerability Analysis** — CVE matching and manual testing")
-    lines.append("4. **Exploitation** — Proof-of-concept exploitation of confirmed vulnerabilities")
-    lines.append("5. **Post-Exploitation** — Privilege escalation and impact assessment")
-    lines.append("6. **Reporting** — Documented findings with remediation guidance\n")
+    lines.append(f"## {section_no}. Methodology\n")
+    if data.get("quick_scan"):
+        lines.append("This assessment used the quick-scan workflow, a rapid low-impact triage process rather than a full pentest:\n")
+        lines.append("1. **Reconnaissance** — Lightweight target and exposure fingerprinting")
+        lines.append("2. **Enumeration** — Safe surface validation and basic discovery")
+        lines.append("3. **Vulnerability Analysis** — Candidate weakness review from collected artifacts")
+        lines.append("4. **Reporting** — Triage-oriented findings with next-step guidance\n")
+    else:
+        lines.append("The assessment followed a structured penetration testing methodology:\n")
+        lines.append("1. **Reconnaissance** — Passive information gathering (DNS, WHOIS, OSINT)")
+        lines.append("2. **Enumeration** — Active service discovery and fingerprinting")
+        lines.append("3. **Vulnerability Analysis** — CVE matching and manual testing")
+        lines.append("4. **Exploitation** — Proof-of-concept exploitation of confirmed vulnerabilities")
+        lines.append("5. **Post-Exploitation** — Privilege escalation and impact assessment")
+        lines.append("6. **Reporting** — Documented findings with remediation guidance\n")
     lines.append("---\n")
+    section_no += 1
 
     # Findings
-    lines.append("## 3. Findings\n")
+    lines.append(f"## {section_no}. Findings\n")
     sorted_findings = sorted(findings, key=lambda x: SEVERITY_ORDER.get(x.get("severity", "Info"), 99))
     for i, finding in enumerate(sorted_findings, 1):
         lines.append(format_finding(finding, i))
 
     lines.append("---\n")
+    section_no += 1
 
     # Security Enhancement Recommendations
-    lines.append("## 4. Security Enhancement Recommendations\n")
-    if enhancements:
-        for enh in enhancements:
+    lines.append(f"## {section_no}. Security Enhancement Recommendations\n")
+    enhancement_items = list(enhancements)
+    for line in quick_reco_lines:
+        enhancement_items.append({"category": "Quick Scan Context", "recommendation": line})
+    if enhancement_items:
+        for enh in enhancement_items:
             cat = enh.get("category", "General")
             rec = enh.get("recommendation", "No recommendation provided")
             lines.append(f"### {cat}\n")
@@ -522,9 +609,17 @@ def generate_report(data):
     else:
         lines.append("No additional enhancement recommendations identified.\n")
     lines.append("---\n")
+    section_no += 1
+
+    if next_action_lines:
+        lines.append(f"## {section_no}. Recommended Next Action\n")
+        for line in next_action_lines:
+            lines.append(f"- {line}")
+        lines.append("\n---\n")
+        section_no += 1
 
     # Risk Summary Matrix
-    lines.append("## 5. Risk Summary Matrix\n")
+    lines.append(f"## {section_no}. Risk Summary Matrix\n")
     lines.append("| ID | Finding | Severity | Remediation Priority |")
     lines.append("|----|---------|----------|---------------------|")
     for i, f in enumerate(sorted_findings, 1):
@@ -537,7 +632,8 @@ def generate_report(data):
 
     # Appendices
     lines.append("---\n")
-    lines.append("## 6. Appendices\n")
+    section_no += 1
+    lines.append(f"## {section_no}. Appendices\n")
     lines.append("### A. Tools Used\n")
     lines.append("- nmap, masscan (enumeration)")
     lines.append("- Metasploit, custom scripts (exploitation)")

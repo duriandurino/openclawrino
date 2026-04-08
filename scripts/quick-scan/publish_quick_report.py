@@ -38,6 +38,34 @@ def read_report_info(report_path: Path) -> dict:
     return info
 
 
+def extract_section_lines(text: str, heading: str) -> list[str]:
+    marker = f"## {heading}"
+    start = text.find(marker)
+    if start == -1:
+        return []
+    start = text.find("\n", start)
+    if start == -1:
+        return []
+    start += 1
+    end = text.find("\n## ", start)
+    block = text[start:end if end != -1 else None]
+    return [line.strip() for line in block.splitlines() if line.strip()]
+
+
+def extract_adaptive_context(report_info: dict) -> dict:
+    text = report_info.get("text", "")
+    return {
+        "quick_scan": True,
+        "quick_scan_sections": {
+            "executive_summary": extract_section_lines(text, "Executive Summary"),
+            "target_fingerprint": extract_section_lines(text, "Target Fingerprint"),
+            "why_varied": extract_section_lines(text, "Why This Quick Scan Varied"),
+            "recommended_next_action": extract_section_lines(text, "Recommended Next Action"),
+            "quick_recommendations": extract_section_lines(text, "Recommendations"),
+        },
+    }
+
+
 def parse_candidate_rows(text: str) -> list[dict]:
     rows = []
     in_table = False
@@ -156,7 +184,7 @@ def title_for(finding: str) -> str:
     return short.strip(" -:;,.	")
 
 
-def build_findings_json(report_info: dict, rows: list[dict]) -> dict:
+def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: dict | None = None) -> dict:
     findings = []
     normalized_rows = [row for row in (normalize_row(r) for r in rows) if row is not None]
     for idx, row in enumerate(normalized_rows, start=1):
@@ -179,7 +207,10 @@ def build_findings_json(report_info: dict, rows: list[dict]) -> dict:
         {"category": "Administrative Surface Reduction", "recommendation": "Restrict exposed management services to trusted administration paths, segment them from user networks, and monitor for unexpected remote-access activity."},
         {"category": "Patch and Validation Workflow", "recommendation": "For candidate version-based matches, verify the real product/version before remediation, then patch and re-scan to confirm closure."},
     ]
-    return {"target": f"{report_info['target']} (Quick Scan)", "findings": findings, "enhancements": enhancements}
+    payload = {"target": f"{report_info['target']} (Quick Scan)", "findings": findings, "enhancements": enhancements}
+    if adaptive_context:
+        payload.update(adaptive_context)
+    return payload
 
 
 def build_publish_env() -> dict:
@@ -225,7 +256,8 @@ def main() -> int:
 
     report_info = read_report_info(quick_report)
     rows = parse_candidate_rows(report_info["text"])
-    findings_payload = build_findings_json(report_info, rows)
+    adaptive_context = extract_adaptive_context(report_info)
+    findings_payload = build_findings_json(report_info, rows, adaptive_context)
     ts = datetime.now().strftime("%Y-%m-%d_%H%M")
     findings_path = reporting_dir / f"findings-quick-scan-{ts}.json"
     final_report_path = reporting_dir / f"REPORT_FINAL_QUICK_SCAN_{ts}.md"
