@@ -366,6 +366,12 @@ def finding_slide_summary(finding):
     ]
 
 
+def chunked(items, size):
+    if size <= 0:
+        return [list(items)]
+    return [items[i:i + size] for i in range(0, len(items), size)]
+
+
 def build_styled_pptx(data, output_path, title=None):
     """Create a styled PPTX deck from report data."""
     if PentestPPTXGenerator is None:
@@ -386,9 +392,8 @@ def build_styled_pptx(data, output_path, title=None):
     gen = PentestPPTXGenerator(theme="ncompass", logo_path=str(logo_path) if logo_path.exists() else None)
     gen.add_title_slide(deck_title, "Security Assessment Results", date_str, overall)
 
-    top_findings = findings[:3]
     if exec_bullets:
-        exec_lines = [f"• {line}" for line in exec_bullets[:6]]
+        exec_lines = [f"• {line}" for line in exec_bullets[:8]]
     else:
         exec_lines = [
             f"Target: {concise_phrase(target, 42)}",
@@ -396,14 +401,16 @@ def build_styled_pptx(data, output_path, title=None):
             f"Highest risk: {overall.upper()}",
             "",
         ]
-        for f in top_findings:
+        for f in findings[:5]:
             exec_lines.append(f"• {f.get('id', 'V-???')}: {summarize_title(f.get('title', 'Untitled'))}")
+        if len(findings) > 5:
+            exec_lines.append(f"• +{len(findings) - 5} more findings covered in the deck")
         if enhancements:
             exec_lines.extend(["", f"• {len(enhancements)} hardening themes included"])
     gen.add_content_slide("Executive Summary", exec_lines)
 
     if fingerprint_bullets:
-        gen.add_content_slide("Target Fingerprint", [f"• {line}" for line in fingerprint_bullets[:6]])
+        gen.add_content_slide("Target Fingerprint", [f"• {line}" for line in fingerprint_bullets[:8]])
 
     left = [
         f"Critical: {counts['Critical']}",
@@ -420,18 +427,21 @@ def build_styled_pptx(data, output_path, title=None):
     ]
     gen.add_two_column_slide("Risk Overview", "Severity Counts", left, "Assessment Scope", right)
 
-    rows = []
-    for f in findings[:6]:
-        rows.append([
-            f.get("id", "V-???"),
-            f.get("severity", "Info").upper(),
-            str(f.get("cvss", "-")),
-            summarize_title(f.get("title", "Untitled")),
-        ])
-    if rows:
-        gen.add_table_slide("Top Findings", ["ID", "Severity", "CVSS", "Finding"], rows)
+    overview_chunks = chunked(findings, 6)
+    for idx, finding_chunk in enumerate(overview_chunks, start=1):
+        rows = []
+        for f in finding_chunk:
+            rows.append([
+                f.get("id", "V-???"),
+                f.get("severity", "Info").upper(),
+                str(f.get("cvss", "-")),
+                summarize_title(f.get("title", "Untitled")),
+            ])
+        if rows:
+            title_text = "Top Findings" if idx == 1 else f"Findings Overview ({idx}/{len(overview_chunks)})"
+            gen.add_table_slide(title_text, ["ID", "Severity", "CVSS", "Finding"], rows)
 
-    for f in top_findings:
+    for f in findings:
         content = [
             f"{f.get('severity', 'Info').upper()} — CVSS {f.get('cvss', 'N/A')}",
             "",
@@ -444,20 +454,28 @@ def build_styled_pptx(data, output_path, title=None):
     for f in findings:
         sev = f.get("severity", "Info")
         item = f"{f.get('id', 'V-???')}: {summarize_fix(f.get('remediation', 'No remediation'))}"
-        if sev in ("Critical", "High") and len(immediate) < 4:
+        if sev in ("Critical", "High"):
             immediate.append(item)
-        elif sev in ("Medium", "Low", "Info") and len(short_term) < 4:
+        else:
             short_term.append(item)
     if enhancements:
-        for enh in enhancements[:2]:
+        for enh in enhancements:
             short_term.append(f"{enh.get('category', 'General')}: {summarize_hardening(enh.get('recommendation', ''))}")
-    gen.add_two_column_slide(
-        "Remediation Roadmap",
-        "Immediate Priority",
-        immediate or ["No immediate actions recorded"],
-        "Planned Hardening",
-        short_term or ["No planned actions recorded"],
-    )
+
+    immediate_chunks = chunked(immediate, 5) or [["No immediate actions recorded"]]
+    short_term_chunks = chunked(short_term, 5) or [["No planned actions recorded"]]
+    roadmap_pages = max(len(immediate_chunks), len(short_term_chunks))
+    for idx in range(roadmap_pages):
+        left_items = immediate_chunks[idx] if idx < len(immediate_chunks) else ["No additional immediate actions"]
+        right_items = short_term_chunks[idx] if idx < len(short_term_chunks) else ["No additional planned actions"]
+        title_text = "Remediation Roadmap" if idx == 0 else f"Remediation Roadmap ({idx + 1}/{roadmap_pages})"
+        gen.add_two_column_slide(
+            title_text,
+            "Immediate Priority",
+            left_items,
+            "Planned Hardening",
+            right_items,
+        )
 
     gen.save(output_path)
     return output_path
