@@ -41,6 +41,17 @@
 - **GitHub repo:** https://github.com/duriandurino/openclawrino.git
 - **Telegram group name:** Changed from "WhiteClaw" to "Penetrator" (2026-03-17)
 - **Web search:** Gemini provider configured and working (Google AI Studio API key)
+- **Google / gog automation:** Stable passphrase preference is `hatlesswhite`. Reuse this for `GOG_KEYRING_PASSWORD` and related re-auth/reset flows unless the user changes it.
+
+## Quick Scan / Reporting Lessons (2026-04-08)
+
+- Adaptive quick scan must affect the **actual findings and recommendation mix**, not just the narrative wrapper.
+- Different webapps may share some baseline findings, but the final quick-scan finding set should diverge when target fingerprint/context differs.
+- The quick-scan pipeline had two separate flattening issues that were fixed:
+  - published final report flow was dropping adaptive context and reverting to a generic template
+  - final finding synthesis was converting candidate rows too directly, causing different webapps to inherit nearly identical findings
+- Publishing reliability issue was traced to **gog file-keyring passphrase mismatch**, not random Google auth breakage. Avoid forcing guessed fallback passphrases.
+- Quick-scan publishing now writes compact `.publish.json` summaries so link retrieval does not depend on scraping long console logs.
 
 ## Presentation Context (2026-03-17)
 - **Audience:** Professional presentation
