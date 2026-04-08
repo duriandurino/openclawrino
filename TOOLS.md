@@ -53,3 +53,9 @@ Add whatever helps you do your job. This is your cheat sheet.
 
 - Preferred stable passphrase for gog/google automation and future related passphrases: `hatlesswhite`
 - Use this consistently for `GOG_KEYRING_PASSWORD` and any re-auth/reset flows unless the user explicitly changes it.
+
+### Quick Scan Reporting
+
+- Different webapps should not collapse into the same stale finding set unless the evidence truly matches.
+- Always use the target fingerprint, title/context, surface clues, and adaptive quick-scan evidence to shape not just the narrative, but the actual findings emphasis and recommendation mix.
+- Shared baseline findings are fine, but the final output should still clearly reflect what kind of target it is, what was actually observed, and why the findings differ.
