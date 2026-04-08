@@ -52,7 +52,7 @@ HEADERS_PATH="${RAW_PATH%.txt}-headers.txt"
 BODY_PATH="${RAW_PATH%.txt}-body.txt"
 TRACE_PATH="${RAW_PATH%.txt}-trace.txt"
 
-curl -skI "$URL" > "$HEADERS_PATH" || true
+curl -skIL "$URL" > "$HEADERS_PATH" || true
 curl -skL "$URL" | head -c 4000 > "$BODY_PATH" || true
 if [[ "$SAFE_MODE" -eq 0 ]]; then
   curl -sk -X OPTIONS -i "$URL" > "$TRACE_PATH" || true

@@ -92,18 +92,24 @@ def parse_candidate_rows(text: str) -> list[dict]:
     in_table = False
     for line in text.splitlines():
         stripped = line.strip()
-        if stripped == "| Severity | Source | Confidence | Finding |":
+        if stripped in {
+            "| Severity | Source | Confidence | Finding |",
+            "| Severity | Source | Confidence | Finding | Context |",
+        }:
             in_table = True
             continue
         if in_table and stripped.startswith("|---"):
             continue
         if in_table and stripped.startswith("|") and stripped.endswith("|"):
-            parts = [p.strip().replace("\\|", "|") for p in stripped.strip("|").split("|")]
-            if len(parts) == 4:
-                sev, source, confidence, finding = parts
+            parts = [p.strip().replace("\\|", "|") for p in re.split(r"(?<!\\)\|", stripped.strip("|"))]
+            if len(parts) >= 4:
+                sev, source, confidence, finding = parts[:4]
                 if finding == "No notable candidate findings captured from current summaries.":
                     continue
-                rows.append({"severity": sev, "source": source, "confidence": confidence, "finding": finding})
+                row = {"severity": sev, "source": source, "confidence": confidence, "finding": finding}
+                if len(parts) >= 5:
+                    row["context"] = parts[4]
+                rows.append(row)
             continue
         if in_table and not stripped:
             break

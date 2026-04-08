@@ -158,26 +158,27 @@ def extract_management_exposures(path: Path | None) -> list[dict]:
     return findings
 
 
-def adapt_finding_to_fingerprint(finding: str, fp: dict) -> dict:
+def adapt_finding_to_fingerprint(item: dict, fp: dict) -> dict:
     """Transform a generic finding into a context-aware finding based on fingerprint.
-    
-    Returns a dict with 'finding' (transformed), 'severity', 'confidence', and 'context'
-    that reflects target-specific interpretation.
+
+    Returns a dict with finding/context fields while preserving the original
+    severity/confidence unless the adaptation needs to override them.
     """
+    finding = item["finding"]
     frameworks = set(fp.get("frameworks", []))
     deployments = set(fp.get("deployments", []))
     traits = set(fp.get("traits", []))
     titles = fp.get("titles", [])
     title_blob = " ".join(titles).lower()
-    
+
     result = {
         "finding": finding,
-        "severity": "High",  # default for missing headers
-        "confidence": "candidate",
+        "severity": item.get("severity", "Info"),
+        "confidence": item.get("confidence", "candidate"),
         "context": "",
         "evidence_tag": "",
     }
-    
+
     lowered = finding.lower()
     
     # Handle missing CSP header with context
@@ -420,7 +421,7 @@ def main() -> int:
     # Apply fingerprint-aware adaptation to findings
     adapted_candidates = []
     for item in candidates:
-        adapted = adapt_finding_to_fingerprint(item["finding"], fingerprint or {})
+        adapted = adapt_finding_to_fingerprint(item, fingerprint or {})
         # Preserve source and merge with adapted properties
         adapted["source"] = item.get("source", "unknown")
         adapted_candidates.append(adapted)
