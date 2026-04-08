@@ -144,7 +144,12 @@ For coding-heavy implementation work, do not default to editing directly in the 
 Use this pattern unless the task is tiny:
 1. spawn a sub-agent for the implementation pass
 2. have that sub-agent use the `opencode-utility` skill for planning/building/refactoring
-3. review, verify, and integrate the result in the main session
+3. prefer **OpenCode first** for coding-heavy implementation unless the user explicitly asked for Codex, Claude Code, Cursor, Gemini, or another harness
+4. review, verify, and integrate the result in the main session
+
+When the task is iterative or "vibe coding" flavored, prefer the local wrapper:
+- `scripts/opencode/reusable/opencode_vibe_loop.py`
+- use it to run one OpenCode turn, summarize the result, and surface when the agent needs follow-up input, review, or confirmation before the next turn
 
 Use this especially for:
 - multi-file refactors

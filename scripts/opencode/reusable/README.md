@@ -103,6 +103,50 @@ python3 scripts/opencode/reusable/opencode_task.py \
 - calls `opencode_watch.py` underneath
 - keeps invocation more consistent for main-session and subagent use
 
+## OpenCode Vibe Loop
+
+**File:** `opencode_vibe_loop.py`
+
+A single-turn OpenCode wrapper for nested vibe-coding flows. Use this when you want OpenCode to do the coding turn, then hand a compact summary back to the outer coding agent after each turn.
+
+### Usage
+
+```bash
+# First turn
+python3 scripts/opencode/reusable/opencode_vibe_loop.py \
+  --cwd /home/dukali/.openclaw/workspace \
+  --label quickscan-vibe \
+  --state-file /home/dukali/.openclaw/workspace/engagements/tmp/quickscan-vibe-state.json \
+  --event-log /home/dukali/.openclaw/workspace/engagements/tmp/quickscan-vibe-events.jsonl \
+  --notify-openclaw \
+  "Refactor the parser, summarize what changed, and ask me if you need a decision."
+
+# Continue the same OpenCode thread from the same cwd
+python3 scripts/opencode/reusable/opencode_vibe_loop.py \
+  --cwd /home/dukali/.openclaw/workspace \
+  --label quickscan-vibe \
+  --continue-last \
+  --state-file /home/dukali/.openclaw/workspace/engagements/tmp/quickscan-vibe-state.json \
+  --event-log /home/dukali/.openclaw/workspace/engagements/tmp/quickscan-vibe-events.jsonl \
+  --notify-openclaw \
+  "Yes, proceed with option 2."
+```
+
+### What it does
+
+- runs one `opencode run --format json` turn
+- captures assistant text and tool-use events
+- classifies the turn as `turn_complete`, `needs_input`, `needs_review`, or `failed`
+- can write a compact JSON state file for the outer agent
+- can emit an OpenClaw system event when the turn ends
+
+### Why it exists
+
+This makes vibe coding feel layered:
+- **OpenCode** handles the implementation turn
+- **Hatless White / the coding agent** gets called back with a compact summary
+- **the human** can keep steering the work through the outer agent without losing the inner coding thread
+
 ## Adding New Utilities
 
 When adding new reusable utilities:

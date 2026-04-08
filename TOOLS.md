@@ -47,6 +47,11 @@ Add whatever helps you do your job. This is your cheat sheet.
   - `opencode --version`
   - `opencode models`
   - `opencode run -m opencode/minimax-m2.5-free --format json "Reply with exactly: OK"`
+- Default preference for coding-heavy implementation work: **OpenCode first**, unless the user explicitly asked for another coding harness.
+- Vibe-coding wrapper:
+  - `python3 scripts/opencode/reusable/opencode_vibe_loop.py --cwd <repo> --label <name> --notify-openclaw "<task>"`
+  - Use `--continue-last` for the next turn in the same working directory.
+  - The wrapper writes a compact JSON summary/state when `--state-file` is provided and can emit an OpenClaw system event after each OpenCode turn.
 - If OpenCode appears unavailable, check PATH first before assuming model/provider failure.
 
 ### Google / gog
