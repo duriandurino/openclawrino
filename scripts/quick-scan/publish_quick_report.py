@@ -240,6 +240,29 @@ def explain_publish_failure(output: str) -> str:
     return text or "report generator publish failed"
 
 
+def load_publish_summary(final_report_path: Path) -> dict | None:
+    summary_path = final_report_path.with_suffix('.publish.json')
+    if not summary_path.exists():
+        return None
+    try:
+        return json.loads(summary_path.read_text(encoding='utf-8'))
+    except Exception:
+        return None
+
+
+def print_links_from_summary(summary: dict) -> None:
+    print("=== PUBLISHED LINKS ===")
+    for key, label in [
+        ("local_file", "Local file"),
+        ("doc_link", "Docs"),
+        ("drive_link", "PDF preview"),
+        ("slides_link", "Slides"),
+    ]:
+        value = summary.get(key)
+        if value:
+            print(f"{label}: {value}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Publish latest quick scan via the main pentest report generator")
     parser.add_argument("--engagement", required=True)
@@ -282,6 +305,9 @@ def main() -> int:
         raise SystemExit(explain_publish_failure(result.stderr.strip() or result.stdout.strip()))
 
     print(result.stdout.strip())
+    summary = load_publish_summary(final_report_path)
+    if summary:
+        print_links_from_summary(summary)
     return 0
 
 

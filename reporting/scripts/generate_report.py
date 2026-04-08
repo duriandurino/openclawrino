@@ -687,6 +687,7 @@ def main():
         "slides_id": None,
         "pdf_id": None,
     }
+    summary_path = str(Path(args.output).with_suffix('.publish.json'))
 
     if args.upload_drive:
         try:
@@ -765,6 +766,10 @@ def main():
                 print(f"[OK] Styled Slides created: {slides_result}")
         except Exception as e:
             print(f"[WARN] Slides creation failed: {e}")
+
+    with open(summary_path, 'w') as f:
+        json.dump(publish_summary, f, indent=2)
+    print(f"[OK] Publish summary saved: {summary_path}")
 
     if any(publish_summary[k] for k in ("drive_link", "doc_link", "slides_link")):
         print("\n=== PUBLISHED LINKS ===")
