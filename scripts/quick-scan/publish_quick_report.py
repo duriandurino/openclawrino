@@ -54,7 +54,7 @@ def extract_section_lines(text: str, heading: str) -> list[str]:
 
 def extract_adaptive_context(report_info: dict) -> dict:
     text = report_info.get("text", "")
-    return {
+    context = {
         "quick_scan": True,
         "quick_scan_sections": {
             "executive_summary": extract_section_lines(text, "Executive Summary"),
@@ -64,6 +64,27 @@ def extract_adaptive_context(report_info: dict) -> dict:
             "quick_recommendations": extract_section_lines(text, "Recommendations"),
         },
     }
+
+    fingerprint_text = "\n".join(context["quick_scan_sections"]["target_fingerprint"]).lower()
+    why_text = "\n".join(context["quick_scan_sections"]["why_varied"]).lower()
+    executive_text = "\n".join(context["quick_scan_sections"]["executive_summary"]).lower()
+    combined = "\n".join([fingerprint_text, why_text, executive_text])
+
+    traits = []
+    for trait in [
+        "portfolio-style surface",
+        "catalog or content-style surface",
+        "api exposure clues",
+        "server-rendered route behavior",
+        "frontend routing clues",
+        "profile and contact metadata",
+        "search, content, and image-delivery routes",
+    ]:
+        if trait in combined:
+            traits.append(trait)
+
+    context["quick_scan_profile_traits"] = traits
+    return context
 
 
 def parse_candidate_rows(text: str) -> list[dict]:
@@ -116,28 +137,55 @@ def normalize_row(row: dict) -> dict | None:
     lower = finding.lower()
     severity = row["severity"]
     confidence = row["confidence"]
+    tags = []
+    finding_type = "generic"
 
     if "smb signing" in lower:
         severity = "High"
         confidence = "observed"
+        finding_type = "management-exposure"
     elif "rdp" in lower and "metadata" in lower:
         severity = "Medium"
         confidence = "observed"
+        finding_type = "management-exposure"
     elif "winrm" in lower or "5985" in lower:
         severity = "High"
         confidence = "observed"
+        finding_type = "management-exposure"
     elif "mysql" in lower or "3306" in lower:
         severity = "Medium"
         confidence = "observed"
+        finding_type = "management-exposure"
     elif "kestrel" in lower or "access-control-allow-origin: *" in lower:
         severity = "Medium"
         confidence = "observed"
+        finding_type = "api-surface"
 
-    return {**row, "severity": severity, "confidence": confidence}
+    if "missing csp" in lower:
+        tags.extend(["header", "browser-hardening", "csp"])
+        finding_type = "header-hardening"
+    elif "missing x-frame-options" in lower:
+        tags.extend(["header", "browser-hardening", "framing"])
+        finding_type = "header-hardening"
+    elif "missing x-content-type-options" in lower:
+        tags.extend(["header", "browser-hardening", "mime-sniffing"])
+        finding_type = "header-hardening"
+    elif "server banner" in lower or "banner:" in lower:
+        tags.extend(["information-disclosure", "banner"])
+        finding_type = "fingerprint-leakage"
+    elif lower.startswith("title:"):
+        tags.extend(["context", "title"])
+        finding_type = "target-context"
+    elif "whatweb" in lower:
+        tags.extend(["context", "fingerprint"])
+        finding_type = "target-context"
+
+    return {**row, "severity": severity, "confidence": confidence, "finding_type": finding_type, "tags": tags}
 
 
-def remediation_for(finding: str, severity: str) -> str:
+def remediation_for(finding: str, severity: str, adaptive_context: dict | None = None) -> str:
     lower = finding.lower()
+    traits = set((adaptive_context or {}).get("quick_scan_profile_traits", []))
     if "smb" in lower and "signing" in lower:
         return "Enforce SMB signing via Group Policy and restrict SMB exposure to trusted management segments only. Re-test with SMB security-mode checks after policy refresh."
     if "rdp" in lower:
@@ -148,6 +196,25 @@ def remediation_for(finding: str, severity: str) -> str:
         return "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service."
     if "kestrel" in lower or "access-control-allow-origin: *" in lower:
         return "Review the exposed web/API service for intended authentication and CORS scope. Restrict allowed origins/methods and validate whether the service should be reachable from the current segment."
+    if "missing csp" in lower:
+        if "catalog or content-style surface" in traits:
+            return "Define a Content Security Policy that covers catalog pages, third-party media, and search/content delivery paths, then verify it across representative rendered routes."
+        if "portfolio-style surface" in traits:
+            return "Define a Content Security Policy that covers public profile pages, embedded assets, and any contact or showcase components, then verify it across representative rendered routes."
+    if "missing x-frame-options" in lower:
+        if "portfolio-style surface" in traits:
+            return "Decide whether public profile pages should be frameable at all. If not, deny framing with X-Frame-Options or frame-ancestors in CSP and re-test key landing pages."
+        if "catalog or content-style surface" in traits:
+            return "Prevent unintended framing of catalog/content pages unless a legitimate embedding use case exists, then verify the protection on main public routes."
+    if "missing x-content-type-options" in lower:
+        if "catalog or content-style surface" in traits:
+            return "Add X-Content-Type-Options: nosniff across page and media responses so catalog assets and content routes do not rely on browser MIME guessing."
+        if "portfolio-style surface" in traits:
+            return "Add X-Content-Type-Options: nosniff across public profile and asset responses so browsers do not MIME-sniff showcase content unexpectedly."
+    if "server banner" in lower:
+        if "api exposure clues" in traits:
+            return "Reduce banner leakage on the exposed app/API edge where possible and verify whether any API-specific headers or routing metadata reveal more than intended."
+        return "Reduce unnecessary banner and edge-routing disclosure where possible, then confirm externally visible headers only reveal what the deployment truly needs."
     if "missing " in lower:
         return "Apply the missing security control, then verify the header/control is present in a follow-up scan."
     if severity in ("Critical", "High"):
@@ -155,20 +222,35 @@ def remediation_for(finding: str, severity: str) -> str:
     return "Validate the observation manually, document whether it is expected, and harden the service if the exposure is unnecessary."
 
 
-def hardening_for(finding: str) -> str:
+def hardening_for(finding: str, adaptive_context: dict | None = None) -> str:
     lower = finding.lower()
+    traits = set((adaptive_context or {}).get("quick_scan_profile_traits", []))
     if any(x in lower for x in ["rdp", "winrm", "smb"]):
         return "Segment management services away from user networks, monitor remote administration events centrally, and enforce least-privilege access for all admin paths."
     if "mysql" in lower:
         return "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set."
     if any(x in lower for x in ["http", "kestrel", "api", "cors"]):
         return "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts."
+    if "catalog or content-style surface" in traits:
+        return "Keep public catalog/content routes, media delivery, and cache behavior documented so unexpected exposure or stale edge behavior stands out quickly during follow-up testing."
+    if "portfolio-style surface" in traits:
+        return "Review public profile, contact, and showcase metadata regularly so unnecessary personal or routing exposure does not accumulate over time."
     return "Keep exposed services minimized, monitor access patterns, and document expected network exposure so deviations stand out quickly."
 
 
-def impact_for(severity: str, finding: str) -> str:
+def impact_for(severity: str, finding: str, adaptive_context: dict | None = None) -> str:
+    lower = finding.lower()
+    traits = set((adaptive_context or {}).get("quick_scan_profile_traits", []))
     if severity == "Critical":
         return "If this candidate is confirmed, it could allow severe compromise of the target service or remote code execution."
+    if "missing csp" in lower and "catalog or content-style surface" in traits:
+        return "If confirmed, weak script/resource controls on public catalog routes can make content-heavy pages harder to defend against injection or unsafe third-party asset behavior."
+    if "missing csp" in lower and "portfolio-style surface" in traits:
+        return "If confirmed, weak script/resource controls on a public profile surface can increase exposure to client-side content injection or unsafe embedded asset behavior."
+    if "server banner" in lower and "portfolio-style surface" in traits:
+        return "This may help attackers profile the public portfolio deployment and combine routing or metadata clues with broader reconnaissance."
+    if "server banner" in lower and "catalog or content-style surface" in traits:
+        return "This may help attackers profile the public catalog deployment and target content-delivery or routing behavior more efficiently."
     if severity == "High":
         return "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths."
     if severity == "Medium":
@@ -184,10 +266,76 @@ def title_for(finding: str) -> str:
     return short.strip(" -:;,.	")
 
 
+def select_adaptive_rows(rows: list[dict], adaptive_context: dict | None = None) -> list[dict]:
+    context = adaptive_context or {}
+    traits = set(context.get("quick_scan_profile_traits", []))
+    selected = []
+    title_rows = []
+    generic_header_rows = []
+    banner_rows = []
+    targeted_rows = []
+
+    for row in rows:
+        finding_type = row.get("finding_type")
+        if finding_type == "target-context":
+            title_rows.append(row)
+        elif finding_type == "header-hardening":
+            generic_header_rows.append(row)
+        elif finding_type == "fingerprint-leakage":
+            banner_rows.append(row)
+        else:
+            targeted_rows.append(row)
+
+    selected.extend(targeted_rows)
+
+    if "portfolio-style surface" in traits:
+        selected.extend(title_rows[:1])
+        selected.extend([row for row in generic_header_rows if "csp" in row.get("tags", [])][:1])
+        selected.extend(banner_rows[:1])
+        selected.extend([row for row in generic_header_rows if "framing" in row.get("tags", [])][:1])
+    elif "catalog or content-style surface" in traits:
+        selected.extend([row for row in generic_header_rows if "csp" in row.get("tags", [])][:1])
+        selected.extend([row for row in generic_header_rows if "mime-sniffing" in row.get("tags", [])][:1])
+        selected.extend(banner_rows[:1])
+    else:
+        selected.extend(generic_header_rows[:2])
+        selected.extend(banner_rows[:1])
+        selected.extend(title_rows[:1])
+
+    deduped = []
+    seen = set()
+    for row in selected:
+        key = (row.get("finding"), row.get("source"))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(row)
+
+    severity_rank = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
+    deduped.sort(key=lambda row: (severity_rank.get(row.get("severity", "Info"), 99), row.get("finding", "")))
+    return deduped
+
+
+def build_enhancements(adaptive_context: dict | None = None) -> list[dict]:
+    traits = set((adaptive_context or {}).get("quick_scan_profile_traits", []))
+    enhancements = [
+        {"category": "Exposure Management", "recommendation": "Use quick scan as triage only, then validate high-risk candidates manually before operational changes or client delivery."},
+        {"category": "Patch and Validation Workflow", "recommendation": "For candidate version-based matches, verify the real product/version before remediation, then patch and re-scan to confirm closure."},
+    ]
+    if "portfolio-style surface" in traits:
+        enhancements.append({"category": "Public Metadata Hygiene", "recommendation": "Review public profile, author, and contact metadata as part of the exposed surface so personal or impersonation-relevant details are not over-shared by the deployment."})
+    elif "catalog or content-style surface" in traits:
+        enhancements.append({"category": "Catalog Route Review", "recommendation": "Review public catalog, media, and content-delivery routes for caching, asset, and browser-hardening consistency across representative user-facing pages."})
+    else:
+        enhancements.append({"category": "Administrative Surface Reduction", "recommendation": "Restrict exposed management services to trusted administration paths, segment them from user networks, and monitor for unexpected remote-access activity."})
+    return enhancements
+
+
 def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: dict | None = None) -> dict:
     findings = []
     normalized_rows = [row for row in (normalize_row(r) for r in rows) if row is not None]
-    for idx, row in enumerate(normalized_rows, start=1):
+    selected_rows = select_adaptive_rows(normalized_rows, adaptive_context)
+    for idx, row in enumerate(selected_rows, start=1):
         findings.append({
             "id": f"QS-{idx:03d}",
             "title": title_for(row["finding"]),
@@ -196,18 +344,20 @@ def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: d
             "affected": report_info["target"],
             "description": f"Quick scan candidate from the {row['source']} phase: {row['finding']}",
             "evidence": f"Quick scan candidate finding ({row['confidence']}) from {row['source']}: {row['finding']}",
-            "impact": impact_for(row["severity"], row["finding"]),
-            "remediation": remediation_for(row["finding"], row["severity"]),
-            "hardening": hardening_for(row["finding"]),
-            "references": [f"Quick scan profile: {report_info['profile']}", f"Execution mode: {report_info['mode']}"]
+            "impact": impact_for(row["severity"], row["finding"], adaptive_context),
+            "remediation": remediation_for(row["finding"], row["severity"], adaptive_context),
+            "hardening": hardening_for(row["finding"], adaptive_context),
+            "references": [
+                f"Quick scan profile: {report_info['profile']}",
+                f"Execution mode: {report_info['mode']}"
+            ]
         })
 
-    enhancements = [
-        {"category": "Exposure Management", "recommendation": "Use quick scan as triage only, then validate high-risk candidates manually before operational changes or client delivery."},
-        {"category": "Administrative Surface Reduction", "recommendation": "Restrict exposed management services to trusted administration paths, segment them from user networks, and monitor for unexpected remote-access activity."},
-        {"category": "Patch and Validation Workflow", "recommendation": "For candidate version-based matches, verify the real product/version before remediation, then patch and re-scan to confirm closure."},
-    ]
-    payload = {"target": f"{report_info['target']} (Quick Scan)", "findings": findings, "enhancements": enhancements}
+    payload = {
+        "target": f"{report_info['target']} (Quick Scan)",
+        "findings": findings,
+        "enhancements": build_enhancements(adaptive_context)
+    }
     if adaptive_context:
         payload.update(adaptive_context)
     return payload
