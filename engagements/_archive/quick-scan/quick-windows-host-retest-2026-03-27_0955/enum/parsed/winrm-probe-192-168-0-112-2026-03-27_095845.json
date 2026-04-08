@@ -1,0 +1,17 @@
+{
+  "target": "192.168.0.112",
+  "phase": "enum",
+  "script": "scripts/enum/winrm/winrm_probe.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "winrm",
+      "value": "5985/tcp open"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/raw/winrm-probe-192-168-0-112-2026-03-27_095845.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/parsed/winrm-probe-192-168-0-112-2026-03-27_095845.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/summaries/winrm-probe-192-168-0-112-2026-03-27_095845.md"
+  }
+}

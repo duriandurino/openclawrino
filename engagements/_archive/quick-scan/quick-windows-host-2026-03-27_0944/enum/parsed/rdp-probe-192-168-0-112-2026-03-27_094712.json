@@ -1,0 +1,17 @@
+{
+  "target": "192.168.0.112",
+  "phase": "enum",
+  "script": "scripts/enum/rdp/rdp_probe.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "rdp",
+      "value": "3389/tcp open"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/enum/raw/rdp-probe-192-168-0-112-2026-03-27_094712.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/enum/parsed/rdp-probe-192-168-0-112-2026-03-27_094712.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/enum/summaries/rdp-probe-192-168-0-112-2026-03-27_094712.md"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "target": "www.onlinebookfair.net",
+  "phase": "recon",
+  "script": "scripts/recon/dns/recon_dns_baseline.py",
+  "timestamp": "2026-04-06T14:19:45+08:00",
+  "status": "success",
+  "findings": [
+    {
+      "type": "A",
+      "value": "216.198.79.65"
+    },
+    {
+      "type": "A",
+      "value": "64.29.17.65"
+    }
+  ],
+  "records": {
+    "A": [
+      "216.198.79.65",
+      "64.29.17.65"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "TXT": [],
+    "NS": [],
+    "CNAME": []
+  },
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-06_1419/recon/raw/recon-dns-baseline-www-onlinebookfair-net-2026-04-06_141944.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-06_1419/recon/parsed/recon-dns-baseline-www-onlinebookfair-net-2026-04-06_141944.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-06_1419/recon/summaries/recon-dns-baseline-www-onlinebookfair-net-2026-04-06_141944.md"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "target": "http://example.com",
+  "normalized_target": "example.com",
+  "profile": "webapp",
+  "target_kind": "web",
+  "frameworks": [],
+  "deployments": [
+    "nginx"
+  ],
+  "surfaces": [
+    "api-docs"
+  ],
+  "traits": [
+    "api-backed"
+  ],
+  "titles": [
+    "Home"
+  ],
+  "profiles_considered": [
+    "nestjs-api"
+  ],
+  "report_focus": [
+    "swagger/openapi and framework-specific exposure"
+  ],
+  "extra_steps": [
+    {
+      "phase": "enum",
+      "script": "enum/web/enum_nestjs_api.sh",
+      "args": [
+        "--target",
+        "{{target}}",
+        "--engagement",
+        "{{engagement}}",
+        "{{safe_flag}}"
+      ]
+    },
+    {
+      "phase": "vuln",
+      "script": "vuln/web/vuln_nestjs_baseline.sh",
+      "args": [
+        "--target",
+        "{{target}}",
+        "--engagement",
+        "{{engagement}}",
+        "{{safe_flag}}"
+      ]
+    }
+  ],
+  "deduplication": {
+    "executed_steps_analyzed": 0,
+    "overlays_skipped_due_to_dedup": false
+  },
+  "generated": "2026-04-07T14:11:59.786606+08:00"
+}

@@ -1,0 +1,24 @@
+{
+  "target": "https://onlinebookfair.net",
+  "phase": "recon",
+  "script": "scripts/recon/web/recon_http_fingerprint.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "header",
+      "value": "location: https://www.onlinebookfair.net/"
+    },
+    {
+      "type": "header",
+      "value": "server: Vercel"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1831-fix/recon/raw/recon-http-fingerprint-https-onlinebookfair-net-2026-04-07_183345.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1831-fix/recon/parsed/recon-http-fingerprint-https-onlinebookfair-net-2026-04-07_183345.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1831-fix/recon/summaries/recon-http-fingerprint-https-onlinebookfair-net-2026-04-07_183345.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1831-fix/recon/raw/recon-http-fingerprint-https-onlinebookfair-net-2026-04-07_183345-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1831-fix/recon/raw/recon-http-fingerprint-https-onlinebookfair-net-2026-04-07_183345-body.txt",
+    "whatweb": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1831-fix/recon/raw/recon-http-fingerprint-https-onlinebookfair-net-2026-04-07_183345-whatweb.txt"
+  }
+}

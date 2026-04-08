@@ -1,0 +1,6 @@
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://onlinebookfair.net/
+Refresh: 0;url=https://onlinebookfair.net/
+server: Vercel
+

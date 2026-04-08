@@ -1,0 +1,77 @@
+{
+  "target": "https://vercel.com",
+  "phase": "enum",
+  "script": "scripts/enum/web/enum_web_basic.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "robots",
+      "value": "Allow: /api/og/*"
+    },
+    {
+      "type": "robots",
+      "value": "Allow: /api/docs-og*"
+    },
+    {
+      "type": "robots",
+      "value": "Allow: /api/product-og*"
+    },
+    {
+      "type": "robots",
+      "value": "Allow: /api/templates/og*"
+    },
+    {
+      "type": "robots",
+      "value": "Allow: /api/dynamic-og*"
+    },
+    {
+      "type": "robots",
+      "value": "Allow: /api/www/avatar/*"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow:"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /api/"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /oauth"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /confirm"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /notifications"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /old-browser.html"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /preauthorize"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /signup?*"
+    },
+    {
+      "type": "robots",
+      "value": "Disallow: /templates-new*"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/enum/raw/web-basic-https-vercel-com-2026-04-07_121013.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/enum/parsed/web-basic-https-vercel-com-2026-04-07_121013.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/enum/summaries/web-basic-https-vercel-com-2026-04-07_121013.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/enum/raw/web-basic-https-vercel-com-2026-04-07_121013-headers.txt",
+    "robots": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/enum/raw/web-basic-https-vercel-com-2026-04-07_121013-robots.txt",
+    "ffuf": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/enum/raw/web-basic-https-vercel-com-2026-04-07_121013-ffuf.json"
+  }
+}

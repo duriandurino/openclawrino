@@ -1,0 +1,62 @@
+[*] Analyzing 10 services from /home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/parsed/nmap-service-192-168-0-112-2026-03-27_095622.json
+
+============================================================
+[*] 82 — xfer? 
+  searchsploit: no results
+
+============================================================
+[*] 135 — msrpc 
+  searchsploit: no results
+
+============================================================
+[*] 139 — netbios-ssn 
+  searchsploit: no results
+
+============================================================
+[*] 445 — microsoft-ds? 
+  searchsploit: no results
+
+============================================================
+[*] 1236 — tcpwrapped 
+  searchsploit: no results
+
+============================================================
+[*] 3306 — mysql 
+  searchsploit: 169 results
+    • Active Calendar 1.2 - '/data/mysqlevents.php?css' Cross-Site Scripting
+      29653 | php
+    • Advanced Poll 2.0 - 'mysql_host' Cross-Site Scripting
+      33972 | php
+    • Agora 1.4 RC1 - 'MysqlfinderAdmin.php' Remote File Inclusion
+      2726 | php
+    • Asterisk 'asterisk-addons' 1.2.7/1.4.3 - CDR_ADDON_MYSQL Module SQL Injection
+      30677 | linux
+    • Banex PHP MySQL Banner Exchange 2.21 - 'admin.php' Multiple SQL Injections
+      28307 | php
+
+============================================================
+[*] 3389 — ms-wbt-server 
+  searchsploit: no results
+
+============================================================
+[*] 5985 — http 
+  searchsploit: 15 results
+    • Apache 1.0/1.2/1.3 - Server Address Disclosure
+      21067 | multiple
+    • Apache 1.1 / NCSA HTTPd 1.5.2 / Netscape Server 1.12/1.1/2.0 - a nph-test-cgi
+      19536 | multiple
+    • Apache 1.3/2.0.x - Server Side Include Cross-Site Scripting
+      21885 | multiple
+    • Apache Geronimo 2.1.x - '/console/portal/Server/Monitoring' Multiple Cross-Site Scripting Vulnerabilities
+      32920 | multiple
+    • Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution (RCE)
+      50383 | multiple
+
+============================================================
+[*] 7070 — ssl|realserver? 
+  searchsploit: no results
+
+============================================================
+[*] 49153 — tcpwrapped 
+  searchsploit: no results
+

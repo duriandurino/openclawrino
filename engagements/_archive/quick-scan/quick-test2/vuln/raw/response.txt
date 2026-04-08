@@ -1,0 +1,7 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Tue, 07 Apr 2026 06:00:00 GMT
+Content-Type: text/html; charset=UTF-8
+Content-Length: 1234
+Connection: keep-alive
+Set-Cookie: PHPSESSID=abc123def456; path=/

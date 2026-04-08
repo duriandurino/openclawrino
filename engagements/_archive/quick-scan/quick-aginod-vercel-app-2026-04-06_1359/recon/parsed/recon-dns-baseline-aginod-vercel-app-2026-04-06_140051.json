@@ -1,0 +1,33 @@
+{
+  "target": "aginod.vercel.app",
+  "phase": "recon",
+  "script": "scripts/recon/dns/recon_dns_baseline.py",
+  "timestamp": "2026-04-06T14:00:51+08:00",
+  "status": "success",
+  "findings": [
+    {
+      "type": "A",
+      "value": "64.29.17.3"
+    },
+    {
+      "type": "A",
+      "value": "216.198.79.3"
+    }
+  ],
+  "records": {
+    "A": [
+      "64.29.17.3",
+      "216.198.79.3"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "TXT": [],
+    "NS": [],
+    "CNAME": []
+  },
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/raw/recon-dns-baseline-aginod-vercel-app-2026-04-06_140051.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/parsed/recon-dns-baseline-aginod-vercel-app-2026-04-06_140051.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/summaries/recon-dns-baseline-aginod-vercel-app-2026-04-06_140051.md"
+  }
+}

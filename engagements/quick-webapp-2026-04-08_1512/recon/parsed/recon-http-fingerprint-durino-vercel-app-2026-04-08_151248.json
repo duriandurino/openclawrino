@@ -1,0 +1,32 @@
+{
+  "target": "durino.vercel.app",
+  "phase": "recon",
+  "script": "scripts/recon/web/recon_http_fingerprint.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "header",
+      "value": "Location: https://durino.vercel.app/"
+    },
+    {
+      "type": "header",
+      "value": "server: Vercel"
+    },
+    {
+      "type": "title",
+      "value": "Adrian Alejandrino | Product Solutions Engineer"
+    },
+    {
+      "type": "whatweb",
+      "value": "\u001b[1m\u001b[34mhttp://durino.vercel.app\u001b[0m [308 Permanent Redirect] \u001b[1mCountry\u001b[0m[\u001b[0m\u001b[22mUNITED STATES\u001b[0m][\u001b[1m\u001b[31mUS\u001b[0m], \u001b[1mHTTPServer\u001b[0m[\u001b[1m\u001b[36mVercel\u001b[0m], \u001b[1mIP\u001b[0m[\u001b[0m\u001b[22m64.29.17.3\u001b[0m], \u001b[1mRedirectLocation\u001b[0m[\u001b[0m\u001b[22mhttps://durino.vercel.app/\u001b[0m]\n\u001b[1m\u001b[34mhttps://durino.vercel.app/\u001b[0m [200 OK] \u001b[1mCountry\u001b[0m[\u001b[0m\u001b[22mUNITED STATES\u001b[0m][\u001b[1m\u001b[31mUS\u001b[0m], \u001b[1mEmail\u001b[0m[\u001b[0m\u001b[22madrian.alejandrino.1115@gmail.com\u001b[0m], \u001b[1mHTML5\u001b[0m, \u001b[1mHTTPServer\u001b[0m[\u001b[1m\u001b[36mVercel\u001b[0m], \u001b[1mIP\u001b[0m[\u001b[0m\u001b[22m64.29.17.195\u001b[0m], \u001b[1mMeta-Author\u001b[0m[\u001b[0m\u001b[22mAdrian Alejandrino\u001b[0m], \u001b[1mOpen-Graph-Protocol\u001b[0m[\u001b[1m\u001b[32mwebsite\u001b[0m], \u001b[1mScript\u001b[0m, \u001b[1mStrict-Transport-Security\u001b[0m[\u001b[0m\u001b[22mmax-age=63072000; includeSubDomains; preload\u001b[0m], \u001b[1mTitle\u001b[0m[\u001b[1m\u001b[33mAdrian Alejandrino | Product Solutions Engineer\u001b[0m], \u001b[1mUncommonHeaders\u001b[0m[\u001b[0m\u001b[22maccess-control-allow-origin,x-matched-path,x-vercel-cache,x-vercel-id\u001b[0m]"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/recon/raw/recon-http-fingerprint-durino-vercel-app-2026-04-08_151248.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/recon/parsed/recon-http-fingerprint-durino-vercel-app-2026-04-08_151248.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/recon/summaries/recon-http-fingerprint-durino-vercel-app-2026-04-08_151248.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/recon/raw/recon-http-fingerprint-durino-vercel-app-2026-04-08_151248-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/recon/raw/recon-http-fingerprint-durino-vercel-app-2026-04-08_151248-body.txt",
+    "whatweb": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/recon/raw/recon-http-fingerprint-durino-vercel-app-2026-04-08_151248-whatweb.txt"
+  }
+}

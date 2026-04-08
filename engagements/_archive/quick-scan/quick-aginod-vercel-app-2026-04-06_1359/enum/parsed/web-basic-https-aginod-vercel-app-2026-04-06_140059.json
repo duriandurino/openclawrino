@@ -1,0 +1,16 @@
+{
+  "target": "https://aginod.vercel.app/",
+  "phase": "enum",
+  "script": "scripts/enum/web/enum_web_basic.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/enum/raw/web-basic-https-aginod-vercel-app-2026-04-06_140059.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/enum/parsed/web-basic-https-aginod-vercel-app-2026-04-06_140059.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/enum/summaries/web-basic-https-aginod-vercel-app-2026-04-06_140059.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/enum/raw/web-basic-https-aginod-vercel-app-2026-04-06_140059-headers.txt",
+    "robots": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/enum/raw/web-basic-https-aginod-vercel-app-2026-04-06_140059-robots.txt",
+    "ffuf": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/enum/raw/web-basic-https-aginod-vercel-app-2026-04-06_140059-ffuf.json"
+  }
+}

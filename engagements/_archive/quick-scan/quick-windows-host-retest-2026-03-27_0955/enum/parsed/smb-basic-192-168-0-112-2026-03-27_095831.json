@@ -1,0 +1,15 @@
+{
+  "target": "192.168.0.112",
+  "phase": "enum",
+  "script": "scripts/enum/smb/enum_smb_basic.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/raw/smb-basic-192-168-0-112-2026-03-27_095831.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/parsed/smb-basic-192-168-0-112-2026-03-27_095831.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/summaries/smb-basic-192-168-0-112-2026-03-27_095831.md",
+    "smbclient": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/raw/smb-basic-192-168-0-112-2026-03-27_095831-shares.txt",
+    "enum4linux": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/raw/smb-basic-192-168-0-112-2026-03-27_095831-enum4linux.txt"
+  }
+}

@@ -1,0 +1,36 @@
+# curl -I
+HTTP/2 200 
+accept-ch: Sec-CH-Prefers-Color-Scheme
+age: 665
+cache-control: public, max-age=0, must-revalidate
+content-security-policy: default-src 'self' vercel.com *.vercel.com assets.vercel.com *.vercel.sh vercel.live wss://*.vercel.com *.codesandbox.io localhost:* chrome-extension://* https://www.youtube-nocookie.com *.chilipiper.com https://risk.clearbit.com https://react-tweet.vercel.app/*;script-src 'self' 'unsafe-eval' 'unsafe-inline' 'inline-speculation-rules' https://snap.licdn.com https://www.youtube.com cdn.vercel-insights.com va.vercel-scripts.com vercel.com *.vercel.com assets.vercel.com *.vercel.sh vercel.live wss://*.vercel.com *.codesandbox.io localhost:* chrome-extension://* https://www.youtube-nocookie.com *.chilipiper.com https://risk.clearbit.com https://react-tweet.vercel.app/* cdp.vercel.com;style-src 'self' 'unsafe-inline' vercel.com *.vercel.com assets.vercel.com *.vercel.sh vercel.live wss://*.vercel.com *.codesandbox.io localhost:* chrome-extension://* https://www.youtube-nocookie.com *.chilipiper.com https://risk.clearbit.com https://react-tweet.vercel.app/*;img-src 'self' blob: data: *.github.io avatars.githubusercontent.com user-images.githubusercontent.com vercel.com vercel.live *.vercel.sh assets.vercel.com cdn.raster.app https://images.ctfassets.net https://www.google.com https://i.ytimg.com https://s3.amazonaws.com pbs.twimg.com https://www.gravatar.com https://lishhsx6kmthaacj.public.blob.vercel-storage.com;media-src 'self' blob: data: vercel.com *.vercel.com assets.vercel.com *.vercel.sh vercel.live wss://*.vercel.com *.codesandbox.io localhost:* chrome-extension://* https://www.youtube-nocookie.com *.chilipiper.com https://risk.clearbit.com https://react-tweet.vercel.app/*;connect-src 'self' data: *.chilipiper.com *.ingest.sentry.io *.ingest.us.sentry.io wss://ws-us3.pusher.com sockjs-use3.pusher.com react-tweet.vercel.app https://*.contentful.com vercel.com *.vercel.com assets.vercel.com *.vercel.sh vercel.live wss://*.vercel.com *.codesandbox.io localhost:* chrome-extension://* https://www.youtube-nocookie.com *.chilipiper.com https://risk.clearbit.com https://react-tweet.vercel.app/* cdp.vercel.com;font-src 'self' vercel.com assets.vercel.com vercel.live fonts.gstatic.com *.vercel.sh;frame-ancestors  'self'  https://messaging.haus  https://vercel.com  https://app.contentful.com  https://*.contentful.com  https://*.vercel.sh  https://*.vercel.com
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+date: Tue, 07 Apr 2026 03:57:36 GMT
+etag: "dmmx7nhr25cxnf"
+feature-policy: fullscreen 'self'; camera 'none'
+referrer-policy: origin-when-cross-origin
+server: Vercel
+set-cookie: _v-consent=%7B%22essential%22%3Atrue%2C%22analytics%22%3Atrue%2C%22marketing%22%3Atrue%2C%22functional%22%3Atrue%2C%22version%22%3A1%7D; Path=/; Max-Age=31536000; SameSite=Lax; Secure; Domain=.vercel.com
+set-cookie: _v-anonymous-id=az1q80q3Wn_e6SdunuSmn; Path=/; Max-Age=7776000; SameSite=Lax; Secure; Domain=.vercel.com
+set-cookie: _v-anonymous-id-renewed=1; Path=/; Max-Age=86400; SameSite=Lax; Secure; Domain=.vercel.com
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-content-type-options: nosniff
+x-dns-prefetch-control: on
+x-download-options: noopen
+x-frame-options: DENY
+x-matched-path: /precomputed/[experimentCode]/home/[homeFlagsCode]/cheaper
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-powered-by: Next.js, Payload
+x-vercel-cache: HIT
+x-vercel-debug: pod_id=7d56d859cf-hh5w9,retried=false,invoked=true,start_type=hot,dispatcher=n1.lambda
+x-vercel-id: sin1::iad1::l9nhq-1775534921916-bb189ad412b4
+x-vercel-lambda-service: serverless-function-router
+x-xss-protection: 0
+content-length: 603631
+
+
+# curl body preview
+<!DOCTYPE html><html data-dpl-id="dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" class="geist_mono_98cac566-module__bcNCwW__className geist_1620151b-module__2VSEvG__className geist_mono_98cac566-module__bcNCwW__variable geist_1620151b-module__2VSEvG__variable" lang="en"><head><meta charSet="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/797e433ab948586e.p.3f30ggp2vw8zj.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/GeistPixel_Circle.p.0jixsyww9kd4y.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/GeistPixel_Grid.p.30wdobjl9hgxl.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/GeistPixel_Line.p.0rlph12vacpf4.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/GeistPixel_Square.p.2k-0ab8oywfv4.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/GeistPixel_Triangle.p.0qs0n6zg5c5u1.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/vc-ap-vercel-marketing/_next/static/media/caa3a2e1cccd8315.p.400zotvijr2rn.woff2?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb" as="font" crossorigin="" type="font/woff2"/><link rel="preload" as="image" href="/vc-ap-vercel-marketing/_next/static/media/vercel-logotype-light.3pet4y_bv2m1m.svg?dpl=dpl_3GsFQuMFLkE97wgtyfLexoLe7zNb"/><link rel="preload" as="image" href="/vc-ap-vercel-marketing/_next/static/media/vercel-logotype-dark.0pdt6ezgjl2wc.svg?dpl=dpl_3GsFQuMF

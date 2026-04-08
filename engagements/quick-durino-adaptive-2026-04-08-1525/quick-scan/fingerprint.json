@@ -1,0 +1,35 @@
+{
+  "target": "durino.vercel.app",
+  "normalized_target": "durino.vercel.app",
+  "profile": "webapp",
+  "target_kind": "web",
+  "frameworks": [
+    "nextjs"
+  ],
+  "deployments": [
+    "vercel"
+  ],
+  "surfaces": [],
+  "traits": [
+    "api-backed",
+    "portfolio-like",
+    "ssr-or-hybrid",
+    "tls-enforced"
+  ],
+  "titles": [
+    "Adrian Alejandrino | Product Solutions Engineer"
+  ],
+  "server_hints": [],
+  "status_code": "",
+  "cookies_detected": 0,
+  "profiles_considered": [],
+  "report_focus": [
+    "deployment-layer clues from vercel hosting"
+  ],
+  "extra_steps": [],
+  "deduplication": {
+    "executed_steps_analyzed": 3,
+    "overlays_skipped_due_to_dedup": false
+  },
+  "generated": "2026-04-08T15:24:30.983655+08:00"
+}

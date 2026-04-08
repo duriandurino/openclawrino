@@ -1,0 +1,211 @@
+{
+  "target": "192.168.0.112 (Quick Scan)",
+  "findings": [
+    {
+      "id": "QS-001",
+      "title": "5985 \u2014 http: Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 5985 \u2014 http: Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution (RCE)",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 5985 \u2014 http: Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution (RCE)",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management.",
+      "hardening": "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-002",
+      "title": "3306 \u2014 mysql: Active Calendar 1.2 - '/data/mysqlevents.php?css' Cross-Site",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 3306 \u2014 mysql: Active Calendar 1.2 - '/data/mysqlevents.php?css' Cross-Site Scripting",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 3306 \u2014 mysql: Active Calendar 1.2 - '/data/mysqlevents.php?css' Cross-Site Scripting",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service.",
+      "hardening": "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-003",
+      "title": "3306 \u2014 mysql: Advanced Poll 2.0 - 'mysql_host' Cross-Site Scripting",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 3306 \u2014 mysql: Advanced Poll 2.0 - 'mysql_host' Cross-Site Scripting",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 3306 \u2014 mysql: Advanced Poll 2.0 - 'mysql_host' Cross-Site Scripting",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service.",
+      "hardening": "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-004",
+      "title": "3306 \u2014 mysql: Agora 1.4 RC1 - 'MysqlfinderAdmin.php' Remote File Inclusion",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 3306 \u2014 mysql: Agora 1.4 RC1 - 'MysqlfinderAdmin.php' Remote File Inclusion",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 3306 \u2014 mysql: Agora 1.4 RC1 - 'MysqlfinderAdmin.php' Remote File Inclusion",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service.",
+      "hardening": "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-005",
+      "title": "3306 \u2014 mysql: Asterisk 'asterisk-addons' 1.2.7/1.4.3 - CDR_ADDON_MYSQL Module",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 3306 \u2014 mysql: Asterisk 'asterisk-addons' 1.2.7/1.4.3 - CDR_ADDON_MYSQL Module SQL Injection",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 3306 \u2014 mysql: Asterisk 'asterisk-addons' 1.2.7/1.4.3 - CDR_ADDON_MYSQL Module SQL Injection",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service.",
+      "hardening": "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-006",
+      "title": "3306 \u2014 mysql: Banex PHP MySQL Banner Exchange 2.21 - 'admin.php' Multiple SQL",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 3306 \u2014 mysql: Banex PHP MySQL Banner Exchange 2.21 - 'admin.php' Multiple SQL Injections",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 3306 \u2014 mysql: Banex PHP MySQL Banner Exchange 2.21 - 'admin.php' Multiple SQL Injections",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service.",
+      "hardening": "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-007",
+      "title": "3306/tcp \u2014 mysql",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the enum phase: 3306/tcp \u2014 mysql",
+      "evidence": "Quick scan candidate finding (observed) from enum: 3306/tcp \u2014 mysql",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict MySQL to approved application hosts only, disable public exposure where unnecessary, and verify account/network ACLs for the service.",
+      "hardening": "Keep database services on dedicated application/admin networks, monitor for unexpected remote logins, and document the expected client set.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-008",
+      "title": "5985 \u2014 http: Apache 1.0/1.2/1.3 - Server Address Disclosure",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 5985 \u2014 http: Apache 1.0/1.2/1.3 - Server Address Disclosure",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 5985 \u2014 http: Apache 1.0/1.2/1.3 - Server Address Disclosure",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management.",
+      "hardening": "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-009",
+      "title": "5985 \u2014 http: Apache 1.1 / NCSA HTTPd 1.5.2 / Netscape Server 1.12/1.1/2.0 - a",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 5985 \u2014 http: Apache 1.1 / NCSA HTTPd 1.5.2 / Netscape Server 1.12/1.1/2.0 - a nph-test-cgi",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 5985 \u2014 http: Apache 1.1 / NCSA HTTPd 1.5.2 / Netscape Server 1.12/1.1/2.0 - a nph-test-cgi",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management.",
+      "hardening": "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-010",
+      "title": "5985 \u2014 http: Apache 1.3/2.0.x - Server Side Include Cross-Site Scripting",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 5985 \u2014 http: Apache 1.3/2.0.x - Server Side Include Cross-Site Scripting",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 5985 \u2014 http: Apache 1.3/2.0.x - Server Side Include Cross-Site Scripting",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management.",
+      "hardening": "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-011",
+      "title": "5985 \u2014 http: Apache Geronimo 2.1.x - '/console/portal/Server/Monitoring'",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the vuln phase: 5985 \u2014 http: Apache Geronimo 2.1.x - '/console/portal/Server/Monitoring' Multiple Cross-Site Scripting Vulnerabilities",
+      "evidence": "Quick scan candidate finding (observed) from vuln: 5985 \u2014 http: Apache Geronimo 2.1.x - '/console/portal/Server/Monitoring' Multiple Cross-Site Scripting Vulnerabilities",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management.",
+      "hardening": "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-012",
+      "title": "5985/tcp \u2014 http",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "192.168.0.112",
+      "description": "Quick scan candidate from the enum phase: 5985/tcp \u2014 http",
+      "evidence": "Quick scan candidate finding (observed) from enum: 5985/tcp \u2014 http",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Restrict WinRM to trusted administration networks, prefer HTTPS/5986 where possible, and verify only intended admin groups can use remote management.",
+      "hardening": "Maintain a patching cadence for web-facing components, reduce banner leakage, and monitor for unexpected management endpoints on non-standard hosts.",
+      "references": [
+        "Quick scan profile: windows-host",
+        "Execution mode: safe"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Exposure Management",
+      "recommendation": "Use quick scan as triage only, then validate high-risk candidates manually before operational changes or client delivery."
+    },
+    {
+      "category": "Administrative Surface Reduction",
+      "recommendation": "Restrict exposed management services to trusted administration paths, segment them from user networks, and monitor for unexpected remote-access activity."
+    },
+    {
+      "category": "Patch and Validation Workflow",
+      "recommendation": "For candidate version-based matches, verify the real product/version before remediation, then patch and re-scan to confirm closure."
+    }
+  ]
+}

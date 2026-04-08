@@ -1,0 +1,1 @@
+safe mode enabled; skipped enum4linux-ng -A

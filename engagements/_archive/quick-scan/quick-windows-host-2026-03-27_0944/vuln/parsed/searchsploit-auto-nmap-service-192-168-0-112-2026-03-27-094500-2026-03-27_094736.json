@@ -1,0 +1,12 @@
+{
+  "target": "nmap-service-192-168-0-112-2026-03-27_094500",
+  "phase": "vuln",
+  "script": "scripts/vuln/cve-mapping/searchsploit_auto.sh",
+  "status": "success",
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/vuln/raw/searchsploit-auto-nmap-service-192-168-0-112-2026-03-27-094500-2026-03-27_094736.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/vuln/parsed/searchsploit-auto-nmap-service-192-168-0-112-2026-03-27-094500-2026-03-27_094736.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/vuln/summaries/searchsploit-auto-nmap-service-192-168-0-112-2026-03-27-094500-2026-03-27_094736.md"
+  }
+}

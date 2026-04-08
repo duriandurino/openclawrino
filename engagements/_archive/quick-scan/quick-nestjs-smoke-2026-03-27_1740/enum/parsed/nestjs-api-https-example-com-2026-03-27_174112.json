@@ -1,0 +1,19 @@
+{
+  "target": "https://example.com",
+  "phase": "enum",
+  "script": "scripts/enum/web/enum_nestjs_api.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "docs",
+      "value": "Swagger/OpenAPI route indicators observed"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/enum/raw/nestjs-api-https-example-com-2026-03-27_174112.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/enum/parsed/nestjs-api-https-example-com-2026-03-27_174112.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/enum/summaries/nestjs-api-https-example-com-2026-03-27_174112.md",
+    "openapi": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/enum/raw/nestjs-api-https-example-com-2026-03-27_174112-swagger.json"
+  }
+}

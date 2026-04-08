@@ -1,0 +1,69 @@
+## https://example.com
+HTTP/2 200 
+date: Fri, 27 Mar 2026 09:40:04 GMT
+content-type: text/html
+cf-ray: 9e2d6e7ace72ddbe-HKG
+last-modified: Tue, 24 Mar 2026 22:07:32 GMT
+allow: GET, HEAD
+accept-ranges: bytes
+age: 9011
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## https://example.com/api
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:05 GMT
+content-type: text/html
+cf-ray: 9e2d6e7bbd2d166a-HKG
+age: 235
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## https://example.com/swagger-json
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:05 GMT
+content-type: text/html
+cf-ray: 9e2d6e7d1f3284d3-HKG
+age: 235
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## https://example.com/swagger
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:05 GMT
+content-type: text/html
+server: cloudflare
+age: 236
+cf-cache-status: HIT
+cf-ray: 9e2d6e7e9915055c-HKG
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## https://example.com/api-json
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:05 GMT
+content-type: text/html
+cf-ray: 9e2d6e7f6e500671-HKG
+age: 236
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## https://example.com/openapi.json
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:05 GMT
+content-type: text/html
+cf-ray: 9e2d6e80aae03eb0-HKG
+age: 236
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+

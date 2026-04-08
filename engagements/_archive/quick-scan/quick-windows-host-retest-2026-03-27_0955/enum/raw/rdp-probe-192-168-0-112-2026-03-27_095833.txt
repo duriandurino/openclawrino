@@ -1,0 +1,14 @@
+# Nmap 7.95 scan initiated Fri Mar 27 09:58:33 2026 as: /usr/lib/nmap/nmap --privileged -Pn -p 3389 -sV -oN /home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/raw/rdp-probe-192-168-0-112-2026-03-27_095833.txt 192.168.0.112
+Nmap scan report for 192.168.0.112
+Host is up (0.00046s latency).
+
+PORT     STATE SERVICE       VERSION
+3389/tcp open  ms-wbt-server
+1 service unrecognized despite returning data. If you know the service/version, please submit the following fingerprint at https://nmap.org/cgi-bin/submit.cgi?new-service :
+SF-Port3389-TCP:V=7.95%I=7%D=3/27%Time=69C5E455%P=x86_64-pc-linux-gnu%r(Te
+SF:rminalServerCookie,13,"\x03\0\0\x13\x0e\xd0\0\0\x124\0\x02\?\x08\0\x02\
+SF:0\0\0");
+MAC Address: 58:02:05:2D:05:CC (Unknown)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Mar 27 09:58:45 2026 -- 1 IP address (1 host up) scanned in 11.48 seconds

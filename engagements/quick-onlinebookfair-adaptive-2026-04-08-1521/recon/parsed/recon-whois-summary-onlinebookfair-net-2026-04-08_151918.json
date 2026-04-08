@@ -1,0 +1,129 @@
+{
+  "target": "onlinebookfair.net",
+  "phase": "recon",
+  "script": "scripts/recon/whois/recon_whois_summary.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "whois",
+      "value": "Registrar WHOIS Server: whois.godaddy.com"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar URL: http://www.godaddy.com"
+    },
+    {
+      "type": "whois",
+      "value": "Updated Date: 2026-02-15T15:12:31Z"
+    },
+    {
+      "type": "whois",
+      "value": "Creation Date: 2025-11-26T09:58:39Z"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar: GoDaddy.com, LLC"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar IANA ID: 146"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar Abuse Contact Email: abuse@godaddy.com"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar Abuse Contact Phone: 480-624-2505"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Name Server: NS1.VERCEL-DNS.COM"
+    },
+    {
+      "type": "whois",
+      "value": "Name Server: NS2.VERCEL-DNS.COM"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar WHOIS Server: whois.godaddy.com"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar URL: https://www.godaddy.com"
+    },
+    {
+      "type": "whois",
+      "value": "Updated Date: 2026-02-11T02:08:19Z"
+    },
+    {
+      "type": "whois",
+      "value": "Creation Date: 2025-11-26T04:58:39Z"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar Registration Expiration Date: 2026-11-26T04:58:39Z"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar: GoDaddy.com, LLC"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar IANA ID: 146"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar Abuse Contact Email: abuse@godaddy.com"
+    },
+    {
+      "type": "whois",
+      "value": "Registrar Abuse Contact Phone: +1.4806242505"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientTransferProhibited https://icann.org/epp#clientTransferProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientUpdateProhibited https://icann.org/epp#clientUpdateProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientRenewProhibited https://icann.org/epp#clientRenewProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Domain Status: clientDeleteProhibited https://icann.org/epp#clientDeleteProhibited"
+    },
+    {
+      "type": "whois",
+      "value": "Name Server: NS1.VERCEL-DNS.COM"
+    },
+    {
+      "type": "whois",
+      "value": "Name Server: NS2.VERCEL-DNS.COM"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-adaptive-2026-04-08-1521/recon/raw/recon-whois-summary-onlinebookfair-net-2026-04-08_151918.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-adaptive-2026-04-08-1521/recon/parsed/recon-whois-summary-onlinebookfair-net-2026-04-08_151918.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-adaptive-2026-04-08-1521/recon/summaries/recon-whois-summary-onlinebookfair-net-2026-04-08_151918.md"
+  }
+}

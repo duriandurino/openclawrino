@@ -1,0 +1,47 @@
+## GET https://example.com
+HTTP/2 200 
+date: Fri, 27 Mar 2026 09:40:06 GMT
+content-type: text/html
+cf-ray: 9e2d6e848ed7853f-HKG
+last-modified: Tue, 24 Mar 2026 22:07:32 GMT
+allow: GET, HEAD
+accept-ranges: bytes
+age: 9012
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## GET https://example.com/swagger-json
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:06 GMT
+content-type: text/html
+cf-ray: 9e2d6e856fac8b87-HKG
+age: 237
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## GET https://example.com/api-json
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:06 GMT
+content-type: text/html
+cf-ray: 9e2d6e86493c04fc-HKG
+age: 237
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+
+## GET https://example.com/openapi.json
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:06 GMT
+content-type: text/html
+cf-ray: 9e2d6e874cbd7aa1-HKG
+age: 237
+cf-cache-status: HIT
+server: cloudflare
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style></head><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.</p><p><a href="https://iana.org/domains/example">Learn more</a></p></div></body></html>
+

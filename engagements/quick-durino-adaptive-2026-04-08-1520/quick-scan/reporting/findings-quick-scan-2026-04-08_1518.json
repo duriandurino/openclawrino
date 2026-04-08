@@ -1,0 +1,143 @@
+{
+  "target": "durino.vercel.app (Quick Scan)",
+  "findings": [
+    {
+      "id": "QS-001",
+      "title": "CSP header not set in Vercel edge response (Next.js)",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "durino.vercel.app",
+      "description": "Quick scan candidate from the vuln phase: CSP header not set in Vercel edge response (Next.js)",
+      "evidence": "Quick scan candidate finding (candidate) from vuln: CSP header not set in Vercel edge response (Next.js)",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Perform targeted validation immediately, patch or reconfigure the exposed service, and verify the issue is no longer reachable from the current network segment.",
+      "hardening": "Review public profile, contact, and showcase metadata regularly so unnecessary personal or routing exposure does not accumulate over time.",
+      "references": [
+        "Quick scan profile: webapp",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-002",
+      "title": "Title: Adrian Alejandrino \\",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "durino.vercel.app",
+      "description": "Quick scan candidate from the recon phase: Title: Adrian Alejandrino \\",
+      "evidence": "Quick scan candidate finding (candidate) from recon: Title: Adrian Alejandrino \\",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Perform targeted validation immediately, patch or reconfigure the exposed service, and verify the issue is no longer reachable from the current network segment.",
+      "hardening": "Review public profile, contact, and showcase metadata regularly so unnecessary personal or routing exposure does not accumulate over time.",
+      "references": [
+        "Quick scan profile: webapp",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-003",
+      "title": "X-Content-Type-Options: nosniff not set (JS-heavy app)",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "durino.vercel.app",
+      "description": "Quick scan candidate from the vuln phase: X-Content-Type-Options: nosniff not set (JS-heavy app)",
+      "evidence": "Quick scan candidate finding (candidate) from vuln: X-Content-Type-Options: nosniff not set (JS-heavy app)",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Perform targeted validation immediately, patch or reconfigure the exposed service, and verify the issue is no longer reachable from the current network segment.",
+      "hardening": "Review public profile, contact, and showcase metadata regularly so unnecessary personal or routing exposure does not accumulate over time.",
+      "references": [
+        "Quick scan profile: webapp",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-004",
+      "title": "X-Frame-Options header not set (Next.js)",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "durino.vercel.app",
+      "description": "Quick scan candidate from the vuln phase: X-Frame-Options header not set (Next.js)",
+      "evidence": "Quick scan candidate finding (candidate) from vuln: X-Frame-Options header not set (Next.js)",
+      "impact": "If confirmed, this exposure could significantly increase remote attack surface or allow unauthorized administrative or data-service access paths.",
+      "remediation": "Perform targeted validation immediately, patch or reconfigure the exposed service, and verify the issue is no longer reachable from the current network segment.",
+      "hardening": "Review public profile, contact, and showcase metadata regularly so unnecessary personal or routing exposure does not accumulate over time.",
+      "references": [
+        "Quick scan profile: webapp",
+        "Execution mode: safe"
+      ]
+    },
+    {
+      "id": "QS-005",
+      "title": "Server banner exposed (Vercel)",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "durino.vercel.app",
+      "description": "Quick scan candidate from the vuln phase: Server banner exposed (Vercel)",
+      "evidence": "Quick scan candidate finding (candidate) from vuln: Server banner exposed (Vercel)",
+      "impact": "This may help attackers profile the public portfolio deployment and combine routing or metadata clues with broader reconnaissance.",
+      "remediation": "Reduce unnecessary banner and edge-routing disclosure where possible, then confirm externally visible headers only reveal what the deployment truly needs.",
+      "hardening": "Review public profile, contact, and showcase metadata regularly so unnecessary personal or routing exposure does not accumulate over time.",
+      "references": [
+        "Quick scan profile: webapp",
+        "Execution mode: safe"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Exposure Management",
+      "recommendation": "Use quick scan as triage only, then validate high-risk candidates manually before operational changes or client delivery."
+    },
+    {
+      "category": "Patch and Validation Workflow",
+      "recommendation": "For candidate version-based matches, verify the real product/version before remediation, then patch and re-scan to confirm closure."
+    },
+    {
+      "category": "Public Metadata Hygiene",
+      "recommendation": "Review public profile, author, and contact metadata as part of the exposed surface so personal or impersonation-relevant details are not over-shared by the deployment."
+    }
+  ],
+  "quick_scan": true,
+  "quick_scan_sections": {
+    "executive_summary": [
+      "- Quick scan profile `webapp` ran against `durino.vercel.app` in `safe` mode and treated the target as a Vercel-hosted Next.js application serving as a public portfolio-style surface, capturing 5 meaningful candidate observations with highest provisional severity `High`.",
+      "- These results are triage-oriented and should be manually validated before being treated as confirmed vulnerabilities.",
+      "- This quick scan adapted its framing toward: deployment metadata, response header posture, and frontend routing clues, server-rendered route behavior and cache/header consistency across rendered pages, deployment-layer clues from vercel hosting."
+    ],
+    "target_fingerprint": [
+      "- Target appears to be a Vercel-hosted Next.js application serving as a public portfolio-style surface.",
+      "- Observed framework indicators: `nextjs`",
+      "- Observed deployment indicators: `vercel`",
+      "- Target traits inferred from artifacts: `api-backed`, `portfolio-like`, `ssr-or-hybrid`, `tls-enforced`",
+      "- Title hints: `Adrian Alejandrino | Product Solutions Engineer`",
+      "- Report emphasis for this target: deployment metadata, response header posture, and frontend routing clues, server-rendered route behavior and cache/header consistency across rendered pages",
+      "- Adaptive overlays: Analyzed 3 executed steps for deduplication"
+    ],
+    "why_varied": [
+      "- This target was framed as a Vercel-hosted Next.js application serving as a public portfolio-style surface based on lightweight fingerprint evidence.",
+      "- Focused on deployment metadata, response header posture, and frontend routing clues",
+      "- Focused on server-rendered route behavior and cache/header consistency across rendered pages",
+      "- Focused on deployment-layer clues from vercel hosting",
+      "- Reporting bias adjusted toward: Review framework-level security headers in the Vercel/Next.js deployment configuration rather than only at the application code layer.",
+      "- Reporting bias adjusted toward: Treat public profile and contact metadata as part of the exposed surface, especially if it influences impersonation, scraping, or social-engineering risk."
+    ],
+    "recommended_next_action": [
+      "- Escalate to a full pentest workflow or targeted manual validation immediately for the highest-risk candidates on this Vercel-hosted Next.js application serving as a public portfolio-style surface.",
+      "- Review framework-level security headers in the Vercel/Next.js deployment configuration rather than only at the application code layer.",
+      "- Treat public profile and contact metadata as part of the exposed surface, especially if it influences impersonation, scraping, or social-engineering risk."
+    ],
+    "quick_recommendations": [
+      "- Validate candidate findings manually before escalation or reporting as confirmed issues.",
+      "- Escalate to a full pentest workflow if exposed services, weak posture, or high-risk candidates are found.",
+      "- Preserve engagement artifacts for follow-up analysis and retesting.",
+      "- Review framework-level security headers in the Vercel/Next.js deployment configuration rather than only at the application code layer.",
+      "- Treat public profile and contact metadata as part of the exposed surface, especially if it influences impersonation, scraping, or social-engineering risk.",
+      "- Use the discovered title/context (Adrian Alejandrino | Product Solutions Engineer) to decide whether this is primarily a marketing surface, operational app, or user-facing portal before prioritizing deeper testing."
+    ]
+  },
+  "quick_scan_profile_traits": [
+    "portfolio-style surface",
+    "server-rendered route behavior",
+    "frontend routing clues",
+    "profile and contact metadata"
+  ]
+}

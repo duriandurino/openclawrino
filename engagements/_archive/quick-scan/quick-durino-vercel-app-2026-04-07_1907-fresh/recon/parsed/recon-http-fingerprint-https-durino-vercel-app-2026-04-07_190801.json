@@ -1,0 +1,24 @@
+{
+  "target": "https://durino.vercel.app",
+  "phase": "recon",
+  "script": "scripts/recon/web/recon_http_fingerprint.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "header",
+      "value": "server: Vercel"
+    },
+    {
+      "type": "title",
+      "value": "Adrian Alejandrino | Product Solutions Engineer"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1907-fresh/recon/raw/recon-http-fingerprint-https-durino-vercel-app-2026-04-07_190801.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1907-fresh/recon/parsed/recon-http-fingerprint-https-durino-vercel-app-2026-04-07_190801.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1907-fresh/recon/summaries/recon-http-fingerprint-https-durino-vercel-app-2026-04-07_190801.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1907-fresh/recon/raw/recon-http-fingerprint-https-durino-vercel-app-2026-04-07_190801-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1907-fresh/recon/raw/recon-http-fingerprint-https-durino-vercel-app-2026-04-07_190801-body.txt",
+    "whatweb": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1907-fresh/recon/raw/recon-http-fingerprint-https-durino-vercel-app-2026-04-07_190801-whatweb.txt"
+  }
+}

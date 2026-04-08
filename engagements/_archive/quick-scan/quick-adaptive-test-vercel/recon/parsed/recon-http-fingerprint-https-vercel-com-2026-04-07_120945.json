@@ -1,0 +1,28 @@
+{
+  "target": "https://vercel.com",
+  "phase": "recon",
+  "script": "scripts/recon/web/recon_http_fingerprint.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "header",
+      "value": "server: Vercel"
+    },
+    {
+      "type": "header",
+      "value": "x-powered-by: Next.js, Payload"
+    },
+    {
+      "type": "whatweb",
+      "value": "\u001b[1m\u001b[34mhttps://vercel.com\u001b[0m [200 OK] \u001b[1mCookies\u001b[0m[\u001b[0m\u001b[22m_v-anonymous-id,_v-anonymous-id-renewed,_v-consent\u001b[0m], \u001b[1mCountry\u001b[0m[\u001b[0m\u001b[22mCANADA\u001b[0m][\u001b[1m\u001b[31mCA\u001b[0m], \u001b[1mHTML5\u001b[0m, \u001b[1mHTTPServer\u001b[0m[\u001b[1m\u001b[36mVercel\u001b[0m], \u001b[1mIP\u001b[0m[\u001b[0m\u001b[22m198.169.2.193\u001b[0m], \u001b[1mOpen-Graph-Protocol\u001b[0m[\u001b[1m\u001b[32mwebsite\u001b[0m], \u001b[1mScript\u001b[0m[\u001b[0m\u001b[22mapplication/json\u001b[0m], \u001b[1mStrict-Transport-Security\u001b[0m[\u001b[0m\u001b[22mmax-age=31536000; includeSubDomains; preload\u001b[0m], \u001b[1mTitle\u001b[0m[\u001b[1m\u001b[33mVercel: Build and deploy the best web experiences with the AI Cloud\u001b[0m], \u001b[1mUncommonHeaders\u001b[0m[\u001b[0m\u001b[22maccept-ch,content-security-policy,critical-ch,feature-policy,referrer-policy,x-content-type-options,x-dns-prefetch-control,x-download-options,x-matched-path,x-nextjs-prerender,x-nextjs-stale-time,x-vercel-cache,x-vercel-debug,x-vercel-id,x-vercel-lambda-service\u001b[0m], \u001b[1mX-Frame-Options\u001b[0m[\u001b[0m\u001b[22mDENY\u001b[0m], \u001b[1mX-Powered-By\u001b[0m[\u001b[0m\u001b[22mNext.js, Payload\u001b[0m], \u001b[1mX-XSS-Protection\u001b[0m[\u001b[0m\u001b[22m0\u001b[0m]"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/raw/recon-http-fingerprint-https-vercel-com-2026-04-07_120945.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/parsed/recon-http-fingerprint-https-vercel-com-2026-04-07_120945.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/summaries/recon-http-fingerprint-https-vercel-com-2026-04-07_120945.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/raw/recon-http-fingerprint-https-vercel-com-2026-04-07_120945-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/raw/recon-http-fingerprint-https-vercel-com-2026-04-07_120945-body.txt",
+    "whatweb": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/raw/recon-http-fingerprint-https-vercel-com-2026-04-07_120945-whatweb.txt"
+  }
+}

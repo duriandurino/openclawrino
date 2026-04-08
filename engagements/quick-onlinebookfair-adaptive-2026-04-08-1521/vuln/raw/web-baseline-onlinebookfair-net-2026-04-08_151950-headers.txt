@@ -1,0 +1,34 @@
+HTTP/1.0 308 Permanent Redirect
+Content-Type: text/plain
+Location: https://onlinebookfair.net/
+Refresh: 0;url=https://onlinebookfair.net/
+server: Vercel
+
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Wed, 08 Apr 2026 07:18:16 GMT
+location: https://www.onlinebookfair.net/
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: sin1::r4xhw-1775632696801-2411d4863370
+
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 224403
+cache-control: public, max-age=0, must-revalidate
+content-disposition: inline
+content-type: text/html; charset=utf-8
+date: Wed, 08 Apr 2026 07:18:17 GMT
+etag: "17deb717bf5f2af47aabf86b4317d9ba"
+server: Vercel
+strict-transport-security: max-age=63072000
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-matched-path: /
+x-nextjs-prerender: 1
+x-nextjs-stale-time: 300
+x-vercel-cache: HIT
+x-vercel-id: sin1::h7jnk-1775632697121-d0da89826acd
+content-length: 448240
+

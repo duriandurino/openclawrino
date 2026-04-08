@@ -1,0 +1,75 @@
+{
+  "target": "nmap-service-192-168-0-112-2026-03-27_095622",
+  "phase": "vuln",
+  "script": "scripts/vuln/cve-mapping/map_versions_to_cves.py",
+  "timestamp": "2026-03-27T09:58:57+08:00",
+  "status": "success",
+  "source_input": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/enum/parsed/nmap-service-192-168-0-112-2026-03-27_095622.json",
+  "findings": [
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Active Calendar 1.2 - '/data/mysqlevents.php?css' Cross-Site Scripting",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Advanced Poll 2.0 - 'mysql_host' Cross-Site Scripting",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Agora 1.4 RC1 - 'MysqlfinderAdmin.php' Remote File Inclusion",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Asterisk 'asterisk-addons' 1.2.7/1.4.3 - CDR_ADDON_MYSQL Module SQL Injection",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Banex PHP MySQL Banner Exchange 2.21 - 'admin.php' Multiple SQL Injections",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache 1.0/1.2/1.3 - Server Address Disclosure",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache 1.1 / NCSA HTTPd 1.5.2 / Netscape Server 1.12/1.1/2.0 - a nph-test-cgi",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache 1.3/2.0.x - Server Side Include Cross-Site Scripting",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache Geronimo 2.1.x - '/console/portal/Server/Monitoring' Multiple Cross-Site Scripting Vulnerabilities",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution (RCE)",
+      "candidate_type": "weak_generic",
+      "confidence": "low"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/vuln/raw/map-versions-cves-nmap-service-192-168-0-112-2026-03-27-095622-2026-03-27_095853.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/vuln/parsed/map-versions-cves-nmap-service-192-168-0-112-2026-03-27-095622-2026-03-27_095853.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-retest-2026-03-27_0955/vuln/summaries/map-versions-cves-nmap-service-192-168-0-112-2026-03-27-095622-2026-03-27_095853.md"
+  }
+}

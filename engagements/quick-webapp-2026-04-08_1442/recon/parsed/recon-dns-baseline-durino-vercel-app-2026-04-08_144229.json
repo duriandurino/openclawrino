@@ -1,0 +1,33 @@
+{
+  "target": "durino.vercel.app",
+  "phase": "recon",
+  "script": "scripts/recon/dns/recon_dns_baseline.py",
+  "timestamp": "2026-04-08T14:42:30+08:00",
+  "status": "success",
+  "findings": [
+    {
+      "type": "A",
+      "value": "216.198.79.195"
+    },
+    {
+      "type": "A",
+      "value": "64.29.17.195"
+    }
+  ],
+  "records": {
+    "A": [
+      "216.198.79.195",
+      "64.29.17.195"
+    ],
+    "AAAA": [],
+    "MX": [],
+    "TXT": [],
+    "NS": [],
+    "CNAME": []
+  },
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1442/recon/raw/recon-dns-baseline-durino-vercel-app-2026-04-08_144229.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1442/recon/parsed/recon-dns-baseline-durino-vercel-app-2026-04-08_144229.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1442/recon/summaries/recon-dns-baseline-durino-vercel-app-2026-04-08_144229.md"
+  }
+}

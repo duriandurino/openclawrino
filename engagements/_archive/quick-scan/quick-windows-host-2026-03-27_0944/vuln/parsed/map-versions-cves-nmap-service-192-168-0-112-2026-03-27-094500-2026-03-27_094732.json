@@ -1,0 +1,65 @@
+{
+  "target": "nmap-service-192-168-0-112-2026-03-27_094500",
+  "phase": "vuln",
+  "script": "scripts/vuln/cve-mapping/map_versions_to_cves.py",
+  "timestamp": "2026-03-27T09:47:36+08:00",
+  "status": "success",
+  "source_input": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/enum/parsed/nmap-service-192-168-0-112-2026-03-27_094500.json",
+  "findings": [
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Active Calendar 1.2 - '/data/mysqlevents.php?css' Cross-Site Scripting",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Advanced Poll 2.0 - 'mysql_host' Cross-Site Scripting",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Agora 1.4 RC1 - 'MysqlfinderAdmin.php' Remote File Inclusion",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Asterisk 'asterisk-addons' 1.2.7/1.4.3 - CDR_ADDON_MYSQL Module SQL Injection",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "3306 \u2014 mysql",
+      "candidate": "Banex PHP MySQL Banner Exchange 2.21 - 'admin.php' Multiple SQL Injections",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache 1.0/1.2/1.3 - Server Address Disclosure",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache 1.1 / NCSA HTTPd 1.5.2 / Netscape Server 1.12/1.1/2.0 - a nph-test-cgi",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache 1.3/2.0.x - Server Side Include Cross-Site Scripting",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache Geronimo 2.1.x - '/console/portal/Server/Monitoring' Multiple Cross-Site Scripting Vulnerabilities",
+      "confidence": "candidate"
+    },
+    {
+      "service_context": "5985 \u2014 http",
+      "candidate": "Apache HTTP Server 2.4.49 - Path Traversal & Remote Code Execution (RCE)",
+      "confidence": "candidate"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/vuln/raw/map-versions-cves-nmap-service-192-168-0-112-2026-03-27-094500-2026-03-27_094732.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/vuln/parsed/map-versions-cves-nmap-service-192-168-0-112-2026-03-27-094500-2026-03-27_094732.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-windows-host-2026-03-27_0944/vuln/summaries/map-versions-cves-nmap-service-192-168-0-112-2026-03-27-094500-2026-03-27_094732.md"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "target": "durino.vercel.app",
+  "phase": "enum",
+  "script": "scripts/enum/web/enum_web_basic.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/enum/raw/web-basic-durino-vercel-app-2026-04-08_151300.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/enum/parsed/web-basic-durino-vercel-app-2026-04-08_151300.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/enum/summaries/web-basic-durino-vercel-app-2026-04-08_151300.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/enum/raw/web-basic-durino-vercel-app-2026-04-08_151300-headers.txt",
+    "robots": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/enum/raw/web-basic-durino-vercel-app-2026-04-08_151300-robots.txt",
+    "ffuf": "/home/dukali/.openclaw/workspace/engagements/quick-webapp-2026-04-08_1512/enum/raw/web-basic-durino-vercel-app-2026-04-08_151300-ffuf.json"
+  }
+}

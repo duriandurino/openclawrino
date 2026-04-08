@@ -1,0 +1,9 @@
+# HTTP Fingerprint — https://www.onlinebookfair.net/
+
+- Engagement: quick-onlinebookfair-net-2026-04-06_1419
+- URL: https://www.onlinebookfair.net/
+- Findings: 2
+
+## Highlights
+- header: server: Vercel
+- whatweb: [1m[34mhttps://www.onlinebookfair.net/[0m [200 OK] [1mCountry[0m[[0m[22mUNITED STATES[0m][[1m[31mUS[0m], [1mEmail[0m[[0m[22mbusiness@onlinebookfair.net[0m], [1mHTML5[0m, [1mHTTPServer[0m[[1m[36mVercel[0m], [1mIP[0m[[0m[22m216.198.79.1[0m], [1mScript[0m, [1mStrict-Transport-Security[0m[[0m[22mmax-age=63072000[0m], [1mTitle[0m[[1m[33mOnline Book Fair[0m], [1mUncommonHeaders[0m[[0m[22maccess-control-allow-origin,x-matched-path,x-nextjs-prerender,x-nextjs-stale-time,x-vercel-cache,x-vercel-id[0m]

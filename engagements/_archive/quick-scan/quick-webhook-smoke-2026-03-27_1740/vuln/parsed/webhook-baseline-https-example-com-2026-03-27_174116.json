@@ -1,0 +1,13 @@
+{
+  "target": "https://example.com",
+  "phase": "vuln",
+  "script": "scripts/vuln/web/vuln_webhook_baseline.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-webhook-smoke-2026-03-27_1740/vuln/raw/webhook-baseline-https-example-com-2026-03-27_174116.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-webhook-smoke-2026-03-27_1740/vuln/parsed/webhook-baseline-https-example-com-2026-03-27_174116.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-webhook-smoke-2026-03-27_1740/vuln/summaries/webhook-baseline-https-example-com-2026-03-27_174116.md"
+  }
+}

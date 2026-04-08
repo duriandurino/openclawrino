@@ -1,0 +1,28 @@
+{
+  "target": "https://aginod.vercel.app/",
+  "phase": "recon",
+  "script": "scripts/recon/web/recon_http_fingerprint.sh",
+  "status": "success",
+  "findings": [
+    {
+      "type": "header",
+      "value": "server: Vercel"
+    },
+    {
+      "type": "title",
+      "value": "Aginod - Relief Tracker"
+    },
+    {
+      "type": "whatweb",
+      "value": "\u001b[1m\u001b[34mhttps://aginod.vercel.app/\u001b[0m [200 OK] \u001b[1mCountry\u001b[0m[\u001b[0m\u001b[22mUNITED STATES\u001b[0m][\u001b[1m\u001b[31mUS\u001b[0m], \u001b[1mHTML5\u001b[0m, \u001b[1mHTTPServer\u001b[0m[\u001b[1m\u001b[36mVercel\u001b[0m], \u001b[1mIP\u001b[0m[\u001b[0m\u001b[22m216.198.79.131\u001b[0m], \u001b[1mScript\u001b[0m, \u001b[1mStrict-Transport-Security\u001b[0m[\u001b[0m\u001b[22mmax-age=63072000; includeSubDomains; preload\u001b[0m], \u001b[1mTitle\u001b[0m[\u001b[1m\u001b[33mAginod - Relief Tracker\u001b[0m], \u001b[1mUncommonHeaders\u001b[0m[\u001b[0m\u001b[22maccess-control-allow-origin,x-matched-path,x-vercel-cache,x-vercel-id\u001b[0m]"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/raw/recon-http-fingerprint-https-aginod-vercel-app-2026-04-06_140051.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/parsed/recon-http-fingerprint-https-aginod-vercel-app-2026-04-06_140051.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/summaries/recon-http-fingerprint-https-aginod-vercel-app-2026-04-06_140051.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/raw/recon-http-fingerprint-https-aginod-vercel-app-2026-04-06_140051-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/raw/recon-http-fingerprint-https-aginod-vercel-app-2026-04-06_140051-body.txt",
+    "whatweb": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/raw/recon-http-fingerprint-https-aginod-vercel-app-2026-04-06_140051-whatweb.txt"
+  }
+}

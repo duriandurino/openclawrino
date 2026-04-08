@@ -1,0 +1,36 @@
+{
+  "target": "setup.enc (Quick Scan)",
+  "findings": [],
+  "enhancements": [
+    {
+      "category": "Exposure Management",
+      "recommendation": "Use quick scan as triage only, then validate high-risk candidates manually before operational changes or client delivery."
+    },
+    {
+      "category": "Patch and Validation Workflow",
+      "recommendation": "For candidate version-based matches, verify the real product/version before remediation, then patch and re-scan to confirm closure."
+    },
+    {
+      "category": "Administrative Surface Reduction",
+      "recommendation": "Restrict exposed management services to trusted administration paths, segment them from user networks, and monitor for unexpected remote-access activity."
+    }
+  ],
+  "quick_scan": true,
+  "quick_scan_sections": {
+    "executive_summary": [
+      "- Quick scan profile `webapp` ran against `setup.enc` in `safe` mode and treated the target as a general web application, but did not capture notable candidate findings from the current artifact set.",
+      "- This suggests either a relatively clean exposed surface or limited visibility from low-impact triage checks."
+    ],
+    "target_fingerprint": [],
+    "why_varied": [],
+    "recommended_next_action": [
+      "- Preserve artifacts and consider a deeper follow-up scan if this general web application matters operationally."
+    ],
+    "quick_recommendations": [
+      "- Validate candidate findings manually before escalation or reporting as confirmed issues.",
+      "- Preserve the original encrypted artifact untouched and perform any decryption in a separate analysis directory.",
+      "- Recover or obtain the correct passphrase/key material before attempting installer review."
+    ]
+  },
+  "quick_scan_profile_traits": []
+}

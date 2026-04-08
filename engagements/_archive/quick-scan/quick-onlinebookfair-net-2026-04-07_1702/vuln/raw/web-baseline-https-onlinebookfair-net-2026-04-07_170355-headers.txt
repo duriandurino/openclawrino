@@ -1,0 +1,9 @@
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Tue, 07 Apr 2026 09:02:23 GMT
+location: https://www.onlinebookfair.net/
+server: Vercel
+strict-transport-security: max-age=63072000
+x-vercel-id: sin1::tzs5f-1775552543902-8885eea4eae2
+

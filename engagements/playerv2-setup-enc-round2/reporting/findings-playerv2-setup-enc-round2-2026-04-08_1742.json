@@ -1,0 +1,67 @@
+{
+  "target": "setup.enc (PlayerV2 installer artifact, round 2)",
+  "findings": [
+    {
+      "id": "V-001",
+      "title": "Encrypted setup container blocks pre-deployment security review",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "engagements/playerv2-artifacts/inbound/setup.enc",
+      "description": "The setup artifact is an OpenSSL password-encrypted blob, which prevents direct inspection of installer logic, package type, embedded scripts, or trustworthiness before decryption.",
+      "evidence": "Observed file type `openssl enc'd data with salted password`; `Salted__` header present; no plaintext archive signature visible before decryption.",
+      "impact": "Operators are forced to make trust decisions before they can inspect what will actually run, increasing supply-chain and deployment risk.",
+      "remediation": "Require a decrypt-then-review workflow in an isolated analysis directory before installation or execution on Raspberry Pi targets.",
+      "hardening": "Treat encrypted setup blobs as opaque containers, not trusted installers. Contents must be reviewed before deployment.",
+      "references": [
+        "setup.enc header: Salted__",
+        "SHA-256: f9116a632d11c3b5331e5a9983caff074cc89ec7c8c63d5ac770794ec2d41b7b"
+      ]
+    },
+    {
+      "id": "V-002",
+      "title": "Encrypted artifact lacks companion integrity or provenance metadata",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "engagements/playerv2-artifacts/inbound/setup.enc",
+      "description": "The provided encrypted artifact was not accompanied by a detached signature, signed manifest, or independent checksum package in the current evidence set.",
+      "evidence": "Enumeration of `engagements/playerv2-artifacts/` found the encrypted file and quick-scan notes, but no detached trust metadata or release manifest alongside the blob.",
+      "impact": "A tampered or swapped encrypted installer could be distributed without easy verification of provenance or expected contents.",
+      "remediation": "Ship encrypted setup blobs with detached signatures and independently verifiable release metadata.",
+      "hardening": "Separate confidentiality from integrity. Encryption should not be the only protection around installer trust.",
+      "references": [
+        "artifact directory listing",
+        "enum phase observations"
+      ]
+    },
+    {
+      "id": "V-003",
+      "title": "Related Player ecosystem demonstrates hardware-derived key reuse risk",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "PlayerV2 setup/deployment trust model",
+      "description": "Adjacent Player research in the same environment shows secure storage previously derived decryption directly from Raspberry Pi serial values embedded in scripts. This creates a credible key-reuse and trust-model risk for other protected setup artifacts unless independently disproven.",
+      "evidence": "Workspace research under `research/ntv-hardware-lock/` and prior `player-vault` reporting documents serial-derived decryption via `hardware_lock.py` and `unlock_vault.py`, including validated serial `ffb6d42807368154` for the earlier vault flow.",
+      "impact": "If similar derivation or reuse is applied elsewhere in the setup pipeline, attackers with device-level knowledge may derive or predict protected deployment secrets more easily than intended.",
+      "remediation": "Audit `setup.enc` generation workflow to confirm whether any hardware-derived or reused passphrase logic exists. Rotate to unique per-artifact secrets or managed key material if reuse is present.",
+      "hardening": "Move encryption key management out of recoverable scripts and device-derived values; use explicit secret custody and release verification instead.",
+      "references": [
+        "research/ntv-hardware-lock/source/.../unlock_vault.py",
+        "engagements/player-vault/reporting/REPORT_FINAL_2026-03-18_1800.md"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Artifact Review Workflow",
+      "recommendation": "Decrypt encrypted installer artifacts only inside a dedicated analysis directory and review contents before any install-time execution."
+    },
+    {
+      "category": "Release Provenance",
+      "recommendation": "Add detached signatures, signed manifests, and externally verifiable checksums to every protected setup blob."
+    },
+    {
+      "category": "Key Management Audit",
+      "recommendation": "Review whether `setup.enc` uses device-derived, reused, or script-recoverable decryption material, and eliminate that pattern if found."
+    }
+  ]
+}

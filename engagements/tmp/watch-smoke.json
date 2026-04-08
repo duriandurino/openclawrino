@@ -1,0 +1,23 @@
+{
+  "status": "success",
+  "model": "opencode/minimax-m2.5-free",
+  "fallback_used": false,
+  "exit_code": 0,
+  "duration_seconds": 4.799,
+  "last_event_type": "step_finish",
+  "event_count": 3,
+  "text_chunks": 1,
+  "final_text": "OK",
+  "error": null,
+  "command": [
+    "opencode",
+    "run",
+    "-m",
+    "opencode/minimax-m2.5-free",
+    "--format",
+    "json",
+    "Reply with exactly: OK"
+  ],
+  "partial_text": "OK",
+  "log_path": "engagements/tmp/watch-smoke.jsonl"
+}

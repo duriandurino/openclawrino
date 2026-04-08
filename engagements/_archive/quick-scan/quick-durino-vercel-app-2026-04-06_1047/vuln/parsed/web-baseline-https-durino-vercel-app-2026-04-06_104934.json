@@ -1,0 +1,37 @@
+{
+  "target": "https://durino.vercel.app",
+  "phase": "vuln",
+  "script": "scripts/vuln/web/web_baseline.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "header",
+      "candidate": "missing CSP header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "header",
+      "candidate": "missing X-Frame-Options header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "header",
+      "candidate": "missing X-Content-Type-Options header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "banner",
+      "candidate": "server banner exposed",
+      "confidence": "observed"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-06_1047/vuln/raw/web-baseline-https-durino-vercel-app-2026-04-06_104934.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-06_1047/vuln/parsed/web-baseline-https-durino-vercel-app-2026-04-06_104934.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-06_1047/vuln/summaries/web-baseline-https-durino-vercel-app-2026-04-06_104934.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-06_1047/vuln/raw/web-baseline-https-durino-vercel-app-2026-04-06_104934-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-06_1047/vuln/raw/web-baseline-https-durino-vercel-app-2026-04-06_104934-body.txt",
+    "options": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-06_1047/vuln/raw/web-baseline-https-durino-vercel-app-2026-04-06_104934-trace.txt"
+  }
+}

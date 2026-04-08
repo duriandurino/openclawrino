@@ -1,0 +1,37 @@
+{
+  "target": "https://aginod.vercel.app/",
+  "phase": "vuln",
+  "script": "scripts/vuln/web/web_baseline.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "header",
+      "candidate": "missing CSP header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "header",
+      "candidate": "missing X-Frame-Options header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "header",
+      "candidate": "missing X-Content-Type-Options header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "banner",
+      "candidate": "server banner exposed",
+      "confidence": "observed"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/vuln/raw/web-baseline-https-aginod-vercel-app-2026-04-06_140101.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/vuln/parsed/web-baseline-https-aginod-vercel-app-2026-04-06_140101.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/vuln/summaries/web-baseline-https-aginod-vercel-app-2026-04-06_140101.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/vuln/raw/web-baseline-https-aginod-vercel-app-2026-04-06_140101-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/vuln/raw/web-baseline-https-aginod-vercel-app-2026-04-06_140101-body.txt",
+    "options": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/vuln/raw/web-baseline-https-aginod-vercel-app-2026-04-06_140101-trace.txt"
+  }
+}

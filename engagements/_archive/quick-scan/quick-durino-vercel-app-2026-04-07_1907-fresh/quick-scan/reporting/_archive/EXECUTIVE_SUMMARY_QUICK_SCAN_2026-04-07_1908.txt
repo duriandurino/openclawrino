@@ -1,0 +1,28 @@
+# Executive Summary (Quick Scan) — https://durino.vercel.app
+
+- Profile: `webapp`
+- Mode: `safe`
+- Engagement: `quick-durino-vercel-app-2026-04-07_1907-fresh`
+- Steps executed: `3`
+- Generated: `2026-04-07 19:08 PST`
+
+## Target Fingerprint
+
+- Target appears to be a Vercel-hosted Next.js application serving as a public portfolio-style surface.
+- Observed framework indicators: `nextjs`
+- Observed deployment indicators: `vercel`
+- Target traits inferred from artifacts: `api-backed`, `portfolio-like`, `ssr-or-hybrid`, `tls-enforced`
+- Title hints: `Adrian Alejandrino | Product Solutions Engineer`
+- Report emphasis for this target: deployment metadata, response header posture, and frontend routing clues, server-rendered route behavior and cache/header consistency across rendered pages
+- Adaptive overlays: Analyzed 3 executed steps for deduplication
+
+## Severity Snapshot
+- Critical: 1
+- High: 1
+- Medium: 2
+- Low: 2
+- Info: 0
+
+## Assessment Note
+- This is a rapid triage output presented in pentest-report style.
+- Review candidate findings manually before treating them as confirmed vulnerabilities.

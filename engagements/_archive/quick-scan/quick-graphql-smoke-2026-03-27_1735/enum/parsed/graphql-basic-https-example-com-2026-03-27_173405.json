@@ -1,0 +1,35 @@
+{
+  "target": "https://example.com",
+  "phase": "enum",
+  "script": "scripts/enum/web/enum_graphql_basic.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "endpoint-probe",
+      "value": "https://example.com/graphql"
+    },
+    {
+      "type": "endpoint-probe",
+      "value": "https://example.com/api/graphql"
+    },
+    {
+      "type": "endpoint-probe",
+      "value": "https://example.com/query"
+    },
+    {
+      "type": "endpoint-probe",
+      "value": "https://example.com/graphiql"
+    },
+    {
+      "type": "graphql-ui",
+      "value": "GraphQL interactive UI indicators observed"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-graphql-smoke-2026-03-27_1735/enum/raw/graphql-basic-https-example-com-2026-03-27_173405.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-graphql-smoke-2026-03-27_1735/enum/parsed/graphql-basic-https-example-com-2026-03-27_173405.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-graphql-smoke-2026-03-27_1735/enum/summaries/graphql-basic-https-example-com-2026-03-27_173405.md",
+    "introspection": "/home/dukali/.openclaw/workspace/engagements/quick-graphql-smoke-2026-03-27_1735/enum/raw/graphql-basic-https-example-com-2026-03-27_173405-introspection.json"
+  }
+}

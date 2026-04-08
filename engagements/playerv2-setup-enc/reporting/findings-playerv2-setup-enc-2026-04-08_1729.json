@@ -1,0 +1,68 @@
+{
+  "target": "setup.enc (PlayerV2 installer artifact)",
+  "findings": [
+    {
+      "id": "V-001",
+      "title": "Encrypted setup container blocks pre-deployment security review",
+      "severity": "High",
+      "cvss": "N/A",
+      "affected": "engagements/playerv2-artifacts/inbound/setup.enc",
+      "description": "The provided setup artifact is an OpenSSL password-encrypted blob. In the current delivered form, the installer contents, package type, setup logic, and any embedded scripts cannot be inspected before decryption.",
+      "evidence": "Observed file type: 'openssl enc'd data with salted password'; 'Salted__' header present; no plaintext package signature or installer contents visible before decryption.",
+      "impact": "Security review is blocked at the exact point where trust decisions would normally happen. Malicious, outdated, or unsafe install logic could remain hidden until decryption and execution, increasing supply-chain and deployment risk.",
+      "remediation": "Require a controlled pre-deployment review flow: obtain the correct key material, decrypt into a separate analysis directory, identify the inner package type, and review scripts/configuration before any installation or execution.",
+      "hardening": "Treat encrypted installer artifacts as containers only, not trusted installers. Pair them with a review workflow that verifies contents before deployment on Raspberry Pi targets.",
+      "references": [
+        "file output: openssl enc'd data with salted password",
+        "header marker: Salted__",
+        "SHA-256: f9116a632d11c3b5331e5a9983caff074cc89ec7c8c63d5ac770794ec2d41b7b"
+      ]
+    },
+    {
+      "id": "V-002",
+      "title": "No companion trust metadata observed with the encrypted installer artifact",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "engagements/playerv2-artifacts/inbound/setup.enc",
+      "description": "In the current evidence set, the encrypted blob was delivered without an accompanying manifest, detached signature, or separate integrity metadata file in the same artifact location.",
+      "evidence": "Current artifact set under engagements/playerv2-artifacts contains the encrypted file and quick-scan notes only; no detached signature or manifest was observed alongside the provided blob during enumeration.",
+      "impact": "Operators cannot independently verify what the encrypted blob is supposed to contain or whether the artifact matches an expected release, increasing tamper-resistance and provenance blind spots.",
+      "remediation": "Distribute encrypted setup blobs with a detached signature, signed manifest, or externally verified checksum package so provenance and integrity can be validated before decryption or deployment.",
+      "hardening": "Separate confidentiality from trust. Encryption hides contents, but integrity and release provenance should still be verifiable before install-time decisions are made.",
+      "references": [
+        "enum summary: no companion manifest/checksum/signature observed",
+        "artifact location: engagements/playerv2-artifacts/inbound/setup.enc"
+      ]
+    },
+    {
+      "id": "V-003",
+      "title": "Password-managed installer packaging creates key-handling and recovery risk",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "engagements/playerv2-artifacts/inbound/setup.enc",
+      "description": "The artifact uses a password-based OpenSSL container format. This packaging model creates an operational dependency on correct passphrase handling before the installer can be reviewed or recovered for troubleshooting.",
+      "evidence": "OpenSSL salted password-based format confirmed by file signature and header analysis; artifact contents remain inaccessible without the correct decryption material.",
+      "impact": "Poor passphrase handling can delay incident response, block installer review, encourage unsafe sharing of secrets, or push operators toward bypass workflows that weaken security and auditability.",
+      "remediation": "Document secure key custody, recovery, and handoff procedures for encrypted installer artifacts. Ensure authorized reviewers can decrypt copies in a controlled analysis environment without modifying the original blob.",
+      "hardening": "Use an installation release process that defines who holds decryption material, how it is rotated, and how decrypted review copies are controlled and disposed of.",
+      "references": [
+        "file type indicates password-derived encryption",
+        "quick triage blocked from inner-content review until decryption"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Artifact Review Workflow",
+      "recommendation": "Require every encrypted installer to go through a decrypt-then-review workflow in an isolated analysis directory before deployment on production or test Raspberry Pi devices."
+    },
+    {
+      "category": "Release Integrity",
+      "recommendation": "Publish detached signatures or signed manifests alongside encrypted setup blobs so confidentiality and integrity are handled independently."
+    },
+    {
+      "category": "Key Management",
+      "recommendation": "Define who holds setup decryption material, how it is recovered, and how authorized reviewers access it without normalizing password sharing through chat or ad-hoc notes."
+    }
+  ]
+}

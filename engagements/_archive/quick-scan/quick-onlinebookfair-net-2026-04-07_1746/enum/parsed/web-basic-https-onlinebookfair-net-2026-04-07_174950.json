@@ -1,0 +1,16 @@
+{
+  "target": "https://onlinebookfair.net",
+  "phase": "enum",
+  "script": "scripts/enum/web/enum_web_basic.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1746/enum/raw/web-basic-https-onlinebookfair-net-2026-04-07_174950.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1746/enum/parsed/web-basic-https-onlinebookfair-net-2026-04-07_174950.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1746/enum/summaries/web-basic-https-onlinebookfair-net-2026-04-07_174950.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1746/enum/raw/web-basic-https-onlinebookfair-net-2026-04-07_174950-headers.txt",
+    "robots": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1746/enum/raw/web-basic-https-onlinebookfair-net-2026-04-07_174950-robots.txt",
+    "ffuf": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1746/enum/raw/web-basic-https-onlinebookfair-net-2026-04-07_174950-ffuf.json"
+  }
+}

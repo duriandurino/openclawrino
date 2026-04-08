@@ -1,0 +1,23 @@
+{
+  "target": "https://vercel.com",
+  "normalized_target": "vercel.com",
+  "profile": "webapp",
+  "target_kind": "web",
+  "frameworks": [
+    "nextjs"
+  ],
+  "deployments": [
+    "vercel"
+  ],
+  "surfaces": [],
+  "traits": [
+    "ssr-or-hybrid"
+  ],
+  "titles": [],
+  "profiles_considered": [],
+  "report_focus": [
+    "deployment-layer clues from vercel hosting"
+  ],
+  "extra_steps": [],
+  "generated": "2026-04-07T12:10:16.832919+08:00"
+}

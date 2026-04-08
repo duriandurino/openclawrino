@@ -1,0 +1,152 @@
+# Penetration Test Report (Quick Scan) — https://aginod.vercel.app/
+
+- Profile: `webapp`
+- Mode: `safe`
+- Engagement: `quick-aginod-vercel-app-2026-04-06_1359`
+- Steps executed: `3`
+- Generated: `2026-04-06 14:01 PST`
+
+## Scope
+- Rapid triage / hygiene / exposure assessment
+- Safe or low-impact checks where possible unless a profile explicitly broadens coverage
+- This is not a substitute for a full pentest
+
+## Executive Summary
+
+- Quick scan profile `webapp` ran against `https://aginod.vercel.app/` in `safe` mode and captured 5 meaningful candidate observations, with highest provisional severity `High`.
+- These results are triage-oriented and should be manually validated before being treated as confirmed vulnerabilities.
+
+## Severity Buckets
+
+- Critical: 0
+- High: 1
+- Medium: 2
+- Low: 2
+- Info: 0
+
+## Candidate Findings
+
+| Severity | Source | Confidence | Finding |
+|---|---|---|---|
+| Medium | recon | observed | Title: Aginod - Relief Tracker |
+| High | vuln | candidate | header: missing CSP header |
+| Low | vuln | candidate | header: missing X-Frame-Options header |
+| Low | vuln | candidate | header: missing X-Content-Type-Options header |
+| Medium | vuln | candidate | banner: server banner exposed |
+
+## What Needs Manual Validation
+
+- Validate: Title: Aginod - Relief Tracker
+- Validate: header: missing CSP header
+- Validate: header: missing X-Frame-Options header
+- Validate: header: missing X-Content-Type-Options header
+- Validate: banner: server banner exposed
+
+## Recommended Next Action
+
+- Escalate to a full pentest workflow or targeted manual validation immediately for the highest-risk candidates.
+
+## Recon Summary
+
+# Phase Complete: Reconnaissance
+
+**Engagement:** quick-aginod-vercel-app-2026-04-06_1359
+**Phase:** recon
+**Agent:** specter-recon
+**Date:** 2026-04-06 14:01 PST
+**Status:** complete
+
+## Found
+
+- A: 64.29.17.3, 216.198.79.3
+- Header: server: Vercel
+- Title: Aginod - Relief Tracker
+- Whatweb: [1m[34mhttps://aginod.vercel.app/[0m [200 OK] [1mCountry[0m[[0m[22mUNITED STATES[0m][[1m[31mUS[0m], [1mHTML5[0m, [1mHTTPServer[0m[[1m[36mVercel[0m], [1mIP[0m[[0m[22m216.198.79.131[0m], [1mScript[0m, [1mStrict-Transport-Security[0m[[0m[22mmax-age=63072000; includeSubDomains; preload[0m], [1mTitle[0m[[1m[33mAginod - Relief Tracker[0m], [1mUncommonHeaders[0m[[0m[22maccess-control-allow-origin,x-matched-path,x-vercel-cache,x-vercel-id[0m]
+
+## Not Found
+
+- Checked: current automated artifacts → Result: no additional negative results explicitly captured
+
+## Recommended Next
+
+- **Next Phase:** specter-enum
+- **Vector:** network
+- **Reason:** Automated recon artifacts produced reusable evidence for the next phase.
+
+## Key Data
+
+### Network
+- Target: aginod.vercel.app
+- Attack surface clues: A: 64.29.17.3, 216.198.79.3, Header: server: Vercel, Title: Aginod - Relief Tracker, Whatweb: [1m[34mhttps://aginod.vercel.app/[0m [200 OK] [1mCountry[0m[[0m[22mUNITED STATES[0m][[1m[31mUS[0m], [1mHTML5[0m, [1mHTTPServer[0m[[1m[36mVercel[0m], [1mIP[0m[[0m[22m216.198.79.131[0m], [1mScript[0m, [1mStrict-Transport-Security[0m[[0m[22mmax-age=63072000; includeSubDomains; preload[0m], [1mTitle[0m[[1m[33mAginod - Relief Tracker[0m], [1mUncommonHeaders[0m[[0m[22maccess-control-allow-origin,x-matched-path,x-vercel-cache,x-vercel-id[0m]
+
+## Enumeration Summary
+
+# Phase Complete: Enumeration
+
+**Engagement:** quick-aginod-vercel-app-2026-04-06_1359
+**Phase:** enum
+**Agent:** specter-enum
+**Date:** 2026-04-06 14:01 PST
+**Status:** complete
+
+## Found
+
+- No significant structured findings captured by automation.
+
+## Not Found
+
+- Checked: fast/service scan → Result: no open ports confirmed in collected artifacts
+
+## Recommended Next
+
+- **Next Phase:** specter-vuln
+- **Vector:** network
+- **Reason:** Enumeration captured little attack surface; analyze collected evidence before deciding to pivot or stop.
+
+## Key Data
+
+### Network
+- Target: https://aginod.vercel.app/
+- Open ports / services: none captured
+
+### Credentials
+- None captured by automation
+
+## Vulnerability Summary
+
+# Phase Complete: Vulnerability Analysis
+
+**Engagement:** quick-aginod-vercel-app-2026-04-06_1359
+**Phase:** vuln
+**Agent:** specter-vuln
+**Date:** 2026-04-06 14:01 PST
+**Status:** complete
+
+## Found
+
+- header: missing CSP header
+- header: missing X-Frame-Options header
+- header: missing X-Content-Type-Options header
+- banner: server banner exposed
+
+## Not Found
+
+- Checked: current automated artifacts → Result: no additional negative results explicitly captured
+
+## Recommended Next
+
+- **Next Phase:** specter-exploit
+- **Vector:** network
+- **Reason:** Automated vuln artifacts produced reusable evidence for the next phase.
+
+## Key Data
+
+### Network
+- Target: https://aginod.vercel.app/
+- Open ports / services: none captured
+
+## Recommendations
+
+- Validate candidate findings manually before escalation or reporting as confirmed issues.
+- Escalate to a full pentest workflow if exposed services, weak posture, or high-risk candidates are found.
+- Preserve engagement artifacts for follow-up analysis and retesting.

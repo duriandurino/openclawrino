@@ -1,0 +1,26 @@
+{
+  "target": "https://aginod.vercel.app",
+  "normalized_target": "aginod.vercel.app",
+  "profile": "webapp",
+  "target_kind": "web",
+  "frameworks": [
+    "nextjs"
+  ],
+  "deployments": [
+    "vercel"
+  ],
+  "surfaces": [],
+  "traits": [
+    "spa-or-js-heavy",
+    "ssr-or-hybrid"
+  ],
+  "titles": [
+    "Aginod - Relief Tracker"
+  ],
+  "profiles_considered": [],
+  "report_focus": [
+    "deployment-layer clues from vercel hosting"
+  ],
+  "extra_steps": [],
+  "generated": "2026-04-07T12:10:25.168484+08:00"
+}

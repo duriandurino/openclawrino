@@ -1,0 +1,38 @@
+{
+  "target": "http://example.org",
+  "normalized_target": "example.org",
+  "profile": "webapp",
+  "target_kind": "web",
+  "frameworks": [],
+  "deployments": [
+    "nginx"
+  ],
+  "surfaces": [],
+  "traits": [],
+  "titles": [],
+  "server_hints": [
+    "nginx"
+  ],
+  "status_code": "200",
+  "cookies_detected": 1,
+  "profiles_considered": [],
+  "report_focus": [],
+  "extra_steps": [
+    {
+      "phase": "enum",
+      "script": "enum/web/enum_graphql_basic.sh",
+      "args": [
+        "--target",
+        "{{target}}",
+        "--engagement",
+        "{{engagement}}",
+        "{{safe_flag}}"
+      ]
+    }
+  ],
+  "deduplication": {
+    "executed_steps_analyzed": 0,
+    "overlays_skipped_due_to_dedup": false
+  },
+  "generated": "2026-04-07T14:28:07.576566+08:00"
+}

@@ -1,0 +1,37 @@
+{
+  "target": "https://onlinebookfair.net",
+  "phase": "vuln",
+  "script": "scripts/vuln/web/web_baseline.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "header",
+      "candidate": "missing CSP header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "header",
+      "candidate": "missing X-Frame-Options header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "header",
+      "candidate": "missing X-Content-Type-Options header",
+      "confidence": "candidate"
+    },
+    {
+      "type": "banner",
+      "candidate": "server banner exposed",
+      "confidence": "observed"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1907-fresh/vuln/raw/web-baseline-https-onlinebookfair-net-2026-04-07_190904.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1907-fresh/vuln/parsed/web-baseline-https-onlinebookfair-net-2026-04-07_190904.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1907-fresh/vuln/summaries/web-baseline-https-onlinebookfair-net-2026-04-07_190904.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1907-fresh/vuln/raw/web-baseline-https-onlinebookfair-net-2026-04-07_190904-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1907-fresh/vuln/raw/web-baseline-https-onlinebookfair-net-2026-04-07_190904-body.txt",
+    "options": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-07_1907-fresh/vuln/raw/web-baseline-https-onlinebookfair-net-2026-04-07_190904-trace.txt"
+  }
+}

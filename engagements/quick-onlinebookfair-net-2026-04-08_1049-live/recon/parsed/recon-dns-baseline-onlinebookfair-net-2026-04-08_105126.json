@@ -1,0 +1,66 @@
+{
+  "target": "onlinebookfair.net",
+  "phase": "recon",
+  "script": "scripts/recon/dns/recon_dns_baseline.py",
+  "timestamp": "2026-04-08T10:51:27+08:00",
+  "status": "success",
+  "findings": [
+    {
+      "type": "A",
+      "value": "64.29.17.1"
+    },
+    {
+      "type": "A",
+      "value": "64.29.17.65"
+    },
+    {
+      "type": "MX",
+      "value": "0 smtp.secureserver.net."
+    },
+    {
+      "type": "MX",
+      "value": "10 mailstore1.secureserver.net."
+    },
+    {
+      "type": "TXT",
+      "value": "\"v=spf1 include:secureserver.net -all\""
+    },
+    {
+      "type": "TXT",
+      "value": "\"T2834642\""
+    },
+    {
+      "type": "NS",
+      "value": "ns1.vercel-dns.com."
+    },
+    {
+      "type": "NS",
+      "value": "ns2.vercel-dns.com."
+    }
+  ],
+  "records": {
+    "A": [
+      "64.29.17.1",
+      "64.29.17.65"
+    ],
+    "AAAA": [],
+    "MX": [
+      "0 smtp.secureserver.net.",
+      "10 mailstore1.secureserver.net."
+    ],
+    "TXT": [
+      "\"v=spf1 include:secureserver.net -all\"",
+      "\"T2834642\""
+    ],
+    "NS": [
+      "ns1.vercel-dns.com.",
+      "ns2.vercel-dns.com."
+    ],
+    "CNAME": []
+  },
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-08_1049-live/recon/raw/recon-dns-baseline-onlinebookfair-net-2026-04-08_105126.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-08_1049-live/recon/parsed/recon-dns-baseline-onlinebookfair-net-2026-04-08_105126.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-08_1049-live/recon/summaries/recon-dns-baseline-onlinebookfair-net-2026-04-08_105126.md"
+  }
+}

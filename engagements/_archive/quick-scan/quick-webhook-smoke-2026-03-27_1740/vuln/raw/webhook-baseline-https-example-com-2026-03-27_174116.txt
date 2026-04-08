@@ -1,0 +1,94 @@
+## HEAD https://example.com/webhook
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:08 GMT
+content-type: text/html
+cf-ray: 9e2d6e936885e2ec-HKG
+age: 239
+cf-cache-status: HIT
+server: cloudflare
+
+
+## OPTIONS https://example.com/webhook
+HTTP/2 405 
+date: Fri, 27 Mar 2026 09:40:08 GMT
+content-type: text/html
+cache-control: private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0
+expires: Thu, 01 Jan 1970 00:00:01 GMT
+referrer-policy: same-origin
+x-frame-options: SAMEORIGIN
+server: cloudflare
+cf-ray: 9e2d6e943b9d84e4-HKG
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.<p><a href="https://iana.org/domains/example">Learn more</a></div></body></html>
+## HEAD https://example.com/webhooks
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:09 GMT
+content-type: text/html
+cf-ray: 9e2d6e954b87859a-HKG
+age: 239
+cf-cache-status: HIT
+server: cloudflare
+
+
+## OPTIONS https://example.com/webhooks
+HTTP/2 405 
+date: Fri, 27 Mar 2026 09:40:09 GMT
+content-type: text/html
+server: cloudflare
+cf-ray: 9e2d6e96aa5304e1-HKG
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.<p><a href="https://iana.org/domains/example">Learn more</a></div></body></html>
+## HEAD https://example.com/api/webhook
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:09 GMT
+content-type: text/html
+cf-ray: 9e2d6e97b82f0982-HKG
+age: 240
+cf-cache-status: HIT
+server: cloudflare
+
+
+## OPTIONS https://example.com/api/webhook
+HTTP/2 405 
+date: Fri, 27 Mar 2026 09:40:09 GMT
+content-type: text/html
+server: cloudflare
+cf-ray: 9e2d6e98da36dd39-HKG
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.<p><a href="https://iana.org/domains/example">Learn more</a></div></body></html>
+## HEAD https://example.com/hooks
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:09 GMT
+content-type: text/html
+cf-ray: 9e2d6e99dc500717-HKG
+age: 240
+cf-cache-status: HIT
+server: cloudflare
+
+
+## OPTIONS https://example.com/hooks
+HTTP/2 405 
+date: Fri, 27 Mar 2026 09:40:10 GMT
+content-type: text/html
+server: cloudflare
+cf-ray: 9e2d6e9abe8284cd-HKG
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.<p><a href="https://iana.org/domains/example">Learn more</a></div></body></html>
+## HEAD https://example.com/callback
+HTTP/2 404 
+date: Fri, 27 Mar 2026 09:40:10 GMT
+content-type: text/html
+cf-ray: 9e2d6e9bcf670dad-HKG
+age: 240
+cf-cache-status: HIT
+server: cloudflare
+
+
+## OPTIONS https://example.com/callback
+HTTP/2 405 
+date: Fri, 27 Mar 2026 09:40:10 GMT
+content-type: text/html
+server: cloudflare
+cf-ray: 9e2d6e9cbd380856-HKG
+
+<!doctype html><html lang="en"><head><title>Example Domain</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>body{background:#eee;width:60vw;margin:15vh auto;font-family:system-ui,sans-serif}h1{font-size:1.5em}div{opacity:0.8}a:link,a:visited{color:#348}</style><body><div><h1>Example Domain</h1><p>This domain is for use in documentation examples without needing permission. Avoid use in operations.<p><a href="https://iana.org/domains/example">Learn more</a></div></body></html>

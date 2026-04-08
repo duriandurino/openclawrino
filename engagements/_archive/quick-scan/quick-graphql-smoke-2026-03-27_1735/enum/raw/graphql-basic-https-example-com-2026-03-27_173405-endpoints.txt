@@ -1,0 +1,4 @@
+https://example.com/graphql
+https://example.com/api/graphql
+https://example.com/query
+https://example.com/graphiql

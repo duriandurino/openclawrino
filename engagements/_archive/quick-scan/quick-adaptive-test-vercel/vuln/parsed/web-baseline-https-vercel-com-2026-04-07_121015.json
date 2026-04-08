@@ -1,0 +1,22 @@
+{
+  "target": "https://vercel.com",
+  "phase": "vuln",
+  "script": "scripts/vuln/web/web_baseline.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "banner",
+      "candidate": "server banner exposed",
+      "confidence": "observed"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/vuln/raw/web-baseline-https-vercel-com-2026-04-07_121015.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/vuln/parsed/web-baseline-https-vercel-com-2026-04-07_121015.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/vuln/summaries/web-baseline-https-vercel-com-2026-04-07_121015.md",
+    "headers": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/vuln/raw/web-baseline-https-vercel-com-2026-04-07_121015-headers.txt",
+    "body": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/vuln/raw/web-baseline-https-vercel-com-2026-04-07_121015-body.txt",
+    "options": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/vuln/raw/web-baseline-https-vercel-com-2026-04-07_121015-trace.txt"
+  }
+}

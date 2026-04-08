@@ -1,0 +1,34 @@
+{
+  "target": "https://onlinebookfair.net",
+  "normalized_target": "onlinebookfair.net",
+  "profile": "webapp",
+  "target_kind": "web",
+  "frameworks": [
+    "nextjs"
+  ],
+  "deployments": [
+    "vercel"
+  ],
+  "surfaces": [],
+  "traits": [
+    "catalog-like",
+    "ssr-or-hybrid",
+    "tls-enforced"
+  ],
+  "titles": [
+    "Online Book Fair"
+  ],
+  "server_hints": [],
+  "status_code": "",
+  "cookies_detected": 0,
+  "profiles_considered": [],
+  "report_focus": [
+    "deployment-layer clues from vercel hosting"
+  ],
+  "extra_steps": [],
+  "deduplication": {
+    "executed_steps_analyzed": 3,
+    "overlays_skipped_due_to_dedup": false
+  },
+  "generated": "2026-04-08T09:57:07.566190+08:00"
+}

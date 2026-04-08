@@ -1,0 +1,24 @@
+{
+  "target": "https://example.com",
+  "phase": "vuln",
+  "script": "scripts/vuln/web/vuln_nestjs_baseline.sh",
+  "status": "success",
+  "safe_mode": true,
+  "findings": [
+    {
+      "type": "nestjs",
+      "candidate": "Swagger/OpenAPI documentation appears exposed",
+      "confidence": "candidate"
+    },
+    {
+      "type": "nestjs",
+      "candidate": "No obvious NestJS validation indicators observed; confirm validation and DTO enforcement manually",
+      "confidence": "candidate"
+    }
+  ],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/vuln/raw/nestjs-baseline-https-example-com-2026-03-27_174114.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/vuln/parsed/nestjs-baseline-https-example-com-2026-03-27_174114.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-nestjs-smoke-2026-03-27_1740/vuln/summaries/nestjs-baseline-https-example-com-2026-03-27_174114.md"
+  }
+}

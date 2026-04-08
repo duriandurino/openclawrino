@@ -1,0 +1,12 @@
+{
+  "target": "https://durino.vercel.app",
+  "phase": "recon",
+  "script": "scripts/recon/whois/recon_whois_summary.sh",
+  "status": "success",
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1715/recon/raw/recon-whois-summary-https-durino-vercel-app-2026-04-07_171658.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1715/recon/parsed/recon-whois-summary-https-durino-vercel-app-2026-04-07_171658.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-durino-vercel-app-2026-04-07_1715/recon/summaries/recon-whois-summary-https-durino-vercel-app-2026-04-07_171658.md"
+  }
+}

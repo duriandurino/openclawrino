@@ -1,0 +1,12 @@
+{
+  "target": "https://vercel.com",
+  "phase": "recon",
+  "script": "scripts/recon/whois/recon_whois_summary.sh",
+  "status": "success",
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/raw/recon-whois-summary-https-vercel-com-2026-04-07_120944.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/parsed/recon-whois-summary-https-vercel-com-2026-04-07_120944.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-adaptive-test-vercel/recon/summaries/recon-whois-summary-https-vercel-com-2026-04-07_120944.md"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "target": "https://onlinebookfair.net",
+  "phase": "recon",
+  "script": "scripts/recon/whois/recon_whois_summary.sh",
+  "status": "success",
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-08_1049-live/recon/raw/recon-whois-summary-https-onlinebookfair-net-2026-04-08_105127.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-08_1049-live/recon/parsed/recon-whois-summary-https-onlinebookfair-net-2026-04-08_105127.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-onlinebookfair-net-2026-04-08_1049-live/recon/summaries/recon-whois-summary-https-onlinebookfair-net-2026-04-08_105127.md"
+  }
+}

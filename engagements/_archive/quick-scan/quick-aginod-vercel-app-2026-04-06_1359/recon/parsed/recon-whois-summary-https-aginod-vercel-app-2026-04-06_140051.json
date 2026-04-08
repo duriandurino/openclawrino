@@ -1,0 +1,12 @@
+{
+  "target": "https://aginod.vercel.app/",
+  "phase": "recon",
+  "script": "scripts/recon/whois/recon_whois_summary.sh",
+  "status": "success",
+  "findings": [],
+  "artifacts": {
+    "raw": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/raw/recon-whois-summary-https-aginod-vercel-app-2026-04-06_140051.txt",
+    "parsed": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/parsed/recon-whois-summary-https-aginod-vercel-app-2026-04-06_140051.json",
+    "summary": "/home/dukali/.openclaw/workspace/engagements/quick-aginod-vercel-app-2026-04-06_1359/recon/summaries/recon-whois-summary-https-aginod-vercel-app-2026-04-06_140051.md"
+  }
+}
