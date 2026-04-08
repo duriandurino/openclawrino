@@ -109,6 +109,11 @@ python3 scripts/opencode/reusable/opencode_task.py \
 
 A single-turn OpenCode wrapper for nested vibe-coding flows. Use this when you want OpenCode to do the coding turn, then hand a compact summary back to the outer coding agent after each turn.
 
+This is intended to work for:
+- the main session
+- coding sub-agents
+- swarm-style parallel lanes where multiple helpers are working different slices of the same problem
+
 ### Usage
 
 ```bash
@@ -146,6 +151,51 @@ This makes vibe coding feel layered:
 - **OpenCode** handles the implementation turn
 - **Hatless White / the coding agent** gets called back with a compact summary
 - **the human** can keep steering the work through the outer agent without losing the inner coding thread
+
+## OpenCode Vibe Swarm
+
+**File:** `opencode_vibe_swarm.py`
+
+A small launcher for named vibe-coding lanes. It wraps `opencode_vibe_loop.py` and automatically gives each lane its own state file and event log.
+
+### Usage
+
+```bash
+# Main lane
+python3 scripts/opencode/reusable/opencode_vibe_swarm.py \
+  --lane main \
+  --cwd /home/dukali/.openclaw/workspace \
+  --notify-openclaw \
+  "Implement the report parser fix."
+
+# Parallel helper lane
+python3 scripts/opencode/reusable/opencode_vibe_swarm.py \
+  --lane reporting-helper \
+  --cwd /home/dukali/.openclaw/workspace \
+  --notify-openclaw \
+  "Check whether the slide generator should paginate remediation slides."
+
+# Continue a lane later
+python3 scripts/opencode/reusable/opencode_vibe_swarm.py \
+  --lane reporting-helper \
+  --cwd /home/dukali/.openclaw/workspace \
+  --continue-last \
+  --notify-openclaw \
+  "Yes, proceed with that refactor."
+```
+
+### Lane behavior
+
+Each lane stores state under:
+
+```text
+engagements/tmp/vibe-swarm/<lane-name>/
+```
+
+That makes it easy for the main agent or a sub-agent to:
+- keep one persistent inner OpenCode thread per lane
+- run multiple lanes in parallel without mixing logs
+- use the same vibe-coding pattern for pentest support work or surprise development work
 
 ## Adding New Utilities
 

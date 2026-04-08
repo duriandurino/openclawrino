@@ -52,6 +52,10 @@ Add whatever helps you do your job. This is your cheat sheet.
   - `python3 scripts/opencode/reusable/opencode_vibe_loop.py --cwd <repo> --label <name> --notify-openclaw "<task>"`
   - Use `--continue-last` for the next turn in the same working directory.
   - The wrapper writes a compact JSON summary/state when `--state-file` is provided and can emit an OpenClaw system event after each OpenCode turn.
+- Swarm helper for main-agent or sub-agent lanes:
+  - `python3 scripts/opencode/reusable/opencode_vibe_swarm.py --lane <lane-name> --cwd <repo> --notify-openclaw "<task>"`
+  - Lane state lives under `engagements/tmp/vibe-swarm/<lane-name>/`
+  - Use `--continue-last` to keep the same OpenCode thread alive per lane.
 - If OpenCode appears unavailable, check PATH first before assuming model/provider failure.
 
 ### Google / gog

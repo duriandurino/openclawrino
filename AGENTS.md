@@ -151,6 +151,12 @@ When the task is iterative or "vibe coding" flavored, prefer the local wrapper:
 - `scripts/opencode/reusable/opencode_vibe_loop.py`
 - use it to run one OpenCode turn, summarize the result, and surface when the agent needs follow-up input, review, or confirmation before the next turn
 
+When the work wants multiple coding lanes at once, use the swarm helper:
+- `scripts/opencode/reusable/opencode_vibe_swarm.py`
+- this is allowed for the main session and for sub-agents
+- use separate lane names per concern, for example `main`, `parser-fix`, `reporting`, `enum-helper`
+- treat each lane like a nested vibe-coder thread with its own state and event log
+
 Use this especially for:
 - multi-file refactors
 - reusable scripting/helpers
