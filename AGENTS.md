@@ -182,6 +182,7 @@ For every quick scan:
 1. publish deliverables when the workflow supports it
 2. fetch the publish summary / links
 3. send the published outputs back to the user in the same turn
+4. do **not** hand-copy or guess the links, always retrieve them from the publish summary/helper first
 
 If publishing fails, treat the task as incomplete and say so clearly instead of silently stopping at local files.
 

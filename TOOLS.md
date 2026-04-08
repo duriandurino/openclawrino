@@ -69,3 +69,4 @@ Add whatever helps you do your job. This is your cheat sheet.
 - Always use the target fingerprint, title/context, surface clues, and adaptive quick-scan evidence to shape not just the narrative, but the actual findings emphasis and recommendation mix.
 - Shared baseline findings are fine, but the final output should still clearly reflect what kind of target it is, what was actually observed, and why the findings differ.
 - After **every** quick scan, send the **published outputs** automatically. Do not stop at local summaries or local artifacts when the workflow can publish deliverables.
+- When sending quick-scan links, do **not** hand-copy them from scrolling logs. Always retrieve them from `python3 scripts/quick-scan/get_publish_links.py --engagement <engagement>` first.
