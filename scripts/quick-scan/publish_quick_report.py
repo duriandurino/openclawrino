@@ -11,7 +11,6 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_ACCOUNT = "hatlesswhite@gmail.com"
-DEFAULT_GOG_KEYRING_PASSWORD = "openclaw-gog-file-keyring"
 SEVERITY_ORDER = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
 
 IGNORE_PATTERNS = [
@@ -183,6 +182,33 @@ def build_findings_json(report_info: dict, rows: list[dict]) -> dict:
     return {"target": f"{report_info['target']} (Quick Scan)", "findings": findings, "enhancements": enhancements}
 
 
+def build_publish_env() -> dict:
+    env = os.environ.copy()
+    # Important: do not inject a fallback GOG_KEYRING_PASSWORD here.
+    # If gog's file keyring was initialized with a different passphrase,
+    # forcing a guessed default creates the repeated AES KeyUnwrap loop.
+    return env
+
+
+def explain_publish_failure(output: str) -> str:
+    text = (output or "").strip()
+    lower = text.lower()
+    if "keyunwrap" in text or "integrity check failed" in lower:
+        return (
+            "Google publish failed because gog is trying to decrypt the saved Google token with the wrong "
+            "file-keyring passphrase. This is why the auth issue keeps looping. Use the same stable "
+            "GOG_KEYRING_PASSWORD that was used when gog auth was created, or reset the gog keyring/token "
+            "and re-auth once with a known automation passphrase."
+        )
+    if "no tty available for keyring file backend passphrase prompt" in lower:
+        return (
+            "Google publish failed because gog uses the file keyring backend and this automation run has no TTY "
+            "to enter the keyring passphrase. Set GOG_KEYRING_PASSWORD in the automation environment to the same "
+            "passphrase used by gog auth, or re-auth gog with a known automation passphrase."
+        )
+    return text or "report generator publish failed"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Publish latest quick scan via the main pentest report generator")
     parser.add_argument("--engagement", required=True)
@@ -218,11 +244,10 @@ def main() -> int:
         "--gdrive-account", args.account,
     ]
 
-    env = os.environ.copy()
-    env.setdefault("GOG_KEYRING_PASSWORD", DEFAULT_GOG_KEYRING_PASSWORD)
+    env = build_publish_env()
     result = subprocess.run(cmd, capture_output=True, text=True, env=env)
     if result.returncode != 0:
-        raise SystemExit(result.stderr.strip() or result.stdout.strip() or "report generator publish failed")
+        raise SystemExit(explain_publish_failure(result.stderr.strip() or result.stdout.strip()))
 
     print(result.stdout.strip())
     return 0
