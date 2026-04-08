@@ -123,6 +123,8 @@ This produces shareable formats from the markdown report and can be used before 
 
 Quick scans now also route publishing through the main pentest report generator so branded Docs/PDF/Slides can be produced from quick-scan findings.
 
+**Operator rule:** after every quick scan, fetch and send the published outputs back to the user. A local report path alone is not the finished deliverable when publishing is available.
+
 ---
 
 ## Operator Rule of Thumb

@@ -2,6 +2,16 @@
 
 Fast security triage profiles that reuse recon/enum/vuln wrappers and generate a compact report.
 
+## Deliverable rule
+
+A quick scan is considered complete only after the published outputs have been retrieved and sent back to the user when publishing is available.
+
+Use this helper to fetch the latest published links for a completed engagement:
+
+```bash
+python3 scripts/quick-scan/get_publish_links.py --engagement <engagement>
+```
+
 ## Profiles
 - `webapp` - HTTP/web-focused quick check
 - `webapp-deep` - deeper webapp triage with active path discovery

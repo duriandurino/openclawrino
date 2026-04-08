@@ -174,6 +174,17 @@ When a user asks for rapid triage, a quick vulnerability check, or an antivirus-
 
 When a user asks for a full engagement, methodology-driven testing, exploitation, or formal pentest reporting, use the structured pentest path and orchestrator.
 
+### Quick Scan Deliverable Rule
+
+A quick scan is not complete when only local artifacts were generated.
+
+For every quick scan:
+1. publish deliverables when the workflow supports it
+2. fetch the publish summary / links
+3. send the published outputs back to the user in the same turn
+
+If publishing fails, treat the task as incomplete and say so clearly instead of silently stopping at local files.
+
 **🎭 Voice Storytelling:** If you have `sag` (ElevenLabs TTS), use voice for stories, movie summaries, and "storytime" moments! Way more engaging than walls of text. Surprise people with funny voices.
 
 **📝 Platform Formatting:**
