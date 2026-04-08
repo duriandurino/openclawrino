@@ -158,6 +158,108 @@ def extract_management_exposures(path: Path | None) -> list[dict]:
     return findings
 
 
+def adapt_finding_to_fingerprint(finding: str, fp: dict) -> dict:
+    """Transform a generic finding into a context-aware finding based on fingerprint.
+    
+    Returns a dict with 'finding' (transformed), 'severity', 'confidence', and 'context'
+    that reflects target-specific interpretation.
+    """
+    frameworks = set(fp.get("frameworks", []))
+    deployments = set(fp.get("deployments", []))
+    traits = set(fp.get("traits", []))
+    titles = fp.get("titles", [])
+    title_blob = " ".join(titles).lower()
+    
+    result = {
+        "finding": finding,
+        "severity": "High",  # default for missing headers
+        "confidence": "candidate",
+        "context": "",
+        "evidence_tag": "",
+    }
+    
+    lowered = finding.lower()
+    
+    # Handle missing CSP header with context
+    if "missing csp" in lowered:
+        if "nextjs" in frameworks and "vercel" in deployments:
+            result["finding"] = "CSP header not set in Vercel edge response (Next.js)"
+            result["context"] = "Next.js on Vercel typically sets security headers via vercel.json or next.config.js; absence suggests default deployment configuration"
+            result["evidence_tag"] = "vercel-nextjs-headers"
+        elif "vercel" in deployments:
+            result["finding"] = "CSP header not set in Vercel edge response"
+            result["context"] = "Vercel deployments can set headers via vercel.json; absence suggests default edge configuration"
+            result["evidence_tag"] = "vercel-headers"
+        elif "catalog-like" in traits or any(token in title_blob for token in ["book", "library", "catalog", "shop", "store"]):
+            result["finding"] = "CSP header missing on content/catalog surface"
+            result["context"] = "Content-heavy surfaces with dynamic data benefit from CSP to mitigate injection risks"
+            result["evidence_tag"] = "content-surface-headers"
+        else:
+            result["context"] = "Baseline header check indicates CSP not present in response"
+            result["evidence_tag"] = "generic-csp-missing"
+    
+    # Handle missing X-Frame-Options with context
+    elif "missing x-frame-options" in lowered:
+        if "nextjs" in frameworks:
+            result["finding"] = "X-Frame-Options header not set (Next.js)"
+            result["context"] = "Next.js apps without explicit headers config may not set clickjacking protection; check for CSP frame-ancestors as alternative"
+            result["evidence_tag"] = "nextjs-frame-protection"
+        elif "catalog-like" in traits:
+            result["finding"] = "X-Frame-Options missing on catalog/public surface"
+            result["context"] = "Public catalog surfaces may be embedded elsewhere; absence increases clickjacking risk for checkout/interest flows"
+            result["evidence_tag"] = "catalog-frame-protection"
+        else:
+            result["context"] = "Clickjacking protection header not present"
+            result["evidence_tag"] = "generic-frame-missing"
+    
+    # Handle missing X-Content-Type-Options with context
+    elif "missing x-content-type-options" in lowered:
+        if "nextjs" in frameworks or "spa-or-js-heavy" in traits:
+            result["finding"] = "X-Content-Type-Options: nosniff not set (JS-heavy app)"
+            result["context"] = "JavaScript-heavy applications benefit from MIME-type enforcement to prevent MIME-sniffing attacks on bundled assets"
+            result["evidence_tag"] = "spa-mime-protection"
+        elif "catalog-like" in traits:
+            result["finding"] = "X-Content-Type-Options missing on content surface"
+            result["context"] = "Image/asset delivery surfaces should prevent MIME-sniffing, especially if user-generated content is involved"
+            result["evidence_tag"] = "content-mime-protection"
+        else:
+            result["context"] = "MIME-sniffing protection header not present"
+            result["evidence_tag"] = "generic-mime-missing"
+    
+    # Handle missing HSTS with context
+    elif "missing hsts" in lowered:
+        if "tls-enforced" in traits:
+            result["finding"] = "HSTS header not set (HTTPS detected)"
+            result["context"] = "HTTPS is used but HSTS not enforced; users may still access via HTTP initially"
+            result["evidence_tag"] = "https-without-hsts"
+        elif "catalog-like" in traits:
+            result["finding"] = "HSTS missing on catalog surface"
+            result["context"] = "E-commerce/catalog sites should enforce HTTPS via HSTS to prevent interception of browsing/purchase intent"
+            result["severity"] = "High"
+            result["evidence_tag"] = "catalog-hsts-missing"
+        else:
+            result["context"] = "HTTPS strict transport security not enforced"
+            result["evidence_tag"] = "generic-hsts-missing"
+    
+    # Handle server banner with context
+    elif "server banner" in lowered or "banner exposed" in lowered:
+        result["severity"] = "Medium"
+        if "vercel" in deployments:
+            result["finding"] = "Server banner exposed (Vercel)"
+            result["context"] = "Vercel returns Server header by default; low sensitivity but confirms hosting provider"
+            result["evidence_tag"] = "vercel-server-header"
+        elif "nginx" in fp.get("server_hints", []) or "apache" in fp.get("server_hints", []):
+            result["finding"] = f"Server banner exposed ({', '.join(fp.get('server_hints', []))})"
+            result["context"] = "Web server version disclosure enables targeted exploit research"
+            result["evidence_tag"] = "server-version-disclosure"
+        else:
+            result["finding"] = "Server banner exposed in response headers"
+            result["context"] = "Server software/version visible in responses"
+            result["evidence_tag"] = "generic-server-banner"
+    
+    return result
+
+
 def classify_target_story(fp: dict) -> tuple[str, list[str], list[str]]:
     frameworks = set(fp.get("frameworks", []))
     deployments = set(fp.get("deployments", []))
@@ -315,10 +417,20 @@ def main() -> int:
         item["source"] = "enum"
         candidates.append(item)
 
+    # Apply fingerprint-aware adaptation to findings
+    adapted_candidates = []
+    for item in candidates:
+        adapted = adapt_finding_to_fingerprint(item["finding"], fingerprint or {})
+        # Preserve source and merge with adapted properties
+        adapted["source"] = item.get("source", "unknown")
+        adapted_candidates.append(adapted)
+    candidates = adapted_candidates
+
     unique = []
     seen = set()
     for item in candidates:
-        key = (item["finding"], item["source"])
+        # Use evidence_tag for deduplication to group similar adapted findings
+        key = (item.get("evidence_tag", item["finding"]), item["source"])
         if key in seen:
             continue
         seen.add(key)
@@ -401,18 +513,24 @@ def main() -> int:
         "",
         "## Candidate Findings",
         "",
-        "| Severity | Source | Confidence | Finding |",
-        "|---|---|---|---|",
+        "| Severity | Source | Confidence | Finding | Context |",
+        "|---|---|---|---|---|",
     ])
     if candidates:
         for item in candidates[:30]:
             safe_finding = item['finding'].replace('|', '\\|')
-            report_lines.append(f"| {item['severity']} | {item['source']} | {item['confidence']} | {safe_finding} |")
+            safe_context = item.get('context', '').replace('|', '\\|') if item.get('context') else '-'
+            report_lines.append(f"| {item['severity']} | {item['source']} | {item['confidence']} | {safe_finding} | {safe_context} |")
     else:
-        report_lines.append("| Info | none | none | No notable candidate findings captured from current summaries. |")
+        report_lines.append("| Info | none | none | No notable candidate findings captured from current summaries. | - |")
     report_lines.extend(["", "## What Needs Manual Validation", ""])
     if candidates:
-        report_lines.extend([f"- Validate: {item['finding']}" for item in candidates[:12]])
+        for item in candidates[:12]:
+            ctx = item.get('context', '')
+            if ctx:
+                report_lines.append(f"- Validate: {item['finding']} ({ctx})")
+            else:
+                report_lines.append(f"- Validate: {item['finding']}")
     else:
         report_lines.append("- Validate whether the limited findings are due to clean posture, low-impact mode, or missing service visibility.")
     report_lines.append("")
