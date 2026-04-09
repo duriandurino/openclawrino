@@ -1,0 +1,60 @@
+{
+  "updatedAt": "2026-04-09T11:33:01+08:00",
+  "trigger": "manual-force-test",
+  "pressure": {
+    "updatedAt": "2026-04-09T11:33:01+08:00",
+    "sessionKey": "agent:main:telegram:direct:6018252086",
+    "sessionId": "c133ead9-c446-4246-8377-3b23c7be1c3d",
+    "source": "openclaw-status",
+    "percentUsed": 14,
+    "totalTokens": 37778,
+    "contextTokens": 272000,
+    "remainingTokens": 234222,
+    "warningThreshold": 40,
+    "snapshotThreshold": 48,
+    "pressureState": "normal",
+    "lastSnapshotHash": "90fa2f40729790e0643fe6c1c2ee789d7b471522c70b2b202e58a98a40b98693",
+    "lastSnapshotAt": "2026-04-09T11:33:01+08:00",
+    "shouldSnapshot": true
+  },
+  "currentTask": "force snapshot test",
+  "objective": "verify durable working-state files are written",
+  "keyPoints": [
+    "using real OpenClaw percentUsed metadata"
+  ],
+  "decisions": [
+    "use openclaw status --json first, sessions store second"
+  ],
+  "blockers": [
+    "no exact current-session-key discovery API yet, using known DM session key for this direct chat"
+  ],
+  "nextSteps": [
+    "wire hook enablement and validate commit behavior"
+  ],
+  "files": [
+    "scripts/context_harness.py",
+    "hooks/context-guard/handler.ts"
+  ],
+  "preferences": [
+    "keep snapshots compact and git-safe"
+  ],
+  "assumptions": [
+    "session key remains agent:main:telegram:direct:6018252086 for this direct chat"
+  ],
+  "branch": "main",
+  "headBefore": "cc77921",
+  "gitStatusBefore": [
+    " M AGENTS.md",
+    "A  DECISIONS.md",
+    "A  OPEN_LOOPS.md",
+    "A  STATE.md",
+    "A  WORKING.md",
+    "A  docs/context-harness.md",
+    "A  state/context-pressure.json",
+    "A  state/session-reset-handoff.json",
+    "?? hooks/",
+    "?? logs/",
+    "?? scripts/context_harness.py"
+  ],
+  "snapshotHash": "90fa2f40729790e0643fe6c1c2ee789d7b471522c70b2b202e58a98a40b98693"
+}
