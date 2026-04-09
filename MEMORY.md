@@ -42,6 +42,8 @@
 - **Telegram group name:** Changed from "WhiteClaw" to "Penetrator" (2026-03-17)
 - **Web search:** Gemini provider configured and working (Google AI Studio API key)
 - **Google / gog automation:** Stable passphrase preference is `hatlesswhite`. Reuse this for `GOG_KEYRING_PASSWORD` and related re-auth/reset flows unless the user changes it.
+- **OpenCode preference:** For coding-heavy implementation work, default to OpenCode first unless the user explicitly asks for another harness.
+- **OpenCode helpers:** Reusable vibe-coding helpers live at `scripts/opencode/reusable/opencode_vibe_loop.py` and `scripts/opencode/reusable/opencode_vibe_swarm.py` for main-session or sub-agent implementation work.
 
 ## Quick Scan / Reporting Lessons (2026-04-08)
 
@@ -52,6 +54,9 @@
   - final finding synthesis was converting candidate rows too directly, causing different webapps to inherit nearly identical findings
 - Publishing reliability issue was traced to **gog file-keyring passphrase mismatch**, not random Google auth breakage. Avoid forcing guessed fallback passphrases.
 - Quick-scan publishing now writes compact `.publish.json` summaries so link retrieval does not depend on scraping long console logs.
+- Quick scans are not complete until published outputs are generated, retrieved, and sent back to the user.
+- Published quick-scan links must be retrieved with `scripts/quick-scan/get_publish_links.py`, not copied manually from logs or memory.
+- PPT generation was improved to scale with findings, so slide decks can expand beyond a near-fixed length when the evidence warrants it.
 
 ## Presentation Context (2026-03-17)
 - **Audience:** Professional presentation
@@ -144,3 +149,11 @@
 - **Discovery:** From `.bash_history` and `hardware_lock.py` hardcoded serial
 - **Vault contents:** player-server/, db_backup_dirty/, logs/, backup/, ecosystem.config.js
 - **Vulnerabilities:** V-012 (CRITICAL), V-013 (HIGH), V-014 (MEDIUM)
+
+## PlayerV2 / `setup.enc` Follow-up (2026-04-08)
+
+- Stored encrypted inbound artifact at `engagements/playerv2-artifacts/inbound/setup.enc` and verified OpenSSL salted format before deeper analysis.
+- Safe file-level quick scan confirmed the container format, but no inner payload claims were made without decryption.
+- Full engagement rounds were completed for `setup.enc`, including an evidence-backed exploit-adjacent validation attempt using the previously confirmed Pi-serial-derived passphrase `ffb6d42807368154` against targeted OpenSSL combinations in an isolated analysis directory.
+- Result: **no successful decryption** with that adjacent-key hypothesis. This is a verified blocked path, not a successful crack.
+- Strongest next step remains obtaining the true passphrase/key material or the original workflow/script that created `setup.enc`.
