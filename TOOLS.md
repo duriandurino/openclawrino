@@ -39,6 +39,13 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 Add whatever helps you do your job. This is your cheat sheet.
 
+### Session Reset Harness
+
+- Reset-flush helper: `python3 scripts/session_flush_harness.py --summary "..." --key-point "..." --next-action "..." --file "..."`
+- Purpose: when context is getting tight, write a tracked reset handoff to `state/session-reset-handoff.json`, append a concise note to today's memory file, then commit and push so a session reset is safe.
+- This helper does **not** auto-detect model token usage by itself. Use it when the conversation is approaching roughly 50% context or whenever a clean reset point is needed.
+- Use `--no-push` to keep the commit local, or `--dry-run` to preview the handoff payload.
+
 ### OpenCode
 
 - CLI path: `~/.opencode/bin/opencode`
