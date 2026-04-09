@@ -5,10 +5,10 @@
 - percent used: 14
 - source: openclaw-status
 - branch: main
-- head before snapshot: 980fceb
+- head before snapshot: a71b029
 
 ## Blockers
-- no exact current-session-key discovery API yet, using known DM session key for this direct chat
+- none
 
 ## Preferences in play
-- keep snapshots compact and git-safe
+- none

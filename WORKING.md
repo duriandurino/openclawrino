@@ -1,17 +1,16 @@
 # WORKING.md
 
 ## Current objective
-verify durable working-state files are written
+verify local snapshot survives remote push failure
 
 ## Current task
-force snapshot test
+push failure test
 
 ## Key context
-- using real OpenClaw percentUsed metadata
+- simulate broken remote by overriding push URL
 
 ## Exact next actions
-- wire hook enablement and validate commit behavior
+- restore origin after test
 
 ## Critical files
-- scripts/context_harness.py
-- hooks/context-guard/handler.ts
+- none
