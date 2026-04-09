@@ -12,6 +12,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+DEFAULT_AGENT_ID = "main"
+
 ROOT = Path(__file__).resolve().parent.parent
 STATE_DIR = ROOT / "state"
 LOG_DIR = ROOT / "logs"
@@ -63,8 +65,44 @@ def sanitize(text: str) -> str:
     return result.strip()
 
 
-def current_session_key() -> str:
-    return "agent:main:telegram:direct:6018252086"
+def parse_key_priority(session_key: str) -> tuple[int, int]:
+    if ":direct:" in session_key:
+        return (0, 0)
+    if ":group:" in session_key:
+        return (1, 0)
+    if ":subagent:" in session_key:
+        return (2, 0)
+    return (3, 0)
+
+
+def resolve_session_entry(target_session_key: str | None = None, agent_id: str = DEFAULT_AGENT_ID) -> tuple[str | None, dict[str, Any] | None]:
+    store = load_sessions_store(agent_id=agent_id) or {}
+    if target_session_key and isinstance(store.get(target_session_key), dict):
+        return target_session_key, store[target_session_key]
+
+    status = load_openclaw_status()
+    if status:
+        recent = status.get("sessions", {}).get("recent", []) or []
+        if target_session_key:
+            for item in recent:
+                if item.get("key") == target_session_key:
+                    return target_session_key, item
+        filtered = [item for item in recent if str(item.get("key", "")).startswith(f"agent:{agent_id}:")]
+        if filtered:
+            filtered.sort(key=lambda item: (parse_key_priority(str(item.get("key", ""))), -(item.get("updatedAt") or 0)))
+            best = filtered[0]
+            return best.get("key"), best
+
+    candidates: list[tuple[str, dict[str, Any]]] = []
+    for key, value in store.items():
+        if not str(key).startswith(f"agent:{agent_id}:"):
+            continue
+        if isinstance(value, dict):
+            candidates.append((key, value))
+    if not candidates:
+        return target_session_key, None
+    candidates.sort(key=lambda item: (parse_key_priority(item[0]), -(item[1].get("updatedAt") or 0)))
+    return candidates[0][0], candidates[0][1]
 
 
 def load_openclaw_status() -> dict[str, Any] | None:
@@ -76,8 +114,8 @@ def load_openclaw_status() -> dict[str, Any] | None:
         return None
 
 
-def load_sessions_store() -> dict[str, Any] | None:
-    path = Path.home() / ".openclaw" / "agents" / "main" / "sessions" / "sessions.json"
+def load_sessions_store(agent_id: str = DEFAULT_AGENT_ID) -> dict[str, Any] | None:
+    path = Path.home() / ".openclaw" / "agents" / agent_id / "sessions" / "sessions.json"
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception as exc:
@@ -85,44 +123,27 @@ def load_sessions_store() -> dict[str, Any] | None:
         return None
 
 
-def detect_pressure() -> dict[str, Any]:
-    session_key = current_session_key()
-    status = load_openclaw_status()
-    if status:
-        for item in status.get("sessions", {}).get("recent", []):
-            if item.get("key") == session_key:
-                percent = item.get("percentUsed")
-                if percent is None:
-                    total = item.get("totalTokens") or 0
-                    window = item.get("contextTokens") or 0
-                    percent = round((total / window) * 100) if window else None
-                return {
-                    "sessionKey": session_key,
-                    "source": "openclaw-status",
-                    "percentUsed": percent,
-                    "totalTokens": item.get("totalTokens"),
-                    "contextTokens": item.get("contextTokens"),
-                    "remainingTokens": item.get("remainingTokens"),
-                    "sessionId": item.get("sessionId"),
-                }
-    store = load_sessions_store() or {}
-    entry = store.get(session_key)
+def detect_pressure(target_session_key: str | None = None, agent_id: str = DEFAULT_AGENT_ID) -> dict[str, Any]:
+    session_key, entry = resolve_session_entry(target_session_key=target_session_key, agent_id=agent_id)
     if isinstance(entry, dict):
         percent = entry.get("percentUsed")
         if percent is None:
             total = entry.get("totalTokens") or 0
             window = entry.get("contextTokens") or 0
             percent = round((total / window) * 100) if window else None
+        source = "openclaw-status" if "key" in entry else "sessions-store"
         return {
             "sessionKey": session_key,
-            "source": "sessions-store",
+            "source": source,
             "percentUsed": percent,
             "totalTokens": entry.get("totalTokens"),
             "contextTokens": entry.get("contextTokens"),
             "remainingTokens": entry.get("remainingTokens"),
             "sessionId": entry.get("sessionId"),
+            "updatedAt": entry.get("updatedAt"),
         }
-    transcript = transcript_path_from_store(store, session_key)
+    store = load_sessions_store(agent_id=agent_id) or {}
+    transcript = transcript_path_from_store(store, session_key or "")
     size = transcript.stat().st_size if transcript and transcript.exists() else None
     return {
         "sessionKey": session_key,
@@ -238,7 +259,7 @@ def push_safely() -> tuple[bool, str | None]:
 
 
 def snapshot(args: argparse.Namespace) -> int:
-    pressure = detect_pressure()
+    pressure = detect_pressure(target_session_key=args.session_key, agent_id=args.agent_id)
     warning_threshold = args.warning_threshold
     snapshot_threshold = args.snapshot_threshold
     percent = pressure.get("percentUsed")
@@ -376,8 +397,8 @@ def snapshot(args: argparse.Namespace) -> int:
     return 0
 
 
-def pressure_cmd(_: argparse.Namespace) -> int:
-    print(json.dumps(detect_pressure(), indent=2))
+def pressure_cmd(args: argparse.Namespace) -> int:
+    print(json.dumps(detect_pressure(target_session_key=args.session_key, agent_id=args.agent_id), indent=2))
     return 0
 
 
@@ -386,10 +407,14 @@ def build_parser() -> argparse.ArgumentParser:
     sub = parser.add_subparsers(dest="command", required=True)
 
     p_pressure = sub.add_parser("pressure", help="Read current session pressure.")
+    p_pressure.add_argument("--session-key")
+    p_pressure.add_argument("--agent-id", default=DEFAULT_AGENT_ID)
     p_pressure.set_defaults(func=pressure_cmd)
 
     p_snap = sub.add_parser("snapshot", help="Write/update working state and optionally git checkpoint it.")
     p_snap.add_argument("--current-task", required=True)
+    p_snap.add_argument("--session-key")
+    p_snap.add_argument("--agent-id", default=DEFAULT_AGENT_ID)
     p_snap.add_argument("--objective", required=True)
     p_snap.add_argument("--key-point", action="append", default=[])
     p_snap.add_argument("--decision", action="append", default=[])
