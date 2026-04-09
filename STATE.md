@@ -5,7 +5,7 @@
 - percent used: 14
 - source: openclaw-status
 - branch: main
-- head before snapshot: cc77921
+- head before snapshot: 980fceb
 
 ## Blockers
 - no exact current-session-key discovery API yet, using known DM session key for this direct chat
