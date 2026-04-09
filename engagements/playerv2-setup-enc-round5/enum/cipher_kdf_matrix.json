@@ -1,0 +1,3242 @@
+[
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9784,
+    "printable_ratio": 0.3781,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A788D10E7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "adc286ba1168d9347f5e94853ec7dfd08ec6b8fc78dca9e6bb1e555619b63574e3abc1d4ab29d1aaaedc8fee433bcfa6026733f5885051807e3c3ffb134fef05"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3742,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4057C76D3A7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3706a2dac87f85eaf7a612200f8e682bd21042e4b3db3d322c6fc60950360a3aff16cdfb0a6709526b60d5ab5e9cf837b881806f229f4c912bb788d7e1a0307a"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9786,
+    "printable_ratio": 0.3834,
+    "stderr": "bad decrypt\n4007E52AD17F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "47ad00a855dde80955e7f19d64aed9e9ee8a9ef2a02cbf4e14b8a4e7aa02f1647088b1d660374af8bf5a5bcfd52636e79b53c2baff5e8bc3578e8f08cce83231"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9757,
+    "printable_ratio": 0.3771,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40270C671E7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "590c4123604387664ee71c617b6244359a1c78c169209be11ddd231a3ad4c94776463e9fda97a10d6afd376efc9cd13024b5584b71f2227bad00bdcf8c82c41e"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9809,
+    "printable_ratio": 0.3881,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4067B11E777F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6544a20e618267809672b0a3bebea74f2746691cd7e71987527b530e6fc02b67255224bc93cddddca6ae1630ac757ac498e5fa5db5f0db98b5326c1223f8cf2c"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9812,
+    "printable_ratio": 0.389,
+    "stderr": "bad decrypt\n4067CBA4167F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "5cd94b8a1b5851e538b9aa38445e4686ef3550ac371d526161d3bd77177aebed560afbfe651b924db28e45c6da3fc286cffa13dc87a2fa53ce70bfc81153fb3f"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9804,
+    "printable_ratio": 0.3826,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40672DA19D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6c15af4cf05271ce77f4a538f424af0cc4a9945d4a6144a774c84d711949635fd3b13882cadbd05c9e718fb8385b532359f1e79123c22db33b453b4cb0fdedf1"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9787,
+    "printable_ratio": 0.3892,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E78D4AC27F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "e151ac47b3ce5f3fde5a530d2f2014c1935069b7202d8b18c906da4f754945cf33556f847cc719a88bb3d7b87c0878db20fb222ed51fc557a93427fc1a8ddefd"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9806,
+    "printable_ratio": 0.3857,
+    "stderr": "bad decrypt\n40774256BD7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "f1ca49fe9489edd34ceae9669fc1ee52fc90632582669e08d6d3385845c61285e39d4b00d47c0c964f343aeb385b710d85665b89f8ace02c8e02d99a7c3db932"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9784,
+    "printable_ratio": 0.3781,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n408711262E7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "adc286ba1168d9347f5e94853ec7dfd08ec6b8fc78dca9e6bb1e555619b63574e3abc1d4ab29d1aaaedc8fee433bcfa6026733f5885051807e3c3ffb134fef05"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3742,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4057806C087F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3706a2dac87f85eaf7a612200f8e682bd21042e4b3db3d322c6fc60950360a3aff16cdfb0a6709526b60d5ab5e9cf837b881806f229f4c912bb788d7e1a0307a"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9786,
+    "printable_ratio": 0.3834,
+    "stderr": "bad decrypt\n40D784D13C7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "47ad00a855dde80955e7f19d64aed9e9ee8a9ef2a02cbf4e14b8a4e7aa02f1647088b1d660374af8bf5a5bcfd52636e79b53c2baff5e8bc3578e8f08cce83231"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9757,
+    "printable_ratio": 0.3771,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A76D9C587F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "590c4123604387664ee71c617b6244359a1c78c169209be11ddd231a3ad4c94776463e9fda97a10d6afd376efc9cd13024b5584b71f2227bad00bdcf8c82c41e"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9809,
+    "printable_ratio": 0.3881,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E70845567F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6544a20e618267809672b0a3bebea74f2746691cd7e71987527b530e6fc02b67255224bc93cddddca6ae1630ac757ac498e5fa5db5f0db98b5326c1223f8cf2c"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9812,
+    "printable_ratio": 0.389,
+    "stderr": "bad decrypt\n40870BA5DF7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "5cd94b8a1b5851e538b9aa38445e4686ef3550ac371d526161d3bd77177aebed560afbfe651b924db28e45c6da3fc286cffa13dc87a2fa53ce70bfc81153fb3f"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9804,
+    "printable_ratio": 0.3826,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4047E2CF627F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6c15af4cf05271ce77f4a538f424af0cc4a9945d4a6144a774c84d711949635fd3b13882cadbd05c9e718fb8385b532359f1e79123c22db33b453b4cb0fdedf1"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9787,
+    "printable_ratio": 0.3892,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40370575C97F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "e151ac47b3ce5f3fde5a530d2f2014c1935069b7202d8b18c906da4f754945cf33556f847cc719a88bb3d7b87c0878db20fb222ed51fc557a93427fc1a8ddefd"
+  },
+  {
+    "candidate": "ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9806,
+    "printable_ratio": 0.3857,
+    "stderr": "bad decrypt\n4037F152667F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "f1ca49fe9489edd34ceae9669fc1ee52fc90632582669e08d6d3385845c61285e39d4b00d47c0c964f343aeb385b710d85665b89f8ace02c8e02d99a7c3db932"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9782,
+    "printable_ratio": 0.3834,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4057089FAC7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2180f1f991d373b8c1d519c214aefd63423f01eb91e979ee08031fbe4292bc7fa171ccc67faebdad7a7772ad408313b762e5f3d06c3f63ad95269963c1daf5a6"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9772,
+    "printable_ratio": 0.3806,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A768F19B7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c8d2e021841c2e6dec76523b512c8327201dfe5f05d0fa59ab027c661dd37c6b61adeda2d6231aaf51b09033b7ca7face21f1536911d73536c4fee559b6b3d1c"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9779,
+    "printable_ratio": 0.3851,
+    "stderr": "bad decrypt\n40D7677BDA7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "fbefe89a3d5d09a946ce92e95fe9b6e3ebcf4d044969c1ff147711cc5d918bddfa5df8f30ab0ba423e5e20a328a3c7a7da7f8e1883194ed7b20021412d9fd18f"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9791,
+    "printable_ratio": 0.3757,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n407743D7277F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "dd3792d7b6d8824b2a2c1890949676177282eb7f1e6384442ab75679e1bf1863cccd4f459c9aecf3c3a20944aff8a4c9b7437064ef1b6d27d9ea490cb5925e8e"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.978,
+    "printable_ratio": 0.3866,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A70CE1C47F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "9d7a46fb81462f292358315071539181918843303812104ebc3ba468ede473df91c13ce836566df5d94b37b4fcedb036b47e8a024cd55807ccfa7971d9e8981e"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9796,
+    "printable_ratio": 0.3803,
+    "stderr": "bad decrypt\n40F7219AB77F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "cd901383bcfd2fb7fcc7b141352da7af573026b19a8cac430360854480aff1b483f6b4be0b2c2e48629d7a0528f94109f4187c408ca219524096cb18bc82600b"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9804,
+    "printable_ratio": 0.3909,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40778F673C7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "80166be19bd4ec1b784be094e3c73f794b1a5b66df65c9e1b6cb0bcf20acea025ecd9ce8b1f1f2ce74b53b53242e04e394ae815a64a560506421e5ddd1b3e86d"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3794,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4037858A1D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "79a359fe3ef1024f41f93b40ea69db53a054d89c166a7ff4c321dbd65125d64eb1092ecb4eaf9b16be79870894e80cfc24fbc72f6517406b7c296b2e7725678a"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9776,
+    "printable_ratio": 0.3849,
+    "stderr": "bad decrypt\n40A7CB5FC27F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "7eec854028d98edbaefc464087879b8cee7f83b1fea57e837749f63af1950ee709435d4c37e26d3ffabb06c87776780c2bda570d22af00cd2d6ab39929a29720"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9782,
+    "printable_ratio": 0.3834,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4087E20CEA7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2180f1f991d373b8c1d519c214aefd63423f01eb91e979ee08031fbe4292bc7fa171ccc67faebdad7a7772ad408313b762e5f3d06c3f63ad95269963c1daf5a6"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9772,
+    "printable_ratio": 0.3806,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40174AB90D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c8d2e021841c2e6dec76523b512c8327201dfe5f05d0fa59ab027c661dd37c6b61adeda2d6231aaf51b09033b7ca7face21f1536911d73536c4fee559b6b3d1c"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9779,
+    "printable_ratio": 0.3851,
+    "stderr": "bad decrypt\n40B728E9237F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "fbefe89a3d5d09a946ce92e95fe9b6e3ebcf4d044969c1ff147711cc5d918bddfa5df8f30ab0ba423e5e20a328a3c7a7da7f8e1883194ed7b20021412d9fd18f"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9791,
+    "printable_ratio": 0.3757,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4037B148C67F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "dd3792d7b6d8824b2a2c1890949676177282eb7f1e6384442ab75679e1bf1863cccd4f459c9aecf3c3a20944aff8a4c9b7437064ef1b6d27d9ea490cb5925e8e"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.978,
+    "printable_ratio": 0.3866,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4047A8DA6D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "9d7a46fb81462f292358315071539181918843303812104ebc3ba468ede473df91c13ce836566df5d94b37b4fcedb036b47e8a024cd55807ccfa7971d9e8981e"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9796,
+    "printable_ratio": 0.3803,
+    "stderr": "bad decrypt\n40872FB5107F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "cd901383bcfd2fb7fcc7b141352da7af573026b19a8cac430360854480aff1b483f6b4be0b2c2e48629d7a0528f94109f4187c408ca219524096cb18bc82600b"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9804,
+    "printable_ratio": 0.3909,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A72D79077F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "80166be19bd4ec1b784be094e3c73f794b1a5b66df65c9e1b6cb0bcf20acea025ecd9ce8b1f1f2ce74b53b53242e04e394ae815a64a560506421e5ddd1b3e86d"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3794,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40C7D1EB097F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "79a359fe3ef1024f41f93b40ea69db53a054d89c166a7ff4c321dbd65125d64eb1092ecb4eaf9b16be79870894e80cfc24fbc72f6517406b7c296b2e7725678a"
+  },
+  {
+    "candidate": "10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9776,
+    "printable_ratio": 0.3849,
+    "stderr": "bad decrypt\n40D7853C1A7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "7eec854028d98edbaefc464087879b8cee7f83b1fea57e837749f63af1950ee709435d4c37e26d3ffabb06c87776780c2bda570d22af00cd2d6ab39929a29720"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9832,
+    "printable_ratio": 0.3878,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A72D10F17F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "561e20e13f27862d253d7f63ae006245876132f7ce49b28e3b7e90dce75e8dc7d5bbfd7274f7ee62fa6ff5a6642f178f7101827e185df727bff4de275184ce0d"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9796,
+    "printable_ratio": 0.3771,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4027EC69807F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "29a41bff3f5b6a13eacb3dfe2d94b4c0edb177f744f49ac3954a9ad51d310e3374f6c4ea72ae4ab2545bdcb11b8ef305e18c3a278ee4af438abafa41f84a560d"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3786,
+    "stderr": "bad decrypt\n40178443657F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d90c936a243593609319b4236fe8286a34b4edd9f1047ebfd052f57097cf37709d256f194f667f7b6f5a4d833a172cc1b2d1708e5defd10ea13ecfbc9d52be6d"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9788,
+    "printable_ratio": 0.3919,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40B72C79037F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d81b09ae0131258f7e3b094d08f88750f4cffbd9494e3e9bb4c8d93691ea26cc5724b86c40d1e657e4db7d73dc3fda19613a011c706d809d45fa85cb496c8fb3"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9792,
+    "printable_ratio": 0.3844,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D761BA2D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "25137fae8299df6933e7b6d6ba640071d7a1413bc40eb036755eafafe1317232e1e31df670d68548175ca1562685ea5827cd6574b815f8d8c447f89387dbc315"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3791,
+    "stderr": "bad decrypt\n40478828507F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d0c20b09ca2dc9452948f1d82858890bc53e396aa1a55ab04ec05a01fb06e8bae5cf14d2e92afcff16ce9336f2a2fc967e708427a512c8481981f95af930dde6"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9794,
+    "printable_ratio": 0.3784,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4097CCAB6E7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "35ddd2943ea886f02cbe5f76e0e962eca9d753f8fefa2c92dbefb7d370df03e041df71a2c88eefcbc0deaeb65915cc5e796160e53ccaf12c3a7720c0e46c6d05"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9756,
+    "printable_ratio": 0.3911,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4087C7AE3E7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2ed422eaeafc827e33df8890cbe395cca41e8e22a63810b0ddc37e1876554adf4a547873d46f8ad0ee627f69ff4aa6d6bc44bdb9b5135d7bc2792755bc700bd2"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9794,
+    "printable_ratio": 0.3847,
+    "stderr": "bad decrypt\n4087437A047F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6b6f4deb8f3e56e6142b97ee42b6fe7c5f836f04a58f451324c10eab7e136f7ea98d30653a3fba2b62cc3d462e43058974615574ef3872a17d75b0388f77923e"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9832,
+    "printable_ratio": 0.3878,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n403751E0037F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "561e20e13f27862d253d7f63ae006245876132f7ce49b28e3b7e90dce75e8dc7d5bbfd7274f7ee62fa6ff5a6642f178f7101827e185df727bff4de275184ce0d"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9796,
+    "printable_ratio": 0.3771,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40072778547F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "29a41bff3f5b6a13eacb3dfe2d94b4c0edb177f744f49ac3954a9ad51d310e3374f6c4ea72ae4ab2545bdcb11b8ef305e18c3a278ee4af438abafa41f84a560d"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3786,
+    "stderr": "bad decrypt\n4017E2B7627F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d90c936a243593609319b4236fe8286a34b4edd9f1047ebfd052f57097cf37709d256f194f667f7b6f5a4d833a172cc1b2d1708e5defd10ea13ecfbc9d52be6d"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9788,
+    "printable_ratio": 0.3919,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4077C660877F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d81b09ae0131258f7e3b094d08f88750f4cffbd9494e3e9bb4c8d93691ea26cc5724b86c40d1e657e4db7d73dc3fda19613a011c706d809d45fa85cb496c8fb3"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9792,
+    "printable_ratio": 0.3844,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40273144B47F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "25137fae8299df6933e7b6d6ba640071d7a1413bc40eb036755eafafe1317232e1e31df670d68548175ca1562685ea5827cd6574b815f8d8c447f89387dbc315"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3791,
+    "stderr": "bad decrypt\n408791A46E7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d0c20b09ca2dc9452948f1d82858890bc53e396aa1a55ab04ec05a01fb06e8bae5cf14d2e92afcff16ce9336f2a2fc967e708427a512c8481981f95af930dde6"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9794,
+    "printable_ratio": 0.3784,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40C76532D07F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "35ddd2943ea886f02cbe5f76e0e962eca9d753f8fefa2c92dbefb7d370df03e041df71a2c88eefcbc0deaeb65915cc5e796160e53ccaf12c3a7720c0e46c6d05"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9756,
+    "printable_ratio": 0.3911,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40376717F37F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2ed422eaeafc827e33df8890cbe395cca41e8e22a63810b0ddc37e1876554adf4a547873d46f8ad0ee627f69ff4aa6d6bc44bdb9b5135d7bc2792755bc700bd2"
+  },
+  {
+    "candidate": "2d194622dfde0257",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9794,
+    "printable_ratio": 0.3847,
+    "stderr": "bad decrypt\n4037276A197F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6b6f4deb8f3e56e6142b97ee42b6fe7c5f836f04a58f451324c10eab7e136f7ea98d30653a3fba2b62cc3d462e43058974615574ef3872a17d75b0388f77923e"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9799,
+    "printable_ratio": 0.3853,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n400763B4CE7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "82a73e563f70e11e91e6f7dc245bcaa7fbc61ea1626b054a8926873e2e2237d88001df62de01e2a952ee361b33758ee329124fc3545dbf5897dc4f80d0ef6a02"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9792,
+    "printable_ratio": 0.3719,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7A2426B7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "24ca4fef15a1fe3d2dcc1762debba015f04855e627c75e794c104d91cb66460313b1d4594464642797e15029f15420d01ba3db073c9c14f4345fc90cc6d043b6"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3763,
+    "stderr": "bad decrypt\n40676327C17F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2be00fd2471818b708c4eb1847ba051aded528b407c5d6c0e9acf71798d6cb9f3109456468f5bd9b791607b94f6e3b8f0ed16b754a8235a7e0b9ea194d54d900"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9786,
+    "printable_ratio": 0.387,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40F78526867F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "f14ff7fe0653b9b1c8fa03c3d2f510d57f47008cbbd6fcd75ff3340f0c50086cc95ac190c7ecd3929364a378bcc12311289ef457987f32fcf5f0b1e997e5c943"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9819,
+    "printable_ratio": 0.3859,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4057C5FD887F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "57ae9ebf2385576d39577b01cf71ee9f8123c6b11c6917d0e75afbdf5b0858625c9b489ee2fad1183a07fe230e5e578e7ad0f38388e41fe5590455c543d35486"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.977,
+    "printable_ratio": 0.3903,
+    "stderr": "bad decrypt\n40976F6AEE7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3a35553997160c73143fcef422addad282a46cc51cdd9a86beb494d1fc6058c36271bff82133a85fbf8e42d3850fd5008b3dca6c9fcc707d711dc784d12f6ae1"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9789,
+    "printable_ratio": 0.3813,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40F70A29277F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c712da1af40ca354a49dbb4b0eea0cd09da0d543cb2a9566798a818ff1fc2a703edbfcf261e7576160f34fa1c9c639a8858e052346e5fd584a6aa23a0f3f73af"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9827,
+    "printable_ratio": 0.3759,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40278D26357F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "5ecae6f5eccd2fdfe1cf744ad102c1beb2d4dd759d04f1e0c33c94fe04964ba3ee84383a0d6e536120d02bd1dcc85f190fe8a3a2295831d7d9ffeb239ddbe086"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9803,
+    "printable_ratio": 0.3826,
+    "stderr": "bad decrypt\n404704D53C7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "9d6b71f06f419a115ebb079eeff457758b9ff452322b4e44f46c7eee43521d7a6b817b07e9e142f17770968e2af3195d0af53175a4450a1015d1d6c0b7a24d07"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9799,
+    "printable_ratio": 0.3853,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4007C5069A7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "82a73e563f70e11e91e6f7dc245bcaa7fbc61ea1626b054a8926873e2e2237d88001df62de01e2a952ee361b33758ee329124fc3545dbf5897dc4f80d0ef6a02"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9792,
+    "printable_ratio": 0.3719,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40972D06C87F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "24ca4fef15a1fe3d2dcc1762debba015f04855e627c75e794c104d91cb66460313b1d4594464642797e15029f15420d01ba3db073c9c14f4345fc90cc6d043b6"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3763,
+    "stderr": "bad decrypt\n4037A4A5477F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2be00fd2471818b708c4eb1847ba051aded528b407c5d6c0e9acf71798d6cb9f3109456468f5bd9b791607b94f6e3b8f0ed16b754a8235a7e0b9ea194d54d900"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9786,
+    "printable_ratio": 0.387,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4017E345AF7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "f14ff7fe0653b9b1c8fa03c3d2f510d57f47008cbbd6fcd75ff3340f0c50086cc95ac190c7ecd3929364a378bcc12311289ef457987f32fcf5f0b1e997e5c943"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9819,
+    "printable_ratio": 0.3859,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4047A4F2FB7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "57ae9ebf2385576d39577b01cf71ee9f8123c6b11c6917d0e75afbdf5b0858625c9b489ee2fad1183a07fe230e5e578e7ad0f38388e41fe5590455c543d35486"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.977,
+    "printable_ratio": 0.3903,
+    "stderr": "bad decrypt\n40171186AE7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3a35553997160c73143fcef422addad282a46cc51cdd9a86beb494d1fc6058c36271bff82133a85fbf8e42d3850fd5008b3dca6c9fcc707d711dc784d12f6ae1"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9789,
+    "printable_ratio": 0.3813,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D70EBEFF7E0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c712da1af40ca354a49dbb4b0eea0cd09da0d543cb2a9566798a818ff1fc2a703edbfcf261e7576160f34fa1c9c639a8858e052346e5fd584a6aa23a0f3f73af"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9827,
+    "printable_ratio": 0.3759,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4007ACF6137F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "5ecae6f5eccd2fdfe1cf744ad102c1beb2d4dd759d04f1e0c33c94fe04964ba3ee84383a0d6e536120d02bd1dcc85f190fe8a3a2295831d7d9ffeb239ddbe086"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"ffb6d42807368154\"",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9803,
+    "printable_ratio": 0.3826,
+    "stderr": "bad decrypt\n407709661F7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "9d6b71f06f419a115ebb079eeff457758b9ff452322b4e44f46c7eee43521d7a6b817b07e9e142f17770968e2af3195d0af53175a4450a1015d1d6c0b7a24d07"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9755,
+    "printable_ratio": 0.3858,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40976594C87F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "88e63b4a7a4dbcbc711e21324bf1501b6ca22adaed4a91acf0048b511024186b1936a07b1dc0b0f695b974675843e7d2b9daaa0d2fa10e0b25c3fd3c243fa188"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9786,
+    "printable_ratio": 0.3673,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n405706EB337F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "a239dd458e8340d405c94606c25070b808570b861bc631edc16b7acc339342ecf8bd2bfc9b04b256269748bb8cf8aed660b8ed7ef858087fcf41fd44a97483e9"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9769,
+    "printable_ratio": 0.3889,
+    "stderr": "bad decrypt\n40674206667F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "356e010d6b8403ffed0f6ea28e3c7622d07d5fb36d67b9707f68f364b72fbcb8bec585e61dd8e3ebbe703af19df03bdfe83c98bcaff2502fb2e51267e9a021c5"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9785,
+    "printable_ratio": 0.386,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40074307A27F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "62d952299060237e8dde0967a6b538a086cc58a322deec1666737fd8b4c677766dbf1f37f6bf5373b634ff87f57506d94d4aff20cd0bca655926db1b10c14bee"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9768,
+    "printable_ratio": 0.3779,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40677070767F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c6e79bf526469c89ae874df75e7087d90b295dfa8d59d1fef198dfb28e93cf082a2af65d537d29a9077c12c8858c348148897bc222d3fee4a6a0b1d5ff6d1c73"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9777,
+    "printable_ratio": 0.3898,
+    "stderr": "bad decrypt\n40F7E21BC57F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "4ad48bbf11e217ad087f7ffd72ae3f4e8735a6c7f9593973588594cff5db167309cda050849d1c4cec8420104487c0fde5e41695f29b883f9cbb7b365a19f4d3"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9797,
+    "printable_ratio": 0.3808,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40F76487737F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "e9b2980e9c357d0b2f947781f01e0ab3ec4fe74b2963bf882e92ec2d4305872bbaf3c45aa7041c3d60f62a375e495fa5108c9befd0b829d5168446b20aa203a1"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.979,
+    "printable_ratio": 0.3814,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40C764A9CB7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "584ed5c7544c28360c067c84f6bf2c6b4dde2106059ec3df17fcb44f25d20f80c337a90c008a2e7cfd16079b69ffab35deb43d716f3e1557ee2c335efb4efa57"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3799,
+    "stderr": "bad decrypt\n40D72937877F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c2df9b6bb1777645381fcfe93d9b1956f7deee6e7ff2ce548fb2331814c9c6e4bc3d9af1a40c9ef848b548c9fabc16b009ea53dd25ab212a4e630f00a78167ac"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9755,
+    "printable_ratio": 0.3858,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40372CC0FE7E0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "88e63b4a7a4dbcbc711e21324bf1501b6ca22adaed4a91acf0048b511024186b1936a07b1dc0b0f695b974675843e7d2b9daaa0d2fa10e0b25c3fd3c243fa188"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9786,
+    "printable_ratio": 0.3673,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n408763DA1F7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "a239dd458e8340d405c94606c25070b808570b861bc631edc16b7acc339342ecf8bd2bfc9b04b256269748bb8cf8aed660b8ed7ef858087fcf41fd44a97483e9"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9769,
+    "printable_ratio": 0.3889,
+    "stderr": "bad decrypt\n40D7CCF8CE7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "356e010d6b8403ffed0f6ea28e3c7622d07d5fb36d67b9707f68f364b72fbcb8bec585e61dd8e3ebbe703af19df03bdfe83c98bcaff2502fb2e51267e9a021c5"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9785,
+    "printable_ratio": 0.386,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4087E2E94D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "62d952299060237e8dde0967a6b538a086cc58a322deec1666737fd8b4c677766dbf1f37f6bf5373b634ff87f57506d94d4aff20cd0bca655926db1b10c14bee"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9768,
+    "printable_ratio": 0.3779,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E74288107F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c6e79bf526469c89ae874df75e7087d90b295dfa8d59d1fef198dfb28e93cf082a2af65d537d29a9077c12c8858c348148897bc222d3fee4a6a0b1d5ff6d1c73"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9777,
+    "printable_ratio": 0.3898,
+    "stderr": "bad decrypt\n40972F2E6F7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "4ad48bbf11e217ad087f7ffd72ae3f4e8735a6c7f9593973588594cff5db167309cda050849d1c4cec8420104487c0fde5e41695f29b883f9cbb7b365a19f4d3"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9797,
+    "printable_ratio": 0.3808,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40F70A19907F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "e9b2980e9c357d0b2f947781f01e0ab3ec4fe74b2963bf882e92ec2d4305872bbaf3c45aa7041c3d60f62a375e495fa5108c9befd0b829d5168446b20aa203a1"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.979,
+    "printable_ratio": 0.3814,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4087E47C297F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "584ed5c7544c28360c067c84f6bf2c6b4dde2106059ec3df17fcb44f25d20f80c337a90c008a2e7cfd16079b69ffab35deb43d716f3e1557ee2c335efb4efa57"
+  },
+  {
+    "candidate": "AUTHORIZED_PI_SERIAL = \"10000000d58ec40c\"",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3799,
+    "stderr": "bad decrypt\n40E70198C27F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c2df9b6bb1777645381fcfe93d9b1956f7deee6e7ff2ce548fb2331814c9c6e4bc3d9af1a40c9ef848b548c9fabc16b009ea53dd25ab212a4e630f00a78167ac"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9789,
+    "printable_ratio": 0.3858,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D713813B7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2c47da555a28cc1e281a250a253c7c70c391086b4472209d5280d225464c771b759942dbb49b8cd28296d840218c8c987f60eb70d2ea00924d46e7d4d1bccc7f"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9765,
+    "printable_ratio": 0.3789,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E7D08D217F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "244b8ccfc82b8b4d227aaee16b00839c0e70aa56a0eadf9f9b2bfa85211d5a96d6ec603019278efbeb50952d8a5cece8a12c3d58c8af34657832a58487d5dc6d"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9809,
+    "printable_ratio": 0.3869,
+    "stderr": "bad decrypt\n40D7E10CEB7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3a5f2d2c49610ef80f472f6b16c5766e9e3d4fbb48a7ddd4c8a6f67bce608e64e254849bb6b546d02fa02b4fe0777f31e9d7c3bd0df738ee0e0593836400ba02"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9804,
+    "printable_ratio": 0.382,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4047A9B4F27F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "0c368ab9b53facebde796a33d50402e738607cb0354b3ad0b06b623e8bce1365244015bedcbcb735423fdcceb3f72937d5ea923eb9dc033077c7129aa455159d"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9769,
+    "printable_ratio": 0.394,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E76BA5AE7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "59036b7c05fc0814224360c6d26237e4136f6faf8e57e07675633fe43287c97c10e13bb0abf733bca8723ca3ec8f0794696a7e3965feefce282844b757f912f0"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3849,
+    "stderr": "bad decrypt\n40A76BE02E7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "88c56f20e3abdb9ba69beb008e5750f44f8e2db4afb4948dff5f6f1c262529205759f680e4378652cca375671c9d198fec7446d63fe6ec554f8b8cf04a3f2098"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9814,
+    "printable_ratio": 0.3804,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40B74335037F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "aaffee5ca0a8786f632ab9b7a8d58e0726f80c528b21fb817bfeb0e188050a5d2eff67d5ddbaceb7bd4e02b81ca4e1e3ba6f813ec6a4242579330f777a8eedd6"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9775,
+    "printable_ratio": 0.3874,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4077F0805A7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "475efee7d972bb025f8b10fa28bd5b466873f06d763020ecf1bfdccef2fedad33fdb88daef1973f1b8edfd67bda74a96dff2593e09b99c18e0cb7f7fa3a9744c"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9802,
+    "printable_ratio": 0.381,
+    "stderr": "bad decrypt\n4017D13BB37F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "39aa529d279e2ceed2f6d64a612b32141e28cbf523aa9ed0400a4942f790423f82cf3911b9ad34f3bbbd7fe560859bef62a94180c3dfd546b8ee6c756dab684b"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9789,
+    "printable_ratio": 0.3858,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4017CA74E27F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2c47da555a28cc1e281a250a253c7c70c391086b4472209d5280d225464c771b759942dbb49b8cd28296d840218c8c987f60eb70d2ea00924d46e7d4d1bccc7f"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9765,
+    "printable_ratio": 0.3789,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40670676F87F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "244b8ccfc82b8b4d227aaee16b00839c0e70aa56a0eadf9f9b2bfa85211d5a96d6ec603019278efbeb50952d8a5cece8a12c3d58c8af34657832a58487d5dc6d"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9809,
+    "printable_ratio": 0.3869,
+    "stderr": "bad decrypt\n40A7644B067F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3a5f2d2c49610ef80f472f6b16c5766e9e3d4fbb48a7ddd4c8a6f67bce608e64e254849bb6b546d02fa02b4fe0777f31e9d7c3bd0df738ee0e0593836400ba02"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9804,
+    "printable_ratio": 0.382,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A7488FED7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "0c368ab9b53facebde796a33d50402e738607cb0354b3ad0b06b623e8bce1365244015bedcbcb735423fdcceb3f72937d5ea923eb9dc033077c7129aa455159d"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9769,
+    "printable_ratio": 0.394,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4067AE5EBC7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "59036b7c05fc0814224360c6d26237e4136f6faf8e57e07675633fe43287c97c10e13bb0abf733bca8723ca3ec8f0794696a7e3965feefce282844b757f912f0"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9798,
+    "printable_ratio": 0.3849,
+    "stderr": "bad decrypt\n401730C3427F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "88c56f20e3abdb9ba69beb008e5750f44f8e2db4afb4948dff5f6f1c262529205759f680e4378652cca375671c9d198fec7446d63fe6ec554f8b8cf04a3f2098"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9814,
+    "printable_ratio": 0.3804,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7D317A97F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "aaffee5ca0a8786f632ab9b7a8d58e0726f80c528b21fb817bfeb0e188050a5d2eff67d5ddbaceb7bd4e02b81ca4e1e3ba6f813ec6a4242579330f777a8eedd6"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9775,
+    "printable_ratio": 0.3874,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7337E977F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "475efee7d972bb025f8b10fa28bd5b466873f06d763020ecf1bfdccef2fedad33fdb88daef1973f1b8edfd67bda74a96dff2593e09b99c18e0cb7f7fa3a9744c"
+  },
+  {
+    "candidate": "the serial is ffb6d42807368154",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9802,
+    "printable_ratio": 0.381,
+    "stderr": "bad decrypt\n40170476697F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "39aa529d279e2ceed2f6d64a612b32141e28cbf523aa9ed0400a4942f790423f82cf3911b9ad34f3bbbd7fe560859bef62a94180c3dfd546b8ee6c756dab684b"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9751,
+    "printable_ratio": 0.3842,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40174E50B97F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "bebecfa312123849e297721fe87071ee7dc8edc193e3fb0f8fc3d510f0c04833359a22caf14a70e7e1f3356bc160d436ce80e6eced34a664df94f20937b0c59b"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9802,
+    "printable_ratio": 0.3758,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40574425787F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "77d53c9c627fe776295748eca94611b2c745b588d393a806193ca6e935f3431505fca6edd3db6669f90cdb360726d91f5d8cdabe12e7b8f6590e229090914357"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.978,
+    "printable_ratio": 0.382,
+    "stderr": "bad decrypt\n40D731C3927F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3be30a6bdbd84f2c881d624c9b1568b626f688bdbc0e8599eb167ac869090946ac796ceab7e909c111de94a262fd7d8816319f94fb46125f2f8ab52ca4448287"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9778,
+    "printable_ratio": 0.3849,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n406723281C7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2330c0014091c56869acf31b934f927616f12a5e8ebd6fc2c172746114dd9cde415d349e478dda32f00b44b0beea7f0858d0791bdc6f5f7d59514508f61ca039"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9781,
+    "printable_ratio": 0.3864,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7A29ACA7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6e5b2a90bd8a8364fed2654d7e10acb8e860e1a9238403b59bba5e29460b33dc7247c12e0a3d7c69f38a16eb7269ede6c2fba28fbadb2293142c823bf1e97cd1"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9796,
+    "printable_ratio": 0.3784,
+    "stderr": "bad decrypt\n40B78181AB7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "81afdb9fe8c5435a91c51688b06bea91ffac728123302d47cfbed25cbf1949933bc69b9f212768d90d968cef610eab87f9abd560b59c4857670ce9fa4de45714"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9789,
+    "printable_ratio": 0.3882,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4067CC2C0D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d185d10f1814ea522c0c307eecdcea6ae96a5e5971941c60fb26a45e2438181327151028c10c95ebbad6fc307c509a8a10c0ba31c7781c13a3e42a3fb85f1aeb"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9771,
+    "printable_ratio": 0.3781,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E766A6697F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "ee482a74feedb072e8a7e6f5ddd5a7fcda940ee5aba0287d57ad8a4f0b0ec615abbde6d7c1b4d7b9fae6c3bee7fd9f15b292e94fcde1118f4cf1248853e43bbd"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9795,
+    "printable_ratio": 0.3917,
+    "stderr": "bad decrypt\n4097E4278A7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d3007739531c5a8f6909093a2124854327e99418c22df06b33cc4be0215ae1daf9abf62d43ee63cdd888d84c0f5d6e696145b93744156f7fa6e8bf53e570e9e9"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9751,
+    "printable_ratio": 0.3842,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A7C18CFC7E0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "bebecfa312123849e297721fe87071ee7dc8edc193e3fb0f8fc3d510f0c04833359a22caf14a70e7e1f3356bc160d436ce80e6eced34a664df94f20937b0c59b"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9802,
+    "printable_ratio": 0.3758,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4057A3DC387F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "77d53c9c627fe776295748eca94611b2c745b588d393a806193ca6e935f3431505fca6edd3db6669f90cdb360726d91f5d8cdabe12e7b8f6590e229090914357"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.978,
+    "printable_ratio": 0.382,
+    "stderr": "bad decrypt\n40176D5F6C7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "3be30a6bdbd84f2c881d624c9b1568b626f688bdbc0e8599eb167ac869090946ac796ceab7e909c111de94a262fd7d8816319f94fb46125f2f8ab52ca4448287"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9778,
+    "printable_ratio": 0.3849,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7A88D4C7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "2330c0014091c56869acf31b934f927616f12a5e8ebd6fc2c172746114dd9cde415d349e478dda32f00b44b0beea7f0858d0791bdc6f5f7d59514508f61ca039"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9781,
+    "printable_ratio": 0.3864,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4027C8C8517F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "6e5b2a90bd8a8364fed2654d7e10acb8e860e1a9238403b59bba5e29460b33dc7247c12e0a3d7c69f38a16eb7269ede6c2fba28fbadb2293142c823bf1e97cd1"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9796,
+    "printable_ratio": 0.3784,
+    "stderr": "bad decrypt\n4077278CB97F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "81afdb9fe8c5435a91c51688b06bea91ffac728123302d47cfbed25cbf1949933bc69b9f212768d90d968cef610eab87f9abd560b59c4857670ce9fa4de45714"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9789,
+    "printable_ratio": 0.3882,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4077EF12587F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d185d10f1814ea522c0c307eecdcea6ae96a5e5971941c60fb26a45e2438181327151028c10c95ebbad6fc307c509a8a10c0ba31c7781c13a3e42a3fb85f1aeb"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9771,
+    "printable_ratio": 0.3781,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40C7AAE2597F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "ee482a74feedb072e8a7e6f5ddd5a7fcda940ee5aba0287d57ad8a4f0b0ec615abbde6d7c1b4d7b9fae6c3bee7fd9f15b292e94fcde1118f4cf1248853e43bbd"
+  },
+  {
+    "candidate": "the serial is 10000000d58ec40c",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9795,
+    "printable_ratio": 0.3917,
+    "stderr": "bad decrypt\n4047C448DF7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d3007739531c5a8f6909093a2124854327e99418c22df06b33cc4be0215ae1daf9abf62d43ee63cdd888d84c0f5d6e696145b93744156f7fa6e8bf53e570e9e9"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9784,
+    "printable_ratio": 0.3767,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40C7A9C4477F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "98f1abbd9a0da7bced4a40dd32067779d7f9ce9080e504f865ce84dee0a65c96c2d5f1c1d72e9d036345a6af3ed3d62c70dad5ff84ac6aff93f90503fdc6b573"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9791,
+    "printable_ratio": 0.3866,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40074C35227F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c6bec150cdd886676a8a29ba10b3279e033c8c962bc2ab8b32f6648916fe0620d82fe4b8f3d9501e0cb8db213bcd767722c7c130ef94035e60c93f27ba952006"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9803,
+    "printable_ratio": 0.3812,
+    "stderr": "bad decrypt\n40678D81DD7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c1a29abc4465d6a014a2e14245d06a9eda04ee0486b71fa6330e0bb109def5c490f87b09f149fc2f182f536802902aa900f814ed0cbccfa800c0522240c2efaa"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3846,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4047C676867F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "a70742c36826e14cc36c53cc0009c503f7d58986bdff458070f1208bf7219077b28eb8db6dfb4b2ac4d81df8957775551dec937370100bc1e94360506ad05a42"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9787,
+    "printable_ratio": 0.386,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4017E8BFB87F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "fca1b6caa3166af154edc573ba3ffda8c504e3b9870c59d4b412f16bc512fd3c5e5ce88e4cdfd88986e81f6bb2a45d1e776deb96a95b486af273f67222b2a832"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9767,
+    "printable_ratio": 0.3827,
+    "stderr": "bad decrypt\n40E7835C847F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "1b71fdc3dcc17c9dbf34a4f9a09bfbd20f3ba8eb6f33cee675254a9eb9f9bd75041e99aa821344b0ac2b22c41350ac668884035a1fd4446c44ba5b1bdae8db42"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.979,
+    "printable_ratio": 0.3835,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A7AD94B27F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "5a586097ec570d0d87a21dd2cb3fdc930e5b9888031ec01dc6786840656dd0af10fa9ddf53051b575d8eb4ebcf1ec1926fbb877869af153307cf999d36288d40"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9774,
+    "printable_ratio": 0.3729,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E7655A2D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "aeac630ef4fd50421d89791b2b3af48e35af2844b423ea58d5d55079b47027697ecaa60535574ad55f21e6d212675c4a066ab66ac1048c45f436ea2acb87e5a0"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.978,
+    "printable_ratio": 0.3744,
+    "stderr": "bad decrypt\n40972B80297F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "92b852d58e1c7b6166409c51f774eafd97b36719bac345f706e63c96203ef2940bca98d6326ed08dd40ee1bbfe4461acaa534865cb57ae087ffd7c6644803568"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9784,
+    "printable_ratio": 0.3767,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7A5DC477F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "98f1abbd9a0da7bced4a40dd32067779d7f9ce9080e504f865ce84dee0a65c96c2d5f1c1d72e9d036345a6af3ed3d62c70dad5ff84ac6aff93f90503fdc6b573"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9791,
+    "printable_ratio": 0.3866,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7E85B637F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c6bec150cdd886676a8a29ba10b3279e033c8c962bc2ab8b32f6648916fe0620d82fe4b8f3d9501e0cb8db213bcd767722c7c130ef94035e60c93f27ba952006"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9803,
+    "printable_ratio": 0.3812,
+    "stderr": "bad decrypt\n4067A2F7747F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c1a29abc4465d6a014a2e14245d06a9eda04ee0486b71fa6330e0bb109def5c490f87b09f149fc2f182f536802902aa900f814ed0cbccfa800c0522240c2efaa"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9808,
+    "printable_ratio": 0.3846,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40A784C15F7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "a70742c36826e14cc36c53cc0009c503f7d58986bdff458070f1208bf7219077b28eb8db6dfb4b2ac4d81df8957775551dec937370100bc1e94360506ad05a42"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9787,
+    "printable_ratio": 0.386,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E7EC65D17F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "fca1b6caa3166af154edc573ba3ffda8c504e3b9870c59d4b412f16bc512fd3c5e5ce88e4cdfd88986e81f6bb2a45d1e776deb96a95b486af273f67222b2a832"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9767,
+    "printable_ratio": 0.3827,
+    "stderr": "bad decrypt\n40B706ED967F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "1b71fdc3dcc17c9dbf34a4f9a09bfbd20f3ba8eb6f33cee675254a9eb9f9bd75041e99aa821344b0ac2b22c41350ac668884035a1fd4446c44ba5b1bdae8db42"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.979,
+    "printable_ratio": 0.3835,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E766E1297F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "5a586097ec570d0d87a21dd2cb3fdc930e5b9888031ec01dc6786840656dd0af10fa9ddf53051b575d8eb4ebcf1ec1926fbb877869af153307cf999d36288d40"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9774,
+    "printable_ratio": 0.3729,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40B702DC627F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "aeac630ef4fd50421d89791b2b3af48e35af2844b423ea58d5d55079b47027697ecaa60535574ad55f21e6d212675c4a066ab66ac1048c45f436ea2acb87e5a0"
+  },
+  {
+    "candidate": "NTV360 Pi setup is complete.",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.978,
+    "printable_ratio": 0.3744,
+    "stderr": "bad decrypt\n40D7D191E27F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "92b852d58e1c7b6166409c51f774eafd97b36719bac345f706e63c96203ef2940bca98d6326ed08dd40ee1bbfe4461acaa534865cb57ae087ffd7c6644803568"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9755,
+    "printable_ratio": 0.3802,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40771104BE7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "755ea8a600cee59c51084d1543b0eb43f5398127f07fcf79e752382ca627c1eada4f3e5904088faec59f1b5e3ab9d7ecbc0a6c0e51d7219e6cf8c26cf2f547c2"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9783,
+    "printable_ratio": 0.3778,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n403722C2D57F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "86df887e3ea70c82e4e34a65a23af3c6f8afcb90d3876da30111e23135b162369b6f360606fdb6391a58e07adf2d17c201a41df4c4b003ff620dc510e83b0510"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9819,
+    "printable_ratio": 0.3796,
+    "stderr": "bad decrypt\n40E7411FC27F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "52d3e2f327017b41897407825de678ef9d7003ffd12d212805f55bf743a61ef1554f8ee6cb5d4980cac5fee961bb86325f0c8f89bdea23aef6f915144e446d84"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9771,
+    "printable_ratio": 0.3836,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E74701FD7E0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "22c78f3accc1b8c308df096342a6cb9967c9ccf6f6ead80a4ca95b8eccd07b2d09c8d8acd53ecf9a2fdfc3f256b866e8ee8648031270c6850779ef42099205b1"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9822,
+    "printable_ratio": 0.3892,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40173195B67F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "56db168d3bccf96f2c9dbc2a0ee15439eee30ada0a210d209b6e086cd4483f271e3b792632b6211f8a0c7a4a18f85af7da578848bae9dd612ac4d662cf10d018"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9803,
+    "printable_ratio": 0.3761,
+    "stderr": "bad decrypt\n40F74A95AB7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c74e32c27d4767bbf28438a8c69e70fe1034b2ff8f9ede2081b59bcc21316989209c00cfc2018401a6f22a15d1951dfdbf296550950cb4f1dd1669cb88461bf3"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9811,
+    "printable_ratio": 0.3883,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4057C307A37F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d94800d1a32751e514ef52da6299cebe2ab9320d6e3eccfaaf15b41b1c3983899df0240b14dc3653c9bab2c963643564fff25d9845c8e9d14b67853ef26da966"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9788,
+    "printable_ratio": 0.3822,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40E7ED7FE97F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "8b35c8f8bb6a12a634d2adb43d7a7af7defdc302f2c102d0100bcae089839d412cb98df0984a33751c1c2b04086de76aaa19beb5463e6b2d08af85076ae8e594"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "newline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9781,
+    "printable_ratio": 0.3865,
+    "stderr": "bad decrypt\n404768A8757F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "a2564986509e0cda5d00faa0adf3719c9e1e63cc4549442a1ade0aaedddccc3eb70127c4e4bebe51b6e5cd41071cdf1b13494a2c8b4f01e28100e5a20c206dcf"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9755,
+    "printable_ratio": 0.3802,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40F76187BD7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "755ea8a600cee59c51084d1543b0eb43f5398127f07fcf79e752382ca627c1eada4f3e5904088faec59f1b5e3ab9d7ecbc0a6c0e51d7219e6cf8c26cf2f547c2"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9783,
+    "printable_ratio": 0.3778,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40770137C67F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "86df887e3ea70c82e4e34a65a23af3c6f8afcb90d3876da30111e23135b162369b6f360606fdb6391a58e07adf2d17c201a41df4c4b003ff620dc510e83b0510"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9819,
+    "printable_ratio": 0.3796,
+    "stderr": "bad decrypt\n40E70729047F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "52d3e2f327017b41897407825de678ef9d7003ffd12d212805f55bf743a61ef1554f8ee6cb5d4980cac5fee961bb86325f0c8f89bdea23aef6f915144e446d84"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9771,
+    "printable_ratio": 0.3836,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4017C26A717F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "22c78f3accc1b8c308df096342a6cb9967c9ccf6f6ead80a4ca95b8eccd07b2d09c8d8acd53ecf9a2fdfc3f256b866e8ee8648031270c6850779ef42099205b1"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9822,
+    "printable_ratio": 0.3892,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n4087E4FE937F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "56db168d3bccf96f2c9dbc2a0ee15439eee30ada0a210d209b6e086cd4483f271e3b792632b6211f8a0c7a4a18f85af7da578848bae9dd612ac4d662cf10d018"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9803,
+    "printable_ratio": 0.3761,
+    "stderr": "bad decrypt\n40370798097F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "c74e32c27d4767bbf28438a8c69e70fe1034b2ff8f9ede2081b59bcc21316989209c00cfc2018401a6f22a15d1951dfdbf296550950cb4f1dd1669cb88461bf3"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "legacy-md5",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9811,
+    "printable_ratio": 0.3883,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n403782759D7F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "d94800d1a32751e514ef52da6299cebe2ab9320d6e3eccfaaf15b41b1c3983899df0240b14dc3653c9bab2c963643564fff25d9845c8e9d14b67853ef26da966"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "legacy-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9788,
+    "printable_ratio": 0.3822,
+    "stderr": "*** WARNING : deprecated key derivation used.\nUsing -iter or -pbkdf2 would be better.\nbad decrypt\n40D7AA24A97F0000:error:1C800064:Provider routines:ossl_cipher_",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "8b35c8f8bb6a12a634d2adb43d7a7af7defdc302f2c102d0100bcae089839d412cb98df0984a33751c1c2b04086de76aaa19beb5463e6b2d08af85076ae8e594"
+  },
+  {
+    "candidate": "Installing the Player App",
+    "variant": "nonewline",
+    "combo": "pbkdf2-sha256",
+    "returncode": 1,
+    "stdout_len": 8720,
+    "entropy": 7.9781,
+    "printable_ratio": 0.3865,
+    "stderr": "bad decrypt\n401766285B7F0000:error:1C800064:Provider routines:ossl_cipher_unpadblock:bad decrypt:../providers/implementations/ciphers/ciphercommon_block.c:107:",
+    "signatures": {
+      "zip": false,
+      "gzip": false,
+      "elf": false,
+      "shebang": false,
+      "jsonish": false,
+      "xmlish": false,
+      "htmlish": false
+    },
+    "head_hex": "a2564986509e0cda5d00faa0adf3719c9e1e63cc4549442a1ade0aaedddccc3eb70127c4e4bebe51b6e5cd41071cdf1b13494a2c8b4f01e28100e5a20c206dcf"
+  }
+]
