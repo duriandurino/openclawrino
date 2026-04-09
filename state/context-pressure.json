@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-09T11:34:15+08:00",
+  "updatedAt": "2026-04-09T11:34:29+08:00",
   "sessionKey": "agent:main:telegram:direct:6018252086",
   "sessionId": "c133ead9-c446-4246-8377-3b23c7be1c3d",
   "source": "openclaw-status",
@@ -11,6 +11,6 @@
   "snapshotThreshold": 48,
   "pressureState": "normal",
   "lastSnapshotHash": "1fd1e90f83addcd147e8aaf8548d52099b43a65580aa2f9cc16355700402418a",
-  "lastSnapshotAt": "2026-04-09T11:34:15+08:00",
+  "lastSnapshotAt": "2026-04-09T11:34:29+08:00",
   "shouldSnapshot": true
 }
