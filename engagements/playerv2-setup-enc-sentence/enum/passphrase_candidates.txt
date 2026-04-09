@@ -1,0 +1,500 @@
+the serial is 2d194622dfde0257
+AUTHORIZED_PI_SERIAL = "10000000d58ec40c"
+the serial is ffb6d42807368154
+the serial is 10000000d58ec40c
+Installing the Player App
+ncompass player serial 2d194622dfde0257
+the nested folder structure
+Player (Pi) polls the NCompass TV API
+AUTHORIZED\_PI\_SERIAL = "ffb6d42807368154"
+cd /home/pi/n-compasstv/player-server/
+pi serial 2d194622dfde0257
+nctv serial 2d194622dfde0257
+player serial 2d194622dfde0257
+ncompass player serial ffb6d42807368154
+ncompass player serial 10000000d58ec40c
+NTV360 Pi setup is complete.
+key is wiped from RAM subprocess
+echo "NTV360 Pi setup is complete."
+serial 2d194622dfde0257
+password 2d194622dfde0257
+key 2d194622dfde0257
+the secure runtime is
+the secure content is
+The Hardware Lock is
+the graphical target is
+the service environment is
+the hardware lock is
+the protected runtime is
+the installed system is
+the rest That is
+the original developer is
+The next step is
+the following programs are
+the whole daemon subprocess
+the processes from the
+the full path to
+the encrypted container so
+THE GRACE PERIOD COUNTDOWN
+Mount using the
+Start the specific N-Compass processes
+>> Downloading Player Server
+>> Download Player UI
+Downloading Player Server
+Installing Player Server
+Download Player UI
+sudo rm -rf /home/pi/n-compasstv;
+sudo chmod -R 777 /home/pi/n-compasstv
+echo ">> Downloading Player Server";
+echo ">> Download Player UI";
+mkdir -p /home/pi/Pictures
+The admin account is
+the default user is
+This ensures PM2
+start until the
+- one turnover note claims the Pi serial is used as the decryption key
+1. The player registers itself with the NCompass TV API
+The dashboard is the cloud control plane for the players.
+3. Give it a moment to actually spin up the processes
+2. Open and Mount using the Hardware Serial
+mkdir -p /home/pi/n-compasstv/player-server
+if ! -f /home/pi/player-server-2.6.0.zip ; then
+if -d /home/pi/n-compasstv/player-server-2.6.0 ; then
+rm -rf /home/pi/n-compasstv/player-server-2.6.0
+if ! -f /home/pi/player-ui-2.4.1.zip ; then
+unzip -o /home/pi/player-ui-2.4.1.zip -d /var/www/html/ui
+Key is the Bridge The license key generated
+2. The cloud knows the player is active (Online status)
+4. Confirm the default user is pi with home at /home/pi.
+pi serial ffb6d42807368154
+nctv serial ffb6d42807368154
+player serial ffb6d42807368154
+pi serial 10000000d58ec40c
+nctv serial 10000000d58ec40c
+player serial 10000000d58ec40c
+the NTV360 Raspberry Pi
+Player Runtime The
+The broader player docs also describe:
+Stop the player-chromium
+Reset the player’s database
+serial = get_pi_serial() vault =
+def get_pi_serial():
+current_serial = get_pi_serial()
+serial = get_pi_serial()
+Player Connect The
+Enter License Key
+The player registers itself
+the player hardware type
+the player software to
+How the Dashboard and Player Connect
+| Player | Filter by player type |
+player software to the latest v2 release
+to prevent the Pi from going to sleep:
+for the player-server (with
+Install the version compatible with Pi 5
+The player downloads all
+The player reports connection
+The player controls the
+the player fetches and
+The player continuously collects
+the player launches on
+The player should launch
+the player starts normally
+The player server writes
+The player server exposes
+7. Reboot the Pi
+5. Shut down the Pi
+!! CRITICAL: $CHECK_DIR is missing!
+setup is complete
+device 2d194622dfde0257
+2d194622dfde0257
+>> System Update and Upgrade
+>> Installing NGINX
+>> Installing NodeJS 20
+>> Installing Chromium
+>> Installing Gnome Terminal
+>> Installing SCROT and Unclutter
+>> Installing CEC Utils
+>> Cleaning old folders
+>> Creating Required Folders
+>> Copying PM2 Ecosystem Config File
+>> Copying NGINX Config
+>> Setting Wallpaper
+>> Setup Complete. Rebooting...
+install nginx -y
+install chromium -y
+install gnome-terminal -y
+install scrot unclutter -y
+install cec-utils -y
+install node-gyp
+System Update and
+Installing required system
+Installing NodeJS 20
+nodejs sudo npm
+Modern package name
+GNome Terminal echo
+Installing Gnome Terminal
+Installing SCROT and
+install scrot unclutter
+Creating Required Folders
+assets sudo chmod
+server sudo chmod
+already have or
+Force update node
+Moving over necessary
+config files echo
+Ecosystem Config File
+Copying NGINX Config
+Creating Desktop Config
+Installing required system apps
+echo ">> Installing NGINX";
+sudo apt install nginx -y;
+echo ">> Installing NodeJS 20";
+sudo apt install -y nodejs
+sudo npm install -g pm2
+echo ">> Installing Chromium";
+sudo apt install chromium -y;
+echo ">> Installing Gnome Terminal";
+sudo apt install gnome-terminal -y;
+sudo apt install scrot unclutter -y;
+echo ">> Installing CEC Utils";
+sudo apt install cec-utils -y;
+npm install node-gyp@latest
+echo ">> Setup Complete. Rebooting...";
+key is derived from the Raspberry Pi
+key material is the 16-character serial
+- Validates the Raspberry Pi serial and SD card CID.
+The dashboard is the control plane for every NTV360 Raspberry Pi player in the field. Here is the end-to-end flow:
+│ 1. Enter License Key → binds player to a Host │
+key binds the player to a host in the NCompa
+2. EMERGENCY BACKUP PLAYER (If SD is missing or dead)
+serial ffb6d42807368154
+password ffb6d42807368154
+key ffb6d42807368154
+serial 10000000d58ec40c
+password 10000000d58ec40c
+key 10000000d58ec40c
+If the SD card exists but the installed system is corrupted:
+sudo -u pi /usr/local/bin/pm2 delete all
+sudo mount /dev/mapper/nctv_data {mnt}
+sudo chown -R pi:pi {mnt}
+>> MODE: EMERGENCY STANDALONE PLAYER
+actually spin up
+Hardware Serial cmd
+EMERGENCY BACKUP PLAYER
+EMERGENCY STANDALONE PLAYER
+Activating Backup Player
+Skipping EEPROM update
+NTV360 Pi Scripts and Services Setup
+pi_env = os.environ.copy()
+pi_env"PM2_HOME" = "/home/pi/.pm2"
+pi_env"HOME" = "/home/pi"
+2. Start the processes from the secure vault
+mnt = "/home/pi/n-compasstv-secure"
+Environment for Pi 5 / Wayland
+vault = "/home/pi/vault.img"
+cat << 'EOF' > /tmp/pieeprom.conf
+>> Installing Player Server NPM Modules (Fixing node-gyp)
+>> Creating Desktop Config Paths for Pi 5
+echo ">> Creating Desktop Config Paths for Pi 5";
+mkdir -p /home/pi/.config/lxpanel/LXDE-pi/panels/
+the assessment team was
+This software is
+Purpose This document
+the turnover materials for
+Executive Summary The
+the cloud control plane
+the bridge between the
+Resilience Layer The
+Security intent The
+maintaining this system
+The turnover materials indicate
+the success path then
+services from the
+The design appears to
+the display alive while
+The turnover material references
+the idea that the
+The turnover docs also
+Intended logic The
+the expected application directory
+that signals the
+Additional resilience The
+The docs include both
+This strongly suggests historical
+the same live baseline
+The turnover docs explicitly
+the system logic appears
+Version sprawl The
+the current mixed turnover
+The turnover docs describe
+The most important concepts
+the Legacy version called
+Preferences Open the
+the Mode select field
+the following command sudo
+the installer script via
+The installer script will
+the following required programs
+a reboot open the
+the highlighted commands below
+the mouse pointer hides
+this should show
+files within the
+the next script pm2
+the command below sh
+This will start the
+This script watchdog
+emergency rebooting the
+the crash simulator command
+chromium Reset the
+Then run the installer script via
+the NTV360 digital signage
+this dashboard to
+The cloud knows the
+The dashboard gains the
+templates across the
+The admin dashboard provides
+operate under the
+the most important page
+Permanently removes the
+license from the
+connection between the
+Offline because the
+played across the
+separate from the
+the geographic distribution of
+a playlist that the
+Fillers ensure the
+Playlists define the
+the template zone and
+Screens define the
+the field technician team
+the physical deployment of
+Templates define the
+the display into named
+server uses this
+the Chromium frontend on
+the complete flow of
+the dashboard ends up
+This script: 1. Starts the
+2. Installs the
+driven from the
+the System Does The
+Content Playback The
+The license determines which
+the hardware timer triggers
+minutes that the
+the active input source
+automatically turning the
+Programmatic Advertising The
+the socket control interface
+the version compatible with
+the AnyDesk version with
+the Installer Script Download
+the current release tag
+Before running the
+present inside the
+Setup Watchdog The
+the hardware watchdog timer
+the watchdog systemd service
+through this checklist
+the active HDMI source
+NGINX serves the
+Chromium renders the
+the system crontab on
+Boot Configuration The
+the server writes them
+the database file stored
+the following remote commands
+available from the
+the AnyDesk config to
+The watchdog should auto
+Step 4 -- Run the Installer Script
+Run the installer:
+The installer will:
+2. Installs the watchdog package
+This rsync ensures the
+the script usually mounts
+key space is only the 16-character Pi serial
+1. A license key binds the player to a host in the NCompass TV platform
+secret API key in the
+AUTHORIZED_PI_SERIAL = "ffb6d42807368154"
+key - the success path then starts PM2 servi
+Together, these layers aim to make the players:
+- SQLite / local data: used by the player stack
+The Hardware Lock is the anti-cloning and secure-boot gate for the player runtime.
+- start a temporary player directly from the USB environment
+curl -O https://ncompasstv-prod-player-apps.s3.amazonaws.com/player-server-2.6.0.zip
+unzip -o /home/pi/player-server-2.6.0.zip -d /home/pi/n-compasstv/
+cp -r /home/pi/n-compasstv/player-server-2.6.0/ /home/pi/n-compasstv/player-server/
+curl -O https://ncompasstv-prod-player-apps.s3.amazonaws.com/player-ui-2.4.1.zip
+sudo cp /home/pi/nctv-installer/nginx.conf /etc/nginx/nginx.conf
+-f /home/pi/nctv-installer/panel && cp /home/pi/nctv-installer/panel /home/pi/.config/lxpanel/LXDE-pi/panels/
+-f /home/pi/nctv-installer/rpiBG.png && cp /home/pi/nctv-installer/rpiBG.png /home/pi/Pictures/
+s timezone and business hours determine when the player
+Player This is
+3. Content assigned to that license flows down to the player
+This is the complete flow of how content configured in the dashboard ends up playing on a Pi screen:
+| Dashboard Action | What Happens on the Pi |
+| Reboot Pi button | sudo reboot executed on the Pi |
+| License key, type, display settings | |
+The player continuously collects and reports:
+Install xscreensaver to prevent the Pi from going to sleep:
+Before running the installer, make sure these files are present inside the nctv-installer/ folder:
+1. Starts the player-server process via PM2
+After reboot, if the player starts normally, the watchdog is configured correctly.
+4. NGINX serves the assets and the Player UI
+pm2 restart player-server Restart the server
+pm2 stop player-chromium Stop the browser
+The player uses SQLite3 with the database file stored at:
+These shortcuts work when the player is running in Chromium kiosk mode:
+| Ctrl + Shift + R | Restart / reload the player UI |
+2. Reset the player database (removes license binding)
+&x20; 3. Give it a moment to actually spin up the processes
+\ 2. Open and Mount using the Hardware Serial
+The cloned player is
+the password during that
+Key behavior - This makes traditional
+the embedded player software
+the target Raspberry Pi
+The correct password would
+- AUTHORIZED_PI_SERIAL = "ffb6d42807368154"
+Output: AUTHORIZED_PI_SERIAL = "ffb6d42807368154"
+python AUTHORIZED_PI_SERIAL = "ffb6d42807368154"
+key was stored alongside the vault
+- Contains AUTHORIZED_PI_SERIAL = "ffb6d42807368154"
+passphrase is the Raspberry Pi
+The authorized serial was
+player_pi (pi player documentation).md
+- player_pi (pi player documentation).md
+- Raspberry Pi serial from /proc/cpuinfo
+- /home/pi/n-compasstv/player-server/
+- license key / device mapping
+Cloning a complete Pi/Player (Optional)
+(nctvapi2 / nctvsocket)
+│ NTV360 Pi Player │
+| Button | Action on Pi Player |
+ls /home/pi/n-compasstv/player-server/
+| Programmatic ad API keys | |
+NCompass TV Player (NTV360)
+serial = get\_pi\_serial() vault =
+def get\_pi\_serial():
+serial = get\_pi\_serial()
+91fb601dda9a33d9d6d520322660696a7cc53235b07d
+0x91fb601dda9a33d9d6d520322660696a7cc53235b07d
+device ffb6d42807368154
+ffb6d42807368154
+device 10000000d58ec40c
+10000000d58ec40c
+Primary sources were
+secure mount is
+Does Phoenix is
+secure runtime is
+lockout page is
+- secure PM2 stack is started
+- secure mount is unmounted/closed
+3. secure runtime is not allowed to run
+Anydesk which is
+service which is
+c version of Anydesk which is 6.1
+): return line.split(
+Hardware Verified.
+Vault ready. Starting PM2 services...
+Processes saved. Boot sequence complete.
+Hardware Mismatch! Locking UI...
+sudo umount -l {mnt}
+sudo losetup -D
+Lockscreen active. Standing guard.
+!!! WATCHDOG ARMED AND ACTIVE !!!
+SUCCESS: Vault mounted.
+FAILURE: Could not unlock vault.
+N-COMPASS PHOENIX RECOVERY SYSTEM v6.0
+!! WARNING: No SD Card detected.
+>> MODE: SYSTEM SURGEON (SD Detected)
+proc /proc proc defaults 0 0
+>> $MOUNT_POINT/etc/fstab echo
+Applying EEPROM configuration...
+Reloading systemd daemon...
+Enabling services...
+root directly or
+Creating services and
+Create systemd services
+Hardware Lockout Screen
+Compass Directory Watchdog
+Mount Project Vault
+Compass Phoenix Repair
+Create python and
+bash scripts cat
+import subprocess import
+return None return
+Define environment correctly
+Clear existing list
+Boot sequence complete
+level stops subprocess
+Launch Chromium process
+Chromium failed to
+Compass Dead Man
+System just booted
+TOTAL_WAIT second grace
+TOTAL_WAIT seconds remaining
+before watchdog arming
+WATCHDOG ARMED AND
+PREPARING NUCLEAR RECOVERY
+done sudo mount
+firmware sudo mv
+sync sudo reboot
+stuck mounts from
+Compass Phoenix v6
+Production Release sleep
+BOOT IDENTIFICATION BOOT_DRIVE
+COMPASS PHOENIX RECOVERY
+Compass processes pm2
+Standalone Mode via
+Scrubbing Main SD
+Restoring Master Gold
+proc proc defaults
+firmware vfat defaults
+Resetting Boot Order
+Ensuring Graphical Auto
+SD_ROOT systemctl set
+MOUNT_POINT systemctl enable
+MOUNT_POINT systemctl disable
+reboot else echo
+Make scripts executable
+Apply EEPROM boot
+Reload systemd and
+enable services echo
+Reloading systemd daemon
+Description=Hardware Lockout Screen
+Description=N-Compass Directory Watchdog
+print("Hardware Verified.")
+Compass Phoenix v6.0
+MPASS PHOENIX RECOVERY SYSTEM v6.0
+install -y nodejs sudo npm install -g pm2
+echo ">> Installing SCROT and Unclutter";
+socket connection is
+Filler content is
+scheduled content is
+confirm everything is
+Database backups are
+encryption without sudo
+!! CRITICAL: $CHECK\_DIR is missing!
+Key key derivation - The correct password wo
+- Intended Use: Player software for Raspberry Pi
+**The Pi serial number is freely available** via
+echo -n '{serial}' | sudo cryptsetup open {vault} nctv_data --key-file -
+cmd = f"echo -n '{serial}' | sudo cryptsetup open {vault} nctv_data --key-file -"
+i2vncompass nctve60arjay player
+ncompass 123nctv36otv player
+ncompass12e 202eplayere60 Nctvo
+nctve60player1 01ncompassn ntve60
+nctvplayer2023 12360ncompass entv
+2ncompasshorse 01nctve60dark player
+playern0 0cncompass tvnctv
+ncompass 360tvnctv360 0iplayer
+HORSE12e ncompassplayer nctv_36001
+player 0ncompass_v 0inctv360
+e60arjayplayer 2ncompass_nctv o1darkt
+ntvnctv2 c_player202a 0ncompass
+ncompassntv1 t_player12e 12nctv360
