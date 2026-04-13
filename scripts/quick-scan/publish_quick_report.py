@@ -390,9 +390,10 @@ def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: d
 
 def build_publish_env() -> dict:
     env = os.environ.copy()
-    # Important: do not inject a fallback GOG_KEYRING_PASSWORD here.
-    # If gog's file keyring was initialized with a different passphrase,
-    # forcing a guessed default creates the repeated AES KeyUnwrap loop.
+    # Reuse the workspace-standard gog passphrase only when the caller has not
+    # already supplied one. This keeps non-interactive publish flows working
+    # with the established gog keyring while still allowing explicit overrides.
+    env.setdefault("GOG_KEYRING_PASSWORD", "hatlesswhite")
     return env
 
 
