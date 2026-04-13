@@ -431,8 +431,9 @@ def print_links_from_summary(summary: dict) -> None:
     for key, label in [
         ("local_file", "Local file"),
         ("doc_link", "Docs"),
-        ("drive_link", "PDF preview"),
+        ("pdf_link", "PDF preview"),
         ("slides_link", "Slides"),
+        ("drive_link", "Drive file"),
     ]:
         value = summary.get(key)
         if value:
@@ -480,7 +481,13 @@ def main() -> int:
     if result.returncode != 0:
         raise SystemExit(explain_publish_failure(result.stderr.strip() or result.stdout.strip()))
 
-    print(result.stdout.strip())
+    stdout = (result.stdout or "").strip()
+    if stdout:
+        marker = "=== PUBLISHED LINKS ==="
+        if marker in stdout:
+            stdout = stdout.split(marker, 1)[0].rstrip()
+        if stdout:
+            print(stdout)
     summary = load_publish_summary(final_report_path)
     if summary:
         print_links_from_summary(summary)
