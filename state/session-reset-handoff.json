@@ -1,24 +1,39 @@
 {
-  "timestamp_local": "2026-04-13 17:15:50 PST",
-  "timestamp_iso": "2026-04-13T17:15:50+08:00",
+  "timestamp_local": "2026-04-13 18:12:44 PST",
+  "timestamp_iso": "2026-04-13T18:12:44+08:00",
   "date": "2026-04-13",
   "trigger": "manual-near-50-percent",
-  "summary": "hardwareLockV2 engagement documented through recon, enum, and vuln blocked-state; new pentest docs flow is implemented in orchestrator rules/templates and strengthened to require documentation updates on every meaningful run",
+  "summary": "Updated report docs, report generator, quick-scan publish flow, and gog non-interactive publish handling; verified archived quick-scan sample end-to-end with clean published links output.",
   "key_points": [
-    "hardwareLockV2 current blocker: env-based authorization can be altered locally, but vault.img remains locked because current unlock_vault.py derivation does not match the real LUKS key; no installer or repair payload was found on-box",
-    "engagement docs now live at engagements/hardwarelockv2/ with updated registers, enum/vuln findings, and blocked-state conclusion",
-    "pentest-orchestrator skill updated to require per-run documentation updates, not just end-of-phase summaries"
+    "Quick-scan reporting and publishing now follow the new output contract, and non-interactive gog publishing works again with the established keyring passphrase.",
+    "Archived sample engagement quick-onlinebookfair-net-2026-04-07_1831-fix was used to verify report/doc/pdf/slides generation and publish link formatting, without touching hardwarelockv2."
   ],
   "next_actions": [
-    "after reset, continue only if needed with either a last-chance forensic sweep for vault key remnants or by strengthening all phase-agent prompts/skills to inherit the run-level documentation rule"
+    "After reset, continue only if needed with report wording polish or broader workflow rollout beyond quick-scan publishing."
   ],
   "files": [
-    "engagements/hardwarelockv2/02-enum/enum-summary.md",
-    "engagements/hardwarelockv2/03-vuln/vuln-summary.md",
-    "skills/pentest-orchestrator/SKILL.md"
+    "engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.publish.json",
+    "scripts/quick-scan/publish_quick_report.py",
+    "reporting/scripts/generate_report.py"
   ],
   "branch": "main",
-  "head_before": "813fc54",
-  "git_status_before": [],
+  "head_before": "f70c321",
+  "git_status_before": [
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1759.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1801.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1810.json"
+  ],
   "handoff_path": "state/session-reset-handoff.json"
 }
