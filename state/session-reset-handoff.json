@@ -1,37 +1,24 @@
 {
-  "updatedAt": "2026-04-09T11:34:29+08:00",
-  "trigger": "push-failure-test",
-  "pressure": {
-    "updatedAt": "2026-04-09T11:34:29+08:00",
-    "sessionKey": "agent:main:telegram:direct:6018252086",
-    "sessionId": "c133ead9-c446-4246-8377-3b23c7be1c3d",
-    "source": "openclaw-status",
-    "percentUsed": 14,
-    "totalTokens": 37778,
-    "contextTokens": 272000,
-    "remainingTokens": 234222,
-    "warningThreshold": 40,
-    "snapshotThreshold": 48,
-    "pressureState": "normal",
-    "lastSnapshotHash": "1fd1e90f83addcd147e8aaf8548d52099b43a65580aa2f9cc16355700402418a",
-    "lastSnapshotAt": "2026-04-09T11:34:29+08:00",
-    "shouldSnapshot": true
-  },
-  "currentTask": "push failure test",
-  "objective": "verify local snapshot survives remote push failure",
-  "keyPoints": [
-    "simulate broken remote by overriding push URL"
+  "timestamp_local": "2026-04-13 17:15:50 PST",
+  "timestamp_iso": "2026-04-13T17:15:50+08:00",
+  "date": "2026-04-13",
+  "trigger": "manual-near-50-percent",
+  "summary": "hardwareLockV2 engagement documented through recon, enum, and vuln blocked-state; new pentest docs flow is implemented in orchestrator rules/templates and strengthened to require documentation updates on every meaningful run",
+  "key_points": [
+    "hardwareLockV2 current blocker: env-based authorization can be altered locally, but vault.img remains locked because current unlock_vault.py derivation does not match the real LUKS key; no installer or repair payload was found on-box",
+    "engagement docs now live at engagements/hardwarelockv2/ with updated registers, enum/vuln findings, and blocked-state conclusion",
+    "pentest-orchestrator skill updated to require per-run documentation updates, not just end-of-phase summaries"
   ],
-  "decisions": [],
-  "blockers": [],
-  "nextSteps": [
-    "restore origin after test"
+  "next_actions": [
+    "after reset, continue only if needed with either a last-chance forensic sweep for vault key remnants or by strengthening all phase-agent prompts/skills to inherit the run-level documentation rule"
   ],
-  "files": [],
-  "preferences": [],
-  "assumptions": [],
+  "files": [
+    "engagements/hardwarelockv2/02-enum/enum-summary.md",
+    "engagements/hardwarelockv2/03-vuln/vuln-summary.md",
+    "skills/pentest-orchestrator/SKILL.md"
+  ],
   "branch": "main",
-  "headBefore": "a9d6224",
-  "gitStatusBefore": [],
-  "snapshotHash": "1fd1e90f83addcd147e8aaf8548d52099b43a65580aa2f9cc16355700402418a"
+  "head_before": "813fc54",
+  "git_status_before": [],
+  "handoff_path": "state/session-reset-handoff.json"
 }
