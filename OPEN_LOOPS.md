@@ -4,4 +4,4 @@
 - none
 
 ## Next steps
-- restore origin after test
+- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset

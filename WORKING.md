@@ -1,16 +1,16 @@
 # WORKING.md
 
 ## Current objective
-verify local snapshot survives remote push failure
+Maintain compact, durable working state across compaction and reset
 
 ## Current task
-push failure test
+Preserve working context before compaction or reset
 
 ## Key context
-- simulate broken remote by overriding push URL
+- event token count: unknown
 
 ## Exact next actions
-- restore origin after test
+- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
 
 ## Critical files
 - none

@@ -35,24 +35,25 @@ Every slide deck follows this flow. Slide density adjusts to the requested count
 
 ```
 Slide 1:  Title Slide
-Slide 2:  Problem Statement
-Slide 3:  Target Overview
-[Slides 4-N-3: Findings (distributed by severity)]
-Slide N-2: Remediation
+Slide 2:  Executive Summary / Problem Statement
+Slide 3:  Scope, ROE, Target Overview
+Slide 4:  Attack Path / Engagement Story
+[Slides 5-N-3: Findings (distributed by severity and status)]
+Slide N-2: Remediation + Retest Roadmap
 Slide N-1: Why OpenClaw / Methodology Value
-Slide N:   Q&A / Contact
+Slide N:   Cleanup, Residual Risk, Q&A / Contact
 ```
 
 ### Slide Distribution by Count
 
-| Total Slides | Problem | Target | Findings | Remediation | Methodology | Closing |
-|-------------|---------|--------|----------|-------------|-------------|---------|
-| **5** | 1 | 0 | 2 | 1 | 0 | 1 |
-| **7** | 1 | 1 | 3 | 1 | 0 | 1 |
-| **10** | 1 | 1 | 5 | 1 | 1 | 1 |
-| **12** | 1 | 1 | 6 | 1 | 2 | 1 |
-| **15** | 1 | 1 | 8 | 2 | 2 | 1 |
-| **20** | 2 | 1 | 11 | 2 | 2 | 2 |
+| Total Slides | Exec/Problem | Scope/Target | Attack Path | Findings | Remediation | Methodology | Closing |
+|-------------|--------------|--------------|-------------|----------|-------------|-------------|---------|
+| **5** | 1 | 1 | 0 | 2 | 1 | 0 | 1 |
+| **7** | 1 | 1 | 1 | 3 | 1 | 0 | 1 |
+| **10** | 1 | 1 | 1 | 5 | 1 | 1 | 1 |
+| **12** | 1 | 1 | 1 | 6 | 1 | 1 | 1 |
+| **15** | 1 | 1 | 1 | 8 | 2 | 1 | 1 |
+| **20** | 2 | 1 | 2 | 11 | 2 | 1 | 1 |
 
 ---
 
@@ -88,10 +89,12 @@ What the presenter should say while this slide is shown.
 **Visual:** Severity badge + CVSS score + icon
 
 **Content:**
-- **Severity:** [CRITICAL/HIGH/MEDIUM/LOW] (CVSS X.X)
+- **Severity:** [CRITICAL/HIGH/MEDIUM/LOW] (CVSS X.X if used)
+- **Status:** [suspected / validated / exploited / retested]
 - **Affected:** [Target/service/version]
 - **What:** [1-line vulnerability description]
 - **Impact:** [1-line business impact]
+- **Evidence:** [EVI-XXX or concise proof reference]
 
 **Speaker Notes:**
 [Talking points with context, evidence reference]
@@ -120,16 +123,16 @@ What the presenter should say while this slide is shown.
 ### Attack Chain Slide
 
 ```
-### SLIDE [N]: Attack Chain
+### SLIDE [N]: Attack Chain / Engagement Story
 
-**Visual:** Flowchart/diagram
+**Visual:** Flowchart, timeline, or attack-path table
 
 **Content:**
 [Step 1] → [Step 2] → [Step 3] → [Result]
-Each step with brief label
+Each step with brief label, and include evidence IDs where possible
 
 **Speaker Notes:**
-[Narrative walkthrough of the exploitation path]
+[Narrative walkthrough of the exploitation path or blocked path]
 ```
 
 ---
@@ -139,17 +142,18 @@ Each step with brief label
 Read from the engagement report directory:
 
 ```
-engagements/<target>/report/
-├── pentest-report-full.md          # Primary source for all content
-├── pentest-report-presentation.md  # Existing presentation-ready content
-├── findings-summary.md             # Structured findings table
-└── openclaw-value.md               # Methodology/why OpenClaw content
+engagements/<target>/06-report/
+├── REPORT_FINAL_<timestamp>.md            # Primary source for all content
+├── EXECUTIVE_SUMMARY_<timestamp>.md       # Executive framing if split out
+├── presentation-ready.md                  # Optional prepared deck source
+└── openclaw-value.md                      # Methodology/why OpenClaw content
 ```
 
-Also read from phase directories for evidence references:
+Also read from shared registers and phase directories for evidence references:
 
 ```
-engagements/<target>/{recon,enum,vuln,exploit}/
+engagements/<target>/registers/
+engagements/<target>/{01-recon,02-enum,03-vuln,04-exploit,05-post-exploit}/
 ```
 
 ---
@@ -195,11 +199,22 @@ Use the distribution table above to allocate slides per section.
 ### Step 4 — Generate Slides
 Output each slide in the format above. Prioritize:
 1. CRITICAL/HIGH findings first
-2. Most impactful findings for the audience
-3. Visual variety (mix tables, diagrams, bullets)
+2. Attack paths that explain business impact
+3. Findings with strongest evidence and clearest remediation
+4. Visual variety (mix tables, diagrams, bullets)
 
 ### Step 5 — Add Speaker Notes
 Every slide must have speaker notes. These are what the presenter reads/speaks.
+
+### Step 6 — Reflect Current Output Contract
+Ensure the deck visibly covers:
+- executive risk posture
+- scope/ROE and limitations
+- attack path or engagement story
+- finding status and evidence
+- remediation roadmap
+- retest signal
+- cleanup / residual risk
 
 ---
 

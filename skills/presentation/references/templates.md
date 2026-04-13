@@ -17,11 +17,11 @@
 ╚══════════════════════════════════════════════════════════╝
 ```
 
-## Problem Statement Slide
+## Executive Summary / Problem Statement Slide
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  THE PROBLEM                                             │
+│  EXECUTIVE SUMMARY / THE PROBLEM                         │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │  Digital signage devices are deployed everywhere:        │
@@ -34,14 +34,16 @@
 │                                                          │
 │  One compromised device = fleet-wide risk                │
 │                                                          │
+│  Bottom line: risk must be shown as impact + path        │
+│                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
 
-## Target Overview Slide
+## Scope / Target Overview Slide
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  TARGET PROFILE                                          │
+│  SCOPE / TARGET PROFILE                                  │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │  Device:     Raspberry Pi 5 Model B (4GB)                │
@@ -54,6 +56,8 @@
 │                                                          │
 │  Business:   n-compass TV ad network                     │
 │  Model:      NTV → Dealers → Hosts → Players             │
+│  ROE:        Physical testing allowed                    │
+│  Limits:     Storage bound to device / no offline clone  │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -102,11 +106,11 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-## Attack Chain Slide
+## Attack Path / Engagement Story Slide
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  ATTACK CHAIN                                            │
+│  ATTACK PATH / ENGAGEMENT STORY                          │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │  PHYSICAL ACCESS                                         │
@@ -129,11 +133,11 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-## Remediation Slide
+## Remediation + Retest Slide
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  REMEDIATION — All fixes under 3 hours                   │
+│  REMEDIATION + RETEST                                    │
 ├──────────────────────────────────────────────────────────┤
 │                                                          │
 │  P0 — IMMEDIATE (< 10 min each)                          │
@@ -151,6 +155,10 @@
 │  ☐ Device attestation for MQTT                          │
 │  ☐ SSH key auth + disable password auth                 │
 │  ☐ Signed content manifests                             │
+│                                                          │
+│  RETEST SUCCESS                                         │
+│  ✔ sudo requires auth, secrets not world-readable       │
+│  ✔ attack path no longer reproduces                     │
 │                                                          │
 └──────────────────────────────────────────────────────────┘
 ```
@@ -183,16 +191,18 @@
 └──────────────────────────────────────────────────────────┘
 ```
 
-## Q&A Slide
+## Cleanup / Residual Risk / Q&A Slide
 
 ```
 ╔══════════════════════════════════════════════════════════╗
 ║                                                          ║
-║                      QUESTIONS?                          ║
+║           CLEANUP / RESIDUAL RISK / QUESTIONS?          ║
 ║                                                          ║
-║         Presented by: The Darkhorse                      ║
-║         Framework: OpenClaw Specter                      ║
-║         Contact: [your contact info]                     ║
+║   Cleanup: [none introduced / removed / pending]        ║
+║   Residual Risk: [short summary]                         ║
+║   Presented by: The Darkhorse                            ║
+║   Framework: OpenClaw Specter                            ║
+║   Contact: [your contact info]                           ║
 ║                                                          ║
 ╚══════════════════════════════════════════════════════════╝
 ```
