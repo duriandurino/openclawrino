@@ -126,10 +126,18 @@ def build_docx(data, output_path):
         doc.add_paragraph(f"Severity: {f.get('severity')}  |  CVSS: {f.get('cvss', 'N/A')}" )
         doc.add_paragraph(f"Affected: {f.get('affected', 'N/A')}")
         doc.add_paragraph(f"Description: {f.get('description', '')}")
+        if f.get('technical_basis'):
+            doc.add_paragraph(f"Technical Basis: {f.get('technical_basis', '')}")
         doc.add_paragraph(f"Evidence: {f.get('evidence', '')}")
+        if f.get('reproduction'):
+            doc.add_paragraph(f"Reproduction / Validation Steps: {f.get('reproduction', '')}")
         doc.add_paragraph(f"Impact: {f.get('impact', '')}")
         doc.add_paragraph(f"Remediation: {f.get('remediation', '')}")
+        if f.get('retest_guidance'):
+            doc.add_paragraph(f"Retest Guidance: {f.get('retest_guidance', '')}")
         doc.add_paragraph(f"Hardening: {f.get('hardening', '')}")
+        if f.get('cleanup_notes'):
+            doc.add_paragraph(f"Cleanup / Side-Effect Notes: {f.get('cleanup_notes', '')}")
         refs = f.get('references')
         if refs:
             doc.add_paragraph("References: " + ", ".join(refs))
@@ -385,6 +393,8 @@ def build_styled_pptx(data, output_path, title=None):
     qs = data.get("quick_scan_sections", {}) or {}
     exec_bullets = clean_bullets(qs.get("executive_summary"))
     fingerprint_bullets = clean_bullets(qs.get("target_fingerprint"))
+    why_varied = clean_bullets(qs.get("why_varied"))
+    next_actions = clean_bullets(qs.get("recommended_next_action"))
     deck_title = title or f"Pentest Report — {target}"
     date_str = datetime.now().strftime("%B %d, %Y")
 
@@ -403,14 +413,22 @@ def build_styled_pptx(data, output_path, title=None):
         ]
         for f in findings[:5]:
             exec_lines.append(f"• {f.get('id', 'V-???')}: {summarize_title(f.get('title', 'Untitled'))}")
-        if len(findings) > 5:
-            exec_lines.append(f"• +{len(findings) - 5} more findings covered in the deck")
-        if enhancements:
-            exec_lines.extend(["", f"• {len(enhancements)} hardening themes included"])
     gen.add_content_slide("Executive Summary", exec_lines)
+
+    scope_lines = [
+        "Assessment type: quick scan triage workflow" if data.get("quick_scan") else "Assessment type: structured pentest",
+        "Rules of engagement: safe or low-impact checks only" if data.get("quick_scan") else "Rules of engagement: per authorized engagement scope",
+        "Limitation: findings require manual validation before being treated as confirmed vulnerabilities",
+        "Method: Recon, Enumeration, Analysis, Reporting",
+    ]
+    gen.add_content_slide("Scope, ROE, and Methodology", scope_lines)
 
     if fingerprint_bullets:
         gen.add_content_slide("Target Fingerprint", [f"• {line}" for line in fingerprint_bullets[:8]])
+
+    if why_varied or next_actions:
+        story_lines = [f"• {line}" for line in (why_varied[:4] + next_actions[:3])]
+        gen.add_content_slide("Attack Path / Engagement Story", story_lines[:8])
 
     left = [
         f"Critical: {counts['Critical']}",
@@ -438,12 +456,13 @@ def build_styled_pptx(data, output_path, title=None):
                 summarize_title(f.get("title", "Untitled")),
             ])
         if rows:
-            title_text = "Top Findings" if idx == 1 else f"Findings Overview ({idx}/{len(overview_chunks)})"
+            title_text = "Findings Summary" if idx == 1 else f"Findings Summary ({idx}/{len(overview_chunks)})"
             gen.add_table_slide(title_text, ["ID", "Severity", "CVSS", "Finding"], rows)
 
     for f in findings:
         content = [
             f"{f.get('severity', 'Info').upper()} — CVSS {f.get('cvss', 'N/A')}",
+            f"Status: {f.get('status', 'validated' if data.get('quick_scan') else 'reported')}",
             "",
             *finding_slide_summary(f),
         ]
@@ -468,7 +487,7 @@ def build_styled_pptx(data, output_path, title=None):
     for idx in range(roadmap_pages):
         left_items = immediate_chunks[idx] if idx < len(immediate_chunks) else ["No additional immediate actions"]
         right_items = short_term_chunks[idx] if idx < len(short_term_chunks) else ["No additional planned actions"]
-        title_text = "Remediation Roadmap" if idx == 0 else f"Remediation Roadmap ({idx + 1}/{roadmap_pages})"
+        title_text = "Remediation and Retest Roadmap" if idx == 0 else f"Remediation and Retest Roadmap ({idx + 1}/{roadmap_pages})"
         gen.add_two_column_slide(
             title_text,
             "Immediate Priority",
@@ -476,6 +495,14 @@ def build_styled_pptx(data, output_path, title=None):
             "Planned Hardening",
             right_items,
         )
+
+    cleanup_lines = [
+        "Cleanup: no target-side cleanup actions were captured by this reporting workflow",
+        "Residual risk: triage candidates may still indicate real exposure until manually validated and remediated",
+    ]
+    if next_actions:
+        cleanup_lines.extend([f"Next: {line}" for line in next_actions[:4]])
+    gen.add_content_slide("Cleanup, Residual Risk, and Next Steps", cleanup_lines[:8])
 
     gen.save(output_path)
     return output_path
@@ -543,15 +570,22 @@ def generate_report(data):
     findings = data.get("findings", [])
     enhancements = data.get("enhancements", [])
     date = datetime.now().strftime("%Y-%m-%d")
+    counts = severity_counts(findings)
+    sorted_findings = sorted(findings, key=lambda x: SEVERITY_ORDER.get(x.get("severity", "Info"), 99))
+    overall_risk = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev, 0) > 0), "Info")
 
     lines = []
 
-    # Title
     lines.append(f"# Penetration Test Report — {target}")
-    lines.append(f"\n**Date:** {date}")
+    lines.append("")
+    lines.append(f"**Status:** Final")
+    lines.append(f"**Date:** {date}")
     lines.append(f"**Target:** {target}")
-    lines.append(f"**Findings:** {len(findings)}\n")
-    lines.append("---\n")
+    lines.append(f"**Overall Risk:** {overall_risk}")
+    lines.append(f"**Findings:** {len(findings)}")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
 
     qs = data.get("quick_scan_sections", {}) or {}
     exec_lines = clean_bullets(qs.get("executive_summary"))
@@ -560,61 +594,135 @@ def generate_report(data):
     next_action_lines = clean_bullets(qs.get("recommended_next_action"))
     quick_reco_lines = clean_bullets(qs.get("quick_recommendations"))
 
-    # Executive Summary
-    lines.append("## 1. Executive Summary\n")
+    lines.append("## 1. Executive Summary")
+    lines.append("")
     if exec_lines:
         for line in exec_lines:
             lines.append(f"- {line}")
-        lines.append("")
     else:
         lines.append(generate_executive_summary(findings, enhancements))
-    lines.append("\n---\n")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
 
-    section_no = 2
+    lines.append("## 2. Scope, ROE, and Methodology")
+    lines.append("")
+    if data.get("quick_scan"):
+        lines.append("- Assessment type: quick scan triage workflow")
+        lines.append("- Intended use: rapid, low-impact exposure assessment and reporting triage")
+        lines.append("- Rules of engagement: safe or low-impact checks only unless a selected profile explicitly broadens coverage")
+        lines.append("- Limitation: this is not a full pentest and findings require manual validation before being treated as confirmed vulnerabilities")
+        lines.append("")
+        lines.append("**Phases executed**")
+        lines.append("- Reconnaissance, lightweight target and exposure fingerprinting")
+        lines.append("- Enumeration, safe surface validation and basic discovery")
+        lines.append("- Vulnerability analysis, candidate weakness review from collected artifacts")
+        lines.append("- Reporting, triage-oriented findings with next-step guidance")
+    else:
+        lines.append("- Assessment type: structured penetration test")
+        lines.append("- Methodology: Reconnaissance, Enumeration, Vulnerability Analysis, Exploitation, Post-Exploitation, Reporting")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+
+    section_no = 3
     if target_fp_lines:
-        lines.append(f"## {section_no}. Target Fingerprint\n")
+        lines.append(f"## {section_no}. Target Fingerprint")
+        lines.append("")
         for line in target_fp_lines:
             lines.append(f"- {line}")
-        lines.append("\n---\n")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
         section_no += 1
 
     if why_varied_lines:
-        lines.append(f"## {section_no}. Why This Quick Scan Varied\n")
+        lines.append(f"## {section_no}. Why This Quick Scan Varied")
+        lines.append("")
         for line in why_varied_lines:
             lines.append(f"- {line}")
-        lines.append("\n---\n")
+        lines.append("")
+        lines.append("---")
+        lines.append("")
         section_no += 1
 
-    # Methodology
-    lines.append(f"## {section_no}. Methodology\n")
-    if data.get("quick_scan"):
-        lines.append("This assessment used the quick-scan workflow, a rapid low-impact triage process rather than a full pentest:\n")
-        lines.append("1. **Reconnaissance** — Lightweight target and exposure fingerprinting")
-        lines.append("2. **Enumeration** — Safe surface validation and basic discovery")
-        lines.append("3. **Vulnerability Analysis** — Candidate weakness review from collected artifacts")
-        lines.append("4. **Reporting** — Triage-oriented findings with next-step guidance\n")
-    else:
-        lines.append("The assessment followed a structured penetration testing methodology:\n")
-        lines.append("1. **Reconnaissance** — Passive information gathering (DNS, WHOIS, OSINT)")
-        lines.append("2. **Enumeration** — Active service discovery and fingerprinting")
-        lines.append("3. **Vulnerability Analysis** — CVE matching and manual testing")
-        lines.append("4. **Exploitation** — Proof-of-concept exploitation of confirmed vulnerabilities")
-        lines.append("5. **Post-Exploitation** — Privilege escalation and impact assessment")
-        lines.append("6. **Reporting** — Documented findings with remediation guidance\n")
-    lines.append("---\n")
+    lines.append(f"## {section_no}. Findings Summary")
+    lines.append("")
+    lines.append("| ID | Finding | Severity | Asset |")
+    lines.append("|----|---------|----------|-------|")
+    for i, f in enumerate(sorted_findings, 1):
+        fid = f.get("id", f"VULN-{i:03d}")
+        title = f.get("title", "Untitled")
+        sev = f.get("severity", "N/A")
+        asset = f.get("affected", target)
+        lines.append(f"| {fid} | {title} | {sev} | {asset} |")
+    if not sorted_findings:
+        lines.append(f"| N/A | No confirmed findings packaged | Info | {target} |")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
     section_no += 1
 
-    # Findings
-    lines.append(f"## {section_no}. Findings\n")
-    sorted_findings = sorted(findings, key=lambda x: SEVERITY_ORDER.get(x.get("severity", "Info"), 99))
+    lines.append(f"## {section_no}. Attack Path / Engagement Story")
+    lines.append("")
+    if why_varied_lines or next_action_lines:
+        story_lines = why_varied_lines[:3] + next_action_lines[:2]
+        for line in story_lines:
+            lines.append(f"- {line}")
+    elif sorted_findings:
+        top = sorted_findings[0]
+        lines.append(f"- Primary engagement story: {top.get('title', 'Top finding')} was the strongest triage signal during this assessment.")
+        lines.append(f"- Strongest observed impact: {top.get('impact', 'Impact requires validation.')}")
+        lines.append("- This path remains a triage hypothesis until validated through deeper manual testing.")
+    else:
+        lines.append("- No attack path was established from the current quick-scan evidence set.")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    section_no += 1
+
+    lines.append(f"## {section_no}. Detailed Findings")
+    lines.append("")
     for i, finding in enumerate(sorted_findings, 1):
         lines.append(format_finding(finding, i))
-
-    lines.append("---\n")
+    if not sorted_findings:
+        lines.append("No detailed findings were packaged from the current data set.\n")
+    lines.append("---")
+    lines.append("")
     section_no += 1
 
-    # Security Enhancement Recommendations
-    lines.append(f"## {section_no}. Security Enhancement Recommendations\n")
+    lines.append(f"## {section_no}. Remediation Roadmap")
+    lines.append("")
+    immediate = []
+    short_term = []
+    medium_term = []
+    for f in sorted_findings:
+        item = f"{f.get('id', 'V-???')} — {summarize_fix(f.get('remediation', 'No remediation provided'))}"
+        sev = f.get("severity", "Info")
+        if sev in ("Critical", "High"):
+            immediate.append(item)
+        elif sev == "Medium":
+            short_term.append(item)
+        else:
+            medium_term.append(item)
+    lines.append("**Immediate**")
+    for item in immediate[:10] or ["No immediate remediation items captured"]:
+        lines.append(f"- {item}")
+    lines.append("")
+    lines.append("**Short-term**")
+    for item in short_term[:10] or ["No short-term remediation items captured"]:
+        lines.append(f"- {item}")
+    lines.append("")
+    lines.append("**Medium-term hardening**")
+    for item in medium_term[:10] or ["No medium-term hardening items captured"]:
+        lines.append(f"- {item}")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    section_no += 1
+
+    lines.append(f"## {section_no}. Security Enhancement Recommendations")
+    lines.append("")
     enhancement_items = list(enhancements)
     for line in quick_reco_lines:
         enhancement_items.append({"category": "Quick Scan Context", "recommendation": line})
@@ -622,22 +730,44 @@ def generate_report(data):
         for enh in enhancement_items:
             cat = enh.get("category", "General")
             rec = enh.get("recommendation", "No recommendation provided")
-            lines.append(f"### {cat}\n")
-            lines.append(f"{rec}\n")
+            lines.append(f"### {cat}")
+            lines.append("")
+            lines.append(rec)
+            lines.append("")
     else:
-        lines.append("No additional enhancement recommendations identified.\n")
-    lines.append("---\n")
+        lines.append("No additional enhancement recommendations identified.")
+        lines.append("")
+    lines.append("---")
+    lines.append("")
     section_no += 1
 
+    lines.append(f"## {section_no}. Cleanup / Restoration Status")
+    lines.append("")
+    lines.append("- Tester-created artifacts introduced: none captured by this reporting workflow")
+    lines.append("- Cleanup performed: not applicable for markdown report generation artifacts")
+    lines.append("- Remaining changes on target: unknown from quick-scan triage alone, validate during deeper follow-up if needed")
+    lines.append("- Residual risk: candidate findings may still indicate meaningful exposure until manually validated and remediated")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    section_no += 1
+
+    lines.append(f"## {section_no}. Retest Guidance / Recommended Next Action")
+    lines.append("")
     if next_action_lines:
-        lines.append(f"## {section_no}. Recommended Next Action\n")
         for line in next_action_lines:
             lines.append(f"- {line}")
-        lines.append("\n---\n")
-        section_no += 1
+    else:
+        lines.append("- Re-test after remediation by rerunning the same profile and manually validating whether the previously observed exposure still reproduces.")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    section_no += 1
 
-    # Risk Summary Matrix
-    lines.append(f"## {section_no}. Risk Summary Matrix\n")
+    lines.append(f"## {section_no}. Appendices")
+    lines.append("")
+    lines.append("### A. Risk Summary Matrix")
+    lines.append("")
     lines.append("| ID | Finding | Severity | Remediation Priority |")
     lines.append("|----|---------|----------|---------------------|")
     for i, f in enumerate(sorted_findings, 1):
@@ -646,20 +776,20 @@ def generate_report(data):
         sev = f.get("severity", "N/A")
         priority = "Immediate" if sev in ("Critical", "High") else "Scheduled" if sev == "Medium" else "Low Priority"
         lines.append(f"| {fid} | {title} | {sev} | {priority} |")
+    if not sorted_findings:
+        lines.append("| N/A | No confirmed findings packaged | Info | Low Priority |")
     lines.append("")
-
-    # Appendices
-    lines.append("---\n")
-    section_no += 1
-    lines.append(f"## {section_no}. Appendices\n")
-    lines.append("### A. Tools Used\n")
+    lines.append("### B. Tools Used")
+    lines.append("")
     lines.append("- nmap, masscan (enumeration)")
     lines.append("- Metasploit, custom scripts (exploitation)")
     lines.append("- Shodan, crt.sh (OSINT)")
     lines.append("- Burp Suite, curl (web testing)")
     lines.append("")
-    lines.append("### B. Scope Boundaries\n")
-    lines.append("All testing was conducted within the authorized scope. No denial-of-service attacks were performed without explicit permission.\n")
+    lines.append("### C. Scope Boundaries")
+    lines.append("")
+    lines.append("All testing was conducted within the authorized scope. No denial-of-service attacks were performed without explicit permission.")
+    lines.append("")
 
     return "\n".join(lines)
 

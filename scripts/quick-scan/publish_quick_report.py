@@ -346,13 +346,18 @@ def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: d
             "id": f"QS-{idx:03d}",
             "title": title_for(row["finding"]),
             "severity": row["severity"],
+            "status": "candidate" if row.get("confidence") == "candidate" else "observed",
             "cvss": "N/A",
             "affected": report_info["target"],
             "description": f"Quick scan candidate from the {row['source']} phase: {row['finding']}",
+            "technical_basis": row.get("finding_type", "quick-scan observation"),
             "evidence": f"Quick scan candidate finding ({row['confidence']}) from {row['source']}: {row['finding']}",
             "impact": impact_for(row["severity"], row["finding"], adaptive_context),
+            "reproduction": f"Re-run the {row['source']} quick-scan step and manually validate whether '{row['finding']}' still reproduces on the target.",
             "remediation": remediation_for(row["finding"], row["severity"], adaptive_context),
+            "retest_guidance": "After remediation, repeat the same quick-scan check and confirm the exposed condition is no longer observable.",
             "hardening": hardening_for(row["finding"], adaptive_context),
+            "cleanup_notes": "No exploit payloads or target-side persistence were introduced by this quick-scan publishing workflow.",
             "references": [
                 f"Quick scan profile: {report_info['profile']}",
                 f"Execution mode: {report_info['mode']}"
@@ -361,8 +366,22 @@ def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: d
 
     payload = {
         "target": f"{report_info['target']} (Quick Scan)",
+        "engagement": report_info.get("engagement"),
+        "profile": report_info.get("profile"),
+        "mode": report_info.get("mode"),
+        "quick_scan": True,
         "findings": findings,
-        "enhancements": build_enhancements(adaptive_context)
+        "enhancements": build_enhancements(adaptive_context),
+        "cleanup": {
+            "artifacts_introduced": "none",
+            "cleanup_performed": "not applicable for quick-scan report publishing",
+            "residual_risk": "candidate findings may still reflect meaningful exposure until manually validated and remediated"
+        },
+        "retest_guidance": [
+            "Re-run the same quick-scan profile after remediation.",
+            "Manually validate that previously observed candidates no longer reproduce.",
+            "Escalate to deeper testing if the same exposure persists."
+        ]
     }
     if adaptive_context:
         payload.update(adaptive_context)
