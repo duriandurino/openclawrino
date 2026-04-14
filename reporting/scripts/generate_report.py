@@ -354,7 +354,7 @@ def summarize_hardening(text):
     return "Reduce unnecessary exposure and monitor for unexpected access"
 
 
-def summarize_title(title):
+def summarize_title(title, limit=42):
     title = clean_text(title)
     replacements = {
         "SMB Signing Not Required": "SMB signing is optional",
@@ -362,16 +362,37 @@ def summarize_title(title):
         "RDP Reveals Domain and Host Metadata": "RDP leaks host metadata",
         "No Confirmed Legacy SMB Vulnerabilities in Safe NSE Pass": "No legacy SMB flaw confirmed",
     }
-    return replacements.get(title, concise_phrase(title, 42))
+    return replacements.get(title, concise_phrase(title, limit))
 
 
-def finding_slide_summary(finding):
-    return [
-        f"Risk: {summarize_title(finding.get('title', 'Untitled'))}",
-        f"Exposure: {summarize_exposure(finding.get('affected', 'Not specified'))}",
-        f"Fix: {summarize_fix(finding.get('remediation', 'No remediation provided'))}",
-        f"Harden: {summarize_hardening(finding.get('hardening', 'No hardening guidance'))}",
+def finding_slide_summary(finding, quick_scan=False):
+    if quick_scan:
+        return [
+            f"Risk: {summarize_title(finding.get('title', 'Untitled'))}",
+            f"Exposure: {summarize_exposure(finding.get('affected', 'Not specified'))}",
+            f"Fix: {summarize_fix(finding.get('remediation', 'No remediation provided'))}",
+            f"Harden: {summarize_hardening(finding.get('hardening', 'No hardening guidance'))}",
+        ]
+
+    severity = str(finding.get('severity', 'Info')).upper()
+    cvss = finding.get('cvss', 'N/A')
+    status = finding.get('status', 'reported')
+    lines = [
+        f"Severity: {severity} | CVSS: {cvss} | Status: {status}",
+        f"Affected: {clean_text(finding.get('affected', 'Not specified')) or 'Not specified'}",
     ]
+
+    detail_fields = [
+        ("Description", finding.get('description', '')),
+        ("Impact", finding.get('impact', '')),
+        ("Remediation", finding.get('remediation', '')),
+        ("Hardening", finding.get('hardening', '')),
+    ]
+    for label, value in detail_fields:
+        cleaned = clean_text(value)
+        if cleaned:
+            lines.append(f"{label}: {cleaned}")
+    return lines
 
 
 def chunked(items, size):
@@ -460,13 +481,13 @@ def build_styled_pptx(data, output_path, title=None):
             gen.add_table_slide(title_text, ["ID", "Severity", "CVSS", "Finding"], rows)
 
     for f in findings:
-        content = [
-            f"{f.get('severity', 'Info').upper()} — CVSS {f.get('cvss', 'N/A')}",
-            f"Status: {f.get('status', 'validated' if data.get('quick_scan') else 'reported')}",
-            "",
-            *finding_slide_summary(f),
-        ]
-        gen.add_content_slide(f"{f.get('id', 'V-???')} — {summarize_title(f.get('title', 'Untitled'))}", content)
+        is_quick_scan = bool(data.get('quick_scan'))
+        content = finding_slide_summary(f, quick_scan=is_quick_scan)
+        title_limit = 42 if is_quick_scan else 72
+        gen.add_content_slide(
+            f"{f.get('id', 'V-???')} — {summarize_title(f.get('title', 'Untitled'), limit=title_limit)}",
+            content,
+        )
 
     immediate = []
     short_term = []
