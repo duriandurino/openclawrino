@@ -121,3 +121,27 @@
 - **Evidence ID:** EVI-011
 - **Analyst notes:** this reinforces that the problem is now runtime provenance and payload recovery, not just passphrase alignment; if phoenix is absent, player cannot appear even when authorization passes
 - **Next step:** treat `vault.img`, historical `setup.enc`, external repair media, and sibling-device comparison as the primary recovery hypotheses for the combined phoenix-plus-player bundle
+
+## 2026-04-14 14:33 PST - Decrypted local setup.enc and identified Phoenix bootstrap chain
+
+- **Phase:** exploit
+- **Objective:** determine whether the locally recovered `setup.enc` artifact can explain the missing runtime and vault behavior without fetching new external artifacts
+- **Target:** hardwareLockV2
+- **Action performed:** decrypted local `~/Downloads/setup.enc` with the shell-history passphrase, reviewed the bootstrap script, and extracted the player and Phoenix installation flow
+- **Tool / command:** operator-run `openssl enc -aes-256-cbc -d -salt -pbkdf2 ...`, `file`, `head`, `grep`, and `sed` against `setup.dec.sh`
+- **Result:** confirmed `setup.enc` is a bootstrap installer that creates player directories, registers the device, installs `nctv-player` from `http://3.211.184.159:8080`, then downloads `phoenix.enc`, decrypts it with the same passphrase, extracts `nctv-phoenix`, and runs `./phoenix_install.sh --guard`
+- **Evidence ID:** EVI-012
+- **Analyst notes:** the real guarded runtime logic likely lives in `phoenix.enc` and `phoenix_install.sh`, not directly in `setup.enc`; this sharply narrows the missing artifact chain
+- **Next step:** verify whether any local copy of `phoenix.enc`, extracted `nctv-phoenix`, or `phoenix_install.sh` remains on-box, and update the blocked-state conclusion if none exists
+
+## 2026-04-14 14:43 PST - Confirmed Phoenix installer artifacts are absent locally and bounded the internal-only recovery lane
+
+- **Phase:** exploit
+- **Objective:** test whether the newly identified Phoenix artifact chain can still be recovered from local storage only
+- **Target:** hardwareLockV2
+- **Action performed:** searched local user, temp, runtime, and library paths for `phoenix.enc`, Phoenix tarballs, `phoenix_install.sh`, and extracted `nctv-phoenix` remnants; cross-checked env-history traces and document snapshots for recoverable original tuple values
+- **Tool / command:** operator-run `find`, `grep`, and read-only note/history review
+- **Result:** no local `phoenix.enc`, `phoenix_install.sh`, or extracted `nctv-phoenix` tree was found; only `/var/lib/nctv-phoenix/vault.img` remains. History and note captures preserve only the already-edited current env values, not the original authorized tuple
+- **Evidence ID:** EVI-013
+- **Analyst notes:** this makes the current box effectively end-of-line for internal-only runtime recovery. The env edit did not by itself create the blocker; rather, it exposed that the surviving local artifacts are insufficient to reconstruct the original Phoenix provisioning context or original authorized tuple
+- **Next step:** preserve the engagement as an evidence-backed blocked state. Further progress requires a legitimate recovery source such as original provisioning material, original tuple provenance, or other authorized artifact chain outside the current local residue set
