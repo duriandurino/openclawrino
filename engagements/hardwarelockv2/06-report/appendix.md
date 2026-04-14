@@ -15,10 +15,17 @@
 5. Those Phoenix artifacts were not recoverable locally during this engagement.
 6. Internal-only recovery on the present box is therefore blocked in an evidence-backed way.
 
+### Counterfactual paths worth mentioning carefully
+- It is reasonable to note that an unmodified original state may have supported cleaner testing of the intended unlock chain.
+- It is reasonable to note that preserved original env values may have enabled a more direct validation of whether `unlock_vault.py` still matched the real vault key.
+- It is reasonable to note that preserved local Phoenix artifacts may have enabled testing of the guarded runtime recovery chain.
+- These belong in a clearly labeled hypothesis or counterfactual section, not in the validated findings body.
+
 ### Do not overclaim
 - Do not claim full player recovery or vault compromise.
 - Do not claim the original authorized tuple was recovered.
 - Do not describe Phoenix behavior beyond what was directly observed from `setup.enc`, repair scripts, and local residue.
+- Do not present counterfactual paths as if they were executed or confirmed.
 
 ### High-value evidence to reference
 - EVI-004 through EVI-007 for the authorization gate, unlock path, service chain, and vault failure.

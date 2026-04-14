@@ -8,6 +8,16 @@ Direct execution of `unlock_vault.py` continued to fail with `cryptsetup` key re
 
 At the time of validation, no local copy of `phoenix.enc`, no extracted `nctv-phoenix` tree, and no recoverable original authorized tuple were present on the target. The device retained only `vault.img` plus placeholder runtime directories, while repair logic explicitly expected a missing external `nctv-phoenix` source. As a result, the engagement produced an evidence-backed conclusion: configuration integrity is weak enough to allow local authorization-gate manipulation, but the cryptographic vault and missing Phoenix provenance prevented full player/runtime restoration from the surviving on-box artifacts alone.
 
+## Likely Paths in an Unmodified Original State
+
+The following paths are plausible based on the recovered installation chain and local runtime evidence, but they were not validated during this engagement because the original on-device state had already changed.
+
+- If the original `hardware-lock.env` values had remained available, `unlock_vault.py` may have been able to derive the intended vault key for the surviving `vault.img`.
+- If the original authorized hardware tuple had remained intact, the engagement could have more directly tested whether the vault unlock and runtime restoration path were still functional under the intended guard conditions.
+- If the original second-stage Phoenix artifacts had remained on-box, the guarded restore path through `phoenix.enc` and `phoenix_install.sh --guard` may have allowed controlled recovery of the coupled Phoenix-plus-player runtime.
+
+These should be reported as plausible counterfactual recovery paths only, not as proven exploit outcomes.
+
 ## Reporting Notes
 
 - Report this engagement as a blocked but meaningful result, not as an incomplete write-up.
