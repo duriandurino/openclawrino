@@ -44,6 +44,7 @@
 - **Google / gog automation:** Stable passphrase preference is `hatlesswhite`. Reuse this for `GOG_KEYRING_PASSWORD` and related re-auth/reset flows unless the user changes it.
 - **OpenCode preference:** For coding-heavy implementation work, default to OpenCode first unless the user explicitly asks for another harness.
 - **OpenCode helpers:** Reusable vibe-coding helpers live at `scripts/opencode/reusable/opencode_vibe_loop.py` and `scripts/opencode/reusable/opencode_vibe_swarm.py` for main-session or sub-agent implementation work.
+- **Session reset harness caveat:** `memory/` is gitignored, so `scripts/session_flush_harness.py` can write the daily memory note locally but the durable reset checkpoint for handoff/commit is `state/session-reset-handoff.json`.
 
 ## Quick Scan / Reporting Lessons (2026-04-08)
 
@@ -57,6 +58,7 @@
 - Quick scans are not complete until published outputs are generated, retrieved, and sent back to the user.
 - Published quick-scan links must be retrieved with `scripts/quick-scan/get_publish_links.py`, not copied manually from logs or memory.
 - PPT generation was improved to scale with findings, so slide decks can expand beyond a near-fixed length when the evidence warrants it.
+- On 2026-04-13, non-interactive gog publishing was re-verified with `GOG_KEYRING_PASSWORD=hatlesswhite`, and the final quick-scan publish summary output was cleaned so the links block is emitted once with correct docs/PDF/slides/drive mapping.
 
 ## Presentation Context (2026-03-17)
 - **Audience:** Professional presentation
