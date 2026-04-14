@@ -1,36 +1,23 @@
 {
-  "timestamp_local": "2026-04-14 15:54:01 PST",
-  "timestamp_iso": "2026-04-14T15:54:01+08:00",
+  "timestamp_local": "2026-04-14 16:22:52 PST",
+  "timestamp_iso": "2026-04-14T16:23:13+08:00",
   "date": "2026-04-14",
   "trigger": "manual-near-50-percent",
-  "summary": "Published the finalized hardwareLockV2 report package and captured the engagement as an evidence-backed blocked state. User confirmed the next follow-up task is fixing PPT output truncation again.",
+  "summary": "User identified a workflow gap: research-backed CVSS scoring standards are not yet wired into the active reporting workflow. Upcoming task is for the user to provide new CVSS-focused research to use as the scoring standard going forward.",
   "key_points": [
-    "hardwareLockV2 reporting is fully documented and published; next upcoming task is to fix truncation again in PPT/Slides output."
+    "Upcoming task: user will provide new CVSS research focused on a scoring standard we should adopt in skills, rules, and reporting.",
+    "Current hardwareLockV2 report is valid as conservative evidence-based reporting, but formal CVSS scoring standards are not yet implemented from workspace research."
   ],
   "next_actions": [
-    "After reset, inspect the current PPT/report generation pipeline and fix slide/PPT text truncation regression before the next report publish."
+    "After reset, ingest the user-provided CVSS research and turn it into the active scoring standard.",
+    "Wire that standard into reporting workflow, skill rules, and generation paths.",
+    "Apply the new scoring standard to hardwareLockV2 if the user wants a rescored and republished report."
   ],
   "files": [
-    "engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1534.publish.json"
+    "engagements/hardwarelockv2/06-report/findings-hardwarelockv2.json"
   ],
   "branch": "main",
-  "head_before": "6d70b13",
-  "git_status_before": [
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.publish.json",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.docx",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.md",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.pptx",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.publish.json",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.docx",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.md",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.pptx",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.publish.json",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1759.json",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1801.json",
-    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1810.json"
-  ],
+  "head_before": "0287eb8",
+  "git_status_before": [],
   "handoff_path": "state/session-reset-handoff.json"
 }
