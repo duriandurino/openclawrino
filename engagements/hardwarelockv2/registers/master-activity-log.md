@@ -61,3 +61,51 @@
 - **Evidence ID:** EVI-005, EVI-006, EVI-007
 - **Analyst notes:** current live scripts are modified state, especially `unlock_vault.py`; the engagement is blocked on recovering original vault key material or provisioning payload rather than additional launcher/service tweaking
 - **Next step:** preserve blocked-state documentation, avoid further blind edits, and pivot to recovery of original provisioning artifacts or last-chance forensic sweep if desired
+
+## 2026-04-14 11:xx PST - Planned targeted forensic sweep for recovery remnants
+
+- **Phase:** exploit
+- **Objective:** define the safest next collection sequence for recovering historical keying or provisioning artifacts without destabilizing the target
+- **Target:** hardwareLockV2
+- **Action performed:** reviewed charter, ROE, recon/enum/vuln handoff notes, and exploit blockers to design a read-first forensic sweep
+- **Tool / command:** document review and engagement planning
+- **Result:** selected a low-risk search order focused on history, logs, package traces, service/tmp paths, removable-media records, and only then optional deleted-file residue checks
+- **Evidence ID:** EVI-001, EVI-004, EVI-005, EVI-006, EVI-007
+- **Analyst notes:** sweep should avoid service edits, watchdog-triggering file moves, and repeated live unlock loops
+- **Next step:** run the forensic sweep checklist on-box and capture any provisioning or recovery remnants as new evidence
+
+## 2026-04-14 12:08 PST - Triage of forensic sweep produced new provisioning and repair-path leads
+
+- **Phase:** exploit
+- **Objective:** determine whether the read-first forensic sweep exposed original provisioning clues or external recovery dependencies
+- **Target:** hardwareLockV2
+- **Action performed:** analyzed operator-provided sweep outputs covering shell history, journals, dpkg traces, temp paths, and repairman search logic
+- **Tool / command:** review of Telegram-delivered command output artifacts
+- **Result:** recovered a historical provisioning command that fetched `setup.enc`, decrypted it with passphrase `theNTVofthe360isthe360oftheNTV`, and piped it to `sudo bash`; also confirmed the repair workflow expects an external `nctv-phoenix` source and identified `/var/tmp/dispsetup.sh` plus packaged `app.asar` as next artifacts to inspect
+- **Evidence ID:** EVI-008, EVI-009, EVI-010
+- **Analyst notes:** this is the strongest lead so far because it points to original installer logic instead of guessing vault derivation from current modified scripts
+- **Next step:** inspect `/var/tmp/dispsetup.sh`, package metadata, and player resources, and, if available, reacquire or test-decrypt the historical `setup.enc` artifact with the recovered passphrase
+
+## 2026-04-14 13:17 PST - Narrow artifact inspection ruled out obvious local installer leftovers
+
+- **Phase:** exploit
+- **Objective:** test whether leftover setup or package artifacts on-box contain provisioning or unlock logic
+- **Target:** hardwareLockV2
+- **Action performed:** reviewed `/var/tmp/dispsetup.sh`, `dpkg -s nctv-player`, `nctv-player.postinst`, and performed shallow strings/grep inspection across `app.asar` and unpacked runtime paths
+- **Tool / command:** operator-run read-only artifact inspection commands
+- **Result:** `dispsetup.sh` is display-only, package metadata is routine, postinst only manages symlink/SUID setup, and the shallow resource scan did not reveal obvious provisioning or unlock logic
+- **Evidence ID:** EVI-010
+- **Analyst notes:** the best remaining live leads are now the historical `setup.enc` path and a deeper `app.asar` extraction if we need to inspect app internals beyond surface strings
+- **Next step:** either reacquire/test `setup.enc` with the historical passphrase or extract `app.asar` for deeper application review
+
+## 2026-04-14 13:29 PST - Confirmed empty runtime placeholders and explicit external-repair dependency
+
+- **Phase:** exploit
+- **Objective:** verify whether meaningful runtime payload remains locally and whether repairman can proceed without external artifacts
+- **Target:** hardwareLockV2
+- **Action performed:** inspected current runtime directories, reviewed `repairman.sh` directly, and searched local paths for candidate repair trees and installer artifacts
+- **Tool / command:** operator-run read-only filesystem and script inspection commands
+- **Result:** `/opt/nctv-player`, `/var/lib/nctv-player`, and `/mnt/nctv-phoenix-secure` are effectively empty placeholders; `repairman.sh` explicitly requires an external `nctv-phoenix` tree and refuses plaintext local restore when the vault is locked; no valid external/local repair source was found in this pass
+- **Evidence ID:** EVI-011
+- **Analyst notes:** this strongly suggests the current device is locally exhausted as a recovery source and that the next meaningful progress requires external artifacts, sibling-device comparison, or the historical installer path
+- **Next step:** pivot from local squeezing to acquiring the missing repair source or recovering the historical `setup.enc` installer flow
