@@ -1,0 +1,90 @@
+{
+  "target": "hardwareLockV2",
+  "findings": [
+    {
+      "id": "F-001",
+      "title": "Local authorization configuration can be altered via hardware-lock.env",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "hardwareLockV2 local authorization layer",
+      "description": "The device authorization decision depends on values stored in /etc/nctv-phoenix/hardware-lock.env. Testing showed these values can be changed locally, allowing the current hardware tuple to satisfy the initial authorization gate.",
+      "technical_basis": "Both hardware_lock.py and unlock_vault.py load AUTHORIZED_PI_SERIAL and AUTHORIZED_SD_CID_SHA256 from hardware-lock.env. The engagement confirmed these values were changed to match the current Pi serial and current SD CID hash, after which the authorization check passed.",
+      "evidence": "Reviewed hardware_lock.py, unlock_vault.py, and hardware-lock.env; confirmed gate success once env values were aligned to current hardware.",
+      "reproduction": "Obtain local write access to /etc/nctv-phoenix/hardware-lock.env, replace AUTHORIZED_PI_SERIAL and AUTHORIZED_SD_CID_SHA256 with values matching the current device, then rerun the authorization check path.",
+      "impact": "A local attacker with sufficient write access can weaken trust in the first-layer hardware authorization mechanism and make the device appear authorized even when the original tuple has changed.",
+      "remediation": "Protect hardware-lock.env with stronger integrity controls, minimize who can modify it, and remove reliance on mutable plaintext authorization values as the primary trust anchor.",
+      "retest_guidance": "After remediation, attempt the same local env modification and verify the authorization layer rejects tampered values or detects integrity failure.",
+      "hardening": "Bind authorization to tamper-evident state such as signed metadata, sealed secrets, or secure hardware-backed attestation rather than editable local config alone.",
+      "cleanup_notes": "This engagement documented the weakness and resulting state; no persistent exploit payload was installed.",
+      "references": [
+        "EVI-003",
+        "EVI-004",
+        "EVI-005"
+      ]
+    },
+    {
+      "id": "F-002",
+      "title": "Encrypted vault remained the effective security boundary",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "/var/lib/nctv-phoenix/vault.img",
+      "description": "Even after the authorization layer was aligned to the current hardware tuple, the LUKS-backed vault did not unlock and the secure runtime was not exposed. This shows the encrypted vault remained the effective protection boundary in the tested state.",
+      "technical_basis": "unlock_vault.py derives a binary key from AUTHORIZED_PI_SERIAL and AUTHORIZED_SD_CID_SHA256 and feeds it to cryptsetup. Direct execution still failed with 'No key available with this passphrase', and no mapper or secure mount became active.",
+      "evidence": "Observed cryptsetup failure from unlock_vault.py and absence of mounted secure runtime paths.",
+      "reproduction": "With the current edited env values in place, execute unlock_vault.py and observe cryptsetup open failure plus missing /dev/mapper/nctv-phoenix-vault mount state.",
+      "impact": "The secure runtime could not be recovered or executed from the surviving local artifacts, limiting compromise despite the weaker authorization layer.",
+      "remediation": "Preserve the cryptographic separation, review the unlock/provisioning workflow for secure provenance, and maintain recoverable records for original authorized tuples and guarded runtime provenance.",
+      "retest_guidance": "After redesign or recovery workflow improvements, validate that only legitimate authorized hardware and intact provisioning material can unlock the vault.",
+      "hardening": "Keep vault unlocking dependent on stronger secrets or device-bound material, and add signed provenance checks for restore/install artifacts.",
+      "cleanup_notes": "No successful vault access was achieved and no protected payload was extracted.",
+      "references": [
+        "EVI-004",
+        "EVI-005",
+        "EVI-006",
+        "EVI-007"
+      ]
+    },
+    {
+      "id": "F-003",
+      "title": "Phoenix recovery chain is critical but missing from the current image",
+      "severity": "Medium",
+      "cvss": "N/A",
+      "affected": "hardwareLockV2 guarded runtime recovery path",
+      "description": "Recovered installer evidence showed that setup.enc is only a bootstrap. It installs nctv-player, then downloads and decrypts phoenix.enc and runs phoenix_install.sh --guard. Those second-stage Phoenix artifacts were not present locally during the assessment.",
+      "technical_basis": "Local decryption of setup.enc revealed the exact bootstrap chain. Follow-up searches found no surviving local copy of phoenix.enc, phoenix_install.sh, or extracted nctv-phoenix tree, while repairman.sh explicitly expected an external nctv-phoenix source.",
+      "evidence": "Decrypted setup.enc locally and reviewed install flow; searched local paths for Phoenix artifacts; reviewed repairman dependency on external nctv-phoenix tree.",
+      "reproduction": "Decrypt setup.enc with the recovered passphrase and inspect the installer logic; then verify the local system retains only vault.img and placeholder runtime directories, not the second-stage Phoenix payload.",
+      "impact": "Runtime recovery on the current box is blocked because the device lacks the original Phoenix installer context or equivalent restore source.",
+      "remediation": "Treat Phoenix installer artifacts, recovery media, and provenance records as critical assets. Store them securely, version them, and ensure legitimate recovery paths are available for authorized maintenance and incident response.",
+      "retest_guidance": "When authorized recovery artifacts are available, validate the guarded Phoenix restore chain in a controlled workflow and confirm runtime restoration succeeds only from trusted sources.",
+      "hardening": "Use signed recovery packages, audited retention of restore media, and explicit inventory of the guarded artifact chain so recovery does not depend on undocumented external residue.",
+      "cleanup_notes": "The engagement analyzed the bootstrap chain only; no recovered Phoenix package was executed.",
+      "references": [
+        "EVI-008",
+        "EVI-009",
+        "EVI-010",
+        "EVI-011",
+        "EVI-012",
+        "EVI-013"
+      ]
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Authorization Integrity",
+      "recommendation": "Replace editable plaintext authorization tuples with tamper-evident or hardware-backed authorization data."
+    },
+    {
+      "category": "Recovery Provenance",
+      "recommendation": "Maintain secure, documented, and recoverable copies of Phoenix installer artifacts and approved repair media."
+    },
+    {
+      "category": "Operational Resilience",
+      "recommendation": "Record original hardware-binding values and guarded recovery dependencies in a controlled maintenance process so legitimate support does not depend on ad hoc external artifacts."
+    },
+    {
+      "category": "Monitoring",
+      "recommendation": "Alert on repeated repair-loop behavior, missing runtime trees, and failed guarded restore attempts to shorten time-to-diagnosis."
+    }
+  ]
+}
