@@ -124,6 +124,17 @@ def build_docx(data, output_path):
     for f in findings:
         doc.add_heading(f"{f.get('id', 'Finding')} — {f.get('title', '')}", level=3)
         doc.add_paragraph(f"Severity: {f.get('severity')}  |  CVSS: {f.get('cvss', 'N/A')}" )
+        if f.get('cvss_version'):
+            doc.add_paragraph(f"CVSS Version: {f.get('cvss_version')}")
+        if f.get('cvss_vector'):
+            doc.add_paragraph(f"CVSS Vector: {f.get('cvss_vector')}")
+        if f.get('cvss_rationale'):
+            doc.add_paragraph(f"CVSS Rationale: {f.get('cvss_rationale')}")
+        if f.get('priority'):
+            doc.add_paragraph(f"Priority: {f.get('priority')}")
+        fcvss_note = f.get('cvss_note')
+        if fcvss_note:
+            doc.add_paragraph(f"Scoring Note: {fcvss_note}")
         doc.add_paragraph(f"Affected: {f.get('affected', 'N/A')}")
         doc.add_paragraph(f"Description: {f.get('description', '')}")
         if f.get('technical_basis'):
@@ -381,6 +392,14 @@ def finding_slide_summary(finding, quick_scan=False):
         f"Severity: {severity} | CVSS: {cvss} | Status: {status}",
         f"Affected: {clean_text(finding.get('affected', 'Not specified')) or 'Not specified'}",
     ]
+    if finding.get('cvss_version'):
+        lines.append(f"CVSS Version: {clean_text(finding.get('cvss_version'))}")
+    if finding.get('cvss_vector'):
+        lines.append(f"Vector: {clean_text(finding.get('cvss_vector'))}")
+    if finding.get('cvss_rationale'):
+        lines.append(f"Rationale: {clean_text(finding.get('cvss_rationale'))}")
+    if finding.get('priority'):
+        lines.append(f"Priority: {clean_text(finding.get('priority'))}")
 
     detail_fields = [
         ("Description", finding.get('description', '')),
@@ -576,6 +595,16 @@ def format_finding(finding, index):
     lines.append(f"- **Severity:** {finding.get('severity', 'N/A')}")
     if finding.get("cvss"):
         lines.append(f"- **CVSS Score:** {finding['cvss']}")
+    if finding.get("cvss_version"):
+        lines.append(f"- **CVSS Version:** {finding['cvss_version']}")
+    if finding.get("cvss_vector"):
+        lines.append(f"- **CVSS Vector:** `{finding['cvss_vector']}`")
+    if finding.get("cvss_rationale"):
+        lines.append(f"- **CVSS Rationale:** {finding['cvss_rationale']}")
+    if finding.get("cvss_note"):
+        lines.append(f"- **Scoring Note:** {finding['cvss_note']}")
+    if finding.get("priority"):
+        lines.append(f"- **Priority:** {finding['priority']}")
     lines.append(f"- **Affected Target:** {finding.get('affected', 'N/A')}")
     lines.append(f"- **Description:** {finding.get('description', 'No description provided')}")
     lines.append(f"- **Evidence:** ```\n{finding.get('evidence', 'No evidence recorded')}\n```")

@@ -85,15 +85,39 @@ Each finding should include:
 ID
 Title
 Affected Asset(s)
-Severity / Risk
-Technical Basis (e.g. CVSS if relevant)
-Business Impact
+Severity
+Technical Basis (include CVSS when the finding can be scored)
+Business Impact / Priority Context
 Evidence
 Reproduction / Validation Steps
 Remediation
 Verification / Retest Guidance
 References
 ```
+
+### CVSS House Standard (Required)
+
+Use this scoring policy unless the engagement explicitly requires something else:
+
+- **Primary standard:** CVSS v4.0 Base for new internal reporting
+- **Compatibility field:** CVSS v3.1 when a public CVE, NVD record, vendor advisory, scanner, or client workflow still depends on v3.1
+- **Interpretation rule:** CVSS expresses **technical severity**, not business risk
+- **Priority rule:** final remediation priority must also consider exploit evidence, KEV/EPSS, exposure, asset criticality, and attack chaining
+
+For every scored finding, include:
+```text
+CVSS version
+CVSS vector
+CVSS numeric score
+1-3 line metric rationale
+Severity band (Low/Medium/High/Critical)
+```
+
+If the evidence is incomplete:
+- mark the score as **Provisional**, or
+- leave it unscored and explain why
+
+Do not publish a naked score without its vector and rationale.
 
 When relevant, also include:
 - exploitability notes
@@ -166,8 +190,9 @@ Before final delivery, check:
 
 ### Gate 3 — Risk Logic
 - technical severity and business risk are not conflated blindly
-- vectors / rationale are present where relevant
-- prioritization is explainable
+- vectors / rationale are present for every scored finding
+- CVSS version choice is explicit when a finding is scored
+- prioritization is explainable using severity plus context
 
 ### Gate 4 — Sensitive Data Handling
 - redaction done
@@ -204,7 +229,8 @@ For real finalized engagements, the report handoff should include:
 Avoid:
 - raw tool dumps in the main body
 - findings without remediation or retest guidance
-- severity labels without rationale
+- severity labels or CVSS scores without rationale
+- treating CVSS as the final risk decision by itself
 - omitting cleanup/restoration status
 - shipping unredacted secrets in screenshots or appendices
 - writing only for technical readers or only for executives
