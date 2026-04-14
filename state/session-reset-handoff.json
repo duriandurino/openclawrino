@@ -1,25 +1,36 @@
 {
-  "timestamp_local": "2026-04-14 13:34:00 PST",
-  "timestamp_iso": "2026-04-14T13:34:00+08:00",
+  "timestamp_local": "2026-04-14 15:54:01 PST",
+  "timestamp_iso": "2026-04-14T15:54:01+08:00",
   "date": "2026-04-14",
   "trigger": "manual-near-50-percent",
-  "summary": "hardwareLockV2 local forensic sweep exhausted the current box as a recovery source; confirmed empty runtime placeholders, explicit external-repair dependency, and a strong historical setup.enc provisioning lead from shell history.",
+  "summary": "Published the finalized hardwareLockV2 report package and captured the engagement as an evidence-backed blocked state. User confirmed the next follow-up task is fixing PPT output truncation again.",
   "key_points": [
-    "Recovered a historical provisioning command that fetched setup.enc, decrypted it with passphrase theNTVofthe360isthe360oftheNTV, and piped it to sudo bash.",
-    "Confirmed /opt/nctv-player, /var/lib/nctv-player, and /mnt/nctv-phoenix-secure are empty placeholders while repairman.sh requires an external nctv-phoenix tree for surgical restore.",
-    "Updated hardwareLockV2 exploit docs, evidence register, findings register, attack paths, and master activity log with EVI-008 through EVI-011."
+    "hardwareLockV2 reporting is fully documented and published; next upcoming task is to fix truncation again in PPT/Slides output."
   ],
   "next_actions": [
-    "When resuming hardwareLockV2, pivot to artifact acquisition: external repair tree, sibling device, or historical setup.enc installer artifact.",
-    "Avoid more blind on-box unlock attempts or service edits; the current device is locally exhausted as a recovery source."
+    "After reset, inspect the current PPT/report generation pipeline and fix slide/PPT text truncation regression before the next report publish."
   ],
   "files": [
-    "engagements/hardwarelockv2/04-exploit/exploit-summary.md",
-    "engagements/hardwarelockv2/registers/master-activity-log.md",
-    "engagements/hardwarelockv2/incoming/forensic-sweep-2026-04-14-part4.md"
+    "engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1534.publish.json"
   ],
   "branch": "main",
-  "head_before": "85f16e0",
-  "git_status_before": [],
+  "head_before": "6d70b13",
+  "git_status_before": [
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1759.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1801.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1810.json"
+  ],
   "handoff_path": "state/session-reset-handoff.json"
 }
