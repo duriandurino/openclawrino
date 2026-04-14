@@ -425,7 +425,7 @@ def build_styled_pptx(data, output_path, title=None):
 
     if exec_bullets:
         exec_lines = [f"• {line}" for line in exec_bullets[:8]]
-    else:
+    elif data.get("quick_scan"):
         exec_lines = [
             f"Target: {concise_phrase(target, 42)}",
             f"Findings: {len(findings)} issues identified",
@@ -434,13 +434,24 @@ def build_styled_pptx(data, output_path, title=None):
         ]
         for f in findings[:5]:
             exec_lines.append(f"• {f.get('id', 'V-???')}: {summarize_title(f.get('title', 'Untitled'))}")
+    else:
+        exec_lines = [
+            f"Target: {clean_text(target) or 'Unknown Target'}",
+            f"Findings: {len(findings)} issues identified",
+            f"Highest risk: {overall.upper()}",
+            "",
+        ]
+        for f in findings[:5]:
+            title_text = clean_text(f.get('title', 'Untitled')) or 'Untitled'
+            severity = str(f.get('severity', 'Info')).upper()
+            exec_lines.append(f"• {f.get('id', 'V-???')} ({severity}): {title_text}")
     gen.add_content_slide("Executive Summary", exec_lines)
 
     scope_lines = [
-        "Assessment type: quick scan triage workflow" if data.get("quick_scan") else "Assessment type: structured pentest",
-        "Rules of engagement: safe or low-impact checks only" if data.get("quick_scan") else "Rules of engagement: per authorized engagement scope",
-        "Limitation: findings require manual validation before being treated as confirmed vulnerabilities",
-        "Method: Recon, Enumeration, Analysis, Reporting",
+        "Assessment type: quick scan triage workflow" if data.get("quick_scan") else "Assessment type: structured penetration test",
+        "Rules of engagement: safe or low-impact checks only" if data.get("quick_scan") else "Rules of engagement: activities performed within the authorized engagement scope",
+        "Limitation: findings require manual validation before being treated as confirmed vulnerabilities" if data.get("quick_scan") else "Limitation: findings were documented from the assessed evidence set and should be revalidated during remediation and retest",
+        "Method: Recon, Enumeration, Analysis, Reporting" if data.get("quick_scan") else "Method: Reconnaissance, Enumeration, Vulnerability Analysis, Exploitation assessment, Post-Exploitation review, and Reporting",
     ]
     gen.add_content_slide("Scope, ROE, and Methodology", scope_lines)
 
