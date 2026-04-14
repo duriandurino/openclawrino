@@ -23,6 +23,7 @@ PHASE_DIRS = [
     "evidence/payloads",
     "evidence/notes",
     "registers",
+    "reports",
 ]
 
 PHASE_FILES = {
@@ -203,6 +204,19 @@ def main() -> int:
     ensure_text(base / "registers" / "evidence-register.md", "# Evidence Register\n\n| Evidence ID | Phase | Type | Source | Timestamp | Related finding | Sensitivity | Storage path | Sanitized? |\n|---|---|---|---|---|---|---|---|---|\n")
     ensure_text(base / "registers" / "attack-path-register.md", placeholder("Attack Path Register", "- Add attack paths here when findings chain together"))
     ensure_text(base / "registers" / "asset-register.md", "# Asset Register\n\n| Asset ID | Asset | Type | Scope status | Notes |\n|---|---|---|---|---|\n")
+    ensure_text(
+        base / "reports" / "README.md",
+        "# Engagement User Input Reports\n\n"
+        "Store filled user engagement input templates here.\n\n"
+        "## Naming\n\n"
+        "- `<engagement-name>-user-input-YYYY-MM-DD-HHMM.md`\n"
+        "- `user-input-YYYY-MM-DD-HHMM.md` when engagement context is not settled yet\n\n"
+        "## Handling Rules\n\n"
+        "- Do not overwrite prior user submissions unless explicitly instructed.\n"
+        "- Treat each submission as source context material for the engagement trail.\n"
+        "- Parse and map actions, findings, evidence, failed attempts, pivots, and unclassified notes into the relevant phase docs and shared registers.\n"
+        "- Preserve low-confidence or unclassified entries in a traceable form until classification is clearer.\n",
+    )
 
     print(base)
     return 0

@@ -15,8 +15,10 @@ Examples:
 
 ## Documentation-first helpers
 
-- `init_engagement_docs.py` creates the standardized engagement folder layout, charter, ROE file, phase deliverables, evidence folders, and central registers.
+- `init_engagement_docs.py` creates the standardized engagement folder layout, charter, ROE file, phase deliverables, evidence folders, central registers, and a per-engagement `reports/` folder for user-filled input submissions.
 - `generate_phase_summary.py` drafts standardized phase handoffs from parsed artifacts, but the handoff still needs analyst review and the phase activity log / evidence / findings docs kept current.
+- `templates/user-engagement-input-template.md` is the reusable manual-input boilerplate for user-controlled pentest activity capture.
+- Filled user templates should be saved under `engagements/<target-name>/reports/` when engagement context is known, or `reports/` as a shared intake location when it is not.
 
 ## Design
 
@@ -26,3 +28,4 @@ Examples:
 - store artifacts under engagement phase directories
 - emit one execution summary at the end
 - keep documentation artifacts current alongside execution artifacts
+- absorb user-submitted markdown activity into the same engagement trail, including tentative or unclassified notes
