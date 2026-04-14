@@ -109,3 +109,15 @@
 - **Evidence ID:** EVI-011
 - **Analyst notes:** this strongly suggests the current device is locally exhausted as a recovery source and that the next meaningful progress requires external artifacts, sibling-device comparison, or the historical installer path
 - **Next step:** pivot from local squeezing to acquiring the missing repair source or recovering the historical `setup.enc` installer flow
+
+## 2026-04-14 13:55 PST - Preserved post-sweep interpretation of player-versus-phoenix runtime state
+
+- **Phase:** exploit
+- **Objective:** capture the latest analytical conclusion before session drift and ensure the recovery model reflects new operator context
+- **Target:** hardwareLockV2
+- **Action performed:** reconciled the blocked unlock state with the new operator insight that the player runtime and phoenix payload are expected to exist together rather than as independent recoveries
+- **Tool / command:** analyst interpretation from current engagement evidence plus operator clarification
+- **Result:** documented that env edits only satisfy the authorization gate for OS-level progression; they do not restore the actual player because the expected phoenix-plus-player runtime bundle is still locked, absent, or expected from external recovery media or historical installer flow
+- **Evidence ID:** EVI-011
+- **Analyst notes:** this reinforces that the problem is now runtime provenance and payload recovery, not just passphrase alignment; if phoenix is absent, player cannot appear even when authorization passes
+- **Next step:** treat `vault.img`, historical `setup.enc`, external repair media, and sibling-device comparison as the primary recovery hypotheses for the combined phoenix-plus-player bundle
