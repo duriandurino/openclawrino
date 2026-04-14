@@ -1,23 +1,20 @@
 {
-  "timestamp_local": "2026-04-13 18:12:44 PST",
-  "timestamp_iso": "2026-04-13T18:12:44+08:00",
-  "date": "2026-04-13",
+  "timestamp_local": "2026-04-14 09:55:13 PST",
+  "timestamp_iso": "2026-04-14T09:55:13+08:00",
+  "date": "2026-04-14",
   "trigger": "manual-near-50-percent",
-  "summary": "Updated report docs, report generator, quick-scan publish flow, and gog non-interactive publish handling; verified archived quick-scan sample end-to-end with clean published links output.",
+  "summary": "Implemented the user-controlled pentest input template workflow for the new docs flow. Added the reusable manual-input template, shared and per-engagement report intake guidance, updated engagement init docs to create reports folders, and updated pentest orchestration documentation so filled user templates are saved, parsed, classified, mapped into registers/logs, and preserved when phase confidence is low.",
   "key_points": [
-    "Quick-scan reporting and publishing now follow the new output contract, and non-interactive gog publishing works again with the established keyring passphrase.",
-    "Archived sample engagement quick-onlinebookfair-net-2026-04-07_1831-fix was used to verify report/doc/pdf/slides generation and publish link formatting, without touching hardwarelockv2."
+    "Committed workflow changes in 85f16e0 and the reusable template now lives at templates/user-engagement-input-template.md."
   ],
   "next_actions": [
-    "After reset, continue only if needed with report wording polish or broader workflow rollout beyond quick-scan publishing."
+    "After reset, continue by patching newPentestDocsFlow.md directly and optionally build the ingestion/parser script for filled templates."
   ],
   "files": [
-    "engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.publish.json",
-    "scripts/quick-scan/publish_quick_report.py",
-    "reporting/scripts/generate_report.py"
+    "templates/user-engagement-input-template.md"
   ],
   "branch": "main",
-  "head_before": "f70c321",
+  "head_before": "85f16e0",
   "git_status_before": [
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
