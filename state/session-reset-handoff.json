@@ -1,23 +1,49 @@
 {
-  "timestamp_local": "2026-04-14 16:22:52 PST",
-  "timestamp_iso": "2026-04-14T16:23:13+08:00",
-  "date": "2026-04-14",
+  "timestamp_local": "2026-04-15 11:39:35 PST",
+  "timestamp_iso": "2026-04-15T11:39:35+08:00",
+  "date": "2026-04-15",
   "trigger": "manual-near-50-percent",
-  "summary": "User identified a workflow gap: research-backed CVSS scoring standards are not yet wired into the active reporting workflow. Upcoming task is for the user to provide new CVSS-focused research to use as the scoring standard going forward.",
+  "summary": "Enhanced pentest PPT output pagination and continuation behavior; hardwareLockV2 sample still needed final regenerate/republish validation.",
   "key_points": [
-    "Upcoming task: user will provide new CVSS research focused on a scoring standard we should adopt in skills, rules, and reporting.",
-    "Current hardwareLockV2 report is valid as conservative evidence-based reporting, but formal CVSS scoring standards are not yet implemented from workspace research."
+    "Added paragraph-aware continuation for content slides, separate continuation pagination for two-column/remediation slides, and stricter finding-slide budgeting after a real overflow screenshot.",
+    "Latest commits: ea00b7e, 3f9b8b4, 102ae73."
   ],
   "next_actions": [
-    "After reset, ingest the user-provided CVSS research and turn it into the active scoring standard.",
-    "Wire that standard into reporting workflow, skill rules, and generation paths.",
-    "Apply the new scoring standard to hardwareLockV2 if the user wants a rescored and republished report."
+    "After reset, regenerate and republish hardwareLockV2 report/slides, then verify the previously overflowing finding slide is clean."
   ],
   "files": [
-    "engagements/hardwarelockv2/06-report/findings-hardwarelockv2.json"
+    "scripts/pentest_pptx_generator.py",
+    "reporting/scripts/generate_report.py",
+    "scripts/session_flush_harness.py"
   ],
   "branch": "main",
-  "head_before": "0287eb8",
-  "git_status_before": [],
+  "head_before": "102ae73",
+  "git_status_before": [
+    " M scripts/session_flush_harness.py",
+    "M  state/session-reset-handoff.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1801.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.docx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.md",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.pptx",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1810.publish.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1759.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1801.json",
+    "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/findings-quick-scan-2026-04-13_1810.json",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1603.docx",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1603.md",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1603.pptx",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1603.publish.json",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.docx",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.md",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json"
+  ],
   "handoff_path": "state/session-reset-handoff.json"
 }
