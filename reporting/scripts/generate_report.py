@@ -376,6 +376,13 @@ def summarize_title(title, limit=42):
     return replacements.get(title, concise_phrase(title, limit))
 
 
+def _split_paragraph_groups(value):
+    cleaned = clean_text(value)
+    if not cleaned:
+        return []
+    return [part.strip() for part in re.split(r"\n\s*\n+", cleaned) if part.strip()]
+
+
 def finding_slide_summary(finding, quick_scan=False):
     if quick_scan:
         return [
@@ -408,9 +415,12 @@ def finding_slide_summary(finding, quick_scan=False):
         ("Hardening", finding.get('hardening', '')),
     ]
     for label, value in detail_fields:
-        cleaned = clean_text(value)
-        if cleaned:
-            lines.append(f"{label}: {cleaned}")
+        groups = _split_paragraph_groups(value)
+        if not groups:
+            continue
+        lines.append(f"{label}:")
+        for group in groups:
+            lines.append(f"• {group}")
     return lines
 
 
