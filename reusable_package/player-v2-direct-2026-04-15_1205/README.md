@@ -50,14 +50,32 @@ Related Player / Hardware Lock work indicates these are high-value areas:
 - credentials or passphrases recoverable from operator artifacts, scripts, or local history
 
 ## Folder guide
-- `docs/` - runbook, assessment profile, handoff notes, operator quick reference
+- `docs/` - runbook, assessment profile, handoff notes, operator quick reference, checklist
 - `evidence/` - screenshots, copied configs, command output, hashes, recovered artifacts
 - `logs/` - command logs and activity logs
-- `results/` - normalized outputs, parsed summaries, extracted indicators
+- `results/` - normalized outputs, parsed summaries, extracted indicators, prerequisite checks
 - `reports/` - working report files and final markdown report set
 - `slides/` - presentation outline and slide content
 - `templates/` - reusable report and note templates
-- `scripts/` - helper scripts for bootstrap, logging, triage, normalization, and export
+- `scripts/` - helper scripts for prerequisites, bootstrap, logging, triage, normalization, export, and presentation generation
+
+## Package prerequisites and setup
+This reusable now carries its own prerequisite and export flow.
+
+Run this before the assessment:
+```bash
+bash scripts/00-prereq-check.sh
+```
+
+This checks the core local tools needed by the package and records the result under `results/prereq/`.
+Missing optional tools do not block the assessment, but they can reduce export quality or visibility.
+
+For deliverable generation, use:
+```bash
+bash scripts/95-export-bundle.sh
+```
+
+If `pandoc` is installed, the script will attempt HTML, PDF, and PPTX exports in addition to the markdown bundle. If not, it will still generate the markdown-first deliverables and write bundle notes.
 
 ## Engagement flow
 Follow this order unless the current device condition forces a safer pivot:
@@ -77,7 +95,32 @@ Follow this order unless the current device condition forces a safer pivot:
 
 # Step-by-step execution guide
 
-## Step 1 - Bootstrap the package
+## Step 1 - Run prerequisites and review the in-package checklist
+### Objective
+Confirm the environment is usable before the live run and keep the operator workflow inside the package.
+
+### Run
+```bash
+bash scripts/00-prereq-check.sh
+```
+
+### Review
+- `docs/operator-checklist.md`
+- `docs/assessment-profile.md`
+- `docs/handoff-notes.md`
+
+### Success looks like
+- prerequisite results written under `results/prereq/`
+- required tools confirmed present
+- operator checklist reviewed before touching the target
+
+### If this fails
+- install or restore the missing required tools
+- if only optional tools are missing, continue with the documented limitations
+
+---
+
+## Step 2 - Bootstrap the package
 ### Objective
 Create the local working structure for this specific run and avoid messy evidence sprawl.
 
@@ -102,7 +145,7 @@ bash scripts/00-bootstrap-engagement.sh
 
 ---
 
-## Step 2 - Review scope, assumptions, and stop conditions
+## Step 3 - Review scope, assumptions, and stop conditions
 ### Objective
 Make sure the operator is not freelancing beyond the authorized path.
 
@@ -125,7 +168,7 @@ Confirm these before touching the target:
 
 ---
 
-## Step 3 - Capture a live baseline from the device
+## Step 4 - Capture a live baseline from the device
 ### Objective
 Record what the device is right now before changing anything.
 
@@ -159,7 +202,7 @@ bash scripts/10-live-baseline.sh
 
 ---
 
-## Step 4 - Quick network validation, then pivot if minimal
+## Step 5 - Quick network validation, then pivot if minimal
 ### Objective
 Confirm whether the current Player V2 still matches the previously observed hardened network posture.
 
@@ -189,7 +232,7 @@ bash scripts/20-network-check.sh <target-ip>
 
 ---
 
-## Step 5 - Enumerate the local app and service surface
+## Step 6 - Enumerate the local app and service surface
 ### Objective
 Map the actual software attack surface on the Pi itself.
 
@@ -226,7 +269,7 @@ bash scripts/30-local-surface-enum.sh
 
 ---
 
-## Step 6 - Hunt for secrets, passphrases, and encryption workflow clues
+## Step 7 - Hunt for secrets, passphrases, and encryption workflow clues
 ### Objective
 Find recoverable material that explains how encrypted artifacts or hardware lock logic actually work.
 
@@ -262,7 +305,7 @@ bash scripts/40-secret-and-artifact-triage.sh
 
 ---
 
-## Step 7 - Validate candidate findings carefully
+## Step 8 - Validate candidate findings carefully
 ### Objective
 Convert hypotheses into validated findings or blocked paths.
 
@@ -289,7 +332,7 @@ Do not write "found vulnerability" until you can reproduce it now.
 
 ---
 
-## Step 8 - Keep the evidence log current
+## Step 9 - Keep the evidence log current
 ### Objective
 Make the report easy later by writing while you work.
 
@@ -309,7 +352,7 @@ Make the report easy later by writing while you work.
 
 ---
 
-## Step 9 - Build the report in parallel with testing
+## Step 10 - Build the report in parallel with testing
 ### Objective
 Avoid the usual pile of raw notes with no deliverable.
 
@@ -327,23 +370,22 @@ Avoid the usual pile of raw notes with no deliverable.
 
 ---
 
-## Step 10 - Export local deliverables
+## Step 11 - Export local deliverables
 ### Objective
 Produce clean outputs for handoff and presentation.
 
 ### Markdown stays primary
 Keep `reports/report.md` as the source of truth.
 
-### Export options
+### Preferred export path
+```bash
+bash scripts/95-export-bundle.sh
+```
+
+### Fallback individual exports
 ```bash
 bash scripts/90-export-md-to-html.sh reports/report.md
 python3 scripts/91-build-presentation-outline.py reports/findings.md slides/slides.md
-```
-
-If local PDF tooling exists:
-```bash
-pandoc reports/report.md -o reports/report.pdf
-pandoc slides/slides.md -t pptx -o slides/player-v2-presentation.pptx
 ```
 
 If you want to use existing workspace tooling instead of plain pandoc, review:
@@ -359,14 +401,5 @@ If you want to use existing workspace tooling instead of plain pandoc, review:
 
 ---
 
-## Fast operator checklist
-1. Run bootstrap
-2. Review scope and stop conditions
-3. Capture baseline
-4. Validate network quickly
-5. Enumerate local surface
-6. Triage secrets and encrypted artifacts
-7. Validate only what you can prove
-8. Write the report while working
-9. Export MD/PDF/PPT
-10. Leave a clean handoff note
+## Operator note
+The checklist now lives in `docs/operator-checklist.md` and should be used in-package instead of relying on chat-side reminders.

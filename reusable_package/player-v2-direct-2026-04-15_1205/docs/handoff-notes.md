@@ -2,17 +2,21 @@
 
 ## Start here
 1. Read `README.md`
-2. Review `docs/assessment-profile.md`
-3. Run `bash scripts/00-bootstrap-engagement.sh`
-4. Run `bash scripts/10-live-baseline.sh`
-5. Decide quickly whether the network is worth deeper work or whether to pivot local
+2. Run `bash scripts/00-prereq-check.sh`
+3. Review `docs/operator-checklist.md`
+4. Review `docs/assessment-profile.md`
+5. Run `bash scripts/00-bootstrap-engagement.sh`
+6. Run `bash scripts/10-live-baseline.sh`
+7. Decide quickly whether the network is worth deeper work or whether to pivot local
 
 ## Safe first scripts
+- `scripts/00-prereq-check.sh`
 - `scripts/00-bootstrap-engagement.sh`
 - `scripts/10-live-baseline.sh`
 - `scripts/20-network-check.sh <target-ip>`
 - `scripts/30-local-surface-enum.sh`
 - `scripts/40-secret-and-artifact-triage.sh`
+- `scripts/95-export-bundle.sh`
 
 These are collection-oriented and non-destructive by default.
 
@@ -31,8 +35,9 @@ These are collection-oriented and non-destructive by default.
 ## Assumptions made in this package
 - operator has shell access on-box or can open a terminal locally
 - bash is available
-- basic GNU userland tools exist: `find`, `grep`, `ss`, `ps`, `ip`, `sha256sum`
+- basic GNU userland tools exist: `find`, `grep`, `sed`, `awk`, `sha256sum`, `python3`
 - optional tools may not exist and scripts should degrade gracefully
+- export quality improves when `pandoc` is available, but markdown-first output remains the baseline
 
 ## If the original operator stopped midway
 - check `logs/`
@@ -73,7 +78,9 @@ These are collection-oriented and non-destructive by default.
 - shell history, service definitions, installer scripts, and encrypted payload recovery clues
 
 ## Recommended continuation order
-1. Run the package scripts on the live target only if a fresh direct console session is available.
-2. Re-validate whether the current device still matches the prior minimal network posture.
-3. Prioritize local startup chain, service units, secrets, and artifact workflow over speculative brute force.
-4. Preserve negative results and blocked paths in the report, because they materially shape the risk story.
+1. Run `bash scripts/00-prereq-check.sh` and review `docs/operator-checklist.md` before the live session.
+2. Run the package scripts on the live target only if a fresh direct console session is available.
+3. Re-validate whether the current device still matches the prior minimal network posture.
+4. Prioritize local startup chain, service units, secrets, and artifact workflow over speculative brute force.
+5. Use `bash scripts/95-export-bundle.sh` for consistent package-side deliverable generation.
+6. Preserve negative results and blocked paths in the report, because they materially shape the risk story.

@@ -1,0 +1,23 @@
+# Prerequisite Check
+
+Generated: Wednesday, 15 April, 2026 02:08:22 PM PST
+
+## Required tools
+- [OK] bash -> /usr/bin/bash
+- [OK] grep -> /usr/bin/grep
+- [OK] find -> /usr/bin/find
+- [OK] sed -> /usr/bin/sed
+- [OK] awk -> /usr/bin/awk
+- [OK] sha256sum -> /usr/bin/sha256sum
+- [OK] python3 -> /usr/bin/python3
+
+## Optional tools
+- [OK] ss -> /usr/bin/ss
+- [OK] ip -> /usr/sbin/ip
+- [OK] systemctl -> /usr/bin/systemctl
+- [OK] nmap -> /usr/bin/nmap
+- [MISSING] pandoc
+
+## Notes
+- Missing optional tools do not block the package, but they limit functionality.
+- pandoc is only needed for PDF/PPTX style exports.
