@@ -60,12 +60,14 @@ Related Player / Hardware Lock work indicates these are high-value areas:
 - `scripts/` - helper scripts for prerequisites, bootstrap, logging, triage, normalization, export, and presentation generation
 
 ## Package prerequisites and setup
-This reusable now carries its own prerequisite and export flow.
+This reusable now carries its own prerequisite and export flow, backed by the shared `reusable_package/_common/` layer.
 
 Run this before the assessment:
 ```bash
 bash scripts/00-prereq-check.sh
 ```
+
+The package wrapper delegates the baseline checks to `_common/scripts/common-prereq-check.sh` and layers Player V2-specific expectations on top.
 
 This checks the core local tools needed by the package and records the result under `results/prereq/`.
 Missing optional tools do not block the assessment, but they can reduce export quality or visibility.
@@ -75,7 +77,11 @@ For deliverable generation, use:
 bash scripts/95-export-bundle.sh
 ```
 
+The package wrapper delegates shared stamp/export helpers to `_common/scripts/common-export-helper.sh` while keeping Player V2 naming local.
+
 If `pandoc` is installed, the script will attempt HTML, PDF, and PPTX exports in addition to the markdown bundle. If not, it will still generate the markdown-first deliverables and write bundle notes.
+
+For integration details and future repo-splitting notes, see `docs/common-layer-integration.md`.
 
 ## Engagement flow
 Follow this order unless the current device condition forces a safer pivot:

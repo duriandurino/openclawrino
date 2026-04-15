@@ -1,0 +1,18 @@
+# Runtime logs
+logs/
+
+# Generated results
+results/
+reports/BUNDLE_NOTES_*.md
+reports/REPORT_FINAL_*.html
+reports/REPORT_FINAL_*.pdf
+slides/SLIDES_*.pptx
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Editor/system noise
+.DS_Store
+*.swp
+*.swo
