@@ -1,30 +1,32 @@
 {
-  "timestamp_local": "2026-04-16 11:33:45 PST",
-  "timestamp_iso": "2026-04-16T11:33:45+08:00",
+  "timestamp_local": "2026-04-16 13:36:35 PST",
+  "timestamp_iso": "2026-04-16T13:36:35+08:00",
   "date": "2026-04-16",
   "trigger": "manual-near-50-percent",
-  "summary": "Prepared migration docs for moving Hatless White to a new always-on PC, clarified that full ~/.openclaw backup/restore is the simplest migration path, and confirmed the CVSS research standard is not yet in-workspace and will be added later under pentest-references/.",
+  "summary": "Finalized the Player V2 reusable pentest package for live Raspi testing, verified the beginner script flow end to end, fixed the shared installer path in docs, and committed the reusable_package repo update.",
   "key_points": [
-    "Migration docs and manifests were created under second-life/ and committed in workspace commit 6af8150.",
-    "Best migration path is install OpenClaw on the new Linux PC, stop it, restore the backed-up ~/.openclaw directory, then restore extra auth outside .openclaw such as ~/.ssh, git creds, and optional ~/.ollama.",
-    "The user clarified the CVSS research is not currently stored in the workspace and plans to add it manually later under /pentest-references for codification into skills/rules/reporting."
+    "Reusable package commit: 84f1a9e (Finalize Player V2 package docs and flow).",
+    "Beginner live-test order is now: 01 setup, shared install if needed, 02 package install if needed, 03 bootstrap, 04 device baseline, 05 network check, 06 local files, 07 secrets, 08 final bundle.",
+    "pandoc is still optional and missing in this environment, so markdown bundle generation works but HTML/PDF/PPTX export will require pandoc on the target system."
   ],
   "next_actions": [
-    "After reset, continue from the migration pack, optionally create pentest-references/ scaffolding, and when the CVSS files are added, wire them into the active reporting standard."
+    "After reset, resume from the finalized Player V2 package and, if needed, make a self-contained transfer bundle or one-page run card for the Raspi test."
   ],
   "files": [
-    "second-life/MIGRATION_MANIFEST.md",
-    "second-life/MANUAL_BUNDLE_CHECKLIST.md",
-    "second-life/LARGE_FILE_INVENTORY.md",
-    "second-life/NEW_PC_SETUP.md"
+    "reusable_package/player-v2-direct-2026-04-15_1205/README.md",
+    "reusable_package/player-v2-direct-2026-04-15_1205/docs/operator-checklist.md",
+    "reusable_package/player-v2-direct-2026-04-15_1205/docs/export-bundle-explained.md",
+    "state/session-reset-handoff.json"
   ],
   "branch": "main",
-  "head_before": "6af8150",
+  "head_before": "fe720e6",
   "git_status_before": [
+    "M  STATE.md",
     " M reusable_package/_common/README.md",
     " M reusable_package/player-v2-direct-2026-04-15_1205/README.md",
     " M reusable_package/player-v2-direct-2026-04-15_1205/docs/operator-checklist.md",
     " M scripts/session_flush_harness.py",
+    "M  state/context-pressure.json",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
