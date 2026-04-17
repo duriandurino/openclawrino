@@ -596,6 +596,150 @@ def generate_executive_summary(findings, enhancements):
     return "\n".join(lines)
 
 
+def parse_bullet_fields(text):
+    parsed = {}
+    current_key = None
+    for raw_line in text.splitlines():
+        line = raw_line.rstrip()
+        stripped = line.strip()
+        if not stripped:
+            continue
+        if stripped.startswith("## "):
+            current_key = None
+            continue
+        if stripped.startswith("- **") and ":**" in stripped:
+            try:
+                key_part, value = stripped[4:].split(":**", 1)
+            except ValueError:
+                continue
+            current_key = key_part.strip().lower()
+            parsed[current_key] = value.strip()
+        elif stripped.startswith("- ") and current_key:
+            extra = stripped[2:].strip()
+            if extra and not extra.startswith("**"):
+                parsed[current_key] = (parsed.get(current_key, "") + " " + extra).strip()
+    return parsed
+
+
+def load_preengagement_context(target):
+    slug = (target or "").strip()
+    if not slug:
+        return {}
+
+    candidates = []
+    direct = ROOT / "engagements" / slug / "00-charter"
+    candidates.append(direct)
+
+    lowered = slug.lower()
+    if lowered != slug:
+        candidates.append(ROOT / "engagements" / lowered / "00-charter")
+
+    normalized = "".join(ch.lower() for ch in slug if ch.isalnum())
+    engagements_root = ROOT / "engagements"
+    if engagements_root.exists():
+        for child in engagements_root.iterdir():
+            if not child.is_dir():
+                continue
+            child_norm = "".join(ch.lower() for ch in child.name if ch.isalnum())
+            if child_norm == normalized:
+                candidates.append(child / "00-charter")
+
+    seen = set()
+    context = {}
+    for base in candidates:
+        key = str(base)
+        if key in seen:
+            continue
+        seen.add(key)
+        charter_path = base / "engagement-charter.md"
+        roe_path = base / "scope-and-roe.md"
+        if charter_path.exists():
+            context["charter_path"] = str(charter_path.relative_to(ROOT))
+            context["charter"] = parse_bullet_fields(charter_path.read_text())
+        if roe_path.exists():
+            context["roe_path"] = str(roe_path.relative_to(ROOT))
+            context["roe"] = parse_bullet_fields(roe_path.read_text())
+        if context.get("charter") or context.get("roe"):
+            break
+    return context
+
+
+def append_preengagement_section(lines, section_no, context):
+    charter = context.get("charter") or {}
+    roe = context.get("roe") or {}
+    if not charter and not roe:
+        return section_no
+
+    lines.append(f"## {section_no}. Pre-Engagement Intake")
+    lines.append("")
+    lines.append("### Engagement Charter")
+    lines.append("")
+    charter_fields = [
+        ("engagement title", "Engagement title"),
+        ("target", "Target"),
+        ("test type", "Test type"),
+        ("start date", "Start date"),
+        ("end date", "End date"),
+        ("status", "Status"),
+        ("approval / authorization reference", "Approval / authorization reference"),
+        ("success criteria", "Success criteria"),
+        ("primary analyst", "Primary analyst"),
+    ]
+    for key, label in charter_fields:
+        value = charter.get(key)
+        if value:
+            lines.append(f"- **{label}:** {value}")
+    if charter.get("constraints"):
+        lines.append(f"- **Constraints:** {charter['constraints']}")
+    if charter.get("credentials provided"):
+        lines.append(f"- **Credentials provided:** {charter['credentials provided']}")
+    lines.append("")
+    lines.append("### Scope and Rules of Engagement")
+    lines.append("")
+    roe_fields = [
+        ("testing window", "Testing window"),
+        ("allowed techniques", "Allowed techniques"),
+        ("prohibited techniques", "Prohibited techniques"),
+        ("dos allowed?", "DoS allowed?"),
+        ("persistence allowed?", "Persistence allowed?"),
+        ("social engineering allowed?", "Social engineering allowed?"),
+        ("third-party / cloud approvals", "Third-party / cloud approvals"),
+        ("authorization confirmed?", "Authorization confirmed?"),
+        ("provider approvals confirmed?", "Provider approvals confirmed?"),
+        ("cleared for active testing?", "Cleared for active testing?"),
+    ]
+    for key, label in roe_fields:
+        value = roe.get(key)
+        if value:
+            lines.append(f"- **{label}:** {value}")
+    if roe.get("scope in"):
+        lines.append(f"- **Scope in:** {roe['scope in']}")
+    if roe.get("scope out"):
+        lines.append(f"- **Scope out:** {roe['scope out']}")
+    if roe.get("fragile systems / constraints"):
+        lines.append(f"- **Fragile systems / constraints:** {roe['fragile systems / constraints']}")
+    if roe.get("collection limits"):
+        lines.append(f"- **Collection limits:** {roe['collection limits']}")
+    if roe.get("storage expectations"):
+        lines.append(f"- **Storage expectations:** {roe['storage expectations']}")
+    if roe.get("retention / destruction"):
+        lines.append(f"- **Retention / destruction:** {roe['retention / destruction']}")
+    if roe.get("sensitive data handling"):
+        lines.append(f"- **Sensitive data handling:** {roe['sensitive data handling']}")
+    lines.append("")
+    source_bits = []
+    if context.get("charter_path"):
+        source_bits.append(f"charter: `{context['charter_path']}`")
+    if context.get("roe_path"):
+        source_bits.append(f"scope/ROE: `{context['roe_path']}`")
+    if source_bits:
+        lines.append(f"- **Source documents:** {'; '.join(source_bits)}")
+        lines.append("")
+    lines.append("---")
+    lines.append("")
+    return section_no + 1
+
+
 def format_finding(finding, index):
     """Format a single finding section."""
     lines = []
@@ -644,6 +788,7 @@ def generate_report(data):
     counts = severity_counts(findings)
     sorted_findings = sorted(findings, key=lambda x: SEVERITY_ORDER.get(x.get("severity", "Info"), 99))
     overall_risk = next((sev for sev in ["Critical", "High", "Medium", "Low", "Info"] if counts.get(sev, 0) > 0), "Info")
+    preengagement = load_preengagement_context(target) if not data.get("quick_scan") else {}
 
     lines = []
 
@@ -697,6 +842,7 @@ def generate_report(data):
     lines.append("")
 
     section_no = 3
+    section_no = append_preengagement_section(lines, section_no, preengagement)
     if target_fp_lines:
         lines.append(f"## {section_no}. Target Fingerprint")
         lines.append("")
