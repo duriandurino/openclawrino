@@ -12,6 +12,7 @@ Examples:
 - `run_enum_profile.py --profile windows-host --target 192.168.0.227`
 - `run_vuln_profile.py --profile web-service --target 192.168.0.227 --input engagements/.../enum/parsed/services.json`
 - `init_engagement_docs.py player-v2 --title "Player V2 Assessment" --target "player-v2"`
+- `init_engagement_docs.py --title "Player V2 Assessment" --target "player-v2"`  # engagement slug derived from title
 
 ## Documentation-first helpers
 

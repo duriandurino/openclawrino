@@ -4,19 +4,21 @@
 from __future__ import annotations
 
 import argparse
+import re
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 ENGAGEMENTS = ROOT / "engagements"
 
 PHASE_DIRS = [
-    "00-charter",
-    "01-recon",
-    "02-enum",
-    "03-vuln",
-    "04-exploit",
-    "05-post-exploit",
-    "06-report",
+    "pre-engagement",
+    "recon",
+    "enum",
+    "vuln",
+    "exploit",
+    "post-exploit",
+    "reporting",
     "evidence/screenshots",
     "evidence/pcaps",
     "evidence/transcripts",
@@ -27,28 +29,28 @@ PHASE_DIRS = [
 ]
 
 PHASE_FILES = {
-    "01-recon": [
+    "recon": [
         "recon-summary.md",
         "recon-activity-log.md",
         "recon-evidence-index.md",
         "recon-findings-delta.md",
         "recon-next-actions.md",
     ],
-    "02-enum": [
+    "enum": [
         "enum-summary.md",
         "enum-activity-log.md",
         "enum-evidence-index.md",
         "enum-findings-delta.md",
         "enum-next-actions.md",
     ],
-    "03-vuln": [
+    "vuln": [
         "vuln-summary.md",
         "vuln-validation-log.md",
         "vuln-evidence-index.md",
         "vuln-findings-delta.md",
         "vuln-next-actions.md",
     ],
-    "04-exploit": [
+    "exploit": [
         "exploit-summary.md",
         "exploit-activity-log.md",
         "exploit-evidence-index.md",
@@ -56,7 +58,7 @@ PHASE_FILES = {
         "exploit-next-actions.md",
         "attack-paths.md",
     ],
-    "05-post-exploit": [
+    "post-exploit": [
         "post-exploit-summary.md",
         "loot-and-impact-log.md",
         "post-exploit-evidence-index.md",
@@ -64,7 +66,7 @@ PHASE_FILES = {
         "post-exploit-next-actions.md",
         "cleanup-notes.md",
     ],
-    "06-report": [
+    "reporting": [
         "executive-report.md",
         "technical-report.md",
         "appendix.md",
@@ -167,9 +169,17 @@ def placeholder(title: str, body: str) -> str:
     return f"# {title}\n\n{body}\n"
 
 
+def slugify_title(value: str) -> str:
+    normalized = unicodedata.normalize("NFKD", value or "")
+    ascii_only = normalized.encode("ascii", "ignore").decode("ascii")
+    lowered = ascii_only.lower()
+    cleaned = re.sub(r"[^a-z0-9]+", "-", lowered).strip("-")
+    return cleaned or "engagement"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Initialize engagement docs structure")
-    parser.add_argument("engagement")
+    parser.add_argument("engagement", nargs="?", default="")
     parser.add_argument("--title", default="TBD")
     parser.add_argument("--target", default="TBD")
     parser.add_argument("--test-type", default="TBD")
@@ -187,12 +197,18 @@ def main() -> int:
     parser.add_argument("--cleared-for-testing", default="no")
     args = parser.parse_args()
 
+    engagement_name = (args.engagement or "").strip()
+    title = (args.title or "").strip()
+    if not engagement_name:
+        engagement_name = slugify_title(title)
+    args.engagement = engagement_name
+
     base = ENGAGEMENTS / args.engagement
     for rel in PHASE_DIRS:
         (base / rel).mkdir(parents=True, exist_ok=True)
 
-    ensure_text(base / "00-charter" / "engagement-charter.md", build_charter(args))
-    ensure_text(base / "00-charter" / "scope-and-roe.md", build_scope(args))
+    ensure_text(base / "pre-engagement" / "engagement-charter.md", build_charter(args))
+    ensure_text(base / "pre-engagement" / "scope-and-roe.md", build_scope(args))
 
     for folder, files in PHASE_FILES.items():
         for name in files:

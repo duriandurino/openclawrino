@@ -627,11 +627,13 @@ def load_preengagement_context(target):
         return {}
 
     candidates = []
-    direct = ROOT / "engagements" / slug / "00-charter"
-    candidates.append(direct)
+    direct_pre = ROOT / "engagements" / slug / "pre-engagement"
+    direct_legacy = ROOT / "engagements" / slug / "00-charter"
+    candidates.extend([direct_pre, direct_legacy])
 
     lowered = slug.lower()
     if lowered != slug:
+        candidates.append(ROOT / "engagements" / lowered / "pre-engagement")
         candidates.append(ROOT / "engagements" / lowered / "00-charter")
 
     normalized = "".join(ch.lower() for ch in slug if ch.isalnum())
@@ -642,6 +644,7 @@ def load_preengagement_context(target):
                 continue
             child_norm = "".join(ch.lower() for ch in child.name if ch.isalnum())
             if child_norm == normalized:
+                candidates.append(child / "pre-engagement")
                 candidates.append(child / "00-charter")
 
     seen = set()
