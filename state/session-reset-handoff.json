@@ -1,32 +1,28 @@
 {
-  "timestamp_local": "2026-04-16 13:36:35 PST",
-  "timestamp_iso": "2026-04-16T13:36:35+08:00",
-  "date": "2026-04-16",
+  "timestamp_local": "2026-04-17 14:39:47 PST",
+  "timestamp_iso": "2026-04-17T14:39:47+08:00",
+  "date": "2026-04-17",
   "trigger": "manual-near-50-percent",
-  "summary": "Finalized the Player V2 reusable pentest package for live Raspi testing, verified the beginner script flow end to end, fixed the shared installer path in docs, and committed the reusable_package repo update.",
+  "summary": "Locked in the default short pre-engagement intake for 'pentest <target>' and updated Docs-only report generation to include pre-engagement charter/ROE details from 00-charter files.",
   "key_points": [
-    "Reusable package commit: 84f1a9e (Finalize Player V2 package docs and flow).",
-    "Beginner live-test order is now: 01 setup, shared install if needed, 02 package install if needed, 03 bootstrap, 04 device baseline, 05 network check, 06 local files, 07 secrets, 08 final bundle.",
-    "pandoc is still optional and missing in this environment, so markdown bundle generation works but HTML/PDF/PPTX export will require pandoc on the target system."
+    "Durable intake rule saved in AGENTS.md and skills/pentest-orchestrator/SKILL.md via commit 644475f.",
+    "Docs report generator now adds a Pre-Engagement Intake section from engagement-charter.md and scope-and-roe.md, while PPT output remains unchanged, via commit 8ec1d60."
   ],
   "next_actions": [
-    "After reset, resume from the finalized Player V2 package and, if needed, make a self-contained transfer bundle or one-page run card for the Raspi test."
+    "After reset, continue with the next user task. For future real pentests, send the short intake first, then ensure charter/ROE data flows into Docs reports only."
   ],
   "files": [
-    "reusable_package/player-v2-direct-2026-04-15_1205/README.md",
-    "reusable_package/player-v2-direct-2026-04-15_1205/docs/operator-checklist.md",
-    "reusable_package/player-v2-direct-2026-04-15_1205/docs/export-bundle-explained.md",
-    "state/session-reset-handoff.json"
+    "AGENTS.md",
+    "skills/pentest-orchestrator/SKILL.md",
+    "reporting/scripts/generate_report.py"
   ],
   "branch": "main",
-  "head_before": "fe720e6",
+  "head_before": "8ec1d60",
   "git_status_before": [
-    "M  STATE.md",
     " M reusable_package/_common/README.md",
     " M reusable_package/player-v2-direct-2026-04-15_1205/README.md",
     " M reusable_package/player-v2-direct-2026-04-15_1205/docs/operator-checklist.md",
     " M scripts/session_flush_harness.py",
-    "M  state/context-pressure.json",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
@@ -50,6 +46,7 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.md",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json",
+    "?? pentest-references/",
     "?? reusable_package/.gitignore",
     "?? reusable_package/README.md",
     "?? reusable_package/REPO_SETUP.md",
