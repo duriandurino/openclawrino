@@ -4,4 +4,5 @@
 - none
 
 ## Next steps
-- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
+- Implement runtime behavior so /remember invokes the durable snapshot flow automatically.
+- Keep the saved context concise and focused on current task, objective, and immediate next action.

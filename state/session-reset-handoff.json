@@ -1,28 +1,44 @@
 {
-  "timestamp_local": "2026-04-17 14:39:47 PST",
-  "timestamp_iso": "2026-04-17T14:39:47+08:00",
-  "date": "2026-04-17",
-  "trigger": "manual-near-50-percent",
-  "summary": "Locked in the default short pre-engagement intake for 'pentest <target>' and updated Docs-only report generation to include pre-engagement charter/ROE details from 00-charter files.",
-  "key_points": [
-    "Durable intake rule saved in AGENTS.md and skills/pentest-orchestrator/SKILL.md via commit 644475f.",
-    "Docs report generator now adds a Pre-Engagement Intake section from engagement-charter.md and scope-and-roe.md, while PPT output remains unchanged, via commit 8ec1d60."
+  "updatedAt": "2026-04-20T18:06:37+08:00",
+  "trigger": "manual-remember",
+  "pressure": {
+    "updatedAt": "2026-04-20T18:06:37+08:00",
+    "sessionKey": "agent:main:telegram:direct:6018252086",
+    "sessionId": "692483f6-5fd3-4424-9481-2f7c1cf664f6",
+    "source": "openclaw-status",
+    "percentUsed": 17,
+    "totalTokens": 46310,
+    "contextTokens": 272000,
+    "remainingTokens": 225690,
+    "warningThreshold": 40,
+    "snapshotThreshold": 48,
+    "pressureState": "normal",
+    "lastSnapshotHash": "eadf44cfd435ed02ec2526fe3b13bfad2b8e81e4f2a54e985da39f8eec112164",
+    "lastSnapshotAt": "2026-04-20T18:06:37+08:00",
+    "shouldSnapshot": true
+  },
+  "currentTask": "Define and wire the new /remember soft command for reset-safe recall",
+  "objective": "Persist the most important recent session context so a fresh session can resume cleanly after reset",
+  "keyPoints": [
+    "User wants a new /remember soft command that immediately remembers key recent session context.",
+    "The /remember behavior has been documented in the soft-command spec and mapped to the durable context harness.",
+    "Next likely step is implementing behavior-layer handling so typing /remember triggers this flow automatically."
   ],
-  "next_actions": [
-    "After reset, continue with the next user task. For future real pentests, send the short intake first, then ensure charter/ROE data flows into Docs reports only."
+  "decisions": [],
+  "blockers": [],
+  "nextSteps": [
+    "Implement runtime behavior so /remember invokes the durable snapshot flow automatically.",
+    "Keep the saved context concise and focused on current task, objective, and immediate next action."
   ],
   "files": [
-    "AGENTS.md",
-    "skills/pentest-orchestrator/SKILL.md",
-    "reporting/scripts/generate_report.py"
+    "docs/pentest-command-spec.md",
+    "docs/context-harness.md"
   ],
+  "preferences": [],
+  "assumptions": [],
   "branch": "main",
-  "head_before": "8ec1d60",
-  "git_status_before": [
-    " M reusable_package/_common/README.md",
-    " M reusable_package/player-v2-direct-2026-04-15_1205/README.md",
-    " M reusable_package/player-v2-direct-2026-04-15_1205/docs/operator-checklist.md",
-    " M scripts/session_flush_harness.py",
+  "headBefore": "aa22f84",
+  "gitStatusBefore": [
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.pptx",
@@ -45,22 +61,7 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.docx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.md",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
-    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json",
-    "?? pentest-references/",
-    "?? reusable_package/.gitignore",
-    "?? reusable_package/README.md",
-    "?? reusable_package/REPO_SETUP.md",
-    "?? reusable_package/_common/scripts/00-common-setup.sh",
-    "?? reusable_package/_common/scripts/01-common-install.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/docs/export-bundle-explained.md",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/01-player-v2-setup.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/02-install-player-v2-tools.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/03-make-work-folder.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/04-check-device.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/05-check-network.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/06-find-local-files.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/07-find-secrets.sh",
-    "?? reusable_package/player-v2-direct-2026-04-15_1205/scripts/08-make-final-package.sh"
+    "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json"
   ],
-  "handoff_path": "state/session-reset-handoff.json"
+  "snapshotHash": "eadf44cfd435ed02ec2526fe3b13bfad2b8e81e4f2a54e985da39f8eec112164"
 }
