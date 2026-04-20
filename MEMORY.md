@@ -61,6 +61,20 @@
 - On 2026-04-13, non-interactive gog publishing was re-verified with `GOG_KEYRING_PASSWORD=hatlesswhite`, and the final quick-scan publish summary output was cleaned so the links block is emitted once with correct docs/PDF/slides/drive mapping.
 - User preference reinforced on 2026-04-14: for report-capable workflows, publishing should be automatic and prioritized by default, without waiting for an extra confirmation, unless the user explicitly says not to publish.
 
+## Workflow / Documentation Rules (2026-04-17)
+
+- For direct requests like `pentest <target>`, always send the short pre-engagement intake first and do not begin active testing until authorization and scope are explicit.
+- That intake rule is now pinned in both `AGENTS.md` and `skills/pentest-orchestrator/SKILL.md`.
+- Docs report output should include the pre-engagement charter / ROE details from `engagements/<target>/00-charter/engagement-charter.md` and `scope-and-roe.md`.
+- This pre-engagement intake section is **Docs-only**. PPT / slide output should stay unchanged unless explicitly requested.
+
+## Migration / Player V2 Packaging Notes (2026-04-16)
+
+- Full `~/.openclaw` backup/restore is the simplest brain-migration path to a new Linux PC. Best practice is fresh install first, stop OpenClaw, restore `~/.openclaw`, then restore extra auth outside it such as `~/.ssh`, git creds, optional `~/.ollama`, and related tool config.
+- `memory/` is gitignored, so it must be copied manually during migration even if the repo itself is restored cleanly.
+- The reusable Player V2 package was finalized for live Raspi testing. Beginner run order is: setup, shared install if needed, package install if needed, bootstrap/work folder, device baseline, network check, local files, secrets, final bundle.
+- `pandoc` remains optional and missing in this environment, so markdown bundle generation works, but HTML/PDF/PPTX export requires pandoc on the target system.
+
 ## Presentation Context (2026-03-17)
 - **Audience:** Professional presentation
 - **Purpose:** Demonstrate value of the Pentester role
