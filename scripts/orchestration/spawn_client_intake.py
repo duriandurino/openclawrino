@@ -99,6 +99,10 @@ def normalize_date(value: str | None) -> str:
     raise SpawnError("date override must be MM-DD-YYYY, YYYY-MM-DD, or MM/DD/YYYY")
 
 
+def current_time_stamp() -> str:
+    return datetime.now().strftime("%H-%M")
+
+
 def discover_default_source(template_type: str) -> Path | None:
     target_name = f"client-intake-{template_type}.md"
     candidates = [
@@ -157,8 +161,8 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def build_output_name(template_type: str, date_stamp: str, pentester_slug: str) -> str:
-    return f"client-intake-{template_type}-{date_stamp}-{pentester_slug}.md"
+def build_output_name(date_stamp: str, time_stamp: str, pentester_slug: str) -> str:
+    return f"client-intake-{date_stamp}-{time_stamp}-{pentester_slug}.md"
 
 
 def spawn_copy(
@@ -172,7 +176,8 @@ def spawn_copy(
     normalized_type = normalize_template_type(template_type)
     pentester_slug = sanitize_name(pentester_name)
     date_stamp = normalize_date(date_override)
-    output_name = build_output_name(normalized_type, date_stamp, pentester_slug)
+    time_stamp = current_time_stamp()
+    output_name = build_output_name(date_stamp, time_stamp, pentester_slug)
     destination = Path(destination_dir).expanduser().resolve()
     output_path = destination / output_name
 
@@ -254,7 +259,8 @@ def spawn_drive_copy(
     normalized_type = normalize_template_type(template_type)
     pentester_slug = sanitize_name(pentester_name)
     date_stamp = normalize_date(date_override)
-    output_name = build_output_name(normalized_type, date_stamp, pentester_slug)
+    time_stamp = current_time_stamp()
+    output_name = build_output_name(date_stamp, time_stamp, pentester_slug)
     template_id = drive_template_id or DEFAULT_DRIVE_TEMPLATE_IDS.get(normalized_type)
 
     if not template_id:
