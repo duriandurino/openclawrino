@@ -97,9 +97,20 @@ def append_memory_note(memory_path: Path, handoff: dict) -> None:
 
 
 def stage_paths(paths: Iterable[Path]) -> None:
-    rels = [str(path.relative_to(ROOT)) for path in paths]
-    if rels:
-        run(["git", "add", *rels])
+    normal_rels: list[str] = []
+    force_rels: list[str] = []
+
+    for path in paths:
+        rel = str(path.relative_to(ROOT))
+        if rel == str((ROOT / "memory").relative_to(ROOT)) or rel.startswith("memory/"):
+            force_rels.append(rel)
+        else:
+            normal_rels.append(rel)
+
+    if normal_rels:
+        run(["git", "add", *normal_rels])
+    if force_rels:
+        run(["git", "add", "-f", *force_rels])
 
 
 def commit_if_needed(message: str) -> str | None:

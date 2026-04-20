@@ -1,0 +1,34 @@
+# Reusable package repo ignore baseline
+
+# Python
+__pycache__/
+*.pyc
+
+# OS/editor
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Logs and local run artifacts
+**/logs/
+**/results/runs/
+**/results/prereq/
+
+# Generated exports and bulky outputs
+**/reports/*_FINAL_*.md
+**/reports/EXECUTIVE_SUMMARY_*.md
+**/reports/FINDINGS_*.md
+**/reports/REMEDIATION_*.md
+**/reports/BUNDLE_NOTES_*.md
+**/reports/*.html
+**/reports/*.pdf
+**/slides/SLIDES_*.md
+**/slides/*.pptx
+
+# Optional evidence / generated artifacts
+**/evidence/
+
+# Local git helper leftovers
+*.orig
