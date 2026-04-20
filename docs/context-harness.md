@@ -75,6 +75,14 @@ python3 scripts/context_harness.py snapshot --current-task "..." --objective "..
 python3 scripts/context_harness.py snapshot --current-task "..." --objective "..." --next-step "..." --commit --push
 ```
 
+## Manual remember checkpoint
+
+Use this when the user wants an immediate post-reset memory pin, even if compaction pressure is low.
+
+```bash
+python3 scripts/context_harness.py snapshot --current-task "..." --objective "..." --next-step "..." --trigger manual-remember --force --commit
+```
+
 ## Check pressure only
 
 ```bash
