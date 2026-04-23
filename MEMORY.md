@@ -75,6 +75,12 @@
 - The reusable Player V2 package was finalized for live Raspi testing. Beginner run order is: setup, shared install if needed, package install if needed, bootstrap/work folder, device baseline, network check, local files, secrets, final bundle.
 - `pandoc` remains optional and missing in this environment, so markdown bundle generation works, but HTML/PDF/PPTX export requires pandoc on the target system.
 
+## Context / Reset Workflow Notes (2026-04-20)
+
+- A new soft command, `/remember`, is intended as the reset-safe recall entry point for durable context snapshots.
+- When implementing or using reset-safe context capture, keep the saved snapshot concise and centered on the current task, objective, and immediate next action.
+- Durable reset handoff state belongs in `state/session-reset-handoff.json`, not in `memory/`, because `memory/` is gitignored.
+
 ## Presentation Context (2026-03-17)
 - **Audience:** Professional presentation
 - **Purpose:** Demonstrate value of the Pentester role
