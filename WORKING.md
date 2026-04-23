@@ -1,20 +1,23 @@
 # WORKING.md
 
 ## Current objective
-Persist the most important recent session context so a fresh session can resume cleanly after reset
+Persist the implemented /clientform, /pentesterform, /pentest, /realitycheck, and /pushtorepo workflow state so a reset can resume cleanly
 
 ## Current task
-Define and wire the new /remember soft command for reset-safe recall
+Finalize and verify pre-engagement soft command workflows
 
 ## Key context
-- User wants a new /remember soft command that immediately remembers key recent session context.
-- The /remember behavior has been documented in the soft-command spec and mapped to the durable context harness.
-- Next likely step is implementing behavior-layer handling so typing /remember triggers this flow automatically.
+- Revised soft-command spec for /clientform, /pentesterform, and /pentest to the new Google Docs template flow.
+- Added scripts/orchestration/spawn_pre_engagement_forms.py to duplicate the new pre-engagement forms via gog/Drive.
+- Live verification succeeded for /clientform and /pentesterform helper execution against Google Drive.
+- The implementation commit b409558 was pushed successfully to origin/main.
 
 ## Exact next actions
-- Implement runtime behavior so /remember invokes the durable snapshot flow automatically.
-- Keep the saved context concise and focused on current task, objective, and immediate next action.
+- If needed after reset, live-test /pentest <target> end-to-end in chat.
+- Optionally wire /realitycheck and /pushtorepo into equally strict documented behavior handling if further refinement is wanted.
 
 ## Critical files
 - docs/pentest-command-spec.md
-- docs/context-harness.md
+- scripts/orchestration/spawn_pre_engagement_forms.py
+- AGENTS.md
+- README.md

@@ -134,6 +134,15 @@ Commits are intended to persist actual implementation changes in the workspace, 
 
 These chat triggers are intended to behave as real assistant-run workflows in direct chat, not just as informal phrasing:
 
+- `/harness`
+  - check current context pressure first
+  - if usage is near roughly 50%, save reset-ready context so the user can safely run `/reset`
+  - if usage is still low, report pressure plainly unless a direct snapshot variant was requested
+
+- `/remember`
+  - recall recent durable context after reset, or
+  - recall a specific older topic when used like `/remember "some past context"`
+
 - `/clientform`
   - spawn a Google Docs copy of the pre-engagement client form
   - naming pattern: `pre-engage-form-<MM-DD-YYYY>-<HH-mm>.md`
@@ -153,7 +162,8 @@ These chat triggers are intended to behave as real assistant-run workflows in di
     - an engagement naming prompt for `/workspace/engagements/`
   - still enforce the authorization/scope gate before any active testing
 
-Current helper:
+Current helpers:
+- `python3 scripts/context_harness.py ...`
 - `python3 scripts/orchestration/spawn_pre_engagement_forms.py <clientform|pentesterform> [--title-flag "..."] --json`
 
 ## Notes

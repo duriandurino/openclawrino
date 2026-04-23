@@ -4,5 +4,5 @@
 - none
 
 ## Next steps
-- Implement runtime behavior so /remember invokes the durable snapshot flow automatically.
-- Keep the saved context concise and focused on current task, objective, and immediate next action.
+- If needed after reset, live-test /pentest <target> end-to-end in chat.
+- Optionally wire /realitycheck and /pushtorepo into equally strict documented behavior handling if further refinement is wanted.
