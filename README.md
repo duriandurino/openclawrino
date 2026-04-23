@@ -134,6 +134,9 @@ Commits are intended to persist actual implementation changes in the workspace, 
 
 These chat triggers are intended to behave as real assistant-run workflows in direct chat, not just as informal phrasing:
 
+- `/helpme`
+  - show all supported soft commands and their purpose
+
 - `/harness`
   - check current context pressure first
   - if usage is near roughly 50%, save reset-ready context so the user can safely run `/reset`

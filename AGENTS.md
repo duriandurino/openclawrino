@@ -190,6 +190,7 @@ Required behavior:
 For direct requests that are not using the soft command but mean the same thing, follow the same workflow.
 
 For continuity soft commands:
+- `/helpme` means: provide the current supported soft commands and their purpose
 - `/harness` means: check context usage first, and if it is near roughly 50%, save reset-ready context so the user can safely run `/reset`
 - `/remember` means: recall prior durable context, especially after reset
 - `/remember <context>` means: search for a specific prior context from past sessions or durable notes instead of guessing from the current thread
