@@ -175,20 +175,19 @@ When a user asks for rapid triage, a quick vulnerability check, or an antivirus-
 
 When a user asks for a full engagement, methodology-driven testing, exploitation, or formal pentest reporting, use the structured pentest path and orchestrator.
 
-For messages like `pentest <target>` or equivalent direct requests to start a real pentest, always send the short pre-engagement intake first before any active testing. Use the standard fields:
-- Engagement title
-- Target
-- Test type
-- Dates
-- Rules of engagement
-- Scope in
-- Scope out
-- Credentials provided
-- Constraints
-- Success criteria
-- Approval / authorization reference
+For messages like `pentest <target>` or equivalent direct requests to start a real pentest, treat `/pentest <target>` as a real soft-command workflow.
 
-Mark unknowns as `TBD`, and do not start active testing until authorization and scope are explicit.
+Required behavior:
+- automatically run the `/clientform` flow first
+- return the spawned pre-engagement form reference
+- provide the fill-up block for the Assigned Penetration Tester part:
+  - Organization name
+  - Assigned Tester Name
+  - Email address
+- provide an engagement naming prompt for `/workspace/engagements/`
+- do not start active testing until authorization and scope are explicit
+
+For direct requests that are not using the soft command but mean the same thing, follow the same workflow.
 
 ### Quick Scan Deliverable Rule
 

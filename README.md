@@ -130,6 +130,32 @@ These are wired into the relevant Specter agents and `pentest-orchestrator` so t
 This repository is actively updated by the OpenClaw assistant during real work.
 Commits are intended to persist actual implementation changes in the workspace, not just chat-memory decisions.
 
+## Soft command behavior
+
+These chat triggers are intended to behave as real assistant-run workflows in direct chat, not just as informal phrasing:
+
+- `/clientform`
+  - spawn a Google Docs copy of the pre-engagement client form
+  - naming pattern: `pre-engage-form-<MM-DD-YYYY>-<HH-mm>.md`
+  - then return the fill-up block for:
+    - Organization name
+    - Assigned Tester Name
+    - Email address
+
+- `/pentesterform <titleFlag>`
+  - spawn a Google Docs copy of the user engagement input template
+  - naming pattern: `user-engagement-input-template-<title>-<MM-DD-YYYY>-<HH-mm>.md`
+
+- `/pentest <target>`
+  - automatically run the `/clientform` flow first
+  - then return:
+    - the Assigned Penetration Tester fill-up block
+    - an engagement naming prompt for `/workspace/engagements/`
+  - still enforce the authorization/scope gate before any active testing
+
+Current helper:
+- `python3 scripts/orchestration/spawn_pre_engagement_forms.py <clientform|pentesterform> [--title-flag "..."] --json`
+
 ## Notes
 
 - `memory/` is for local continuity and may not be fully tracked in git
