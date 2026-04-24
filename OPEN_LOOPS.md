@@ -4,5 +4,4 @@
 - none
 
 ## Next steps
-- If needed after reset, live-test /pentest <target> end-to-end in chat.
-- Optionally wire /realitycheck and /pushtorepo into equally strict documented behavior handling if further refinement is wanted.
+- If work continues after reset, expand family-specific manifests and deeper reusable scripts under scripts/ while preserving quick-scan/full-pentest separation

@@ -1,43 +1,35 @@
 {
-  "updatedAt": "2026-04-20T18:06:37+08:00",
-  "trigger": "manual-remember",
+  "updatedAt": "2026-04-24T14:57:36+08:00",
+  "trigger": "manual",
   "pressure": {
-    "updatedAt": "2026-04-20T18:06:37+08:00",
+    "updatedAt": "2026-04-24T14:57:36+08:00",
     "sessionKey": "agent:main:telegram:direct:6018252086",
-    "sessionId": "692483f6-5fd3-4424-9481-2f7c1cf664f6",
+    "sessionId": "f4fb387f-ad89-44c6-8940-cc77d9c18792",
     "source": "openclaw-status",
-    "percentUsed": 17,
-    "totalTokens": 46310,
+    "percentUsed": 51,
+    "totalTokens": 139559,
     "contextTokens": 272000,
-    "remainingTokens": 225690,
+    "remainingTokens": 132441,
     "warningThreshold": 40,
     "snapshotThreshold": 48,
-    "pressureState": "normal",
-    "lastSnapshotHash": "eadf44cfd435ed02ec2526fe3b13bfad2b8e81e4f2a54e985da39f8eec112164",
-    "lastSnapshotAt": "2026-04-20T18:06:37+08:00",
+    "pressureState": "snapshot",
+    "lastSnapshotHash": "a48a430f4c68ac70353b32d7ac29122781588917cd499d84ad762c4d047ce4e8",
+    "lastSnapshotAt": "2026-04-24T14:57:36+08:00",
     "shouldSnapshot": true
   },
-  "currentTask": "Define and wire the new /remember soft command for reset-safe recall",
-  "objective": "Persist the most important recent session context so a fresh session can resume cleanly after reset",
-  "keyPoints": [
-    "User wants a new /remember soft command that immediately remembers key recent session context.",
-    "The /remember behavior has been documented in the soft-command spec and mapped to the durable context harness.",
-    "Next likely step is implementing behavior-layer handling so typing /remember triggers this flow automatically."
-  ],
+  "currentTask": "Lock in scripts-first full-pentest reuse rules and reusable target-family planning for pentest workflows",
+  "objective": "Make scripts/ the default reusable operations layer for Hatless White and Specter agents, with full-pentest target-family planning and reusable promotion of discoveries during engagements",
+  "keyPoints": [],
   "decisions": [],
   "blockers": [],
   "nextSteps": [
-    "Implement runtime behavior so /remember invokes the durable snapshot flow automatically.",
-    "Keep the saved context concise and focused on current task, objective, and immediate next action."
+    "If work continues after reset, expand family-specific manifests and deeper reusable scripts under scripts/ while preserving quick-scan/full-pentest separation"
   ],
-  "files": [
-    "docs/pentest-command-spec.md",
-    "docs/context-harness.md"
-  ],
+  "files": [],
   "preferences": [],
   "assumptions": [],
   "branch": "main",
-  "headBefore": "aa22f84",
+  "headBefore": "574dff6",
   "gitStatusBefore": [
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
@@ -63,5 +55,5 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json"
   ],
-  "snapshotHash": "eadf44cfd435ed02ec2526fe3b13bfad2b8e81e4f2a54e985da39f8eec112164"
+  "snapshotHash": "a48a430f4c68ac70353b32d7ac29122781588917cd499d84ad762c4d047ce4e8"
 }

@@ -1,23 +1,16 @@
 # WORKING.md
 
 ## Current objective
-Persist the implemented /clientform, /pentesterform, /pentest, /realitycheck, and /pushtorepo workflow state so a reset can resume cleanly
+Make scripts/ the default reusable operations layer for Hatless White and Specter agents, with full-pentest target-family planning and reusable promotion of discoveries during engagements
 
 ## Current task
-Finalize and verify pre-engagement soft command workflows
+Lock in scripts-first full-pentest reuse rules and reusable target-family planning for pentest workflows
 
 ## Key context
-- Revised soft-command spec for /clientform, /pentesterform, and /pentest to the new Google Docs template flow.
-- Added scripts/orchestration/spawn_pre_engagement_forms.py to duplicate the new pre-engagement forms via gog/Drive.
-- Live verification succeeded for /clientform and /pentesterform helper execution against Google Drive.
-- The implementation commit b409558 was pushed successfully to origin/main.
+- none
 
 ## Exact next actions
-- If needed after reset, live-test /pentest <target> end-to-end in chat.
-- Optionally wire /realitycheck and /pushtorepo into equally strict documented behavior handling if further refinement is wanted.
+- If work continues after reset, expand family-specific manifests and deeper reusable scripts under scripts/ while preserving quick-scan/full-pentest separation
 
 ## Critical files
-- docs/pentest-command-spec.md
-- scripts/orchestration/spawn_pre_engagement_forms.py
-- AGENTS.md
-- README.md
+- none
