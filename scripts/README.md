@@ -97,6 +97,14 @@ Helpful entrypoints:
 
 - `python3 scripts/orchestration/recommend_target_family.py --hint "Raspberry Pi player kiosk with Electron UI, Python service, MQTT"`
 - `python3 scripts/orchestration/describe_target_family.py --family player`
+- `python3 scripts/orchestration/plan_target_family.py --family player --target 192.168.0.50 --engagement engagements/player-v2`
+
+Recommended full-pentest flow:
+1. recommend or choose the family
+2. describe it if you need the composed rationale
+3. plan it with `plan_target_family.py`
+4. execute the listed manifests as the reusable baseline for each phase
+5. branch manually from live evidence
 
 This layer is separate from quick-scan profiles. It recommends baseline manifests and phase entrypoints for a full engagement, then leaves room for analyst-led branching.
 

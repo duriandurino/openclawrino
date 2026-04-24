@@ -58,7 +58,7 @@ families:
     default_entrypoints:
       recon: app-surface
       enum: electron-app-core
-      vuln: web-service
+      vuln: electron-surface
     phases:
       recon:
         notes:
@@ -69,7 +69,8 @@ families:
         notes:
           - Many Electron apps expose localhost or LAN-bound web APIs, websocket endpoints, or auto-update channels.
       vuln:
-        manifests: [vuln-web-service]
+        manifests: [vuln-electron-surface]
+        capabilities: [web-baseline, ipc-review, preload-review, debug-mode-check, update-channel-review]
         notes:
           - Add manual review for IPC abuse, preload exposure, debug mode, update signing, and local privilege boundaries.
 
@@ -79,7 +80,7 @@ families:
     target_kinds: [host, ip, domain]
     default_entrypoints:
       enum: python-app-core
-      vuln: web-service
+      vuln: python-service-config
     phases:
       enum:
         manifests: [enum-python-app-core]
@@ -87,7 +88,8 @@ families:
         notes:
           - Focus on HTTP APIs, admin panels, debug endpoints, package/version banners, and broker/client integrations.
       vuln:
-        manifests: [vuln-web-service]
+        manifests: [vuln-python-service-config]
+        capabilities: [version-cve-mapping, searchsploit-triage, debug-mode-check, secret-review, service-config-review]
         notes:
           - Layer in framework-specific checks like debug mode, secret leakage, exposed docs, and outdated dependencies.
 
@@ -109,9 +111,10 @@ families:
         notes:
           - This family is intentionally composite. Use the discovered evidence to narrow which sub-families matter most.
       vuln:
-        manifests: [vuln-web-service]
+        manifests: [vuln-player-core]
+        capabilities: [host-validation, web-validation, electron-review, python-config-review, mqtt-trust-review]
         notes:
-          - Treat web-service as the baseline manifest, then branch into MQTT trust, local IPC, kiosk breakout, update path, and service hardening validation.
+          - Start from the reusable player vuln bundle, then branch into MQTT trust, local IPC, kiosk breakout, update path, and service hardening validation.
       exploit:
         notes:
           - Do not assume a single exploit path. Prioritize attack-path building across device, broker, app, and management surfaces.
@@ -172,7 +175,16 @@ manifest_sets:
     manifests: [vuln-host-core]
   player-vuln-core:
     phase: vuln
-    manifests: [vuln-web-service]
+    manifests: [vuln-player-core]
+  electron-surface:
+    phase: vuln
+    manifests: [vuln-electron-surface]
+  python-service-config:
+    phase: vuln
+    manifests: [vuln-python-service-config]
+  mqtt-player-validation:
+    phase: vuln
+    manifests: [vuln-mqtt-player-validation]
   web-service:
     phase: vuln
     manifests: [vuln-web-service]

@@ -1,0 +1,6 @@
+name: electron-surface
+phase: vuln
+description: Electron-focused vulnerability validation for kiosk or desktop app surfaces, layered on safe web checks.
+steps:
+  - script: orchestration/run_vuln_profile.py
+    args: ["--profile", "vuln-web-service", "--target", "{{target}}", "--engagement", "{{engagement}}", "--input", "{{input}}"]

@@ -10,6 +10,7 @@ Before manual phase planning for a full pentest, prefer the reusable target-fami
 
 - `recommend_target_family.py` suggests a full-pentest target family from free-text hints
 - `describe_target_family.py` expands the family into composed phase guidance and baseline manifests
+- `plan_target_family.py` turns a chosen family into a concrete per-phase execution plan with resolved manifests and step-level script calls
 - family data lives under `scripts/shared/target-types/`
 
 Examples:
@@ -19,6 +20,8 @@ Examples:
 - `run_vuln_profile.py --profile web-service --target 192.168.0.227 --input engagements/.../enum/parsed/services.json`
 - `recommend_target_family.py --hint "Raspberry Pi player kiosk with Electron UI and MQTT"`
 - `describe_target_family.py --family player-pulselink`
+- `plan_target_family.py --family player-pulselink --target 192.168.0.50 --engagement engagements/player-v2`
+- `plan_target_family.py --hint "Raspberry Pi player kiosk with Electron UI, Python service, MQTT" --target 192.168.0.50 --engagement engagements/player-v2`
 - `init_engagement_docs.py player-v2 --title "Player V2 Assessment" --target "player-v2"`
 - `init_engagement_docs.py --title "Player V2 Assessment" --target "player-v2"`  # engagement slug derived from title
 
@@ -33,6 +36,7 @@ Examples:
 
 - for full pentests, choose a target family first when the target type is known or inferable
 - expand that family into phase entrypoints and recommended baseline manifests
+- use `plan_target_family.py` as the dispatcher/helper that resolves the family into an actionable per-phase baseline
 - read manifests from `scripts/shared/manifests/`
 - validate target and dependencies
 - execute steps in order

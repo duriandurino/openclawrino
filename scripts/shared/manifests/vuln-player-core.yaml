@@ -1,0 +1,10 @@
+name: player-core
+phase: vuln
+description: Composite player vulnerability baseline covering host, web, Electron-facing, Python service, and MQTT/player validation paths.
+steps:
+  - script: orchestration/run_vuln_profile.py
+    args: ["--profile", "vuln-electron-surface", "--target", "{{target}}", "--engagement", "{{engagement}}", "--input", "{{input}}"]
+  - script: orchestration/run_vuln_profile.py
+    args: ["--profile", "vuln-python-service-config", "--target", "{{target}}", "--engagement", "{{engagement}}", "--input", "{{input}}"]
+  - script: orchestration/run_vuln_profile.py
+    args: ["--profile", "vuln-mqtt-player-validation", "--target", "{{target}}", "--engagement", "{{engagement}}", "--input", "{{input}}"]

@@ -40,14 +40,16 @@ That means full-pentest target families should:
 
 1. Recommend a family from target hints.
 2. Review the composed phase plan.
-3. Run the recommended manifest(s) as the reusable baseline.
-4. Add manual/ad hoc phase work based on live evidence.
+3. Use `scripts/orchestration/plan_target_family.py` to resolve the family into concrete per-phase manifests and script steps.
+4. Run the recommended manifest(s) as the reusable baseline.
+5. Add manual/ad hoc phase work based on live evidence.
 
 Example:
 
 ```bash
 python3 scripts/orchestration/recommend_target_family.py --hint "Raspberry Pi player kiosk with Electron UI, Python service, MQTT, PulseLink"
 python3 scripts/orchestration/describe_target_family.py --family player-pulselink
+python3 scripts/orchestration/plan_target_family.py --family player-pulselink --target 192.168.0.50 --engagement engagements/player-v2
 ```
 
 ## Design rules
@@ -57,3 +59,4 @@ python3 scripts/orchestration/describe_target_family.py --family player-pulselin
 - Prefer small manifest bundles over giant frameworks.
 - Keep existing phase scripts/manifests intact, then compose them here.
 - Add new manifests only when they clearly improve a reusable phase baseline.
+- For hybrid families, prefer composite vuln planning that names the sub-surfaces being validated instead of collapsing everything into a generic web-only baseline.

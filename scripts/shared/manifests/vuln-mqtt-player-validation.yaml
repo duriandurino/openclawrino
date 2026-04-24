@@ -1,0 +1,8 @@
+name: mqtt-player-validation
+phase: vuln
+description: MQTT and player-control-path validation baseline, anchored to host and web evidence until dedicated broker checks are added.
+steps:
+  - script: orchestration/run_vuln_profile.py
+    args: ["--profile", "vuln-host-core", "--target", "{{target}}", "--engagement", "{{engagement}}", "--input", "{{input}}"]
+  - script: orchestration/run_vuln_profile.py
+    args: ["--profile", "vuln-web-service", "--target", "{{target}}", "--engagement", "{{engagement}}", "--input", "{{input}}"]
