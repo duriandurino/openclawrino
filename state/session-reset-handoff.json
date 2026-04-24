@@ -1,35 +1,46 @@
 {
-  "updatedAt": "2026-04-24T14:57:36+08:00",
-  "trigger": "manual",
+  "updatedAt": "2026-04-24T16:02:48+08:00",
+  "trigger": "/harness force",
   "pressure": {
-    "updatedAt": "2026-04-24T14:57:36+08:00",
+    "updatedAt": "2026-04-24T16:02:48+08:00",
     "sessionKey": "agent:main:telegram:direct:6018252086",
-    "sessionId": "f4fb387f-ad89-44c6-8940-cc77d9c18792",
+    "sessionId": "e86fa22a-8569-4aec-bd14-d0d9ddcd52f5",
     "source": "openclaw-status",
-    "percentUsed": 51,
-    "totalTokens": 139559,
+    "percentUsed": 16,
+    "totalTokens": 43339,
     "contextTokens": 272000,
-    "remainingTokens": 132441,
+    "remainingTokens": 228661,
     "warningThreshold": 40,
     "snapshotThreshold": 48,
-    "pressureState": "snapshot",
-    "lastSnapshotHash": "a48a430f4c68ac70353b32d7ac29122781588917cd499d84ad762c4d047ce4e8",
-    "lastSnapshotAt": "2026-04-24T14:57:36+08:00",
+    "pressureState": "normal",
+    "lastSnapshotHash": "a683b9ac16df87cee67d4cb3b8055561f01d8893dd1b385f21a12db152f46113",
+    "lastSnapshotAt": "2026-04-24T16:02:48+08:00",
     "shouldSnapshot": true
   },
-  "currentTask": "Lock in scripts-first full-pentest reuse rules and reusable target-family planning for pentest workflows",
-  "objective": "Make scripts/ the default reusable operations layer for Hatless White and Specter agents, with full-pentest target-family planning and reusable promotion of discoveries during engagements",
-  "keyPoints": [],
-  "decisions": [],
+  "currentTask": "Preserve current session state after clientform auto-fill fix and repo push",
+  "objective": "Maintain a reset-ready durable handoff for the current pentest workflow and recent form-spawn fix",
+  "keyPoints": [
+    "clientform spawns now auto-fill Organization name, Assigned Tester Name, and Email address when collected first",
+    "verified live against spawned Google Doc pre-engage-form-04-24-2026-15-59.md",
+    "fix committed and pushed to origin/main as 6669e5e"
+  ],
+  "decisions": [
+    "Treat /harness force as an immediate forced snapshot request"
+  ],
   "blockers": [],
   "nextSteps": [
-    "If work continues after reset, expand family-specific manifests and deeper reusable scripts under scripts/ while preserving quick-scan/full-pentest separation"
+    "Resume from the saved handoff after reset or continue the player-phoenix pre-engagement flow"
   ],
-  "files": [],
+  "files": [
+    "scripts/orchestration/spawn_pre_engagement_forms.py",
+    "state/session-reset-handoff.json"
+  ],
   "preferences": [],
-  "assumptions": [],
+  "assumptions": [
+    "Current working thread is the player+phoenix pre-engagement setup flow"
+  ],
   "branch": "main",
-  "headBefore": "574dff6",
+  "headBefore": "6669e5e",
   "gitStatusBefore": [
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.md",
@@ -55,5 +66,5 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json"
   ],
-  "snapshotHash": "a48a430f4c68ac70353b32d7ac29122781588917cd499d84ad762c4d047ce4e8"
+  "snapshotHash": "a683b9ac16df87cee67d4cb3b8055561f01d8893dd1b385f21a12db152f46113"
 }

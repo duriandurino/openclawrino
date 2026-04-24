@@ -1,7 +1,7 @@
 # DECISIONS.md
 
 ## Current decisions
-- none
+- Treat /harness force as an immediate forced snapshot request
 
 ## Assumptions to preserve
-- none
+- Current working thread is the player+phoenix pre-engagement setup flow

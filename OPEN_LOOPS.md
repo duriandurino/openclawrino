@@ -4,4 +4,4 @@
 - none
 
 ## Next steps
-- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
+- Resume from the saved handoff after reset or continue the player-phoenix pre-engagement flow

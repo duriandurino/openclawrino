@@ -1,16 +1,19 @@
 # WORKING.md
 
 ## Current objective
-Maintain compact, durable working state across compaction and reset
+Maintain a reset-ready durable handoff for the current pentest workflow and recent form-spawn fix
 
 ## Current task
-Preserve working context before compaction or reset
+Preserve current session state after clientform auto-fill fix and repo push
 
 ## Key context
-- event token count: unknown
+- clientform spawns now auto-fill Organization name, Assigned Tester Name, and Email address when collected first
+- verified live against spawned Google Doc pre-engage-form-04-24-2026-15-59.md
+- fix committed and pushed to origin/main as 6669e5e
 
 ## Exact next actions
-- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
+- Resume from the saved handoff after reset or continue the player-phoenix pre-engagement flow
 
 ## Critical files
-- none
+- scripts/orchestration/spawn_pre_engagement_forms.py
+- state/session-reset-handoff.json
