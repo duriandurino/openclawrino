@@ -1,19 +1,14 @@
 #!/usr/bin/env python3
 """Ingest a Google Docs pre-engagement form into structured JSON.
 
-This prefers Google Docs structure output over PDF/text export so checkbox-style
-options can be interpreted more reliably from document layout.
+Preferred source order:
+1. `gog docs export --format md` because it preserves checkbox/radio state as
+   markdown task list markers like `[x]` and `[ ]`
+2. `gog docs structure` as a fallback when markdown export is unavailable
 
-Current heuristic:
-- For multiple-choice prompts rendered as consecutive bullet items, treat any
-  following non-bullet answer paragraph before the next prompt/heading as the
-  selected free-text answer.
-- If only bare bullet options are visible with no explicit marker from Google
-  Docs structure/cat output, preserve them as `options_visible` and set
-  `selected` to null rather than guessing.
-
-This fixes the old failure mode where PDF/text export flattened forms and lost
-checkbox state entirely without preserving enough structure for later parsing.
+The markdown path fixes the old failure mode where export-to-PDF/text or raw
+structure views could lose selection state and force the workflow to treat many
+answered fields as unknown.
 """
 
 from __future__ import annotations
@@ -23,6 +18,8 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
+from pathlib import Path
 from typing import Any
 
 
@@ -140,6 +137,93 @@ def normalize_text(value: str) -> str:
     return value.replace("\u000b", "\n").strip()
 
 
+def parse_markdown(md_text: str) -> dict[str, Any]:
+    sections: dict[str, list[dict[str, Any]]] = {"root": []}
+    current_section = "root"
+    lines = md_text.splitlines()
+    i = 0
+
+    def ensure_section(name: str) -> None:
+        sections.setdefault(name, [])
+
+    while i < len(lines):
+        line = lines[i].rstrip()
+        stripped = line.strip()
+
+        if not stripped:
+            i += 1
+            continue
+
+        if stripped.startswith("## "):
+            title = stripped[3:].replace("\\.", ".").strip()
+            mapped = SECTION_HEADINGS.get(title)
+            if mapped:
+                current_section = mapped
+            else:
+                current_section = title.lower().replace(" ", "_")
+            ensure_section(current_section)
+            i += 1
+            continue
+
+        ensure_section(current_section)
+
+        if stripped.startswith("### "):
+            sections[current_section].append({"text": stripped[4:].strip(), "bullet": False})
+            i += 1
+            continue
+
+        if stripped.startswith("**"):
+            q = stripped.strip("*").replace("\\.", ".").strip()
+            item: dict[str, Any] = {"question": q}
+            selected = []
+            options = []
+            answers = []
+            bullets = []
+            j = i + 1
+            while j < len(lines):
+                raw = lines[j].rstrip()
+                s = raw.strip()
+                if not s:
+                    j += 1
+                    continue
+                if s.startswith("## ") or s.startswith("### ") or s.startswith("**"):
+                    break
+                if s.startswith("- [x]") or s.startswith("* [x]"):
+                    value = s.split("]", 1)[1].strip().replace("\\_", "_")
+                    options.append(value)
+                    selected.append(value)
+                elif s.startswith("- [ ]") or s.startswith("* [ ]"):
+                    value = s.split("]", 1)[1].strip().replace("\\_", "_")
+                    options.append(value)
+                elif s.startswith("- ") or s.startswith("* "):
+                    value = s[2:].strip().replace("\\_", "_")
+                    bullets.append(value)
+                else:
+                    answers.append(s.replace("\\.", ".").replace("\\_", "_"))
+                j += 1
+
+            if options:
+                item["options_visible"] = options
+                if len(selected) == 1:
+                    item["selected"] = selected[0]
+                elif len(selected) > 1:
+                    item["selected"] = selected
+                else:
+                    item["selected"] = None
+            if bullets:
+                item["bullets"] = bullets
+            if answers:
+                item["answer"] = "\n".join(answers)
+            sections[current_section].append(item)
+            i = j
+            continue
+
+        sections[current_section].append({"text": stripped.replace("\\.", ".").replace("\\_", "_"), "bullet": stripped.startswith(("- ", "* "))})
+        i += 1
+
+    return {"sections": sections}
+
+
 def parse_structure(paragraphs: list[dict[str, Any]]) -> dict[str, Any]:
     cleaned = []
     for p in paragraphs:
@@ -213,20 +297,48 @@ def main() -> int:
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
-    structure = run_json([
-        "gog", "docs", "structure", args.doc_id, "--account", args.account, "--json"
-    ])
-    parsed = parse_structure(structure.get("paragraphs", []))
+    notes: list[str] = []
+    method = None
+    parsed = None
+
+    try:
+        env = os.environ.copy()
+        if not env.get("GOG_KEYRING_PASSWORD"):
+            env["GOG_KEYRING_PASSWORD"] = "hatlesswhite"
+        with tempfile.TemporaryDirectory(prefix="preengage-md-") as tmpdir:
+            out_path = Path(tmpdir) / "doc.md"
+            proc = subprocess.run(
+                [
+                    "gog", "docs", "export", args.doc_id, "--account", args.account,
+                    "--format", "md", "--output", str(out_path)
+                ],
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            if proc.returncode == 0 and out_path.exists() and out_path.read_text().strip():
+                parsed = parse_markdown(out_path.read_text())
+                method = "gog docs export --format md"
+                notes.append("Markdown export preserved checkbox/radio state using [x]/[ ] markers.")
+            else:
+                notes.append("Markdown export unavailable, falling back to gog docs structure.")
+    except Exception as exc:
+        notes.append(f"Markdown export path failed, falling back to structure: {exc}")
+
+    if parsed is None:
+        structure = run_json([
+            "gog", "docs", "structure", args.doc_id, "--account", args.account, "--json"
+        ])
+        parsed = parse_structure(structure.get("paragraphs", []))
+        method = "gog docs structure"
+        notes.append("Fallback structure parsing preserves visible options and free-text answers, but may lose explicit checkbox/radio state.")
+
     payload = {
         "ok": True,
         "docId": args.doc_id,
         "account": args.account,
-        "method": "gog docs structure",
-        "notes": [
-            "Checkbox/radio selections are not explicitly exposed by the current gog structure output.",
-            "This ingester preserves visible options and separates free-text answers instead of pretending checkbox state is known.",
-            "Any selected value remains null unless the document structure visibly contains a non-option answer paragraph or a future parser can decode explicit selection state.",
-        ],
+        "method": method,
+        "notes": notes,
         "parsed": parsed,
     }
 
