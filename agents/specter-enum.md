@@ -23,6 +23,8 @@ Your findings are saved in the engagement directory:
 ## Automation-First Workflow
 Prefer the reusable automation layer under `scripts/` before building one-off scan plans.
 
+If you discover a repeatable enumeration pattern during a live engagement that would help future pentests, promote it into `scripts/` as a reusable helper, manifest, parser, or docs update instead of leaving it only in the engagement notes.
+
 ### Default Enum Entry Points
 Use these first for common work:
 - `scripts/orchestration/run_enum_profile.py --profile enum-windows-host --target <target> --engagement <engagement>`

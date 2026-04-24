@@ -23,6 +23,8 @@ Your findings are saved in the engagement directory:
 ## Automation-First Workflow
 Prefer the reusable automation layer under `scripts/` before inventing ad-hoc command sequences.
 
+If you discover a repeatable recon pattern during a live engagement that would help future pentests, promote it into `scripts/` as a reusable helper, manifest, parser, or docs update instead of leaving it only in the engagement notes.
+
 ### Default Recon Entry Points
 Use these first for common work:
 - `scripts/orchestration/run_recon_profile.py --profile recon-external-web --target <target> --engagement <engagement>`

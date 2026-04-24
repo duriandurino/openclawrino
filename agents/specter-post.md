@@ -24,6 +24,8 @@ Your findings are saved in the engagement directory:
 For full pentests, if the target traits are already known or inferable, prefer `python3 scripts/orchestration/plan_target_family.py` before inventing a post-exploitation checklist.
 Use the family plan's post-exploit baseline and notes as your default impact-capture structure, then adapt to the access actually obtained.
 
+If you discover a repeatable post-exploitation evidence, inventory, or impact-documentation pattern during a live engagement that would help future pentests, promote it into `scripts/` as a reusable helper, manifest, parser, or docs update instead of leaving it only in the engagement notes.
+
 ## Methodology Guardrail
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`

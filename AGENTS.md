@@ -175,6 +175,23 @@ When a user asks for rapid triage, a quick vulnerability check, or an antivirus-
 
 When a user asks for a full engagement, methodology-driven testing, exploitation, or formal pentest reporting, use the structured pentest path and orchestrator.
 
+### Scripts-First Reuse Rule
+
+For pentest work, treat `scripts/` as the default reusable operations layer for both the main session and sub-agents.
+
+Required behavior:
+- prefer `scripts/orchestration/*.py` planning/runners before building ad-hoc command chains
+- prefer `scripts/shared/manifests/` and target-family planning before manual phase planning when the target traits are known or inferable
+- prefer existing helpers under `scripts/recon/`, `scripts/enum/`, `scripts/vuln/`, `scripts/exploit/`, and `scripts/post-exploit/` before inventing one-off flows
+- only go fully manual when the script/manifests layer does not fit, is missing coverage, or needs troubleshooting
+- do not bury reusable logic inside `engagements/<target>/`; if a discovery is likely to help future pentests, promote it into `scripts/`
+
+During a real pentest, if you discover a repeatable command sequence, parser, checklist, or validation pattern that would improve future engagements:
+- capture it as a reusable helper, manifest, parser, or documentation update under `scripts/`
+- use `skills/opencode-utility/SKILL.md` when coding/refactoring is needed to turn that discovery into a maintainable reusable utility
+- keep engagement-specific evidence in `engagements/<target>/`, but keep reusable operational logic in `scripts/`
+- prefer updating the reusable layer during or immediately after the engagement once the pattern proves real
+
 For messages like `pentest <target>` or equivalent direct requests to start a real pentest, treat `/pentest <target>` as a real soft-command workflow.
 
 Required behavior:
