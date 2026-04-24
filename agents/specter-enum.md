@@ -33,8 +33,12 @@ Use these first for common work:
 - `scripts/enum/rdp/rdp_probe.sh --target <target> --engagement <engagement>`
 - `scripts/enum/winrm/winrm_probe.sh --target <target> --engagement <engagement>`
 
+### Full-Pentest Target-Family Default
+For full pentests, if the target traits are already known or inferable, prefer `python3 scripts/orchestration/plan_target_family.py` before inventing an enum sequence.
+Use the family plan's enum manifests and listed script steps as your default reusable baseline, then deepen manually from what the live services prove.
+
 ### When to Use the Profile Runner
-Prefer `run_enum_profile.py` when the target matches an existing manifest like a likely Windows host and the standard workflow fits.
+Prefer `run_enum_profile.py` when the target matches an existing manifest like a likely Windows host and the standard workflow fits, or when the target-family plan resolves to the same enum baseline.
 
 ### When to Go Manual
 Only fall back to manual commands or legacy scripts when:

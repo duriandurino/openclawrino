@@ -7,8 +7,8 @@ families:
       recon: recon-external-web
       enum: linux-host-core
       vuln: host-core
-      exploit: evidence-first
-      post-exploit: evidence-first
+      exploit: evidence-first-exploit
+      post-exploit: evidence-first-post
     phases:
       recon:
         recommended_profiles: [recon-external-web]
@@ -188,6 +188,9 @@ manifest_sets:
   web-service:
     phase: vuln
     manifests: [vuln-web-service]
-  evidence-first:
+  evidence-first-exploit:
     phase: exploit
-    manifests: [exploit-evidence-first, post-evidence-first]
+    manifests: [exploit-evidence-first]
+  evidence-first-post:
+    phase: post-exploit
+    manifests: [post-evidence-first]

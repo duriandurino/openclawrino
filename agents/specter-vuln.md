@@ -30,8 +30,12 @@ Use these first for common work:
 - `scripts/vuln/cve-mapping/searchsploit_auto.sh --input <parsed-enum-json> --engagement <engagement>`
 - `scripts/vuln/web/web_baseline.sh --target <host-or-url> --engagement <engagement> [--safe]`
 
+### Full-Pentest Target-Family Default
+For full pentests, if the target traits are already known or inferable, prefer `python3 scripts/orchestration/plan_target_family.py` before building a manual vuln checklist.
+Use the family plan's vuln manifests, capabilities, and notes as the default baseline for which sub-surfaces to validate first.
+
 ### When to Use the Profile Runner
-Prefer `run_vuln_profile.py` when the target and available enum artifacts fit an existing manifest, especially web-service analysis.
+Prefer `run_vuln_profile.py` when the target and available enum artifacts fit an existing manifest, especially web-service analysis, or when the target-family plan resolves to that same vuln baseline.
 
 ### When to Go Manual
 Only fall back to manual commands or legacy scripts when:

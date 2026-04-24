@@ -31,8 +31,15 @@ Use these first for common work:
 - `scripts/recon/web/recon_http_fingerprint.sh --target <host-or-url> --engagement <engagement>`
 - `scripts/recon/subdomains/subdomain_collect.sh --domain <domain> --engagement <engagement>`
 
+### Full-Pentest Target-Family Default
+For full pentests, if the target traits are already known or can be inferred from the engagement context, prefer the target-family planner before building your own recon sequence:
+- `python3 scripts/orchestration/plan_target_family.py --family <family> --target <target> --engagement <engagement>`
+- or `python3 scripts/orchestration/plan_target_family.py --hint "<target description>" --target <target> --engagement <engagement>`
+
+Use the recon portion of that plan as your default reusable baseline, then branch manually from live evidence.
+
 ### When to Use the Profile Runner
-Prefer `run_recon_profile.py` when the target is an external domain/web target and the standard passive workflow fits.
+Prefer `run_recon_profile.py` when the target is an external domain/web target and the standard passive workflow fits, or when the target-family plan points you to the same recon baseline.
 
 ### When to Go Manual
 Only fall back to manual commands or legacy scripts when:

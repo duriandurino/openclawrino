@@ -20,6 +20,10 @@ Your findings are saved in the engagement directory:
 - Report ONLY from your engagement output directory
 - If you don't know what you worked on, say "I don't have context about my previous tasks" rather than guessing from main session memory
 
+## Full-Pentest Target-Family Default
+For full pentests, if the target traits are already known or inferable, prefer `python3 scripts/orchestration/plan_target_family.py` before inventing a post-exploitation checklist.
+Use the family plan's post-exploit baseline and notes as your default impact-capture structure, then adapt to the access actually obtained.
+
 ## Methodology Guardrail
 When a task needs pentest fundamentals, phase discipline, safety framing, documentation discipline, or beginner-style methodology grounding, load:
 - `skills/pentest-essentials/SKILL.md`

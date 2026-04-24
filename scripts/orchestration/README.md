@@ -6,7 +6,7 @@ Profile and manifest-driven runners live here.
 
 Let agents choose a workflow profile instead of planning every command from scratch.
 
-Before manual phase planning for a full pentest, prefer the reusable target-family layer:
+Before manual phase planning for a full pentest, prefer the reusable target-family layer as the default when the target type is known or inferable:
 
 - `recommend_target_family.py` suggests a full-pentest target family from free-text hints
 - `describe_target_family.py` expands the family into composed phase guidance and baseline manifests
@@ -37,6 +37,7 @@ Examples:
 - for full pentests, choose a target family first when the target type is known or inferable
 - expand that family into phase entrypoints and recommended baseline manifests
 - use `plan_target_family.py` as the dispatcher/helper that resolves the family into an actionable per-phase baseline
+- for exploit and post-exploit, keep manifest grouping phase-specific so evidence-first exploit planning and post-exploit evidence capture do not collapse into one manifest set
 - read manifests from `scripts/shared/manifests/`
 - validate target and dependencies
 - execute steps in order
