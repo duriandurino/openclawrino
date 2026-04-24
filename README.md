@@ -132,7 +132,14 @@ Commits are intended to persist actual implementation changes in the workspace, 
 
 ## Soft command behavior
 
-These chat triggers are intended to behave as real assistant-run workflows in direct chat, not just as informal phrasing:
+These chat triggers are intended to behave as real assistant-run workflows in direct chat, not just as informal phrasing.
+
+Canonical help behavior:
+- `/helpme` must return the same documented soft-command set every time unless the workspace spec is intentionally changed
+- it should not vary based on memory, current task, or recent conversation drift
+- the canonical source is `docs/pentest-command-spec.md`
+
+These chat triggers are currently supported:
 
 - `/helpme`
   - show all supported soft commands and their purpose
