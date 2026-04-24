@@ -1,0 +1,181 @@
+families:
+  linux-host:
+    description: General Linux host family for full pentest planning, emphasizing host discovery, service enumeration, version triage, and evidence-first follow-through.
+    tags: [host, linux, ssh, unix]
+    target_kinds: [ip, host, domain]
+    default_entrypoints:
+      recon: recon-external-web
+      enum: linux-host-core
+      vuln: host-core
+      exploit: evidence-first
+      post-exploit: evidence-first
+    phases:
+      recon:
+        recommended_profiles: [recon-external-web]
+        notes:
+          - Use external-web recon when the Linux host exposes HTTP(S) or lives behind a domain name.
+          - Add analyst-led infra recon for internal hosts, VPN-only assets, or non-web attack surface.
+      enum:
+        manifests: [enum-linux-host-core]
+        capabilities: [ports, service-detection, ssh, ftp, web-optional]
+        notes:
+          - Start with broad port/service coverage, then branch into SSH, FTP, and any discovered web admin surfaces.
+      vuln:
+        manifests: [vuln-host-core]
+        capabilities: [version-cve-mapping, searchsploit-triage]
+        notes:
+          - Treat mapped CVEs as candidate findings until manually verified against the live service and configuration.
+      exploit:
+        manifests: [exploit-evidence-first]
+        notes:
+          - Prefer controlled validation plans and explicit analyst approval before active exploit attempts.
+      post-exploit:
+        manifests: [post-evidence-first]
+        notes:
+          - Use only after authorized access exists; focus on evidence and impact capture.
+
+  raspi:
+    description: Raspberry Pi family layered on Linux-host assumptions, but biased toward IoT services, lightweight web UIs, and app/device management interfaces.
+    extends: [linux-host]
+    tags: [raspberry-pi, iot, mqtt, gpio, device]
+    target_kinds: [ip, host, domain]
+    default_entrypoints:
+      enum: raspi-core
+    phases:
+      enum:
+        manifests: [enum-raspi-core]
+        capabilities: [ports, service-detection, ssh, mqtt, web-optional]
+        notes:
+          - Expect mixed infrastructure and device-control services, not just a plain Linux server footprint.
+      vuln:
+        notes:
+          - Add package/service-specific validation for device agents, kiosk apps, brokers, and local admin dashboards.
+
+  electron-app:
+    description: Electron desktop or kiosk application family, focusing on the local web/debug surface, IPC risks, update channels, and packaged runtime assumptions.
+    tags: [electron, desktop-app, chromium, ipc]
+    target_kinds: [host, ip, domain]
+    default_entrypoints:
+      recon: app-surface
+      enum: electron-app-core
+      vuln: web-service
+    phases:
+      recon:
+        notes:
+          - Collect build/update metadata, local service bindings, and any externally reachable companion APIs.
+      enum:
+        manifests: [enum-electron-app-core]
+        capabilities: [ports, service-detection, web, nestjs-optional]
+        notes:
+          - Many Electron apps expose localhost or LAN-bound web APIs, websocket endpoints, or auto-update channels.
+      vuln:
+        manifests: [vuln-web-service]
+        notes:
+          - Add manual review for IPC abuse, preload exposure, debug mode, update signing, and local privilege boundaries.
+
+  python-app:
+    description: Python service or management application family, centering on framework/service fingerprinting, dependency/version triage, and local tooling exposures.
+    tags: [python, flask, fastapi, django, service]
+    target_kinds: [host, ip, domain]
+    default_entrypoints:
+      enum: python-app-core
+      vuln: web-service
+    phases:
+      enum:
+        manifests: [enum-python-app-core]
+        capabilities: [ports, service-detection, web, graphql-optional, nestjs-optional]
+        notes:
+          - Focus on HTTP APIs, admin panels, debug endpoints, package/version banners, and broker/client integrations.
+      vuln:
+        manifests: [vuln-web-service]
+        notes:
+          - Layer in framework-specific checks like debug mode, secret leakage, exposed docs, and outdated dependencies.
+
+  player:
+    description: Composite player family for full pentests, combining embedded Linux host, Raspberry Pi traits, Electron UI, Python services, and MQTT/app-specific control paths.
+    extends: [raspi, linux-host, electron-app, python-app]
+    tags: [player, embedded, kiosk, mqtt, composite]
+    target_kinds: [ip, host, domain]
+    default_entrypoints:
+      enum: player-core
+      vuln: player-vuln-core
+    phases:
+      recon:
+        notes:
+          - Capture environment context first, including device role, management plane, backend/control-plane endpoints, update path, and any broker dependencies.
+      enum:
+        manifests: [enum-player-core]
+        capabilities: [ports, service-detection, ssh, mqtt, web, electron-surface, python-service]
+        notes:
+          - This family is intentionally composite. Use the discovered evidence to narrow which sub-families matter most.
+      vuln:
+        manifests: [vuln-web-service]
+        notes:
+          - Treat web-service as the baseline manifest, then branch into MQTT trust, local IPC, kiosk breakout, update path, and service hardening validation.
+      exploit:
+        notes:
+          - Do not assume a single exploit path. Prioritize attack-path building across device, broker, app, and management surfaces.
+
+  player-pulselink:
+    description: Player family variant with PulseLink-specific management/control indicators and companion service assumptions.
+    extends: [player]
+    tags: [player, pulselink, n-compass, mqtt, composite]
+    target_kinds: [ip, host, domain]
+    default_entrypoints:
+      recon: pulselink-app-surface
+      enum: player-pulselink-core
+    phases:
+      recon:
+        notes:
+          - Look for PulseLink/N-Compass branding, update hosts, broker endpoints, and management API clues early.
+      enum:
+        manifests: [enum-player-pulselink-core]
+        capabilities: [ports, service-detection, ssh, mqtt, pulselink-http, web]
+        notes:
+          - Run PulseLink-specific HTTP probing alongside the composite player workflow.
+      vuln:
+        notes:
+          - Add product-specific auth/session/update validation once live services are confirmed.
+
+manifest_sets:
+  recon-external-web:
+    phase: recon
+    manifests: [recon-external-web]
+  app-surface:
+    phase: recon
+    manifests: []
+    notes:
+      - No dedicated manifest yet. Perform analyst-led app recon and add reusable helpers as evidence accumulates.
+  pulselink-app-surface:
+    phase: recon
+    manifests: [recon-pulselink-surface]
+  linux-host-core:
+    phase: enum
+    manifests: [enum-linux-host-core]
+  raspi-core:
+    phase: enum
+    manifests: [enum-raspi-core]
+  electron-app-core:
+    phase: enum
+    manifests: [enum-electron-app-core]
+  python-app-core:
+    phase: enum
+    manifests: [enum-python-app-core]
+  player-core:
+    phase: enum
+    manifests: [enum-player-core]
+  player-pulselink-core:
+    phase: enum
+    manifests: [enum-player-pulselink-core]
+  host-core:
+    phase: vuln
+    manifests: [vuln-host-core]
+  player-vuln-core:
+    phase: vuln
+    manifests: [vuln-web-service]
+  web-service:
+    phase: vuln
+    manifests: [vuln-web-service]
+  evidence-first:
+    phase: exploit
+    manifests: [exploit-evidence-first, post-evidence-first]

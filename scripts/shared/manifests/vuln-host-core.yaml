@@ -1,0 +1,8 @@
+name: host-core
+phase: vuln
+description: Baseline host/service vulnerability triage for full pentest workflows.
+steps:
+  - script: vuln/cve-mapping/map_versions_to_cves.py
+    args: ["--input", "{{input}}", "--engagement", "{{engagement}}"]
+  - script: vuln/cve-mapping/searchsploit_auto.sh
+    args: ["--input", "{{input}}", "--engagement", "{{engagement}}"]

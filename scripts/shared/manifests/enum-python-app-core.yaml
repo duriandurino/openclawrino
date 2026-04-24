@@ -1,0 +1,12 @@
+name: python-app-core
+phase: enum
+description: Baseline full-pentest enumeration bundle for Python-backed services and management apps.
+steps:
+  - script: enum/ports/scan_ports_fast.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/ports/scan_ports_service.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/web/enum_graphql_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

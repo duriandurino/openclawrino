@@ -1,0 +1,8 @@
+name: raspi-core
+phase: enum
+description: Baseline full-pentest enumeration bundle for Raspberry Pi and similar embedded Linux targets.
+steps:
+  - script: orchestration/run_enum_profile.py
+    args: ["--profile", "enum-linux-host-core", "--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/services/mqtt_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

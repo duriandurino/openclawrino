@@ -1,0 +1,10 @@
+name: player-core
+phase: enum
+description: Composite full-pentest enumeration bundle for player environments spanning host, app, and MQTT surfaces.
+steps:
+  - script: orchestration/run_enum_profile.py
+    args: ["--profile", "enum-raspi-core", "--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: orchestration/run_enum_profile.py
+    args: ["--profile", "enum-electron-app-core", "--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: orchestration/run_enum_profile.py
+    args: ["--profile", "enum-python-app-core", "--target", "{{target}}", "--engagement", "{{engagement}}"]

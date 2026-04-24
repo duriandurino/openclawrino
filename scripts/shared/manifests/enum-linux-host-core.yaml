@@ -1,0 +1,14 @@
+name: linux-host-core
+phase: enum
+description: Baseline full-pentest enumeration bundle for Linux hosts.
+steps:
+  - script: enum/ports/scan_ports_fast.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/ports/scan_ports_service.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/ssh/ssh_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/ftp/ftp_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: enum/web/enum_web_basic.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}", "--safe"]

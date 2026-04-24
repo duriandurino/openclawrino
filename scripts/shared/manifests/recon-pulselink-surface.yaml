@@ -1,0 +1,8 @@
+name: pulselink-surface
+phase: recon
+description: Recon helper for PulseLink/player management surface fingerprinting.
+steps:
+  - script: recon/web/recon_http_fingerprint.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: recon/web/pulselink_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]

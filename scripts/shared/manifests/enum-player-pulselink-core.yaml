@@ -1,0 +1,8 @@
+name: player-pulselink-core
+phase: enum
+description: Composite player enumeration bundle with PulseLink-specific HTTP indicator probing.
+steps:
+  - script: orchestration/run_enum_profile.py
+    args: ["--profile", "enum-player-core", "--target", "{{target}}", "--engagement", "{{engagement}}"]
+  - script: recon/web/pulselink_probe.sh
+    args: ["--target", "{{target}}", "--engagement", "{{engagement}}"]

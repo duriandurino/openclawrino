@@ -6,11 +6,19 @@ Profile and manifest-driven runners live here.
 
 Let agents choose a workflow profile instead of planning every command from scratch.
 
+Before manual phase planning for a full pentest, prefer the reusable target-family layer:
+
+- `recommend_target_family.py` suggests a full-pentest target family from free-text hints
+- `describe_target_family.py` expands the family into composed phase guidance and baseline manifests
+- family data lives under `scripts/shared/target-types/`
+
 Examples:
 
 - `run_recon_profile.py --profile external-web --target example.com`
 - `run_enum_profile.py --profile windows-host --target 192.168.0.227`
 - `run_vuln_profile.py --profile web-service --target 192.168.0.227 --input engagements/.../enum/parsed/services.json`
+- `recommend_target_family.py --hint "Raspberry Pi player kiosk with Electron UI and MQTT"`
+- `describe_target_family.py --family player-pulselink`
 - `init_engagement_docs.py player-v2 --title "Player V2 Assessment" --target "player-v2"`
 - `init_engagement_docs.py --title "Player V2 Assessment" --target "player-v2"`  # engagement slug derived from title
 
@@ -23,7 +31,9 @@ Examples:
 
 ## Design
 
-- read manifest from `scripts/shared/manifests/`
+- for full pentests, choose a target family first when the target type is known or inferable
+- expand that family into phase entrypoints and recommended baseline manifests
+- read manifests from `scripts/shared/manifests/`
 - validate target and dependencies
 - execute steps in order
 - store artifacts under engagement phase directories

@@ -26,8 +26,9 @@ scripts/
 1. Small and composable beats giant monoliths.
 2. Every script should have a single clear purpose.
 3. Shared logic belongs under `shared/`.
-4. Agents should select scripts or profiles, not rebuild workflows from scratch.
-5. Output should be standardized so later phases can consume it.
+4. For full pentests, agents should prefer a reusable target family before hand-building phase plans.
+5. Agents should select scripts or profiles, not rebuild workflows from scratch.
+6. Output should be standardized so later phases can consume it.
 
 ## Standard interface
 
@@ -87,6 +88,17 @@ engagements/<target>/<phase>/
 - `vuln/cve-mapping/searchsploit_auto.sh`
 - `vuln/web/web_baseline.sh`
 - `vuln/profiles/run_vuln_profile.sh`
+
+## Full-pentest target families
+
+Use the composition layer under `scripts/shared/target-types/` when a target is better described as a reusable family, especially hybrid assets like Raspberry Pi players that combine host, app, and MQTT surfaces.
+
+Helpful entrypoints:
+
+- `python3 scripts/orchestration/recommend_target_family.py --hint "Raspberry Pi player kiosk with Electron UI, Python service, MQTT"`
+- `python3 scripts/orchestration/describe_target_family.py --family player`
+
+This layer is separate from quick-scan profiles. It recommends baseline manifests and phase entrypoints for a full engagement, then leaves room for analyst-led branching.
 
 ## Existing phase scripts
 
