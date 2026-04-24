@@ -207,10 +207,11 @@ Required behavior:
 For direct requests that are not using the soft command but mean the same thing, follow the same workflow.
 
 For continuity soft commands:
-- `/helpme` means: provide the current supported soft commands and their purpose
+- `/helpme` means: provide the full canonical supported soft-command list and their purpose, using `docs/pentest-command-spec.md` as the source of truth
 - `/harness` means: check context usage first, and if it is near roughly 50%, save reset-ready context so the user can safely run `/reset`
 - `/remember` means: recall prior durable context, especially after reset
 - `/remember <context>` means: search for a specific prior context from past sessions or durable notes instead of guessing from the current thread
+- Do not shorten `/helpme` into a reset-only list and do not vary it based on memory drift or recent conversation context
 
 ### Quick Scan Deliverable Rule
 

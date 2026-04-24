@@ -136,8 +136,9 @@ These chat triggers are intended to behave as real assistant-run workflows in di
 
 Canonical help behavior:
 - `/helpme` must return the same documented soft-command set every time unless the workspace spec is intentionally changed
-- it should not vary based on memory, current task, or recent conversation drift
+- it should not vary based on memory, current task, recent conversation drift, or partial recall of only reset-related commands
 - the canonical source is `docs/pentest-command-spec.md`
+- if `/helpme` conflicts with memory snippets or prior chat examples, prefer the spec and ignore the stale variant
 
 These chat triggers are currently supported:
 

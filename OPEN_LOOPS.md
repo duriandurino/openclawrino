@@ -4,4 +4,4 @@
 - none
 
 ## Next steps
-- If work continues after reset, expand family-specific manifests and deeper reusable scripts under scripts/ while preserving quick-scan/full-pentest separation
+- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
