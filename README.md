@@ -157,10 +157,7 @@ These chat triggers are currently supported:
 - `/clientform`
   - spawn a Google Docs copy of the pre-engagement client form
   - naming pattern: `pre-engage-form-<MM-DD-YYYY>-<HH-mm>.md`
-  - first return the fill-up block for:
-    - Organization name
-    - Assigned Tester Name
-    - Email address
+  - use this only after the Assigned Penetration Tester fields were already collected
   - then return the spawned form reference/link
 
 - `/pentesterform <titleFlag>`
@@ -168,9 +165,9 @@ These chat triggers are currently supported:
   - naming pattern: `user-engagement-input-template-<title>-<MM-DD-YYYY>-<HH-mm>.md`
 
 - `/pentest <target>`
-  - automatically run the `/clientform` flow first
+  - first return the Assigned Penetration Tester fill-up block
+  - wait for those answers before spawning `/clientform`
   - then return, in order:
-    - the Assigned Penetration Tester fill-up block
     - the spawned pre-engagement form reference/link
     - an engagement naming prompt for `/workspace/engagements/`
   - still enforce the authorization/scope gate before any active testing

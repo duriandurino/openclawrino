@@ -195,11 +195,12 @@ During a real pentest, if you discover a repeatable command sequence, parser, ch
 For messages like `pentest <target>` or equivalent direct requests to start a real pentest, treat `/pentest <target>` as a real soft-command workflow.
 
 Required behavior:
-- automatically run the `/clientform` flow first
 - first provide the fill-up block for the Assigned Penetration Tester part:
   - Organization name
   - Assigned Tester Name
   - Email address
+- do not spawn `/clientform` yet
+- only after those three fields are answered, run the `/clientform` flow
 - then return the spawned pre-engagement form reference
 - provide an engagement naming prompt for `/workspace/engagements/`
 - do not start active testing until authorization and scope are explicit

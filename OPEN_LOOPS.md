@@ -4,4 +4,4 @@
 - none
 
 ## Next steps
-- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
+- If resumed, optionally inspect gog CLI and remove the mistaken Drive doc copy, then continue testing the corrected /pentest flow

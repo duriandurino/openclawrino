@@ -1,16 +1,16 @@
 # WORKING.md
 
 ## Current objective
-Maintain compact, durable working state across compaction and reset
+Preserve the corrected workflow state and current verification results for safe reset/resume
 
 ## Current task
-Preserve working context before compaction or reset
+Fix and verify the pentest pre-engagement flow so /pentest asks tester fields first, delays GDoc spawn until those answers are provided, and confirm canceled player+phoenix created no local engagement
 
 ## Key context
-- event token count: unknown
+- none
 
 ## Exact next actions
-- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
+- If resumed, optionally inspect gog CLI and remove the mistaken Drive doc copy, then continue testing the corrected /pentest flow
 
 ## Critical files
 - none
