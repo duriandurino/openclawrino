@@ -29,6 +29,7 @@ Examples:
 
 - `init_engagement_docs.py` creates the standardized engagement folder layout, charter, ROE file, phase deliverables, evidence folders, central registers, and a per-engagement `reports/` folder for user-filled input submissions.
 - `generate_phase_summary.py` drafts standardized phase handoffs from parsed artifacts, but the handoff still needs analyst review and the phase activity log / evidence / findings docs kept current.
+- `ingest_pre_engagement_form.py` ingests a Google Docs pre-engagement form via `gog docs structure`, preserving visible option sets and separating free-text answers instead of flattening everything through PDF/text export.
 - `templates/user-engagement-input-template.md` is the reusable manual-input boilerplate for user-controlled pentest activity capture.
 - Filled user templates should be saved under `engagements/<target-name>/reports/` when engagement context is known, or `reports/` as a shared intake location when it is not.
 
