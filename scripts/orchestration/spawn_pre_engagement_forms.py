@@ -4,6 +4,9 @@
 Supports:
 - /clientform -> pre-engage-form-<MM-DD-YYYY>-<HH-mm>.md
 - /pentesterform <titleFlag> -> user-engagement-input-template-<title>-<MM-DD-YYYY>-<HH-mm>.md
+
+For clientform, the collected Assigned Penetration Tester fields can also be
+written into the copied Google Doc immediately after duplication.
 """
 
 from __future__ import annotations
@@ -77,12 +80,38 @@ def resolve_gog_account(explicit: str | None) -> str | None:
     return "hatlesswhite@gmail.com"
 
 
+def fill_clientform_fields(doc_id: str, gog_account: str | None, organization: str, tester_name: str, email: str) -> None:
+    replacements = [
+        ("Organization name:", f"Organization name: {organization}", True),
+        ("Assigned Tester Name:", f"Assigned Tester Name: {tester_name}", True),
+        ("Email address:", f"Email address: {email}", True),
+    ]
+
+    env = os.environ.copy()
+    if not env.get("GOG_KEYRING_PASSWORD"):
+        env["GOG_KEYRING_PASSWORD"] = "hatlesswhite"
+
+    for find_text, replace_text, first_only in replacements:
+        command = ["gog", "docs", "find-replace", doc_id, find_text, replace_text, "--plain"]
+        if gog_account:
+            command.extend(["--account", gog_account])
+        if first_only:
+            command.append("--first")
+        proc = subprocess.run(command, capture_output=True, text=True, env=env)
+        if proc.returncode != 0:
+            stderr = (proc.stderr or proc.stdout).strip()
+            raise SpawnError(f"failed to fill spawned doc field '{find_text}': {stderr}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("kind", choices=["clientform", "pentesterform"])
     parser.add_argument("--title-flag")
     parser.add_argument("--drive-parent", default=DEFAULT_DRIVE_PARENT)
     parser.add_argument("--gog-account")
+    parser.add_argument("--organization-name")
+    parser.add_argument("--assigned-tester-name")
+    parser.add_argument("--email-address")
     parser.add_argument("--json", action="store_true")
     args = parser.parse_args()
 
@@ -97,15 +126,34 @@ def main() -> int:
             command.extend(["--account", gog_account])
         result = run_gog_json(command)
         file_info = result.get("file") or {}
+        drive_file_id = file_info.get("id")
+
+        tester_fields_written = False
+        if args.kind == "clientform":
+            if any([args.organization_name, args.assigned_tester_name, args.email_address]):
+                if not all([args.organization_name, args.assigned_tester_name, args.email_address]):
+                    raise SpawnError("clientform fill requires --organization-name, --assigned-tester-name, and --email-address together")
+                if not drive_file_id:
+                    raise SpawnError("spawned clientform did not return a document id")
+                fill_clientform_fields(
+                    drive_file_id,
+                    gog_account,
+                    args.organization_name,
+                    args.assigned_tester_name,
+                    args.email_address,
+                )
+                tester_fields_written = True
+
         payload = {
             "ok": True,
             "kind": args.kind,
             "outputName": output_name,
             "templateId": template_id,
-            "driveFileId": file_info.get("id"),
+            "driveFileId": drive_file_id,
             "driveWebViewLink": file_info.get("webViewLink"),
             "driveParent": args.drive_parent,
             "gogAccount": gog_account,
+            "testerFieldsWritten": tester_fields_written,
         }
     except SpawnError as exc:
         payload = {"ok": False, "error": str(exc)}
