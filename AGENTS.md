@@ -196,11 +196,11 @@ For messages like `pentest <target>` or equivalent direct requests to start a re
 
 Required behavior:
 - automatically run the `/clientform` flow first
-- return the spawned pre-engagement form reference
-- provide the fill-up block for the Assigned Penetration Tester part:
+- first provide the fill-up block for the Assigned Penetration Tester part:
   - Organization name
   - Assigned Tester Name
   - Email address
+- then return the spawned pre-engagement form reference
 - provide an engagement naming prompt for `/workspace/engagements/`
 - do not start active testing until authorization and scope are explicit
 
