@@ -21,6 +21,7 @@ from datetime import datetime
 from pathlib import Path
 
 WORKSPACE_ROOT = Path(__file__).resolve().parents[2]
+INGESTER_PATH = WORKSPACE_ROOT / "scripts" / "orchestration" / "ingest_pre_engagement_form.py"
 DEFAULT_DRIVE_PARENT = "0AFS1ouZ1oLMdUk9PVA"
 TEMPLATE_IDS = {
     "clientform": "1gh6UTEoTSRnTqRmMu3IecgCJspQ-zSAERokPGwKt4NM",
@@ -144,6 +145,29 @@ def main() -> int:
                 )
                 tester_fields_written = True
 
+        ingested = None
+        ingest_error = None
+        if args.kind == "clientform" and drive_file_id and INGESTER_PATH.exists():
+            env = os.environ.copy()
+            if not env.get("GOG_KEYRING_PASSWORD"):
+                env["GOG_KEYRING_PASSWORD"] = "hatlesswhite"
+            ingest_cmd = [
+                sys.executable,
+                str(INGESTER_PATH),
+                drive_file_id,
+                "--json",
+            ]
+            if gog_account:
+                ingest_cmd.extend(["--account", gog_account])
+            proc = subprocess.run(ingest_cmd, capture_output=True, text=True, env=env)
+            if proc.returncode == 0:
+                try:
+                    ingested = json.loads(proc.stdout)
+                except json.JSONDecodeError:
+                    ingest_error = "ingester returned non-JSON output"
+            else:
+                ingest_error = (proc.stderr or proc.stdout).strip() or "ingester failed"
+
         payload = {
             "ok": True,
             "kind": args.kind,
@@ -154,6 +178,10 @@ def main() -> int:
             "driveParent": args.drive_parent,
             "gogAccount": gog_account,
             "testerFieldsWritten": tester_fields_written,
+            "ingestAttempted": args.kind == "clientform" and bool(drive_file_id),
+            "ingestEmbedded": ingested is not None,
+            "ingestError": ingest_error,
+            "ingested": ingested,
         }
     except SpawnError as exc:
         payload = {"ok": False, "error": str(exc)}
