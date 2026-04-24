@@ -39,5 +39,7 @@
 
 ## Notes
 
-- Populated from the filled Google Doc pre-engagement form at `https://docs.google.com/document/d/1Msa0CrGZSOuyIciPtaeG6pkgWeo4ivYDQ7-5YC8vST4/edit`
+- Refreshed from the structured ingester output for the filled Google Doc pre-engagement form at `https://docs.google.com/document/d/1Msa0CrGZSOuyIciPtaeG6pkgWeo4ivYDQ7-5YC8vST4/edit`
+- Ingestion method: `scripts/orchestration/ingest_pre_engagement_form.py` via `gog docs structure`
+- Checkbox/radio selections remain unknown unless explicitly exposed by the Google Docs structure output, so unresolved selections are preserved as unknown rather than guessed
 - Initialized by `scripts/orchestration/init_engagement_docs.py`
