@@ -1,0 +1,35 @@
+# Recon Evidence Index
+
+- Live operator observation set, now upgraded with photo evidence and controlled TTY-switch results:
+  - keyboard and mouse access available on the external device
+  - terminal block now functioning
+  - wrong-device prompt visible on screen
+  - unauthorized-hardware message displayed after startup
+- Verbatim screen text captured from the submitted photos:
+  - `WRONG DEVICE`
+  - `This hardware is not authorized.`
+  - `Access denied. Power down and restore the approved device.`
+  - `[FAILED] Failed to start hardware-check.service - NCTV Phoenix Hardware Lockout Screen.`
+  - `[DEPEND] Dependency failed for vault-mount.service - Unlock and Mount NCTV Phoenix Vault.`
+- Verbatim console text captured from operator TTY switching:
+  - `Debian GNU/Linux 13 raspberry tty2`
+  - `Debian GNU/Linux 13 raspberry tty3`
+  - `My IP address is 192.168.1.70`
+  - `fe80::2ecf:67ff:fe04:bd1`
+  - `raspberry login:`
+- Keyed interaction results:
+  - low-risk single keys, harmless control keys, function keys, safer modifier combos, and higher-signal combos produced no visible change on the main wrong-device prompt
+  - `Ctrl + Alt + F1` returns to the wrong-device prompt / main TTY
+  - `Ctrl + Alt + F2` exposed tty2 login output
+  - `Ctrl + Alt + F3` exposed tty3 login output after failure prompts appeared
+  - tty4 through tty6 present the same login-banner behavior as tty2 and tty3
+  - `Ctrl + Alt + F7` produced a blank screen with blinking `-` after failure prompts appeared
+- Local credential validation results:
+  - default username `pi` with password `raspberry` did not produce console access on tty2 / tty3
+  - no additional user or recovery clues were exposed from the repeated tty surfaces
+- Evidence artifacts:
+  - photo of initial unauthorized state showing `WRONG DEVICE` and the access-denied message
+  - photo of later boot/runtime state showing the same unauthorized message plus the `hardware-check.service` and `vault-mount.service` failures
+  - operator notes in `media/inbound/keys---74fb1190-2df3-48f7-a833-1033a549c293.md`
+- Evidence quality note:
+  - the current evidence now includes exact text for the most important screen and console outputs; screenshots or photos of the tty2/tty6 login screens would strengthen this further if needed

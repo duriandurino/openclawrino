@@ -1,0 +1,26 @@
+# Recon Findings Delta
+
+- Added device-side recon context that was not present in the initial Phoenix pre-engagement setup:
+  - operator has keyboard and mouse access
+  - SSH is believed enabled, and local console output now exposed host/network details
+  - local screen shows a wrong-device prompt
+  - startup flow still reports an unauthorized-hardware condition
+  - boot/runtime errors include `Failed to start hardware-check.service` and `Dependency failed for vault-mount.service`
+- Photo evidence now confirms the exact on-screen wording and service descriptions:
+  - `WRONG DEVICE`
+  - `This hardware is not authorized.`
+  - `Access denied. Power down and restore the approved device.`
+  - `hardware-check.service - NCTV Phoenix Hardware Lockout Screen`
+  - `vault-mount.service - Unlock and Mount NCTV Phoenix Vault`
+- Controlled TTY switching produced high-value recon evidence:
+  - `Ctrl + Alt + F2` exposed `Debian GNU/Linux 13 raspberry tty2`
+  - `Ctrl + Alt + F3` exposed `Debian GNU/Linux 13 raspberry tty3`
+  - both consoles displayed IPv4 address `192.168.1.70`
+  - both consoles displayed link-local IPv6 address `fe80::2ecf:67ff:fe04:bd1`
+  - both consoles reached a visible `raspberry login:` prompt once failure conditions had appeared
+  - `Ctrl + Alt + F1` returns to the wrong-device prompt / main TTY
+  - `Ctrl + Alt + F7` produced only a blank screen with blinking `-` after failures
+- These observations increase confidence that the engagement includes a meaningful device-side trust path in addition to the confirmed API surface, and that the lockout screen does not fully seal alternate local consoles once the failure state is reached
+- Physical follow-up now confirms that tty2 through tty6 behave consistently as exposed login surfaces, while tty1 remains isolated to the wrong-device prompt
+- Default `pi` / `raspberry` access was attempted on the exposed login consoles and did not succeed, so the current state is console exposure without validated local credential access
+- Current interpretation is still reconnaissance only: these are observations and hypotheses, not yet validated findings or exploit claims

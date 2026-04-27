@@ -1,0 +1,25 @@
+# Enum Findings Delta
+
+- Network enumeration now supports a compact validated service inventory for the Phoenix Pi:
+  - `22/tcp` -> `OpenSSH 10.0p2 Debian 7+deb13u2`
+  - `111/tcp` -> `rpcbind 2-4`
+  - `111/udp` -> `rpcbind`
+  - `5353/udp` -> `mDNS / Zeroconf`
+- Full TCP sweep on `192.168.1.70` showed no additional open TCP ports beyond `22/tcp` and `111/tcp`
+- Initial UDP uncertainty was reduced through targeted follow-up:
+  - `123/udp` did not hold as a confirmed service
+  - `137/udp` and `1900/udp` were reclassified as closed on the Pi
+- RPC follow-up confirmed only portmapper registrations and did not prove NFS exports or richer RPC program exposure
+- SSH deep fingerprinting confirmed a modern OpenSSH stack with RSA, ECDSA, and ED25519 host keys and accepted auth methods `publickey,password`
+- API-side enumeration strengthened the cloud picture:
+  - `dev-api.n-compass.online` resolves to AWS infrastructure behind `awselb/2.0`
+  - several root-like paths return the same `This is N-Compass TV.` response
+  - `/api`, `/api/health`, and `/api/v1` returned `404` from `Kestrel`, indicating a backend app tier exists behind the ELB
+- Current enum interpretation remains careful:
+  - the Pi and API are likely operationally related
+  - the exact trust-path linkage between the specific Pi and the specific API surface is still unproven
+- Physical follow-up adds an important host-side constraint to enum understanding:
+  - tty2 through tty6 remain exposed login surfaces in the failure state
+  - tty1 remains the wrong-device prompt surface
+  - default `pi` / `raspberry` credentials did not produce access
+- Passive traffic-correlation work is currently limited by runtime privilege constraints, so stronger network-flow linkage will require privileged local capture or on-device observation

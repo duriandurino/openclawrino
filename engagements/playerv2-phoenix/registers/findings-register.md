@@ -1,0 +1,8 @@
+# Findings Register
+
+| Finding ID | Status | Title | Affected asset | Evidence | Impact | Likelihood | Risk | CVSS | Remediation |
+|---|---|---|---|---|---|---|---|---|---|
+| F-001 | observed / enum | Sparse but confirmed management and discovery surface on Phoenix Pi (`22/tcp`, `111/tcp`, `111/udp`, `5353/udp`) | A-003 | E-003, E-004, E-005, E-007 | Expands reachable attack surface and supports later vuln analysis | medium | medium | unscored | Minimize exposed services, restrict SSH and rpcbind to required interfaces, review mDNS necessity |
+| F-002 | observed / recon-enum | Wrong-device lockout does not fully isolate alternate local virtual consoles in failure state | A-002, A-005, A-006 | E-001, E-002 | Exposes local login surfaces, hostname, and network details to someone with physical access | medium | medium | unscored | Prevent alternate TTY exposure in lockout state, restrict console switching, review failure-state kiosk containment |
+| F-003 | observed / enum | Cloud API surface is thin but indicates a backend application tier behind AWS ELB | A-001 | E-006 | Provides a likely application target for later correlated testing, but not yet a confirmed weakness | low | low | unscored | Continue app-layer mapping, reduce unnecessary path leakage, confirm intended public routing behavior |
+| F-004 | non-finding / enum | Prior UDP candidates `123/udp`, `137/udp`, and `1900/udp` did not validate as active Phoenix Pi services | A-003 | E-005, E-008 | Prevents false positives from polluting later analysis | high | informational | none | Keep these marked as resolved non-findings unless fresh evidence appears |
