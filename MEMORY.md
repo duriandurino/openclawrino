@@ -67,6 +67,7 @@
 - That intake rule is now pinned in both `AGENTS.md` and `skills/pentest-orchestrator/SKILL.md`.
 - Docs report output should include the pre-engagement charter / ROE details from `engagements/<target>/00-charter/engagement-charter.md` and `scope-and-roe.md`.
 - This pre-engagement intake section is **Docs-only**. PPT / slide output should stay unchanged unless explicitly requested.
+- Do not assume a local CVSS research/reference standard exists yet. The user plans to add it later under `pentest-references/`, and reporting/skills should only wire to it after those files are actually present.
 
 ## Migration / Player V2 Packaging Notes (2026-04-16)
 
