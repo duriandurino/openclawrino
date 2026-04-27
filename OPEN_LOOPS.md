@@ -4,4 +4,4 @@
 - none
 
 ## Next steps
-- Resume from the saved handoff, clean up repo-state noise if needed, then continue playerv2-phoenix recon or push the intended CVSS-related changes selectively
+- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset

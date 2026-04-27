@@ -1,16 +1,16 @@
 # WORKING.md
 
 ## Current objective
-Keep a reset-ready handoff covering the completed CVSS v4 migration work, verification state, and the next pentest action
+Maintain compact, durable working state across compaction and reset
 
 ## Current task
-Finalize CVSS v4.0 as the workspace scoring standard and prepare to resume playerv2-phoenix recon
+Preserve working context before compaction or reset
 
 ## Key context
-- none
+- event token count: unknown
 
 ## Exact next actions
-- Resume from the saved handoff, clean up repo-state noise if needed, then continue playerv2-phoenix recon or push the intended CVSS-related changes selectively
+- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
 
 ## Critical files
 - none
