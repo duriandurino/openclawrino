@@ -1,6 +1,11 @@
 # CVE Severity Reference
 
-## CVSS v3.1 Score Ranges
+## Default Scoring Standard
+
+For new workspace-local vulnerability analysis and reporting, use **CVSS v4.0** as the default scoring standard.
+Use **CVSS v3.1** only as a compatibility reference when a public CVE, NVD record, vendor advisory, scanner, or client workflow still depends on it.
+
+## CVSS v4.0 Score Ranges
 
 | Score | Severity | Color | Action |
 |-------|----------|-------|--------|
@@ -22,20 +27,28 @@
 | CVE-2024-21762 | Fortinet SSL VPN | Out-of-bounds write, RCE | Public |
 | CVE-2023-44487 | HTTP/2 impls | Rapid Reset DoS | Public |
 
-## CVSS Vector Components
+## CVSS v4.0 Base Vector Components
 
 | Component | Values |
 |-----------|--------|
 | Attack Vector (AV) | Network (N), Adjacent (A), Local (L), Physical (P) |
 | Attack Complexity (AC) | Low (L), High (H) |
+| Attack Requirements (AT) | None (N), Present (P) |
 | Privileges Required (PR) | None (N), Low (L), High (H) |
-| User Interaction (UI) | None (N), Required (R) |
-| Scope (S) | Unchanged (U), Changed (C) |
-| Impact: Confidentiality (C) | High (H), Low (L), None (N) |
-| Impact: Integrity (I) | High (H), Low (L), None (N) |
-| Impact: Availability (A) | High (H), Low (L), None (N) |
+| User Interaction (UI) | None (N), Passive (P), Active (A) |
+| Vulnerable System Confidentiality (VC) | High (H), Low (L), None (N) |
+| Vulnerable System Integrity (VI) | High (H), Low (L), None (N) |
+| Vulnerable System Availability (VA) | High (H), Low (L), None (N) |
+| Subsequent System Confidentiality (SC) | High (H), Low (L), None (N) |
+| Subsequent System Integrity (SI) | High (H), Low (L), None (N) |
+| Subsequent System Availability (SA) | High (H), Low (L), None (N) |
 
-Example: `CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H` → Score 10.0 (Critical)
+Example: `CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N`
+
+## Legacy CVSS v3.1 Compatibility Notes
+
+Use v3.1 only when an external source still publishes only v3.x metrics.
+Key legacy-only fields you may still encounter include `Scope (S)` and the older `UI: Required (R)` value.
 
 ## Research Workflow
 

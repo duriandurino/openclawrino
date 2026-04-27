@@ -48,6 +48,8 @@ For EACH vulnerability:
 ### [Finding ID] — [Title]
 - **Severity:** Critical / High / Medium / Low / Info
 - **CVSS Score:** X.X (if applicable)
+- **CVSS Version:** CVSS v4.0 Base by default for new work, or clearly labeled legacy compatibility version when required
+- **CVSS Vector:** `CVSS:4.0/...` when scored
 - **Affected Target:** IP/hostname/service
 - **Description:** What the vulnerability is
 - **Evidence:** Screenshot reference, command output, or proof-of-concept
@@ -112,6 +114,8 @@ Use consistent severity ratings:
 | Medium | 4.0–6.9 | Limited data exposure, requires specific conditions |
 | Low | 0.1–3.9 | Information disclosure, defense-in-depth gaps |
 | Info | 0.0 | Observations, recommendations, no direct vulnerability |
+
+**House standard:** Use CVSS v4.0 Base as the default scoring standard for new reports. Include legacy CVSS v3.1 only when external compatibility requires it, and label it explicitly.
 
 ## Report Generation Workflow
 
