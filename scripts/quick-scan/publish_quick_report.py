@@ -8,8 +8,13 @@ import re
 import subprocess
 from datetime import datetime
 from pathlib import Path
+import sys
 
 ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT / "reporting" / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "reporting" / "scripts"))
+
+from cvss_v4 import make_cvss_v4
 DEFAULT_ACCOUNT = "hatlesswhite@gmail.com"
 SEVERITY_ORDER = {"Critical": 0, "High": 1, "Medium": 2, "Low": 3, "Info": 4}
 
@@ -348,6 +353,11 @@ def build_findings_json(report_info: dict, rows: list[dict], adaptive_context: d
             "severity": row["severity"],
             "status": "candidate" if row.get("confidence") == "candidate" else "observed",
             "cvss": "N/A",
+            "cvss_v4": make_cvss_v4(
+                severity=row["severity"],
+                rationale="Quick scan provisional finding. Score and vector are intentionally unset until manual validation confirms the exposure.",
+                assumptions=f"Source phase: {row['source']}; confidence: {row.get('confidence', 'candidate')}."
+            ),
             "affected": report_info["target"],
             "description": f"Quick scan candidate from the {row['source']} phase: {row['finding']}",
             "technical_basis": row.get("finding_type", "quick-scan observation"),

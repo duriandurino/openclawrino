@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 import json
+import sys
 from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+if str(ROOT / "reporting" / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "reporting" / "scripts"))
+
+from cvss_v4 import make_cvss_v4
 
 payload = {
   "target": "hardwareLockV2",
@@ -9,7 +16,14 @@ payload = {
       "id": "F-001",
       "title": "Local authorization configuration can be altered via hardware-lock.env",
       "severity": "Medium",
-      "cvss": "N/A",
+      "cvss": 4.6,
+      "cvss_v4": make_cvss_v4(
+        score=4.6,
+        vector="CVSS:4.0/AV:L/AC:L/AT:N/PR:H/UI:N/VC:N/VI:L/VA:N/SC:N/SI:N/SA:N",
+        severity="Medium",
+        rationale="This weakness requires local access with high privileges because the attacker must modify /etc/nctv-phoenix/hardware-lock.env. The authorization gate can then be bypassed at that layer, but the observed impact in this engagement was limited to weakening authorization integrity rather than exposing the protected vault or subsequent systems.",
+        assumptions="Base technical severity only. Final priority should also consider whether local administrative access is already in scope for the attacker and whether this control is relied on as a trust anchor across deployments."
+      ),
       "affected": "hardwareLockV2 local authorization layer",
       "description": "The device authorization decision depends on values stored in /etc/nctv-phoenix/hardware-lock.env. Testing showed these values can be changed locally, allowing the current hardware tuple to satisfy the initial authorization gate.",
       "technical_basis": "Both hardware_lock.py and unlock_vault.py load AUTHORIZED_PI_SERIAL and AUTHORIZED_SD_CID_SHA256 from hardware-lock.env. The engagement confirmed these values were changed to match the current Pi serial and current SD CID hash, after which the authorization check passed.",
@@ -27,6 +41,11 @@ payload = {
       "title": "Encrypted vault remained the effective security boundary",
       "severity": "Medium",
       "cvss": "N/A",
+      "cvss_v4": make_cvss_v4(
+        severity="Medium",
+        rationale="This is a defensive assessment observation showing the encrypted vault remained the effective protection boundary in the tested state, so no defensible exploit-oriented CVSS base score was assigned.",
+        assumptions="Not scored. Preserve as report context rather than a confirmed vulnerability severity metric."
+      ),
       "affected": "/var/lib/nctv-phoenix/vault.img",
       "description": "Even after the authorization layer was aligned to the current hardware tuple, the LUKS-backed vault did not unlock and the secure runtime was not exposed. This shows the encrypted vault remained the effective protection boundary in the tested state.",
       "technical_basis": "unlock_vault.py derives a binary key from AUTHORIZED_PI_SERIAL and AUTHORIZED_SD_CID_SHA256 and feeds it to cryptsetup. Direct execution still failed with 'No key available with this passphrase', and no mapper or secure mount became active.",
@@ -44,6 +63,11 @@ payload = {
       "title": "Phoenix recovery chain is critical but missing from the current image",
       "severity": "Medium",
       "cvss": "N/A",
+      "cvss_v4": make_cvss_v4(
+        severity="Medium",
+        rationale="This is an operational resilience and recoverability weakness around missing Phoenix recovery artifacts, not a directly exploited software flaw with a defensible CVSS base score from the current evidence.",
+        assumptions="Not scored pending a concrete vulnerability path. Keep as contextual risk documentation for reporting."
+      ),
       "affected": "hardwareLockV2 guarded runtime recovery path",
       "description": "Recovered installer evidence showed that setup.enc is only a bootstrap. It installs nctv-player, then downloads and decrypts phoenix.enc and runs phoenix_install.sh --guard. Those second-stage Phoenix artifacts were not present locally during the assessment.",
       "technical_basis": "Local decryption of setup.enc revealed the exact bootstrap chain. Follow-up searches found no surviving local copy of phoenix.enc, phoenix_install.sh, or extracted nctv-phoenix tree, while repairman.sh explicitly expected an external nctv-phoenix source.",

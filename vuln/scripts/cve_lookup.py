@@ -17,6 +17,13 @@ import argparse
 import subprocess
 import re
 from datetime import datetime
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+if str(ROOT / "reporting" / "scripts") not in sys.path:
+    sys.path.insert(0, str(ROOT / "reporting" / "scripts"))
+
+from cvss_v4 import make_cvss_v4, severity_from_score
 
 
 # Common service name mappings (nmap → NVD keywords)
@@ -68,13 +75,22 @@ def parse_nvd_response(data):
         metrics = cve.get("metrics", {})
         cvss_score = None
         severity = "N/A"
+        cvss_v4 = None
 
-        # Try CVSS v3.1 first, then v3.0, then v2
-        for metric_key in ["cvssMetricV31", "cvssMetricV30", "cvssMetricV2"]:
+        # Try CVSS v4 first, then v3.1, then v3.0, then v2
+        for metric_key in ["cvssMetricV40", "cvssMetricV31", "cvssMetricV30", "cvssMetricV2"]:
             if metric_key in metrics and metrics[metric_key]:
                 cvss = metrics[metric_key][0].get("cvssData", {})
                 cvss_score = cvss.get("baseScore")
                 severity = cvss.get("baseSeverity", "N/A")
+                if metric_key == "cvssMetricV40":
+                    cvss_v4 = make_cvss_v4(
+                        score=cvss_score,
+                        vector=cvss.get("vectorString"),
+                        severity=severity_from_score(cvss_score) or severity,
+                        rationale="Imported from NVD CVSS v4.0 metrics.",
+                        assumptions="Threat and Environmental metrics were not enriched locally."
+                    )
                 break
 
         # Get description
@@ -98,6 +114,7 @@ def parse_nvd_response(data):
         vulns.append({
             "id": cve_id,
             "cvss": cvss_score,
+            "cvss_v4": cvss_v4,
             "severity": severity,
             "description": desc[:200],
             "published": published,
