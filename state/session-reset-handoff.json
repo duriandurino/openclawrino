@@ -1,33 +1,29 @@
 {
-  "timestamp_local": "2026-04-27 18:23:21 PST",
-  "timestamp_iso": "2026-04-27T18:23:21+08:00",
+  "timestamp_local": "2026-04-27 19:12:45 PST",
+  "timestamp_iso": "2026-04-27T19:12:45+08:00",
   "date": "2026-04-27",
   "trigger": "manual-near-50-percent",
-  "summary": "Phoenix enum is active with live network reachability confirmed; preserve the validated Pi/API split and current enum-only posture.",
+  "summary": "Phoenix recon and enum are documented; preserve the validated sparse network surface and TTY exposure state before reset.",
   "key_points": [
-    "Pi reachable at 192.168.1.70 with OpenSSH 10.0p2 Debian 7+deb13u2 on 22/tcp.",
-    "TTY2/TTY3 expose raspberry login consoles; lockout screen references hardware-check.service and vault-mount.service.",
-    "dev-api.n-compass.online is live behind AWS ELB and returns 'This is N-Compass TV.'; exact trust linkage to the Pi is still unproven."
+    "Confirmed Pi services: 22/tcp SSH, 111/tcp+udp rpcbind, 5353/udp mDNS; 123/137/1900 UDP did not validate on the Pi.",
+    "Physical state: tty1 remains wrong-device prompt, tty2-tty6 expose login consoles, default pi/raspberry failed, and no shell access is proven.",
+    "API state: dev-api.n-compass.online is behind AWS ELB with Kestrel-backed 404 hints, but direct Pi-to-API trust binding is still unproven."
   ],
   "next_actions": [
-    "Continue strict enum-only work: expand the Pi's validated service inventory and correlate live host evidence with the cloud API without assuming prior hardwarelockv2 paths apply."
+    "After reset, resume from the documented playerv2-phoenix recon/enum artifacts and decide whether to continue enum only with a new evidence path or pivot into early vuln analysis."
   ],
   "files": [
+    "engagements/playerv2-phoenix/recon/recon-summary.md",
     "engagements/playerv2-phoenix/enum/enum-summary.md",
-    "engagements/playerv2-phoenix/enum/enum-evidence-index.md",
-    "engagements/playerv2-phoenix/recon/recon-summary.md"
+    "engagements/playerv2-phoenix/registers/findings-register.md"
   ],
   "branch": "main",
-  "head_before": "b6bef51",
+  "head_before": "a87a9db",
   "git_status_before": [
-    "M  OPEN_LOOPS.md",
-    "M  STATE.md",
-    "M  WORKING.md",
     " M engagements/playerv2-phoenix/pre-engagement/engagement-charter.md",
     " M engagements/playerv2-phoenix/pre-engagement/scope-and-roe.md",
     " M scripts/orchestration/README.md",
     " M skills/pentest-orchestrator/references/engagement-doc-templates.md",
-    "M  state/context-pressure.json",
     " M vuln/scripts/__pycache__/cve_lookup.cpython-313.pyc",
     "?? -.md",
     "?? engagements/_archive/quick-scan/quick-onlinebookfair-net-2026-04-07_1831-fix/quick-scan/reporting/REPORT_FINAL_QUICK_SCAN_2026-04-13_1759.docx",
@@ -53,11 +49,13 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.md",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json",
-    "?? engagements/playerv2-phoenix/enum/",
+    "?? engagements/playerv2-phoenix/enum/enum-evidence-index.md",
+    "?? engagements/playerv2-phoenix/enum/enum-summary.md",
+    "?? engagements/playerv2-phoenix/enum/live/",
     "?? engagements/playerv2-phoenix/exploit/",
     "?? engagements/playerv2-phoenix/post-exploit/",
-    "?? engagements/playerv2-phoenix/recon/",
-    "?? engagements/playerv2-phoenix/registers/",
+    "?? engagements/playerv2-phoenix/recon/recon-summary.md",
+    "?? engagements/playerv2-phoenix/registers/asset-register.md",
     "?? engagements/playerv2-phoenix/reporting/",
     "?? engagements/playerv2-phoenix/reports/",
     "?? engagements/playerv2-phoenix/vuln/",
