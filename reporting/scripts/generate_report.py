@@ -53,6 +53,65 @@ DOC_TEMPLATE = ROOT / "assets" / "docs" / "ncompass-reference.docx"
 LOGO_PATH = ROOT / "assets" / "branding" / "ncompass-logo.png"
 
 
+CVSS_V4_VERSION_LABEL = "CVSS v4.0 Base"
+
+
+def _coerce_nonempty_string(value):
+    if value is None:
+        return None
+    text = str(value).strip()
+    return text or None
+
+
+def _first_present(mapping, *keys):
+    for key in keys:
+        if key in mapping:
+            value = mapping.get(key)
+            if value is not None:
+                return value
+    return None
+
+
+def normalize_finding_cvss(finding):
+    if not isinstance(finding, dict):
+        return finding
+
+    normalized = dict(finding)
+    cvss_v4 = normalized.get("cvss_v4")
+    if isinstance(cvss_v4, dict):
+        score = _first_present(cvss_v4, "score", "baseScore")
+        vector = _first_present(cvss_v4, "vector", "vectorString")
+        rationale = _first_present(cvss_v4, "rationale", "justification")
+        note = _first_present(cvss_v4, "note", "scoring_note", "scoringNote")
+        version = _first_present(cvss_v4, "version", "label") or CVSS_V4_VERSION_LABEL
+
+        if score is not None and normalized.get("cvss") in (None, ""):
+            normalized["cvss"] = score
+        if _coerce_nonempty_string(version) and not _coerce_nonempty_string(normalized.get("cvss_version")):
+            normalized["cvss_version"] = version
+        if _coerce_nonempty_string(vector) and not _coerce_nonempty_string(normalized.get("cvss_vector")):
+            normalized["cvss_vector"] = vector
+        if _coerce_nonempty_string(rationale) and not _coerce_nonempty_string(normalized.get("cvss_rationale")):
+            normalized["cvss_rationale"] = rationale
+        if _coerce_nonempty_string(note) and not _coerce_nonempty_string(normalized.get("cvss_note")):
+            normalized["cvss_note"] = note
+
+    for key in ("cvss", "cvss_version", "cvss_vector", "cvss_rationale", "cvss_note"):
+        value = normalized.get(key)
+        if isinstance(value, str):
+            normalized[key] = value.strip()
+
+    return normalized
+
+
+def normalize_report_data(data):
+    if not isinstance(data, dict):
+        return data
+    normalized = dict(data)
+    normalized["findings"] = [normalize_finding_cvss(f) for f in data.get("findings", [])]
+    return normalized
+
+
 def export_doc_to_pdf(doc_id, account=None, output=None):
     if output is None:
         fd, path = tempfile.mkstemp(suffix=".pdf")
@@ -1032,7 +1091,7 @@ def main():
     args = parser.parse_args()
 
     with open(args.findings) as f:
-        data = json.load(f)
+        data = normalize_report_data(json.load(f))
 
     report = generate_report(data)
 
