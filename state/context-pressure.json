@@ -1,16 +1,16 @@
 {
-  "updatedAt": "2026-04-24T17:51:03+08:00",
+  "updatedAt": "2026-04-27T14:09:54+08:00",
   "sessionKey": "agent:main:telegram:direct:6018252086",
-  "sessionId": "e32ee732-eead-4f38-b6a8-df3bc2397c49",
-  "source": "sessions-store",
-  "percentUsed": null,
-  "totalTokens": null,
-  "contextTokens": null,
-  "remainingTokens": null,
+  "sessionId": "9ee26795-d4d5-4f7b-9952-6372d22736fb",
+  "source": "openclaw-status",
+  "percentUsed": 48,
+  "totalTokens": 130911,
+  "contextTokens": 272000,
+  "remainingTokens": 141089,
   "warningThreshold": 40,
   "snapshotThreshold": 48,
-  "pressureState": "unknown",
-  "lastSnapshotHash": "a683b9ac16df87cee67d4cb3b8055561f01d8893dd1b385f21a12db152f46113",
-  "lastSnapshotAt": "2026-04-24T16:02:48+08:00",
-  "shouldSnapshot": false
+  "pressureState": "snapshot",
+  "lastSnapshotHash": "2d891786f74c2b64a4229c54fc127fad8778e280e5dd98e3deb0caa588dc249d",
+  "lastSnapshotAt": "2026-04-27T14:09:54+08:00",
+  "shouldSnapshot": true
 }
