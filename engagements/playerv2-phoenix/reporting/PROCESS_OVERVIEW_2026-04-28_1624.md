@@ -11,9 +11,13 @@
 
 ## 1. Purpose of This Document
 
-This document explains the `playerv2-phoenix` penetration test in plain language. It is meant to show what was tested, how the assessment progressed, what tools were used, and what was learned, without requiring the reader to interpret highly technical evidence.
+This document shows, in plain language, how the `playerv2-phoenix` pentest was carried out.
 
-Unlike the technical report, this document focuses on the overall testing journey. It shows how the assessment moved from planning, to discovery, to validation, and finally to reporting.
+Instead of only saying what the final findings were, this overview shows the actual testing flow: what was checked first, what actions were taken on the device, what OpenClaw was asked to help with, what was observed, and how those observations shaped the next step.
+
+It is meant to answer a simple question for non-technical readers:
+
+**What did the tester actually do, and what did that process reveal?**
 
 [IMAGE HERE - cover image, target photo, or engagement visual]
 
@@ -21,15 +25,15 @@ Unlike the technical report, this document focuses on the overall testing journe
 
 ## 2. Assessment Objective
 
-The objective of this assessment was to evaluate the security posture of the `playerv2-phoenix` environment across its device, local-access, and network-exposed surfaces.
+The objective of this assessment was to evaluate the security posture of `playerv2-phoenix` across both its cloud-facing and device-side surfaces.
 
-The engagement focused on understanding how the target behaves during startup, restricted states, local console exposure, and limited network reachability. The goal was not only to identify weaknesses, but also to understand whether the device's protections activate early enough and consistently enough to resist realistic attack paths.
+The main focus of the engagement was the gap between the device's intended protected state and its real startup behavior. In particular, the assessment aimed to determine whether the device exposed useful information, interaction opportunities, or weak transition states before its lockout and trust controls fully took effect.
 
-In practical terms, this assessment aimed to answer three business-relevant questions:
+The test also aimed to answer the following practical questions:
 
-- Can an attacker learn useful information from the device before it is fully protected?
-- Are there local or network-exposed entry points that create avoidable risk?
-- Do the existing controls behave reliably enough to protect the target during real startup and lockout conditions?
+- What can be learned from the device before it settles into its restricted state?
+- What network-visible services are actually reachable from the same environment?
+- Do the device's local controls activate early enough to prevent abuse during boot and failure states?
 
 [IMAGE HERE - target system or environment overview]
 
@@ -37,15 +41,18 @@ In practical terms, this assessment aimed to answer three business-relevant ques
 
 ## 3. Scope in Plain Language
 
-This assessment covered the following in-scope areas for `Player v2 - Phoenix`:
+This engagement covered the following in-scope surfaces for `Player v2 - Phoenix`:
 
-- The `dev-api.n-compass.online` environment
-- The physical device under test
-- Local console and boot-time behavior
-- Limited network-exposed services on the device
-- Indicators related to trust checks, lockout flow, and protected storage behavior
+- `https://dev-api.n-compass.online`
+- the Raspberry Pi player device under test
+- local console behavior
+- boot and lockout behavior
+- network-exposed services on the local device
+- clues related to trust validation, secure-storage flow, and restricted-state handling
 
-In simple terms, the test looked at both the cloud-facing side of the target and the physical device side. This included what could be seen from the network, what could be seen from the console, and what happened during the device's startup and failure states.
+In plain terms, this meant the pentest looked at both:
+- what the cloud-facing side exposed
+- what the physical player device exposed during real interaction
 
 [IMAGE HERE - scope diagram or simple device/network layout]
 
@@ -53,130 +60,208 @@ In simple terms, the test looked at both the cloud-facing side of the target and
 
 ## 4. Pentest Process Followed
 
-This assessment followed a structured penetration testing process so the work would stay evidence-based, organized, and easy to explain.
+This assessment followed the normal pentest flow used in this workspace:
 
-Instead of jumping directly into deep testing, the engagement was approached in stages. Each phase built on the one before it so that later conclusions were based on live observations, not guesses.
+1. Pre-Engagement  
+2. Reconnaissance  
+3. Enumeration  
+4. Vulnerability Analysis  
+5. Exploitation or Controlled Validation  
+6. Post-Exploitation Review  
+7. Reporting  
+
+The value of this structure is that each phase explains why the next one happened.
 
 [IMAGE HERE - pentest lifecycle overview graphic]
 
 ### Phase 0: Pre-Engagement
 
-Before testing began, the engagement reviewed the scope, permissions, goals, and operating boundaries.
+Before touching the target, the testing scope and available authorization notes were reviewed.
 
-At this stage, the project record indicated that the target included web, API, and device or hardware testing surfaces. The engagement wording also suggested broad testing permission for the named target, while still requiring care around higher-impact activities.
+The engagement record identified `Player v2 - Phoenix` as the target and listed web, API, and device or hardware testing as in scope. The current form language suggested broad testing permission, but some safety and escalation details were still incomplete, so the practical approach was to proceed carefully and favor low-risk, evidence-first work early on.
 
-This phase mattered because it established that:
-- the named target was authorized for assessment
-- reconnaissance and active testing could proceed under the documented window
-- the engagement should remain cautious around destructive, disruptive, or otherwise high-impact actions
-- the assessment needed to remain evidence-first, especially where wording in the rules of engagement was broad but not perfectly specific
+At this stage, the tester used OpenClaw's help to organize the engagement materials, confirm what was clearly in scope, and preserve a rules-of-engagement interpretation before deeper testing continued.
 
-This phase provided the operational foundation for the rest of the work.
+What this phase established:
+- target name: `Player v2 - Phoenix`
+- explicit cloud-facing target: `https://dev-api.n-compass.online`
+- selected surfaces: web application, API, device or hardware or IoT
+- testing window: 2026-04-24 to 2026-05-01
+- working posture: proceed, but stay conservative around high-impact actions
 
 [IMAGE HERE - pre-engagement checklist, charter, or scope summary]
 
 ### Phase 1: Reconnaissance
 
-The reconnaissance phase focused on understanding the target before deeper testing.
+Once scope was accepted, reconnaissance began.
 
-During this phase, the assessment gathered early context about:
-- the cloud-facing API surface
-- the device's visible boot behavior
-- the local lockout state
-- host and network details exposed through the local console
+This phase started with simple observation rather than aggressive testing. The tester physically interacted with the player, watched the boot process, and checked what the screen and local consoles revealed before trying deeper actions.
 
-This early work revealed several important clues. The device exposed a hostname, operating system banner, and network details through its local console. It also showed signs that the primary lockout flow might rely on a hardware-bound trust or secure-storage chain. In addition, the startup sequence briefly exposed intermediate states before the restricted screen fully took over.
+During this stage, the following operator actions were important:
+- observed the device's restricted or wrong-device state directly
+- switched virtual consoles to see whether the lockout screen fully isolated the system
+- watched the startup sequence for timing gaps
+- pressed keys during boot to see whether the normal path could be interrupted
+- asked OpenClaw to help organize and interpret the growing set of observations
 
-One of the most important recon observations was that the device did not move cleanly from power-on to a fully protected state. Instead, there appeared to be a short transitional period where meaningful information and interaction surfaces became visible before the lockout condition reasserted itself.
+Important live observations from recon included:
+- hostname exposed locally: `raspberry`
+- operating system banner exposed locally: `Debian GNU/Linux 13`
+- IPv4 address exposed locally: `192.168.1.70`
+- link-local IPv6 observed: `fe80::2ecf:67ff:fe04:bd1`
+- visible alternate console sessions included `tty2` and `tty3`
+- failure-state references included `hardware-check.service` and `vault-mount.service`
+
+A particularly important step in this phase was testing the boot interaction window.
+
+During early startup, pressing **F1** exposed a boot-text path showing:
+- `Progress: Trying boot mode SD`
+
+The same early window also briefly exposed a GUI-like environment before the restricted state returned.
+
+The tester also relayed this observation to the client early, because it suggested a real startup-order issue rather than a cosmetic display artifact.
+
+Another physical observation worth noting was that **Ctrl+Alt+Esc** appeared to power off or shut down the player, although that behavior was still treated cautiously until repeated validation could confirm whether it was a full shutdown, a display effect, or a watchdog-related behavior.
+
+At the end of reconnaissance, the working theory was already becoming clear: the device appeared to expose useful state too early, before the final lockout behavior fully took over.
 
 [IMAGE HERE - early recon observation or boot screen]
 
 ### Phase 2: Enumeration
 
-The enumeration phase turned the early observations into a more concrete inventory of what was actually exposed.
+Enumeration began after reconnaissance established that the device and API were worth deeper inspection.
 
-On the device side, this included confirming:
-- the device IP address
-- alternate visible local consoles
-- exposed service names tied to the failure state
-- the presence of a brief but meaningful `tty1` interaction window
+This phase was where the tester moved from “what seems visible” to “what is actually exposed and repeatable.”
 
-On the network side, this phase confirmed that the target device was reachable and exposed only a small number of services. The confirmed network-visible services were:
-- SSH on port 22
-- RPC portmapper on port 111 over TCP and UDP
-- mDNS on UDP 5353
+#### Device-side enumeration
 
-This was an important result. It suggested that the device was not broadly exposing many remote services, which is positive from a surface-area standpoint. At the same time, the local console observations showed that low network exposure did not automatically mean low overall risk.
+The tester used the local console observations as starting points and then validated them through repeatable checks.
 
-Enumeration also strengthened the view that the primary console was part of a contested startup path. During a short-lived window, the assessment observed a temporary `pi@raspberry` shell prompt and runtime messages associated with staged socket interactions before the lockout path took over again.
+Concrete local observations that carried into enumeration included:
+- device hostname: `raspberry`
+- device IPv4: `192.168.1.70`
+- device link-local IPv6: `fe80::2ecf:67ff:fe04:bd1`
+- visible login consoles: `tty2` and `tty3` with `raspberry login:`
+- transient `tty1` shell prompt: `pi@raspberry`
+- boot-stage messages:
+  - `Completed socket interaction for boot stage config`
+  - `Completed socket interaction for boot stage final`
 
-This phase helped create a clearer picture of the target: sparse from the network, but more interesting and potentially more fragile during local startup and console transitions.
+The tester did not just note that a shell prompt existed. The process specifically captured that the prompt was only visible briefly before the wrong-device or lockout path took back control of the main console.
+
+That detail matters because it changed the question from “is there a login prompt?” to “is there a race window during which the device is not yet fully protected?”
+
+#### Network enumeration
+
+The tester then checked what could actually be reached from the operator environment.
+
+Using Nmap and follow-up validation, the confirmed device-side network inventory became:
+- `22/tcp` , `OpenSSH 10.0p2 Debian 7+deb13u2`
+- `111/tcp` , `rpcbind`
+- `111/udp` , `rpcbind`
+- `5353/udp` , `mDNS / Zeroconf`
+
+Additional checks helped remove false leads:
+- `137/udp` was revalidated as closed
+- `1900/udp` was revalidated as closed
+- `123/udp` initially looked `open|filtered` in a fast pass, but later validated as closed
+
+A useful lesson from this phase was that local-subnet discovery behaved inconsistently at first. Normal Nmap discovery suggested the host was down until the tester switched to:
+- `-Pn -n --disable-arp-ping`
+
+That adjustment mattered because it prevented the engagement from missing a live target based on misleading local discovery behavior.
+
+The tester also confirmed through manual socket validation that:
+- `22/tcp` was accepting connections
+- `111/tcp` was accepting connections
+
+#### API-side enumeration
+
+Parallel checks against the cloud-facing side showed that `dev-api.n-compass.online` was live behind AWS infrastructure.
+
+The following concrete observations were gathered:
+- public AWS addresses observed: `54.210.39.233` and `54.205.199.192`
+- HTTP body observed at simple paths: `This is N-Compass TV.`
+- load balancer header: `Server: awselb/2.0`
+- backend clue from selected paths: `Server: Kestrel`
+- TLS certificate subject: `CN=n-compass.online`
+
+This was useful because it showed that the API side existed and responded consistently, even if its public-facing surface remained intentionally thin.
+
+By the end of enumeration, the picture was much sharper:
+- the device had a **small remote network surface**
+- the cloud endpoint had a **minimal front-facing presence**
+- the most interesting exposure was still on the **local startup and console side**
 
 [IMAGE HERE - service discovery result or console exposure]
 
 ### Phase 3: Vulnerability Analysis
 
-Once the exposed behaviors were documented, the next step was to analyze what they might mean from a security perspective.
+At this phase, the tester stopped collecting surface details and started asking what those details meant.
 
-The core question in this phase was not simply whether something looked unusual, but whether it created a realistic opportunity for an attacker.
+The analysis was driven by the evidence gathered in recon and enumeration, not by assumptions.
 
-The assessment considered the following themes:
-- whether console access was exposed more broadly than intended
-- whether startup protections were activating too late
-- whether visible system states revealed sensitive operational details
-- whether the difference between the device's final protected state and its early startup state created a timing-based weakness
+The main questions were:
+- Why is the device showing host and network details in a restricted state?
+- Why can alternate consoles still be reached when the device is supposed to be locked?
+- Why does `tty1` briefly show a usable shell prompt before the restricted state resumes?
+- Why do staged socket messages appear on the primary console during boot?
+- Is the hardware-check or trust path activating too late in the startup order?
 
-This phase did not assume that every observation was automatically a confirmed vulnerability. Instead, it translated live observations into focused security hypotheses.
+At this stage, the strongest working theory became:
+- the device's trust or hardware-check protections may be loading **after** early user-facing exposure has already happened
 
-The strongest risk pattern identified at this stage was the possibility that key protective controls, especially those related to hardware or trust validation, were taking effect only after early console and user-interface exposure had already occurred.
+That is a much more concrete statement than simply saying “there may be a timing issue.” It ties the concern directly to what the tester actually observed: boot interruption, transient GUI exposure, transient shell exposure, visible console sessions, and lockout behavior that appeared late rather than immediate.
+
+Because this engagement is still early in the full lifecycle, vulnerability analysis at this point is best understood as a narrowing process. It does not try to force a final finding too early. Instead, it identifies the most credible attack paths worth validating next.
 
 [IMAGE HERE - risk analysis note, timing window, or system-state comparison]
 
 ### Phase 4: Exploitation or Controlled Validation
 
-In a completed pentest, observed weaknesses must be checked carefully to determine whether they represent real exposure or only theoretical concern.
+This phase is where the next round of work would prove whether the observed exposure becomes a practical weakness.
 
-For `playerv2-phoenix`, this phase would focus on controlled validation of the most meaningful paths identified earlier, including:
-- the startup timing window on the primary console
-- the practical significance of the transient shell exposure
-- whether exposed local consoles provide usable interaction opportunities
-- whether the observed trust or lockout sequence can be meaningfully bypassed, delayed, or observed in a way that increases risk
+For `playerv2-phoenix`, the most likely validation tasks are now clear because recon and enumeration already narrowed them down.
 
-The intent of this phase is not to be reckless. It is to prove impact safely and clearly enough that the client can decide what must be fixed first.
+Likely next validation tasks:
+- repeat the **F1 during boot** interaction to classify exactly what becomes reachable
+- measure how often the transient `pi@raspberry` shell prompt appears and how long it remains interactive
+- determine whether alternate consoles are only visible or are actually usable
+- test whether the startup race can be reproduced consistently enough to create meaningful attacker opportunity
+- test whether the lockout sequence can be delayed, bypassed, or observed in a way that increases exposure
 
-For stakeholder readers, this is the point where the assessment moves from “this looks concerning” to “this has been validated as meaningful risk” or “this needs no further action.”
+This section is intentionally concrete because it should reflect what the pentest process would actually do next, not just what pentesting usually means in theory.
 
 [IMAGE HERE - validation evidence or controlled test screenshot]
 
 ### Phase 5: Post-Exploitation Review
 
-When meaningful access or control is achieved during a pentest, the next question is what that access would allow in practice.
+If the validation phase proves that a shell, console, or trust-sequence weakness can be used meaningfully, the post-exploitation phase would ask what that access allows.
 
-For a device-focused target like `playerv2-phoenix`, this phase would ask:
-- what additional visibility or control becomes possible after local access
-- whether sensitive configuration, operational logic, or trust information becomes reachable
-- whether an attacker could expand their control beyond an initial foothold
-- whether the impact remains local or could affect broader workflows, provisioning, or dependent services
+For this target, the follow-up questions would include:
+- does local access reveal additional configuration or trust logic?
+- can an attacker learn more about how the device authorizes itself?
+- can any protected storage or protected workflows be observed more directly?
+- does the device expose operational details that help future access attempts?
 
-This phase matters because business risk is not only about “getting in.” It is also about what becomes possible after access is obtained.
-
-Even in cases where full compromise is not demonstrated, this phase helps explain the practical importance of partial exposure, shell access, or trust-sequence weakness.
+This phase is not about adding drama. It is about measuring impact after an initial foothold is proven.
 
 [IMAGE HERE - post-exploitation path, impact map, or access review]
 
 ### Phase 6: Reporting and Communication
 
-The final phase converts evidence into action.
+The final reporting phase turns the engagement into outputs that different readers can use.
 
-For this engagement, the reporting phase is intended to produce two companion outputs:
-- a detailed technical report for engineering and security readers
-- this process overview for stakeholders who need to understand the assessment journey without reading raw technical evidence
+For this engagement, the technical report would carry the deeper evidence, reproduction notes, and remediation detail.
 
-This phase exists to:
-- summarize what was tested
-- explain what was observed
-- highlight where risk comes from
-- turn technical results into decisions, priorities, and remediation planning
+This process overview serves a different purpose. It is meant to show the path of the assessment itself, including:
+- what the tester physically did
+- what the tester checked on the network
+- what OpenClaw was asked to help analyze or organize
+- what was actually observed in each phase
+- why the next phase became necessary
+
+That is the main value of this document. It gives the reader the story of the pentest, not just the final list of findings.
 
 [IMAGE HERE - report package, presentation, or reporting workflow]
 
@@ -184,55 +269,53 @@ This phase exists to:
 
 ## 5. Tools Used During the Assessment
 
-The following tools and methods supported the assessment:
+The following tools and methods supported the assessment.
+
+### Physical Interaction with the Device
+The tester directly observed the target screen, changed consoles, and interacted with the keyboard during boot.
+
+Examples of actions taken:
+- switched to alternate TTY consoles
+- pressed **F1** during early startup
+- observed lockout, wrong-device, and startup-stage transitions
+- noted behavior associated with **Ctrl+Alt+Esc**
+
+[IMAGE HERE - physical interaction or keyboard/console screenshot]
+
+### OpenClaw Assistance
+OpenClaw was used as an orchestration and analysis assistant during the engagement.
+
+Examples of assistance requested:
+- organize engagement phases
+- preserve recon and enum summaries
+- help compare live observations with likely trust-path explanations
+- help draft reporting outputs from the engagement data
+
+[IMAGE HERE - OpenClaw assistance or workflow screenshot]
 
 ### Kali Linux
-Used as the primary operator environment for organizing the engagement, running commands, validating observations, and collecting evidence.
-
-Why it matters:
-- It provided a stable testing platform
-- It supported the network and local validation workflow
-- It kept evidence collection centralized
+Used as the main operator environment for running commands and collecting evidence.
 
 [IMAGE HERE - Kali workspace or terminal overview]
 
 ### Nmap
-Used to confirm which services were actually reachable on the device over the network.
+Used to validate the live network-visible surface of the device.
 
-Why it matters:
-- It helped verify the real network attack surface
-- It prevented assumptions about which ports were open
-- It supported repeated validation when initial local discovery behavior was misleading
+Concrete outputs confirmed through this process included:
+- `22/tcp` open
+- `111/tcp` open
+- `111/udp` open
+- `5353/udp` open
 
 [IMAGE HERE - nmap result screenshot]
 
-### Manual Console Observation
-Used to inspect boot flow, lockout messages, visible console sessions, transient prompts, and startup-stage behavior.
-
-Why it matters:
-- Some of the most important observations were only visible locally
-- It helped identify timing-based exposure not obvious from the network side
-- It revealed how the device behaves before the lockout state fully stabilizes
-
-[IMAGE HERE - console or boot-stage screenshot]
-
-### Socket and Service Validation
-Used to confirm that reachable services were not false positives and to better understand the behavior of SSH, RPC, and related runtime observations.
-
-Why it matters:
-- It improved confidence in the service inventory
-- It helped distinguish real exposure from scanning artifacts
-- It supported a more accurate view of the target's remote posture
+### Manual Socket and Service Validation
+Used to confirm that open ports and runtime behavior were real, not just scan artifacts.
 
 [IMAGE HERE - socket validation or service check screenshot]
 
 ### Documentation and Evidence Tracking
-Used throughout the engagement to capture what was observed, what was validated, and what remained a hypothesis.
-
-Why it matters:
-- It kept the assessment grounded in live evidence
-- It made later analysis and reporting more reliable
-- It reduced the chance of overstating unconfirmed behavior
+Used throughout the engagement so that each observation could be tied to a phase and revisited later.
 
 [IMAGE HERE - notes, evidence tracker, or documentation screenshot]
 
@@ -240,17 +323,15 @@ Why it matters:
 
 ## 6. How the Phases Connect
 
-Each phase in the pentest built on the previous one.
+This engagement followed a real chain of logic:
 
-- **Pre-engagement** confirmed scope, permissions, and safe operating boundaries
-- **Reconnaissance** established early context about the device and cloud-facing environment
-- **Enumeration** confirmed what was actually exposed, both locally and over the network
-- **Vulnerability analysis** translated those observations into focused risk hypotheses
-- **Exploitation or validation** tests whether the most important hypotheses produce real impact
-- **Post-exploitation review** explains what successful access would mean in practice
-- **Reporting** converts all of the above into decisions, remediation planning, and stakeholder communication
+- pre-engagement confirmed it was safe to begin
+- recon showed that the device exposed more local detail than expected
+- enum proved the device was live at `192.168.1.70` and confirmed the exposed remote services
+- vuln analysis reframed those observations into a timing and trust-path problem
+- validation planning then focused on the boot race, transient shell, and console usability questions
 
-This structure matters because a reliable pentest should not feel random. It should feel traceable, where each conclusion can be tied back to what was actually observed and validated.
+That phase flow is the core of this document. Each step happened because of the evidence from the step before it.
 
 [IMAGE HERE - phase connection flowchart]
 
@@ -258,25 +339,35 @@ This structure matters because a reliable pentest should not feel random. It sho
 
 ## 7. What We Observed
 
-The `playerv2-phoenix` assessment produced several meaningful observations that shaped the security picture of the target.
+By the current stage of the engagement, the following observations had already been made.
 
-### Positive Observations
+### Device-side observations
+- hostname shown locally: `raspberry`
+- OS banner shown locally: `Debian GNU/Linux 13`
+- IPv4 shown locally: `192.168.1.70`
+- IPv6 link-local shown locally: `fe80::2ecf:67ff:fe04:bd1`
+- `tty2` and `tty3` showed `raspberry login:`
+- `tty1` briefly showed `pi@raspberry`
+- boot-stage messages included:
+  - `Completed socket interaction for boot stage config`
+  - `Completed socket interaction for boot stage final`
 
-- The device exposed a relatively small remote network surface
-- SSH access required authentication and did not provide trivial access from the network side
-- Follow-up checks did not reveal a large set of hidden remote services during this assessment window
+### Network-side observations
+- `22/tcp` exposed `OpenSSH 10.0p2 Debian 7+deb13u2`
+- `111/tcp` and `111/udp` exposed `rpcbind`
+- `5353/udp` exposed `mDNS / Zeroconf`
+- no broader high-volume service exposure was confirmed from the network side in this phase
 
-These are good signs because they suggest the target is not broadly open to casual remote probing.
+### Cloud/API observations
+- `dev-api.n-compass.online` responded behind AWS infrastructure
+- observed ELB header: `Server: awselb/2.0`
+- selected API paths returned `404 Not Found` with `Server: Kestrel`
+- root-like paths returned: `This is N-Compass TV.`
 
-### Risk-Oriented Observations
-
-- Multiple local console sessions were visible in the device's restricted state
-- The primary console appeared to expose a short-lived but meaningful interaction window during startup
-- A temporary shell prompt was observed before the lockout state resumed
-- Boot-stage runtime messages suggested an internal staged workflow on the primary console
-- The lockout or hardware-trust process may not be taking effect early enough to prevent all early-stage exposure
-
-These observations matter because they shift attention away from the remote network surface alone and toward the startup and local-access behavior of the device.
+### Process observations
+- pressing **F1** during startup exposed `Progress: Trying boot mode SD`
+- the same early window briefly exposed a GUI-like state before the restricted state resumed
+- OpenClaw was asked to help preserve and interpret these observations as the engagement progressed
 
 [IMAGE HERE - key observation summary graphic or screenshot]
 
@@ -284,17 +375,14 @@ These observations matter because they shift attention away from the remote netw
 
 ## 8. Why These Observations Matter
 
-From a non-technical point of view, the biggest security concern is timing and exposure.
+The important issue is not just that something was visible. The issue is **what became visible before protection fully took over**.
 
-A system may appear secure once it fully settles into its protected state, but if it exposes useful screens, prompts, host details, or interaction opportunities before that protection is fully active, an attacker may still benefit.
+The current process suggests three concrete areas of concern:
+- the device reveals host and network details in a restricted state
+- alternate consoles remain visible during lockout conditions
+- the primary console may briefly expose a real interaction window before the trust path fully reasserts control
 
-This matters because:
-- security controls are only strong if they activate before an attacker can take advantage of early behavior
-- local and physical exposure can still be high-value even when remote network exposure is limited
-- a short timing window may be enough for a skilled attacker to gather information or begin interaction
-- inconsistent startup protection can weaken the trustworthiness of the overall device workflow
-
-In other words, the assessment suggests that the target's strongest risks may come from *when* protection takes hold, not only from *what* is exposed after the system has fully settled.
+That combination makes the startup path more important than the final steady-state screen.
 
 [IMAGE HERE - simple risk explanation visual]
 
@@ -302,13 +390,12 @@ In other words, the assessment suggests that the target's strongest risks may co
 
 ## 9. Key Takeaways for Stakeholders
 
-In simple terms, this assessment shows:
+At the current stage of the engagement, the practical takeaways are:
 
-- The device appears intentionally limited from the network side, which is a positive design choice
-- The more important security questions are happening locally, especially during startup and restricted-state transitions
-- Console exposure and timing-based behavior deserve serious attention, even if the final locked state looks controlled
-- Security should be measured across the full device lifecycle, not only in the final steady-state screen that users normally see
-- The assessment process helped narrow the focus toward the most meaningful risk areas instead of treating every unusual behavior as equally important
+- the device is not broadly exposed on the network, which is good
+- the more meaningful security questions are happening locally on the device itself
+- startup behavior currently looks more interesting than the final locked state
+- the pentest is successfully narrowing the problem toward a specific timing and trust-path concern instead of chasing random possibilities
 
 [IMAGE HERE - stakeholder summary graphic]
 
@@ -316,15 +403,14 @@ In simple terms, this assessment shows:
 
 ## 10. Recommended Next Steps
 
-Based on the completed assessment flow, the following actions are recommended:
+Based on the work completed so far, the next actions are:
 
-1. Review the startup sequence and confirm whether trust checks and hardware-lock protections can be moved earlier in the boot process
-2. Reduce or eliminate unnecessary console exposure during restricted or unauthorized states
-3. Review whether transient shell prompts, startup-stage messages, and local system details are being exposed before protections are active
-4. Validate whether the `tty1` transition window creates a usable attacker opportunity under repeatable conditions
-5. Review whether alternate console sessions should remain reachable or visible on production devices
-6. Translate confirmed technical findings into engineering tasks with clear verification criteria
-7. Re-test the device after hardening changes to confirm that the early-stage exposure has been removed or reduced
+1. repeat and measure the **F1 boot interaction** window
+2. re-check the transient `pi@raspberry` shell prompt for usability and timing
+3. determine whether `tty2` and `tty3` are only visible or meaningfully usable
+4. inspect whether `hardware-check.service` appears to start too late in the boot sequence
+5. continue documenting each repeatable state transition with screenshots and timestamps
+6. convert validated behavior into formal findings only after controlled confirmation
 
 [IMAGE HERE - roadmap, checklist, or next-steps visual]
 
@@ -346,16 +432,17 @@ Recommended naming style for images during assembly:
 - `process-overview-09-validation.png`
 - `process-overview-10-post-exploitation.png`
 - `process-overview-11-reporting-workflow.png`
-- `process-overview-12-kali-workspace.png`
-- `process-overview-13-nmap.png`
-- `process-overview-14-console-exposure.png`
-- `process-overview-15-socket-validation.png`
-- `process-overview-16-notes.png`
-- `process-overview-17-phase-flowchart.png`
-- `process-overview-18-key-observation.png`
-- `process-overview-19-risk-visual.png`
-- `process-overview-20-stakeholder-summary.png`
-- `process-overview-21-next-steps.png`
+- `process-overview-12-physical-interaction.png`
+- `process-overview-13-openclaw-assist.png`
+- `process-overview-14-kali-workspace.png`
+- `process-overview-15-nmap.png`
+- `process-overview-16-socket-validation.png`
+- `process-overview-17-notes.png`
+- `process-overview-18-phase-flowchart.png`
+- `process-overview-19-key-observation.png`
+- `process-overview-20-risk-visual.png`
+- `process-overview-21-stakeholder-summary.png`
+- `process-overview-22-next-steps.png`
 
 If an image is not available yet, leave the placeholder line in place so it is easy to find later.
 
@@ -365,7 +452,9 @@ If an image is not available yet, leave the placeholder line in place so it is e
 
 This document is a companion to the technical pentest report.
 
-- The **technical report** contains detailed findings, evidence, validation steps, severity, and remediation guidance.
-- This **process overview** explains the engagement in a more visual, stakeholder-friendly, and process-driven format.
+- The technical report gives the detailed evidence, validation logic, and remediation guidance.
+- This process overview shows the human-readable testing journey, including what was done and what was seen along the way.
 
-Used together, the two documents help different audiences understand the same assessment from the level of detail that fits their role.
+Together, they answer both questions a client usually has:
+- **What exactly did you find?**
+- **What exactly did you do to reach that conclusion?**
