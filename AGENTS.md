@@ -358,6 +358,13 @@ Required behavior across **all phases** including pre-engagement, recon, enum, v
   - exact prompts, banners, IPs, hostnames, paths, and visible text
   - actual commands, flags, and tool choices that materially affected the result
   - whether OpenClaw assistance was requested and for what
+- for internal engagement work, especially recon, enum, vuln validation, and exploit validation, include enough reproducibility detail that the user can re-run the same steps manually when appropriate
+- when commands materially support a conclusion, record:
+  - the command that was run
+  - important flags or parameters
+  - what tool was used
+  - what result was observed from that exact run
+- prefer concise command-plus-result documentation over vague summaries like "scanned the host" or "checked the service"
 - avoid reducing process logs to shallow summaries like "did this, found this"
 - keep it detailed but still readable, not overloaded with raw tool dump noise
 
