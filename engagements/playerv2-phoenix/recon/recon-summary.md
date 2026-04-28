@@ -1,0 +1,18 @@
+# Recon Summary
+
+- Recon is authorized to begin under the current operator interpretation of the client's broad testing language for the named target and selected surfaces
+- Current confirmed in-scope item from the pre-engagement record: `https://dev-api.n-compass.online`
+- Current posture: low-risk, evidence-first reconnaissance while preserving caution around ambiguous or higher-impact activities
+- Immediate recon objective: establish a trustworthy first-pass asset and attack-surface inventory for Player v2 - Phoenix
+- New live operator observations expand the recon picture beyond the API surface and suggest a device-side authorization and secure-storage dependency path worth mapping before deeper testing
+- Current working recon hypothesis: the target may use a hardware-bound authorization check that gates a vault or protected storage mount, and failure in that chain may explain the unauthorized-hardware state and wrong-device prompt observed locally
+- Controlled TTY switching now confirms that the lockout screen does not fully isolate alternate virtual consoles after failure conditions appear, and that the device exposes login consoles with host and network details
+- Newly confirmed device details from local console observation:
+  - hostname: `raspberry`
+  - OS banner: `Debian GNU/Linux 13`
+  - IPv4 address: `192.168.1.70`
+  - link-local IPv6 address observed: `fe80::2ecf:67ff:fe04:bd1`
+- Additional operator observation to validate in follow-up testing:
+  - `Ctrl+Alt+Esc` appears to cause the player device to turn off or shut down
+  - current confidence: low until reproduced and distinguished between full shutdown, player-process exit, display blanking, or watchdog-triggered restart
+  - if reproduced consistently, this may indicate an exposed local denial-of-service or kiosk-escape-adjacent control path worth carrying into enum/vuln validation
