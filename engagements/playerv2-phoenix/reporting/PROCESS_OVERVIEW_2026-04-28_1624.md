@@ -43,9 +43,27 @@ This means the assessment looked at both what a person could do in front of the 
 
 ---
 
-## 4. How the Assessment Was Performed
+## 4. Pentest Process Followed
 
-The assessment followed a structured penetration testing workflow so the results would be organized, evidence-based, and repeatable.
+This assessment followed a standard penetration testing process so the work would stay organized, evidence-based, and easy to explain.
+
+Instead of jumping straight into testing, the engagement was approached in phases. Each phase had a different purpose and helped build a clearer security picture before moving deeper.
+
+[IMAGE HERE - pentest lifecycle overview graphic]
+
+### Phase 0: Pre-Engagement
+
+Before active testing, the engagement should clearly define the rules, scope, permissions, boundaries, and success criteria.
+
+This phase exists to make sure:
+- the target is authorized for testing
+- the testing boundaries are clearly understood
+- everyone agrees on what is included and excluded
+- the assessment can proceed safely and responsibly
+
+For stakeholder readers, this phase matters because good security testing starts with control and clarity, not just tools.
+
+[IMAGE HERE - pre-engagement checklist, charter, or scope summary]
 
 ### Phase 1: Reconnaissance
 
@@ -55,6 +73,8 @@ Activities included:
 - Identifying the device context and operating conditions
 - Observing boot behavior and visible prompts
 - Recording important environmental clues
+
+This phase is about learning before probing. It helps avoid blind testing and improves the quality of later decisions.
 
 [IMAGE HERE - early recon observation or boot screen]
 
@@ -67,6 +87,8 @@ Activities included:
 - Observing console and TTY exposure states
 - Capturing evidence of lockout messages and staged startup behavior
 
+This phase helps turn general observations into a more reliable inventory of what is actually exposed.
+
 [IMAGE HERE - service discovery result or console exposure]
 
 ### Phase 3: Vulnerability Analysis
@@ -78,15 +100,44 @@ Activities included:
 - Identifying timing-based opportunities during system startup
 - Reviewing whether visible protections appeared complete or delayed
 
+This phase is where observations begin turning into risk hypotheses.
+
 [IMAGE HERE - risk analysis note, timing window, or system-state comparison]
 
-### Phase 4: Controlled Validation
+### Phase 4: Exploitation or Controlled Validation
 
 Where appropriate, observed weaknesses were checked carefully to determine whether they were likely to create real risk.
 
-This step helps separate theory from actual exposure.
+This step helps separate theory from actual exposure. It is also the phase where caution matters most, because the goal is to prove impact without causing unnecessary harm.
 
 [IMAGE HERE - validation evidence or controlled test screenshot]
+
+### Phase 5: Post-Exploitation Review
+
+If meaningful access or control is achieved during a pentest, the next step is understanding what that access would allow in practice.
+
+This phase usually answers questions like:
+- how far an attacker could go after initial access
+- what data, services, or controls could be reached
+- whether the compromise could expand, persist, or disrupt operations
+
+For non-technical readers, this phase explains the real-world importance of a successful compromise.
+
+[IMAGE HERE - post-exploitation path, impact map, or access review]
+
+### Phase 6: Reporting and Communication
+
+The final phase turns technical work into decision-ready communication.
+
+This phase exists to:
+- summarize what was tested
+- explain what was observed
+- highlight the most important risks
+- translate technical evidence into action items
+
+This new process overview belongs in this phase as a companion to the detailed technical report.
+
+[IMAGE HERE - report package, presentation, or reporting workflow]
 
 ---
 
@@ -128,7 +179,25 @@ Why it matters:
 
 ---
 
-## 6. What We Observed
+## 6. How the Phases Connect
+
+Each pentest phase supports the next one.
+
+- **Pre-engagement** defines what is safe and allowed
+- **Reconnaissance** gathers context
+- **Enumeration** confirms what is exposed
+- **Vulnerability analysis** identifies likely weaknesses
+- **Exploitation or validation** checks whether the weaknesses are real
+- **Post-exploitation review** explains impact after access
+- **Reporting** turns all of that into decisions and remediation work
+
+This structure helps avoid random testing and makes the results easier to trust.
+
+[IMAGE HERE - phase connection flowchart]
+
+---
+
+## 7. What We Observed
 
 The assessment identified several important behaviors that shaped the security picture of the target.
 
@@ -144,7 +213,7 @@ These observations do not all represent final confirmed vulnerabilities by thems
 
 ---
 
-## 7. Why These Observations Matter
+## 8. Why These Observations Matter
 
 From a non-technical perspective, the main concern is whether the target gives an attacker opportunities to learn, interact, or gain control before the system is fully protected.
 
@@ -159,7 +228,7 @@ This matters because:
 
 ---
 
-## 8. Key Takeaways for Stakeholders
+## 9. Key Takeaways for Stakeholders
 
 In simple terms, this assessment shows:
 
@@ -172,7 +241,7 @@ In simple terms, this assessment shows:
 
 ---
 
-## 9. Recommended Next Steps
+## 10. Recommended Next Steps
 
 Based on the process and observations so far, the following actions are recommended:
 
@@ -186,7 +255,7 @@ Based on the process and observations so far, the following actions are recommen
 
 ---
 
-## 10. Screenshot Placement Guide
+## 11. Screenshot Placement Guide
 
 Use the placeholders above to insert visuals later.
 
@@ -203,13 +272,16 @@ Recommended naming style for images during assembly:
 - `process-overview-10-notes.png`
 - `process-overview-11-key-observation.png`
 - `process-overview-12-stakeholder-summary.png`
-- `process-overview-13-next-steps.png`
+- `process-overview-13-post-exploitation.png`
+- `process-overview-14-reporting-workflow.png`
+- `process-overview-15-phase-flowchart.png`
+- `process-overview-16-next-steps.png`
 
 If an image is not available yet, leave the placeholder line in place so it is easy to find later.
 
 ---
 
-## 11. Relationship to the Technical Report
+## 12. Relationship to the Technical Report
 
 This document is a companion to the technical pentest report.
 
