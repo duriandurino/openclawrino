@@ -1,26 +1,25 @@
 {
-  "timestamp_local": "2026-04-28 16:13:42 PST",
-  "timestamp_iso": "2026-04-28T16:13:42+08:00",
+  "timestamp_local": "2026-04-28 17:55:16 PST",
+  "timestamp_iso": "2026-04-28T17:55:16+08:00",
   "date": "2026-04-28",
   "trigger": "manual-near-50-percent",
-  "summary": "playerv2-phoenix recon and enum are documented with the new boot-window, transient GUI, tty1 shell, and socket-stage observations",
+  "summary": "Phoenix engagement docs were tightened for detailed process-overview support, with reproducible enum commands and richer recon/pre-engagement process notes now backfilled.",
   "key_points": [
-    "Validated sparse network surface: 22/tcp SSH, 111/tcp+udp rpcbind, 5353/udp mDNS; direct Pi-to-API trust binding still unproven",
-    "Physical state: early F1 can expose 'Trying boot mode SD' and a short-lived GUI; tty1 can briefly show pi@raspberry and staged socket messages before wrong-device takeover; tty2-tty6 remain exposed login surfaces",
-    "Working hypothesis: hardware-check.service likely starts too late, after GUI/tty1 exposure; client was informed early, but current playerv2-phoenix build is still assumed unchanged during the pentest unless live evidence contradicts that"
+    "User wants all pentest docs, sub-agents included, to preserve exact process: what was asked, suggested, tried, what worked, what appeared, exact keys/prompts/IPs/commands, and image-friendly detail for later PROCESS_OVERVIEW writing.",
+    "Current live Phoenix docs improved: enum summary/activity/evidence now include replayable command patterns; recon and pre-engagement now capture TTY key flow and /pentest -> client form -> ingest chain."
   ],
   "next_actions": [
-    "Resume with timing-based physical enum on the tty1 race window or pivot into early vuln analysis from the documented exposure pattern"
+    "Continue improving the playerv2-phoenix docs, especially aligning remaining support files and refining the process overview sample against the newly detailed source docs."
   ],
   "files": [
+    "engagements/playerv2-phoenix/reporting/PROCESS_OVERVIEW_2026-04-28_1624.md",
+    "engagements/playerv2-phoenix/enum/enum-summary.md",
     "engagements/playerv2-phoenix/recon/recon-summary.md",
-    "engagements/playerv2-phoenix/enum/enum-summary.md"
+    "engagements/playerv2-phoenix/pre-engagement/engagement-charter.md"
   ],
   "branch": "main",
-  "head_before": "66b4c9e",
+  "head_before": "c0dbabd",
   "git_status_before": [
-    " M engagements/playerv2-phoenix/pre-engagement/engagement-charter.md",
-    " M engagements/playerv2-phoenix/pre-engagement/scope-and-roe.md",
     " M scripts/orchestration/README.md",
     " M skills/pentest-orchestrator/references/engagement-doc-templates.md",
     " M vuln/scripts/__pycache__/cve_lookup.cpython-313.pyc",
@@ -48,7 +47,6 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.md",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json",
-    "?? engagements/playerv2-phoenix/enum/enum-evidence-index.md",
     "?? engagements/playerv2-phoenix/enum/live/api-linkage-2026-04-27_1834.txt",
     "?? engagements/playerv2-phoenix/enum/live/fulltcp-refresh-2026-04-28.gnmap",
     "?? engagements/playerv2-phoenix/enum/live/network-enum-2026-04-27_1827.txt",
@@ -63,7 +61,10 @@
     "?? engagements/playerv2-phoenix/exploit/",
     "?? engagements/playerv2-phoenix/post-exploit/",
     "?? engagements/playerv2-phoenix/registers/asset-register.md",
-    "?? engagements/playerv2-phoenix/reporting/",
+    "?? engagements/playerv2-phoenix/reporting/appendix.md",
+    "?? engagements/playerv2-phoenix/reporting/executive-report.md",
+    "?? engagements/playerv2-phoenix/reporting/presentation-outline.md",
+    "?? engagements/playerv2-phoenix/reporting/technical-report.md",
     "?? engagements/playerv2-phoenix/reports/",
     "?? engagements/playerv2-phoenix/vuln/",
     "?? pentest-references/cvss/",
