@@ -1,7 +1,9 @@
-# Process Overview
+# Process Overview (SAMPLE)
+
+> **Status:** SAMPLE DOCUMENT, not final output.
 
 **Engagement:** playerv2-phoenix  
-**Document Type:** Non-technical pentest process overview  
+**Document Type:** Non-technical pentest process overview (SAMPLE)  
 **Prepared On:** 2026-04-28 16:24 Asia/Manila  
 **Audience:** Non-technical stakeholders, project owners, managers  
 **Assessment Window:** 2026-04-24 to 2026-05-01  
@@ -11,7 +13,7 @@
 
 ## 1. Purpose of This Document
 
-This document shows, in plain language, how the `playerv2-phoenix` pentest was carried out.
+This sample document shows, in plain language, how the `playerv2-phoenix` pentest was carried out.
 
 Instead of only saying what the final findings were, this overview shows the actual testing flow: what was checked first, what actions were taken on the device, what OpenClaw was asked to help with, what was observed, and how those observations shaped the next step.
 
@@ -278,7 +280,7 @@ The final reporting phase turns the engagement into outputs that different reade
 
 For this engagement, the technical report would carry the deeper evidence, reproduction notes, and remediation detail.
 
-This process overview serves a different purpose. It is meant to show the path of the assessment itself, including:
+This sample process overview serves a different purpose. It is meant to show the path of the assessment itself, including:
 - what the tester physically did
 - what the tester checked on the network
 - what OpenClaw was asked to help analyze or organize
@@ -481,7 +483,7 @@ If an image is not available yet, leave the placeholder line in place so it is e
 
 ## 12. Relationship to the Technical Report
 
-This document is a companion to the technical pentest report.
+This sample document is a companion to the technical pentest report.
 
 - The technical report gives the detailed evidence, validation logic, and remediation guidance.
 - This process overview shows the human-readable testing journey, including what was done and what was seen along the way.
