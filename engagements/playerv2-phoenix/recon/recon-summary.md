@@ -16,3 +16,8 @@
   - `Ctrl+Alt+Esc` appears to cause the player device to turn off or shut down
   - current confidence: low until reproduced and distinguished between full shutdown, player-process exit, display blanking, or watchdog-triggered restart
   - if reproduced consistently, this may indicate an exposed local denial-of-service or kiosk-escape-adjacent control path worth carrying into enum/vuln validation
+- New boot-sequence recon from operator photos and live observation:
+  - during early startup, pressing `F1` can divert execution into an SD / boot-text path that visibly shows `Progress: Trying boot mode SD`
+  - the same early window can temporarily expose a GUI-like environment where the start menu and apps are reachable before the lockout path reasserts itself
+  - this GUI exposure appears transient and is overtaken later by the unauthorized-device / wrong-device path on `tty1`
+  - current interpretation: there is a short boot-phase race or stage transition before the hardware-lock workflow fully takes control of the primary console
