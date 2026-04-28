@@ -22,4 +22,6 @@
   - tty2 through tty6 remain exposed login surfaces in the failure state
   - tty1 remains the wrong-device prompt surface
   - default `pi` / `raspberry` credentials did not produce access
+- Additional physical enum observations now show that `tty1` can briefly surface a live shell prompt as `pi@raspberry` and later staged runtime text including `Completed socket interaction for boot stage config` and `Completed socket interaction for boot stage final` before the wrong-device path reclaims the console
+- These staged socket messages strengthen the interpretation that the primary console participates in a boot-time service / orchestration workflow, not just a static banner path
 - Passive traffic-correlation work is currently limited by runtime privilege constraints, so stronger network-flow linkage will require privileged local capture or on-device observation

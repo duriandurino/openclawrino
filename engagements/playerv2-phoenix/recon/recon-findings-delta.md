@@ -23,4 +23,9 @@
 - These observations increase confidence that the engagement includes a meaningful device-side trust path in addition to the confirmed API surface, and that the lockout screen does not fully seal alternate local consoles once the failure state is reached
 - Physical follow-up now confirms that tty2 through tty6 behave consistently as exposed login surfaces, while tty1 remains isolated to the wrong-device prompt
 - Default `pi` / `raspberry` access was attempted on the exposed login consoles and did not succeed, so the current state is console exposure without validated local credential access
+- New boot-sequence recon expands the local exposure picture:
+  - pressing `F1` during early startup can divert into an SD / boot-text path that visibly shows `Progress: Trying boot mode SD`
+  - a short-lived GUI-like environment can become reachable before the lockout path later reclaims the system
+  - operator interpretation is that `hardware-check.service` likely starts too late, after GUI / `tty1` exposure, creating a transient race window before the wrong-device workflow fully owns the console
+  - the operator has already relayed this early-hardening observation to the client, but the current `playerv2-phoenix` build under test is still expected to remain unchanged during this engagement unless live evidence shows otherwise
 - Current interpretation is still reconnaissance only: these are observations and hypotheses, not yet validated findings or exploit claims

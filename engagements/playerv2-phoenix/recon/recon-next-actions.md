@@ -17,3 +17,7 @@
   - tty2 through tty6 are exposed login surfaces in the failure state
   - tty1 remains the wrong-device prompt surface
   - default `pi` / `raspberry` login did not succeed
+  - early-boot `F1` behavior can temporarily expose SD boot text and a short-lived GUI window before the lockout path takes over
+- Preserve the current boundary / coordination note for later phases:
+  - the client was informed early about the probable late-start ordering issue around `hardware-check.service`
+  - no defensive change is currently expected on the active `playerv2-phoenix` version under test unless fresh live evidence proves otherwise

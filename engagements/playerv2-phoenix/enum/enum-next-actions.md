@@ -11,7 +11,11 @@
   - tty2 through tty6 remain exposed login surfaces
   - tty1 remains the wrong-device prompt
   - observed trust-control components are still `hardware-check.service` and `vault-mount.service`
+  - early boot may expose a short-lived shell / staged socket-interaction window on `tty1` before takeover
 - Avoid broad credential guessing; only test small, evidence-backed hypotheses if new on-device clues justify them
+- Preserve the current interpretation boundary:
+  - the service-order explanation is still a hypothesis, not a proven root cause
+  - the active `playerv2-phoenix` build is still expected to remain unchanged during this pentest unless fresh live evidence shows otherwise
 - Preserve reporting-ready reality-check language:
   - sparse but real network surface confirmed
   - alternate local consoles exposed in the failure state
