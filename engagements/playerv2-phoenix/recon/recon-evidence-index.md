@@ -18,10 +18,13 @@
   - `fe80::2ecf:67ff:fe04:bd1`
   - `raspberry login:`
 - Keyed interaction results:
+  - process context:
+    - the operator asked OpenClaw which low-risk keys and TTY shortcuts to try next
+    - the successful branch was the virtual-console path rather than random single-key testing
   - low-risk single keys, harmless control keys, function keys, safer modifier combos, and higher-signal combos produced no visible change on the main wrong-device prompt
   - `Ctrl + Alt + F1` returns to the wrong-device prompt / main TTY
-  - `Ctrl + Alt + F2` exposed tty2 login output
-  - `Ctrl + Alt + F3` exposed tty3 login output after failure prompts appeared
+  - `Ctrl + Alt + F2` exposed tty2 login output with `Debian GNU/Linux 13 raspberry tty2`, `My IP address is 192.168.1.70`, and `raspberry login:`
+  - `Ctrl + Alt + F3` exposed tty3 login output after failure prompts appeared, matching the same hostname/login/IP disclosure pattern
   - tty4 through tty6 present the same login-banner behavior as tty2 and tty3
   - `Ctrl + Alt + F7` produced a blank screen with blinking `-` after failure prompts appeared
 - Local credential validation results:
