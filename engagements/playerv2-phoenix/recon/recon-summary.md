@@ -21,3 +21,5 @@
   - the same early window can temporarily expose a GUI-like environment where the start menu and apps are reachable before the lockout path reasserts itself
   - this GUI exposure appears transient and is overtaken later by the unauthorized-device / wrong-device path on `tty1`
   - current interpretation: there is a short boot-phase race or stage transition before the hardware-lock workflow fully takes control of the primary console
+  - operator also relayed this exposure to the client for early defensive remediation; the current working theory is that `hardware-check.service` is starting after GUI / `tty1` exposure instead of before it, so the likely remediation path is service-order hardening
+  - important engagement note: despite that early notice to the client, the current `playerv2-phoenix` version under test is expected to remain unchanged during this pentest, so findings and timing observations should continue to be treated as applying to the present build unless live evidence later shows otherwise
