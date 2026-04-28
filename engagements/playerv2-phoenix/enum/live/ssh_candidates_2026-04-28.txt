@@ -1,0 +1,9 @@
+ffb6d42807368154
+the serial is ffb6d42807368154
+ncompass player serial ffb6d42807368154
+pi serial ffb6d42807368154
+nctv serial ffb6d42807368154
+player serial ffb6d42807368154
+the NTV360 Raspberry Pi
+NTV360 Pi setup is complete.
+AUTHORIZED_PI_SERIAL = "ffb6d42807368154"

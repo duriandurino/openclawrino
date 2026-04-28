@@ -1,0 +1,6 @@
+pi
+root
+admin
+phoenix
+player
+ncompass
