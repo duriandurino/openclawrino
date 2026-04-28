@@ -1,24 +1,23 @@
 {
-  "timestamp_local": "2026-04-27 19:12:45 PST",
-  "timestamp_iso": "2026-04-27T19:12:45+08:00",
-  "date": "2026-04-27",
+  "timestamp_local": "2026-04-28 16:13:42 PST",
+  "timestamp_iso": "2026-04-28T16:13:42+08:00",
+  "date": "2026-04-28",
   "trigger": "manual-near-50-percent",
-  "summary": "Phoenix recon and enum are documented; preserve the validated sparse network surface and TTY exposure state before reset.",
+  "summary": "playerv2-phoenix recon and enum are documented with the new boot-window, transient GUI, tty1 shell, and socket-stage observations",
   "key_points": [
-    "Confirmed Pi services: 22/tcp SSH, 111/tcp+udp rpcbind, 5353/udp mDNS; 123/137/1900 UDP did not validate on the Pi.",
-    "Physical state: tty1 remains wrong-device prompt, tty2-tty6 expose login consoles, default pi/raspberry failed, and no shell access is proven.",
-    "API state: dev-api.n-compass.online is behind AWS ELB with Kestrel-backed 404 hints, but direct Pi-to-API trust binding is still unproven."
+    "Validated sparse network surface: 22/tcp SSH, 111/tcp+udp rpcbind, 5353/udp mDNS; direct Pi-to-API trust binding still unproven",
+    "Physical state: early F1 can expose 'Trying boot mode SD' and a short-lived GUI; tty1 can briefly show pi@raspberry and staged socket messages before wrong-device takeover; tty2-tty6 remain exposed login surfaces",
+    "Working hypothesis: hardware-check.service likely starts too late, after GUI/tty1 exposure; client was informed early, but current playerv2-phoenix build is still assumed unchanged during the pentest unless live evidence contradicts that"
   ],
   "next_actions": [
-    "After reset, resume from the documented playerv2-phoenix recon/enum artifacts and decide whether to continue enum only with a new evidence path or pivot into early vuln analysis."
+    "Resume with timing-based physical enum on the tty1 race window or pivot into early vuln analysis from the documented exposure pattern"
   ],
   "files": [
     "engagements/playerv2-phoenix/recon/recon-summary.md",
-    "engagements/playerv2-phoenix/enum/enum-summary.md",
-    "engagements/playerv2-phoenix/registers/findings-register.md"
+    "engagements/playerv2-phoenix/enum/enum-summary.md"
   ],
   "branch": "main",
-  "head_before": "a87a9db",
+  "head_before": "66b4c9e",
   "git_status_before": [
     " M engagements/playerv2-phoenix/pre-engagement/engagement-charter.md",
     " M engagements/playerv2-phoenix/pre-engagement/scope-and-roe.md",
@@ -50,11 +49,19 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json",
     "?? engagements/playerv2-phoenix/enum/enum-evidence-index.md",
-    "?? engagements/playerv2-phoenix/enum/enum-summary.md",
-    "?? engagements/playerv2-phoenix/enum/live/",
+    "?? engagements/playerv2-phoenix/enum/live/api-linkage-2026-04-27_1834.txt",
+    "?? engagements/playerv2-phoenix/enum/live/fulltcp-refresh-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/network-enum-2026-04-27_1827.txt",
+    "?? engagements/playerv2-phoenix/enum/live/revalidate-known-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/revalidate-known-retry-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/revalidate-udp-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/revalidate-udp-retry-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/rpcinfo-2026-04-27_1829.txt",
+    "?? engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-27_1834.txt",
+    "?? engagements/playerv2-phoenix/enum/live/udp-enum-2026-04-27_1832.txt",
+    "?? engagements/playerv2-phoenix/enum/live/udp-followup-2026-04-27_1842.txt",
     "?? engagements/playerv2-phoenix/exploit/",
     "?? engagements/playerv2-phoenix/post-exploit/",
-    "?? engagements/playerv2-phoenix/recon/recon-summary.md",
     "?? engagements/playerv2-phoenix/registers/asset-register.md",
     "?? engagements/playerv2-phoenix/reporting/",
     "?? engagements/playerv2-phoenix/reports/",
