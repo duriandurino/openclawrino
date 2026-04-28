@@ -1,0 +1,4 @@
+# Nmap 7.95 scan initiated Tue Apr 28 13:45:22 2026 as: /usr/lib/nmap/nmap --privileged -Pn -n --disable-arp-ping --script ssh2-enum-algos,ssh-hostkey -p 22 -oA engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-28 192.168.1.70
+Host: 192.168.1.70 ()	Status: Up
+Host: 192.168.1.70 ()	Ports: 22/open/tcp//ssh///
+# Nmap done at Tue Apr 28 13:45:23 2026 -- 1 IP address (1 host up) scanned in 1.22 seconds

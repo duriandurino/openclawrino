@@ -1,0 +1,4 @@
+# Nmap 7.95 scan initiated Tue Apr 28 13:45:27 2026 as: /usr/lib/nmap/nmap --privileged -Pn -n --disable-arp-ping --script rpcinfo -p 111 -oA engagements/playerv2-phoenix/enum/live/rpc-script-2026-04-28 192.168.1.70
+Host: 192.168.1.70 ()	Status: Up
+Host: 192.168.1.70 ()	Ports: 111/open/tcp//rpcbind//2-4 (RPC #100000)/
+# Nmap done at Tue Apr 28 13:45:28 2026 -- 1 IP address (1 host up) scanned in 0.47 seconds

@@ -1,0 +1,47 @@
+# Enum Summary
+
+- Enumeration is now justified based on completed recon for both the API and local device surfaces
+- Confirmed starting points for enum:
+  - API target: `https://dev-api.n-compass.online`
+  - device hostname: `raspberry`
+  - device IPv4: `192.168.1.70`
+  - device link-local IPv6: `fe80::2ecf:67ff:fe04:bd1`
+  - alternate local consoles: tty2 and tty3 with `raspberry login:` visible
+  - trust-related services exposed by failure state: `hardware-check.service` and `vault-mount.service`
+- Current enum objective: validate remote reachability, confirm exposed management/services, and turn the device-side trust-path clues into a concrete service and behavior inventory
+- Important network note: operator VM is on Wi-Fi SSID `NTV360_5GHz`, but the player Raspberry Pi's connected Wi-Fi / SSID is still unknown, so same-network assumptions must be validated instead of assumed
+- First live enum results confirm that network access is viable:
+  - `192.168.1.70` is reachable from the operator VM
+  - `22/tcp` is open and running `OpenSSH 10.0p2 Debian 7+deb13u2`
+  - `111/tcp` is also open and identified as `rpcbind` version `2-4` on the Pi
+  - UDP validation adds `111/udp` and `5353/udp` as confirmed open services, with `5353/udp` identified as mDNS / Zeroconf
+  - targeted follow-up reclassified `137/udp` and `1900/udp` as closed on the Pi, so they should be removed from the active candidate list for this host
+  - `123/udp` looked `open|filtered` in a fast pass but validated as closed in the targeted follow-up, so it should not enter the confirmed inventory
+  - SSH authentication is enforced and currently denies access without valid credentials
+  - full TCP sweep currently shows only `22/tcp` and `111/tcp` open on the Pi, with the remaining tested TCP ports reset/closed
+  - the exposed `rpcbind` service is a meaningful new lead because it can indicate additional RPC/NFS-style local service dependencies even when only a small port set is externally visible
+  - follow-up RPC validation currently shows only the portmapper itself registered across IPv4 and IPv6, with no NFS exports or additional RPC programs proven from this pass
+  - SSH deep fingerprinting confirms a modern OpenSSH configuration offering `publickey,password` authentication and host keys for RSA, ECDSA, and ED25519
+- Parallel API-side enum shows `dev-api.n-compass.online` is externally hosted behind AWS infrastructure:
+  - HTTP response body: `This is N-Compass TV.`
+  - HTTP header exposes `Server: awselb/2.0`
+  - DNS currently resolves to AWS public addresses `54.210.39.233` and `54.205.199.192`
+  - TLS certificate subject is `CN=n-compass.online`
+  - root-like paths such as `/`, `/health`, `/healthz`, `/status`, `/graphql`, and `/.well-known/security.txt` all return the same plain-text body through the ELB
+  - `/api`, `/api/health`, and `/api/v1` return `404 Not Found` with `Server: Kestrel`, which is useful evidence that a backend application exists behind the load balancer even though the exposed public surface stays minimal
+- Live revalidation on 2026-04-28 confirms the host is still reachable at `192.168.1.70`, but normal same-subnet Nmap discovery was initially misleading until ARP-based host discovery was disabled with `-Pn -n --disable-arp-ping`; this means future scans on this segment should avoid trusting default local discovery behavior without a manual sanity check
+- Fresh TCP/UDP validation reconfirms the externally visible device inventory as:
+  - `22/tcp` OpenSSH 10.0p2 Debian 7+deb13u2
+  - `111/tcp` rpcbind
+  - `111/udp` rpcbind
+  - `5353/udp` mDNS / Zeroconf
+- Manual socket validation also reconfirmed that `22/tcp` and `111/tcp` are accepting connections even when the first Nmap passes incorrectly said the host was down
+- SSH algorithm enumeration shows a modern OpenSSH posture with post-quantum-hybrid and Curve25519 KEX support, RSA/ECDSA/ED25519 host-key algorithms, and no obvious weak legacy crypto exposed in this surface check
+- RPC revalidation still shows only the portmapper itself registered over IPv4 and IPv6, with no additional RPC programs proven from this pass
+- mDNS service-discovery follow-up returns only a generic `workstation` advertisement mapped to `192.168.1.70` and `fe80::2ecf:67ff:fe04:bd1`, which supports host presence but does not yet expose a richer service profile
+- Current interpretation: the Raspberry Pi player and the cloud API are likely related operationally, but direct trust-path linkage is not yet proven only from these enum signals
+- Current network picture suggests a deliberately sparse device surface, with SSH, rpcbind, and local-service-discovery signals exposed while the cloud endpoint presents a thin ELB front with a Kestrel-backed application visible only indirectly through selected 404 responses
+- Passive local-network correlation is partially blocked from this chat runtime because elevated packet capture is unavailable here, so stronger mDNS or outbound-flow proof will require either a local privileged capture or physical-on-device observation
+- Immediate enum follow-up should now pivot into one of two evidence-backed paths:
+  - physical enumeration using the exposed TTY behavior and named services to convert the local console foothold into validated host-side evidence
+  - careful SSH-side user/auth surface enumeration without brute force, for example banner-safe username or auth-method characterization only if it stays inside ROE

@@ -1,0 +1,4 @@
+# Nmap 7.95 scan initiated Tue Apr 28 13:45:31 2026 as: /usr/lib/nmap/nmap --privileged -Pn -n --disable-arp-ping -sU --script dns-service-discovery -p 5353 -oA engagements/playerv2-phoenix/enum/live/mdns-discovery-2026-04-28 192.168.1.70
+Host: 192.168.1.70 ()	Status: Up
+Host: 192.168.1.70 ()	Ports: 5353/open/udp//zeroconf///
+# Nmap done at Tue Apr 28 13:45:32 2026 -- 1 IP address (1 host up) scanned in 0.44 seconds

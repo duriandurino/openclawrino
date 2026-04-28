@@ -1,0 +1,4 @@
+# Nmap 7.95 scan initiated Tue Apr 28 13:44:57 2026 as: /usr/lib/nmap/nmap --privileged -Pn -n --disable-arp-ping -sS -sV --version-light --reason -p 22,111 -oA engagements/playerv2-phoenix/enum/live/revalidate-known-noarp-2026-04-28 192.168.1.70
+Host: 192.168.1.70 ()	Status: Up
+Host: 192.168.1.70 ()	Ports: 22/open/tcp//ssh//OpenSSH 10.0p2 Debian 7+deb13u2 (protocol 2.0)/, 111/open/tcp//rpcbind///
+# Nmap done at Tue Apr 28 13:45:03 2026 -- 1 IP address (1 host up) scanned in 6.53 seconds
