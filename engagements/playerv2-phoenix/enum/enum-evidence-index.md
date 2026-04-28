@@ -1,0 +1,68 @@
+# Enum Evidence Index
+
+- Recon handoff evidence feeding enum:
+  - confirmed in-scope API target `https://dev-api.n-compass.online`
+  - observed device hostname `raspberry`
+  - observed device IPv4 `192.168.1.70`
+  - observed device link-local IPv6 `fe80::2ecf:67ff:fe04:bd1`
+  - tty2 / tty3 login prompts showing `raspberry login:`
+  - lockout-screen service names:
+    - `hardware-check.service`
+    - `vault-mount.service`
+  - operator VM Wi-Fi SSID: `NTV360_5GHz`
+  - player Raspberry Pi Wi-Fi / SSID: unknown
+- Live network enum evidence:
+  - reproducibility anchor commands used for this phase included:
+    - `ping -c 2 192.168.1.70`
+    - `nmap -Pn -sS -sV --version-light --reason -p 22,111 192.168.1.70`
+    - `nmap -Pn -sU -sV --version-light --reason -p 111,5353 192.168.1.70`
+    - `nmap -Pn -p- --min-rate 2000 --reason 192.168.1.70`
+    - `rpcinfo -p 192.168.1.70`
+    - `showmount -e 192.168.1.70`
+    - `ssh -v pi@192.168.1.70`
+  - VM interface observed at `192.168.1.63/24`
+  - default route observed via `192.168.1.1`
+  - `ping` to `192.168.1.70` succeeded
+  - `22/tcp` reachable from VM
+  - `111/tcp` reachable from VM and identified as `rpcbind 2-4`
+  - UDP scan confirmed `111/udp` open (`rpcbind`) and `5353/udp` open (`mDNS / Zeroconf`)
+  - initial UDP scan showed `137/udp` and `1900/udp` as `open|filtered`, but targeted follow-up reclassified both as closed on the Pi
+  - targeted UDP follow-up showed `123/udp`, `138/udp`, `161/udp`, `500/udp`, `514/udp`, `520/udp`, `631/udp`, and `2049/udp` closed in the tested set
+  - `rpcinfo` over TCP and UDP returned only portmapper registrations for program `100000` on IPv4 and IPv6
+  - `showmount -e 192.168.1.70` did not prove any NFS export and returned `RPC: Program not registered`
+  - Nmap `rpcinfo` script confirmed only rpcbind registrations on `111/tcp` and `111/udp`
+  - SSH auth attempt reached the service and returned `Permission denied (publickey,password)`
+  - SSH deep auth probe confirmed the server offers only `publickey,password` authentication
+  - Nmap service detection identified `OpenSSH 10.0p2 Debian 7+deb13u2`
+  - SSH host keys collected for RSA, ECDSA, and ED25519; live server ED25519 fingerprint observed as `SHA256:f5nBmi+sxxYZp97a/1RmssO4LlHMP+oWB9Th3iPxpU0`
+  - full TCP sweep showed only `22/tcp` and `111/tcp` open with the rest of tested TCP ports closed/reset
+  - passive packet capture attempt from this runtime was blocked because elevated capture is unavailable on the current Telegram direct session
+  - targeted NetBIOS and SSDP follow-up did not validate Pi responses; observed SSDP chatter came from other LAN devices instead, including LG webOS devices at `192.168.1.37` and a media-renderer-like device at `192.168.1.141`
+  - live raw captures saved at `engagements/playerv2-phoenix/enum/live/network-enum-2026-04-27_1827.txt`, `engagements/playerv2-phoenix/enum/live/rpcinfo-2026-04-27_1829.txt`, `engagements/playerv2-phoenix/enum/live/udp-enum-2026-04-27_1832.txt`, `engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-27_1834.txt`, and `engagements/playerv2-phoenix/enum/live/udp-followup-2026-04-27_1842.txt`
+- API-side enum evidence:
+  - reproducibility anchor commands used for this phase included:
+    - `curl -I https://dev-api.n-compass.online`
+    - `curl -sk https://dev-api.n-compass.online/`
+    - repeated `curl -sk -D -` checks across `/`, `/health`, `/healthz`, `/status`, `/graphql`, `/.well-known/security.txt`, `/api`, `/api/health`, and `/api/v1`
+  - `curl -I` to `https://dev-api.n-compass.online` returned `HTTP/1.1 200 OK`
+  - header exposed `Server: awselb/2.0`
+  - response body returned `This is N-Compass TV.`
+  - DNS resolved to `54.210.39.233` and `54.205.199.192`
+  - IPv6 addresses observed for the API hostname
+  - TLS certificate subject `CN=n-compass.online`, issued by Amazon RSA 2048 M04
+  - both AWS IPs responded with `80/tcp` and `443/tcp` open
+  - root-like probe paths `/`, `/health`, `/healthz`, `/status`, `/graphql`, and `/.well-known/security.txt` all returned the same `200 OK` plain-text body through the ELB
+  - `/api`, `/api/health`, and `/api/v1` returned `404 Not Found` with `Server: Kestrel`, indicating a reachable backend application tier behind the ELB
+  - per-IP `--resolve` checks against both AWS A records behaved consistently with the hostname
+  - live raw capture saved at `engagements/playerv2-phoenix/enum/live/api-linkage-2026-04-27_1834.txt`
+- Related prior lead to verify later on this target, not yet confirmed live for Phoenix:
+  - prior `hardwarelockv2` work identified `/etc/nctv-phoenix/hardware-lock.env` as part of the authorization path
+  - for Phoenix enum planning, treat this file as a potential trust-path artifact and possible trap / honeypot candidate until verified on the live target
+  - do not treat the file path or any presumed contents as confirmed Phoenix evidence until directly observed on this engagement
+- Enum evidence quality note:
+  - the device and API now each have validated surface evidence, but the exact application-level relationship between them remains to be proven
+  - `rpcbind` is now confirmed live on the device, but no NFS or other higher RPC service mapping has been proven yet from this pass
+  - current RPC evidence points to a minimal externally visible binder rather than a clearly exposed file-sharing or mount service
+  - `mDNS` is now a validated local-network signal worth correlating later with passive discovery traffic or hostname/service advertisements
+  - the cloud endpoint now shows a stronger hint of an ASP.NET / Kestrel-backed application behind the ELB, but still no direct binding evidence to the specific Pi
+  - the strongest next proof path is now likely physical or on-device observation rather than more blind network-only probing from this vantage point

@@ -1,5 +1,46 @@
 # Enum Summary
 
+## Reproducibility Notes
+
+The enum phase should be readable as both a summary and a replay guide.
+
+Where evidence already exists, the commands below reflect the actual tool choices and command patterns used to validate the current network picture. If you rerun them from the same network position, you should expect broadly similar results unless the target state has changed.
+
+### Core device-reachability and service-validation commands
+
+```bash
+ping -c 2 192.168.1.70
+nmap -Pn -sS -sV --version-light --reason -p 22,111 192.168.1.70
+nmap -Pn -sU -sV --version-light --reason -p 111,5353 192.168.1.70
+nmap -Pn -p- --min-rate 2000 --reason 192.168.1.70
+rpcinfo -p 192.168.1.70
+showmount -e 192.168.1.70
+ssh -v pi@192.168.1.70
+```
+
+### Revalidation commands used after misleading local discovery behavior
+
+```bash
+nmap --privileged -Pn -n --disable-arp-ping -sS -sV --version-light --reason -p 22,111 -oA engagements/playerv2-phoenix/enum/live/revalidate-known-noarp-2026-04-28 192.168.1.70
+nmap --privileged -Pn -n --disable-arp-ping -sU -sV --version-light --reason -p 111,5353 -oA engagements/playerv2-phoenix/enum/live/revalidate-udp-noarp-2026-04-28 192.168.1.70
+nmap --privileged -Pn -n --disable-arp-ping --script ssh2-enum-algos,ssh-hostkey -p 22 -oA engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-28 192.168.1.70
+nmap --privileged -Pn -n --disable-arp-ping --script rpcinfo -p 111 -oA engagements/playerv2-phoenix/enum/live/rpc-script-2026-04-28 192.168.1.70
+nmap --privileged -Pn -n --disable-arp-ping -sU --script dns-service-discovery -p 5353 -oA engagements/playerv2-phoenix/enum/live/mdns-discovery-2026-04-28 192.168.1.70
+```
+
+### Core API-side enumeration commands
+
+```bash
+curl -I https://dev-api.n-compass.online
+curl -sk https://dev-api.n-compass.online/
+for path in / /health /healthz /status /graphql /.well-known/security.txt /api /api/health /api/v1; do
+  printf "\n=== %s ===\n" "$path"
+  curl -sk -D - "https://dev-api.n-compass.online$path" -o /dev/null
+  curl -sk "https://dev-api.n-compass.online$path"
+  printf "\n"
+done
+```
+
 - Enumeration is now justified based on completed recon for both the API and local device surfaces
 - Confirmed starting points for enum:
   - API target: `https://dev-api.n-compass.online`
@@ -11,6 +52,8 @@
 - Current enum objective: validate remote reachability, confirm exposed management/services, and turn the device-side trust-path clues into a concrete service and behavior inventory
 - Important network note: operator VM is on Wi-Fi SSID `NTV360_5GHz`, but the player Raspberry Pi's connected Wi-Fi / SSID is still unknown, so same-network assumptions must be validated instead of assumed
 - First live enum results confirm that network access is viable:
+  - `ping -c 2 192.168.1.70` succeeded from the operator VM
+  - `ssh -v pi@192.168.1.70` reached the SSH service and failed only at authentication
   - `192.168.1.70` is reachable from the operator VM
   - `22/tcp` is open and running `OpenSSH 10.0p2 Debian 7+deb13u2`
   - `111/tcp` is also open and identified as `rpcbind` version `2-4` on the Pi
@@ -30,6 +73,7 @@
   - root-like paths such as `/`, `/health`, `/healthz`, `/status`, `/graphql`, and `/.well-known/security.txt` all return the same plain-text body through the ELB
   - `/api`, `/api/health`, and `/api/v1` return `404 Not Found` with `Server: Kestrel`, which is useful evidence that a backend application exists behind the load balancer even though the exposed public surface stays minimal
 - Live revalidation on 2026-04-28 confirms the host is still reachable at `192.168.1.70`, but normal same-subnet Nmap discovery was initially misleading until ARP-based host discovery was disabled with `-Pn -n --disable-arp-ping`; this means future scans on this segment should avoid trusting default local discovery behavior without a manual sanity check
+  - practical replay note: the strongest reproducer here is the saved no-ARP command pattern, for example `nmap --privileged -Pn -n --disable-arp-ping -sS -sV --version-light --reason -p 22,111 192.168.1.70`
 - Fresh TCP/UDP validation reconfirms the externally visible device inventory as:
   - `22/tcp` OpenSSH 10.0p2 Debian 7+deb13u2
   - `111/tcp` rpcbind
