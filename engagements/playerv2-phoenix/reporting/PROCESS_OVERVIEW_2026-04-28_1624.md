@@ -99,17 +99,35 @@ This phase started with simple observation rather than aggressive testing. The t
 
 During this stage, the following operator actions were important:
 - observed the device's restricted or wrong-device state directly
-- switched virtual consoles to see whether the lockout screen fully isolated the system
+- asked OpenClaw what keys to try next instead of randomly pressing keys
+- followed the suggested virtual-console tests using `Ctrl+Alt+F1` through `Ctrl+Alt+F6`
 - watched the startup sequence for timing gaps
 - pressed keys during boot to see whether the normal path could be interrupted
 - asked OpenClaw to help organize and interpret the growing set of observations
+
+One of the most important recon moments happened when the tester followed the suggested TTY shortcut checks.
+
+The process went like this:
+- the tester first tried the virtual-console shortcuts suggested during the session
+- `Ctrl+Alt+F2` worked and exposed a different console from the main wrong-device screen
+- `Ctrl+Alt+F3` also worked and exposed the same style of console output
+- `Ctrl+Alt+F1` returned to the original wrong-device or main screen
+- follow-up checks later showed that the same pattern extended through `tty4`, `tty5`, and `tty6`
+
+What was actually shown on the exposed consoles was important:
+- `Debian GNU/Linux 13 raspberry tty2`
+- `Debian GNU/Linux 13 raspberry tty3`
+- `My IP address is 192.168.1.70`
+- `raspberry login:`
+
+This was not just a cosmetic display difference. It was the first clear sign that the restricted front-screen did not fully isolate the underlying system consoles.
 
 Important live observations from recon included:
 - hostname exposed locally: `raspberry`
 - operating system banner exposed locally: `Debian GNU/Linux 13`
 - IPv4 address exposed locally: `192.168.1.70`
 - link-local IPv6 observed: `fe80::2ecf:67ff:fe04:bd1`
-- visible alternate console sessions included `tty2` and `tty3`
+- visible alternate console sessions initially confirmed on `tty2` and `tty3`, then later confirmed through `tty6`
 - failure-state references included `hardware-check.service` and `vault-mount.service`
 
 A particularly important step in this phase was testing the boot interaction window.
@@ -141,7 +159,13 @@ Concrete local observations that carried into enumeration included:
 - device hostname: `raspberry`
 - device IPv4: `192.168.1.70`
 - device link-local IPv6: `fe80::2ecf:67ff:fe04:bd1`
-- visible login consoles: `tty2` and `tty3` with `raspberry login:`
+- visible login consoles: `tty2` and `tty3` first, then later confirmed across `tty2` through `tty6`
+- text exposed on the alternate consoles included:
+  - `Debian GNU/Linux 13 raspberry tty2`
+  - `Debian GNU/Linux 13 raspberry tty3`
+  - `My IP address is 192.168.1.70`
+  - `raspberry login:`
+- `Ctrl+Alt+F1` returned the tester to the wrong-device prompt on the main console
 - transient `tty1` shell prompt: `pi@raspberry`
 - boot-stage messages:
   - `Completed socket interaction for boot stage config`
@@ -275,7 +299,9 @@ The following tools and methods supported the assessment.
 The tester directly observed the target screen, changed consoles, and interacted with the keyboard during boot.
 
 Examples of actions taken:
-- switched to alternate TTY consoles
+- asked OpenClaw for likely console and boot-interaction keys to test
+- switched to alternate TTY consoles using `Ctrl+Alt+F2`, `Ctrl+Alt+F3`, and later confirmed the same pattern through `F6`
+- used `Ctrl+Alt+F1` to return to the main wrong-device console
 - pressed **F1** during early startup
 - observed lockout, wrong-device, and startup-stage transitions
 - noted behavior associated with **Ctrl+Alt+Esc**
@@ -346,7 +372,12 @@ By the current stage of the engagement, the following observations had already b
 - OS banner shown locally: `Debian GNU/Linux 13`
 - IPv4 shown locally: `192.168.1.70`
 - IPv6 link-local shown locally: `fe80::2ecf:67ff:fe04:bd1`
-- `tty2` and `tty3` showed `raspberry login:`
+- `Ctrl+Alt+F2` exposed `Debian GNU/Linux 13 raspberry tty2`
+- `Ctrl+Alt+F3` exposed `Debian GNU/Linux 13 raspberry tty3`
+- the exposed consoles displayed `My IP address is 192.168.1.70`
+- `tty2` through `tty6` were later confirmed to show the same exposed login-surface pattern
+- `Ctrl+Alt+F1` returned to the wrong-device prompt on the main console
+- exposed alternate consoles displayed `raspberry login:`
 - `tty1` briefly showed `pi@raspberry`
 - boot-stage messages included:
   - `Completed socket interaction for boot stage config`
