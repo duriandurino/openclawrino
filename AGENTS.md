@@ -340,6 +340,38 @@ engagements/<target-name>/<phase>/
 - Sub-agents must NOT create ad-hoc directories outside the engagement structure
 - After task completion, commit and push changes (or ask the orchestrator to if sandbox-restricted)
 
+### Process Documentation Depth Rule (REQUIRED)
+
+For pentest engagements, documentation must be detailed enough that a later `PROCESS_OVERVIEW` can be written from the engagement record without guessing.
+
+Required behavior across **all phases** including pre-engagement, recon, enum, vuln, exploit, post-exploit, and reporting:
+- document the **actual process**, not just the conclusion
+- include the real sequence where relevant:
+  - what the user/operator asked
+  - what the assistant or sub-agent suggested
+  - what was tried
+  - what worked or failed
+  - what appeared on screen or in output
+  - what exact observation changed the next step
+- preserve concrete details when safely possible:
+  - exact keys pressed
+  - exact prompts, banners, IPs, hostnames, paths, and visible text
+  - actual commands, flags, and tool choices that materially affected the result
+  - whether OpenClaw assistance was requested and for what
+- avoid reducing process logs to shallow summaries like "did this, found this"
+- keep it detailed but still readable, not overloaded with raw tool dump noise
+
+Pre-engagement documentation must also capture the real intake path when relevant, for example:
+- the user started via `/pentest <target>`
+- the Assigned Penetration Tester fill-up block was requested
+- the client form was spawned
+- the client filled it up
+- the form was ingested into the engagement docs
+
+Rule of thumb:
+- If a future reader asks, "How exactly did you get to that observation?", the engagement docs should already answer it.
+- If a later `PROCESS_OVERVIEW` would have to invent missing process steps, the phase documentation was too shallow.
+
 ### File Naming Convention (REQUIRED)
 
 **Every pentest engagement MUST follow this naming structure:**
