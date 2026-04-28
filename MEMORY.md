@@ -58,6 +58,7 @@
 - Quick scans are not complete until published outputs are generated, retrieved, and sent back to the user.
 - Published quick-scan links must be retrieved with `scripts/quick-scan/get_publish_links.py`, not copied manually from logs or memory.
 - PPT generation was improved to scale with findings, so slide decks can expand beyond a near-fixed length when the evidence warrants it.
+- Pentest PPT pagination/continuation logic was strengthened after a real overflow case: content slides now use paragraph-aware continuation, two-column/remediation slides paginate separately, and finding-slide budgeting is stricter to avoid clipped output.
 - On 2026-04-13, non-interactive gog publishing was re-verified with `GOG_KEYRING_PASSWORD=hatlesswhite`, and the final quick-scan publish summary output was cleaned so the links block is emitted once with correct docs/PDF/slides/drive mapping.
 - User preference reinforced on 2026-04-14: for report-capable workflows, publishing should be automatic and prioritized by default, without waiting for an extra confirmation, unless the user explicitly says not to publish.
 
