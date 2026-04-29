@@ -110,6 +110,7 @@ done
 - Current interpretation for this network delta:
   - the earlier validated inventory should still be preserved as real earlier state
   - the newest rerun should be preserved as a separate later state showing a more filtered or less reachable posture
+  - a partial restart-window capture was also attempted during operator reboot activity, but only the first cycle was preserved; that captured cycle still matched the newer filtered posture rather than the older open-SSH/open-rpcbind state
   - do not flatten these into a single timeless conclusion, because the target appears to have changed behavior over time or across runtime states
 - New physical enum evidence from 2026-04-28 and later photo captures shows that the short-lived `tty1` exposure was previously not only a login banner but could momentarily present an interactive shell prompt as `pi@raspberry` before the lockout path resumed
 - Current follow-up behavior has shifted: the operator now reports that the `tty1` shell exposure is no longer appearing, with only the OS GUI showing during that window despite no intentional change to the device

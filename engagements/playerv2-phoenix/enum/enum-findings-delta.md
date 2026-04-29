@@ -34,4 +34,12 @@
     - `111/udp` now `open|filtered`
     - `5353/udp` now `open|filtered`
     - `ssh-keyscan` returned no host keys at that moment
-  - current interpretation: the target's network state appears to have changed or become more filtered compared with the earlier validated `open` service inventory, so both time-stamped states should be preserved rather than flattened into a single timeless conclusion
+  - a later restart-window attempt on the same day preserved only the first cycle rather than the intended full reboot timeline, but that first captured cycle still matched the newer filtered posture:
+    - `ping` lost 100%
+    - host still up under `-Pn`
+    - `22/tcp` filtered
+    - `111/tcp` filtered
+    - `111/udp` open|filtered
+    - `5353/udp` open|filtered
+    - `1883/tcp` timed out
+  - current interpretation: the target's network state appears to have changed or become more filtered compared with the earlier validated `open` service inventory, and the partial restart-window attempt did not yet catch a transient return to the earlier open state, so both time-stamped states should be preserved rather than flattened into a single timeless conclusion

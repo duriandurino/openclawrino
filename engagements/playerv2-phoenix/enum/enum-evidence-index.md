@@ -74,6 +74,26 @@
     - `5353/udp` -> `open|filtered`
     - `ssh-keyscan` returned no host keys
     - raw connect test to `1883/tcp` timed out
+  - partial restart-window capture artifact:
+    - `engagements/playerv2-phoenix/enum/live/restart-window-2026-04-29/restart-window-2026-04-29_143255.txt`
+  - intended restart-window command pattern (focused on catching transient exposure during reboot):
+    - repeated `ping -c 1 -W 1 192.168.1.70`
+    - repeated `nmap --privileged -Pn -n --disable-arp-ping -sS --reason -p 22,111 192.168.1.70`
+    - repeated `nmap --privileged -Pn -n --disable-arp-ping -sU --reason -p 111,5353 192.168.1.70`
+    - repeated `ssh-keyscan -T 3 192.168.1.70`
+    - repeated raw `1883/tcp` connect checks using `nc`
+  - actual restart-window artifact quality:
+    - only the first cycle was preserved, so this is a partial capture and not a full reboot timeline
+    - the failure to preserve the full loop is part of the evidence record and should not be hidden
+  - first captured restart-window cycle at `2026-04-29T14:32:55+08:00` showed:
+    - `ping` -> 100% packet loss
+    - host still up under `-Pn`
+    - `22/tcp` -> `filtered`
+    - `111/tcp` -> `filtered`
+    - `111/udp` -> `open|filtered`
+    - `5353/udp` -> `open|filtered`
+    - no visible SSH key material in the captured chunk
+    - `1883/tcp` -> timed out
 - API-side enum evidence:
   - reproducibility anchor commands used for this phase included:
     - `curl -I https://dev-api.n-compass.online`
