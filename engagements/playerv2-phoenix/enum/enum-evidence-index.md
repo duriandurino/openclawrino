@@ -99,6 +99,10 @@
     - `curl -I https://dev-api.n-compass.online`
     - `curl -sk https://dev-api.n-compass.online/`
     - repeated `curl -sk -D -` checks across `/`, `/health`, `/healthz`, `/status`, `/graphql`, `/.well-known/security.txt`, `/api`, `/api/health`, and `/api/v1`
+    - later deeper rerun across `/swagger`, `/swagger-json`, `/api-json`, `/openapi.json`, `/graphiql`, and `/playground`, saved in `engagements/playerv2-phoenix/enum/live/api-deep-rerun-2026-04-29.txt`
+    - reusable helpers:
+      - `bash scripts/enum/web/enum_graphql_basic.sh --target https://dev-api.n-compass.online --engagement playerv2-phoenix --safe`
+      - `bash scripts/enum/web/enum_nestjs_api.sh --target https://dev-api.n-compass.online --engagement playerv2-phoenix --safe`
   - `curl -I` to `https://dev-api.n-compass.online` returned `HTTP/1.1 200 OK`
   - header exposed `Server: awselb/2.0`
   - response body returned `This is N-Compass TV.`
@@ -108,8 +112,17 @@
   - both AWS IPs responded with `80/tcp` and `443/tcp` open
   - root-like probe paths `/`, `/health`, `/healthz`, `/status`, `/graphql`, and `/.well-known/security.txt` all returned the same `200 OK` plain-text body through the ELB
   - `/api`, `/api/health`, and `/api/v1` returned `404 Not Found` with `Server: Kestrel`, indicating a reachable backend application tier behind the ELB
+  - later rerun showed `/api-json` also returned `404 Not Found` with `Server: Kestrel`
+  - later rerun showed `/graphql`, `/swagger`, `/swagger-json`, `/openapi.json`, `/graphiql`, and `/playground` still returned the same `200 OK` plain-text body `This is N-Compass TV.` through the ELB rather than a proven docs/UI/API surface
   - per-IP `--resolve` checks against both AWS A records behaved consistently with the hostname
   - live raw capture saved at `engagements/playerv2-phoenix/enum/live/api-linkage-2026-04-27_1834.txt`
+  - later deep rerun saved at `engagements/playerv2-phoenix/enum/live/api-deep-rerun-2026-04-29.txt`
+  - reusable helper summaries saved at:
+    - `engagements/playerv2-phoenix/enum/summaries/graphql-basic-https-dev-api-n-compass-online-2026-04-29_151910.md`
+    - `engagements/playerv2-phoenix/enum/summaries/nestjs-api-https-dev-api-n-compass-online-2026-04-29_151917.md`
+  - evidence caution:
+    - the GraphQL/NestJS helper outputs recorded endpoint-probe and docs/UI-style findings, but the manual response bodies did not prove working GraphQL, GraphiQL, Swagger UI, or an exposed OpenAPI spec
+    - for this engagement, treat those helper findings as route-probe/script heuristics only unless a later manual response proves real content behind them
 - Related prior lead to verify later on this target, not yet confirmed live for Phoenix:
   - prior `hardwarelockv2` work identified `/etc/nctv-phoenix/hardware-lock.env` as part of the authorization path
   - for Phoenix enum planning, treat this file as a potential trust-path artifact and possible trap / honeypot candidate until verified on the live target

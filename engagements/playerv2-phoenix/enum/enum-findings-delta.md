@@ -14,10 +14,14 @@
 - API-side enumeration strengthened the cloud picture:
   - `dev-api.n-compass.online` resolves to AWS infrastructure behind `awselb/2.0`
   - several root-like paths return the same `This is N-Compass TV.` response
-  - `/api`, `/api/health`, and `/api/v1` returned `404` from `Kestrel`, indicating a backend app tier exists behind the ELB
+  - later deeper reruns showed the same flat-response behavior even on pseudo-GraphQL and pseudo-doc routes such as `/graphql`, `/swagger`, `/swagger-json`, `/openapi.json`, `/graphiql`, and `/playground`
+  - `/api`, `/api/health`, `/api/v1`, and later `/api-json` returned `404` from `Kestrel`, indicating a backend app tier exists behind the ELB
+  - the current evidence still does not prove a live GraphQL endpoint, GraphiQL UI, Swagger UI, or exposed OpenAPI document on the public surface
 - Current enum interpretation remains careful:
   - the Pi and API are likely operationally related
   - the exact trust-path linkage between the specific Pi and the specific API surface is still unproven
+  - deeper API route probing increased confidence that the public surface is intentionally flattened or fronted rather than richly exposed, at least from the vantage and paths tested so far
+  - helper-script output must be reviewed against raw responses before promotion into findings, because the GraphQL/NestJS helper summaries over-signaled route hints that were not proven by the manual bodies in this run
 - Physical follow-up adds an important host-side constraint to enum understanding:
   - tty2 through tty6 remain exposed login surfaces in the failure state
   - tty1 remains the wrong-device prompt surface

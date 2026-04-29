@@ -12,6 +12,7 @@
     - `5353/udp` open|filtered
 - Treat `137/udp`, `1900/udp`, and `123/udp` as resolved non-findings for the current host unless fresh contradictory evidence appears
 - Keep the Pi/API relationship labeled as likely but unproven until a stronger shared identifier, outbound flow, config artifact, or on-device evidence ties them directly together
+- Treat further blind public-path spraying on the current API surface as lower-value unless a new host-side clue suggests specific routes, headers, tokens, hostnames, or request patterns
 - If privileged local capture becomes available later, use it to correlate mDNS advertisements and outbound `n-compass.online` traffic from `192.168.1.70`
 - Prioritize physical or on-device enum next, because the strongest remaining evidence path is no longer blind network expansion:
   - the network-side question is now partly a state-change question, not just a discovery question
@@ -31,4 +32,5 @@
   - no proven direct API trust binding yet
 - Script reuse note for later reporting and workflow review:
   - this enum round did use the reusable scripts/manifests layer, but the default fast-scan script path currently misses the previously learned no-ARP requirement for this LAN segment
+  - the API helper scripts also need analyst review because route-probe heuristics can overstate GraphQL/UI/docs findings when flat text responses exist on those paths
   - if this runner is meant to stay reusable for similar targets, the enum script layer should likely be improved later so it can optionally use `-Pn -n --disable-arp-ping` or a comparable host-discovery-safe profile when prior evidence justifies it
