@@ -56,3 +56,113 @@ For the network-supporting portions of recon, the later enum commands are the st
   - this suggests the Phoenix startup chain and the hardware-check path are linked by a systemd ordering-cycle condition, which may help explain why GUI or shell exposure can appear before the intended lockout path fully asserts, and why the `tty1` shell exposure is not consistently present on every boot
   - operator also relayed this exposure to the client for early defensive remediation; the current working theory is that `hardware-check.service` is starting after GUI / `tty1` exposure instead of before it, so the likely remediation path is service-order hardening
   - important engagement note: despite that early notice to the client, the current `playerv2-phoenix` version under test is expected to remain unchanged during this pentest, so findings and timing observations should continue to be treated as applying to the present build unless live evidence later shows otherwise
+- Major physical recon state change on 2026-04-29 came from a deliberate storage-presentation experiment suggested by the operator after earlier tty and wrong-device observations had reached a plateau:
+  - the operator inserted the same player microSD card into an external USB SD adapter and then connected that adapter to the Raspberry Pi instead of using the Pi's direct microSD slot
+  - this was not a theoretical question only; the operator then live-booted the player in that USB-presented configuration and reported the exact visible differences back through the session
+  - the device still showed the normal NTV startup logo, so the basic player boot chain still initiated in this mode
+  - however, the expected follow-on wrong-device takeover no longer asserted on `tty1`
+  - instead of progressing into the prior wrong-device / hardware-lock presentation, the system remained at the regular OS GUI and allowed local terminal access
+  - this was treated as a new local recon surface, not as proof of full application functionality
+- The operator then performed a structured low-risk local recon pass from that GUI/terminal state using commands provided in-session, specifically to answer four questions before attempting any decryption or service changes:
+  1. what block device and mount topology the Pi believed it had booted from
+  2. which Phoenix-related services were active, failed, or gated
+  3. which filesystem paths actually existed outside the vault
+  4. whether the lockout and vault path failed because of device identity assumptions rather than because the OS itself was broken
+- The first local recon command block and its actual observations were:
+  - `whoami` returned `pi`
+  - `hostnamectl` identified the host as `raspberry`, Debian GNU/Linux 13 (trixie), kernel `6.12.75+rpt-rpi-2712`, architecture `arm64`
+  - `lsblk -o NAME,SIZE,TYPE,FSTYPE,LABEL,UUID,MOUNTPOINTS` showed the live system booted from USB-presented storage as:
+    - `/dev/sda1` vfat `bootfs` mounted on `/boot/firmware`
+    - `/dev/sda2` ext4 `rootfs` mounted on `/`
+  - `mount` confirmed `/dev/sda2` on `/` and `/dev/sda1` on `/boot/firmware`
+  - `cat /proc/cmdline` still showed `root=PARTUUID=f1c38d58-02`, tying the live root selection to the same partition identity even though the runtime block device name was now `sda` instead of `mmcblk0`
+  - `lsusb` showed the attached reader as `Genesys Logic, Inc. SD Card Reader and Writer`
+  - `fdisk -l` confirmed a DOS-partitioned 29.72 GiB `/dev/sda` with:
+    - `/dev/sda1` 512 MiB FAT32 boot partition
+    - `/dev/sda2` 29.2 GiB Linux root partition
+- That block-device evidence materially changed the recon model:
+  - the same player image could boot through a USB mass-storage presentation path
+  - the player logic clearly distinguished between storage being visible as `mmcblk0` versus `sda`
+  - this made storage-interface-sensitive enforcement a live hypothesis, not just a theory
+- The second local recon block focused on service and path discovery. It used:
+  - `systemctl list-units --type=service --all | egrep -i 'phoenix|nctv|pulse|vault|hardware|lock|watchdog'`
+  - `systemctl --failed`
+  - `systemctl list-unit-files | egrep -i 'phoenix|nctv|pulse|vault|hardware|lock|watchdog'`
+  - targeted `find` commands under `/opt`, `/home`, and `/etc`
+- That service/path discovery showed:
+  - `hardware-check.service` was loaded but failed
+  - `nctv-player.service` was loaded and auto-restarting
+  - `nctv-watchdog.service` was active and running
+  - `vault-mount.service` was loaded but inactive
+  - `repairman.service` was also failing repeatedly
+  - live Phoenix-related paths outside the vault were concentrated at:
+    - `/opt/nctv-player`
+    - `/etc/nctv-phoenix/hardware-lock.env`
+    - `/etc/systemd/system/*.service` for Phoenix units
+    - `/home/pi/.config/nctv-player`
+    - `/home/pi/.config/pulse`
+- The next local evidence pass preserved the actual service definitions and environment file rather than only summarizing them. The operator read:
+  - `/etc/systemd/system/hardware-check.service`
+  - `/etc/systemd/system/vault-mount.service`
+  - `/etc/systemd/system/nctv-player.service`
+  - `/etc/systemd/system/nctv-watchdog.service`
+  - `/etc/systemd/system/nctv-phoenix.target`
+  - `/etc/nctv-phoenix/hardware-lock.env`
+- Those files established the real Phoenix trust chain:
+  - `hardware-check.service` runs `/usr/bin/python3 /usr/local/bin/hardware_lock.py` as root after the graphical stack is up and keeps its result as a oneshot gate inside `nctv-phoenix.target`
+  - `vault-mount.service` requires `hardware-check.service`, sleeps five seconds, then runs `/usr/bin/python3 /usr/local/bin/unlock_vault.py`, and only after that starts `nctv-player.service`
+  - `nctv-player.service` depends on `vault-mount.service` and launches the player as user `pi`
+  - `nctv-watchdog.service` runs `/usr/local/bin/nctv-watchdog.sh` continuously as root
+  - `nctv-phoenix.target` explicitly wants `hardware-check.service`, `vault-mount.service`, `nctv-watchdog.service`, and `nctv-player.service`
+  - `/etc/nctv-phoenix/hardware-lock.env` contained three high-value values:
+    - `AUTHORIZED_PI_SERIAL=b88cf165805f4640`
+    - `AUTHORIZED_SD_CID_SHA256=f120ac08939c4514541767fa12a6a79a846615180efa418f768d7ac4ab90dd00`
+    - `DB_KEY_SALT=e469844e287be1a478c240bb2b054134b07407f5c2c8c7ca80604233e72be795`
+- The decisive recon step was then to inspect live failure output from the services rather than guessing from unit names:
+  - `systemctl status hardware-check.service --no-pager -l`
+  - `systemctl status repairman.service --no-pager -l`
+  - `systemctl status vault-mount.service --no-pager -l`
+  - `journalctl -u hardware-check.service -b --no-pager -n 120`
+  - `journalctl -u repairman.service -b --no-pager -n 120`
+  - `journalctl -u vault-mount.service -b --no-pager -n 120`
+- Those logs proved the fail-open mechanism with exact runtime evidence:
+  - `hardware-check.service` repeatedly crashed with `FileNotFoundError: [Errno 2] No such file or directory: '/sys/block/mmcblk0/device/cid'`
+  - the traceback showed the failure originated in `/usr/local/bin/hardware_lock.py` while calling `read_cid()`
+  - `vault-mount.service` never unlocked the vault because its dependency on `hardware-check.service` failed, producing repeated `Dependency failed for vault-mount.service - Unlock and Mount NCTV Phoenix Vault.` messages
+  - `repairman.service` was also triggered repeatedly and logged `[repairman] repair source missing`
+- This is the key recon conclusion from the USB-presented boot experiment:
+  - the Phoenix enforcement chain assumes the authorized media will always appear as `/sys/block/mmcblk0/device/cid`
+  - when the exact same storage is presented through a USB adapter, that assumption breaks because the running system sees the storage as `/dev/sda` and no `mmcblk0` CID path exists
+  - instead of cleanly detecting alternate presentation and failing closed at the local user interface boundary, the hardware-check service crashes, the vault gate never opens, and the operator is left with accessible local GUI/terminal state
+- The operator then continued with read-only code inspection of the controlling scripts to preserve how the trust logic actually works. The inspected files were:
+  - `/usr/local/bin/hardware_lock.py`
+  - `/usr/local/bin/unlock_vault.py`
+  - `/usr/local/bin/repairman.sh`
+  - `/usr/local/bin/nctv-watchdog.sh`
+- Those scripts refined the recon model further:
+  - `hardware_lock.py` reads the Pi serial from `/proc/cpuinfo`, reads the SD CID only from `/sys/block/mmcblk0/device/cid`, loads expected values from `/etc/nctv-phoenix/hardware-lock.env`, and if a serial or SD CID mismatch is found it stops `nctv-player.service`, stops `lightdm.service`, stops `getty@tty1.service`, writes a wrong-device banner to `/dev/tty1`, switches to `tty1`, and loops trying to keep the lock screen visible
+  - `unlock_vault.py` also hardcodes `/sys/block/mmcblk0/device/cid`, reads the same env file, verifies the actual serial and hashed CID against the expected values, and derives:
+    - a vault unlock key as `sha256(expected_serial + ':' + expected_cid_hash)` raw digest bytes
+    - a database key as `sha256(expected_serial + ':' + expected_cid_hash + ':' + DB_KEY_SALT)` raw digest bytes
+  - `unlock_vault.py` expects the encrypted vault image at `/var/lib/nctv-phoenix/vault.img`, mounts it at `/mnt/nctv-phoenix-secure`, and bind-mounts secure runtime directories back onto:
+    - `/opt/nctv-player`
+    - `/var/lib/nctv-player`
+    - `/home/pi/.config/nctv-player`
+    - `/usr/share/doc/nctv-player` (optional)
+  - `repairman.sh` contains a real recovery flow for restoring the main SD layout from an external repair source and also contains a special `emergency_standalone_mode` path when `/dev/mmcblk0` is absent, which starts standalone player-server/player-chromium components if the expected repair source is not in place
+  - `nctv-watchdog.sh` continuously checks whether critical Phoenix directories exist and, if they do not, touches `/run/nctv-phoenix-repair-needed` and starts `repairman.service`
+- Additional read-only filesystem inspection then confirmed the current post-failure layout:
+  - `/var/lib/nctv-phoenix/vault.img` exists as a 2 GiB LUKS2 encrypted file
+  - `cryptsetup luksDump` identified UUID `58a2a481-a39b-4305-8f15-4f20fa1e7d3f`, AES-XTS-plain64, sector size 4096, and one active keyslot using Argon2id
+  - `/var/lib/nctv-player` existed but was effectively empty in this mode, consistent with bind mounts never activating because `vault-mount.service` was dependency-blocked
+  - `/usr/share/doc/nctv-player` also existed only as the base directory, again consistent with the secure bind-mount stage never completing
+- Package metadata added one more useful recon conclusion:
+  - the Debian package installs the Electron runtime and launcher under `/opt/nctv-player`, but the secure writable application state is expected to be populated dynamically through the vault bind-mount process, not by plain packaged files alone
+  - this explains why direct inspection of `/opt/nctv-player` from the USB-booted failure state did not expose the richer runtime content expected during a successful authorized boot
+- A final read-only attempt to inspect the packaged Electron ASAR paths from this failure state produced an informative negative result:
+  - attempts to read `/opt/nctv-player/resources/app.asar` and related `app.asar.unpacked` references failed with `No such file or directory`
+  - this mismatch means the current live `/opt/nctv-player` layout visible from the failed vault state is thinner than the earlier package metadata alone suggested, which should be treated as another clue that the intended runtime asset overlay is incomplete until vault-backed content is available
+- Practical recon conclusion after the full USB-presented boot sequence:
+  - this is not merely a cosmetic alternate boot mode
+  - it is a distinct, reproducible physical state in which the same player image boots, the lock stack partially initializes, the storage-presentation assumption breaks, the hardware lock crashes on a missing `mmcblk0` CID path, the vault remains locked only because of dependency failure, and the operator receives local GUI/terminal access for further read-only inspection
+- This new state should be preserved as a first-class branch of the engagement because it materially changes both the attack surface and the explanatory chain for later findings

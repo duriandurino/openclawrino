@@ -134,3 +134,118 @@ done
 - This strengthens the current model that `tty1` is a contested runtime surface that briefly exposes live host-side output before being reclaimed by the wrong-device / hardware-lock path, and also suggests the Phoenix/hardware-check dependency chain deserves direct service-order analysis
 - Old engagement artifacts provide a strong historical hypothesis that serial-derived values matter operationally, especially the confirmed `setup.enc` passphrase `theNTVofthe360isthe360oftheNTV`, but that prior evidence is tied to provisioning / installer recovery work and must not be treated as a proven SSH credential without local validation
 - Immediate enum follow-up should now focus on high-fidelity physical timing and classification of the `tty1` race window, while preserving the distinction between observed shell exposure, staged socket messages, and the later wrong-device takeover
+- On 2026-04-29, the engagement gained a new local-enumeration branch when the operator deliberately changed only the storage presentation method:
+  - the same microSD card that previously produced the wrong-device path in direct-slot boot was inserted into an external USB SD adapter and then connected to the Raspberry Pi
+  - the operator reported that the player still displayed the normal NTV logo during startup, but this time it stayed at the OS GUI and did not proceed into the earlier `tty1` wrong-device / hardware-lock presentation
+  - because this created sustained local terminal access, the enum phase pivoted from blind physical timing work into structured on-device enumeration with explicit care not to trigger unnecessary writes, repairs, or decryption attempts too early
+- The first local enumeration goal was to verify whether the changed behavior came from a real storage topology difference or just from timing luck. The exact command block used was:
+  - `whoami`
+  - `hostnamectl 2>/dev/null || hostname`
+  - `uname -a`
+  - `lsblk -o NAME,SIZE,TYPE,FSTYPE,LABEL,UUID,MOUNTPOINTS`
+  - `mount | egrep '/ |/boot|/boot/firmware|/media|/mnt'`
+  - `cat /proc/cmdline`
+  - `sudo cat /etc/fstab`
+  - `lsusb`
+  - `sudo fdisk -l 2>/dev/null | sed -n '1,220p'`
+- Those commands established the exact alternate runtime state:
+  - current user was `pi`
+  - host remained `raspberry`, Debian GNU/Linux 13 (trixie), kernel `6.12.75+rpt-rpi-2712`
+  - booted storage was now seen as `/dev/sda`, not `/dev/mmcblk0`
+  - `/dev/sda1` was mounted on `/boot/firmware`
+  - `/dev/sda2` was mounted on `/`
+  - the attached USB reader enumerated as `Genesys Logic, Inc. SD Card Reader and Writer`
+  - the partition table and `PARTUUID` values still matched the player image, confirming the storage contents were the same logical boot source while the kernel-visible device path had changed
+- The next local enumeration objective was to map which parts of the Phoenix stack were alive, failed, or dependency-blocked. The exact service and path discovery commands used were:
+  - `systemctl list-units --type=service --all | egrep -i 'phoenix|nctv|pulse|vault|hardware|lock|watchdog'`
+  - `systemctl --failed`
+  - `systemctl list-unit-files | egrep -i 'phoenix|nctv|pulse|vault|hardware|lock|watchdog'`
+  - `sudo find /opt -maxdepth 4 \( -iname '*phoenix*' -o -iname '*nctv*' -o -iname '*pulse*' -o -iname '*hardware*' -o -iname '*vault*' \) 2>/dev/null | sort`
+  - `find /home -maxdepth 4 \( -iname '*phoenix*' -o -iname '*nctv*' -o -iname '*pulse*' -o -iname '*hardware*' -o -iname '*vault*' \) 2>/dev/null | sort`
+  - `sudo find /etc -maxdepth 4 \( -iname '*phoenix*' -o -iname '*nctv*' -o -iname '*pulse*' -o -iname '*hardware*' -o -iname '*vault*' \) 2>/dev/null | sort`
+- That pass produced the following service-level inventory:
+  - `hardware-check.service` loaded, failed
+  - `nctv-player.service` loaded, activating, auto-restart
+  - `nctv-watchdog.service` loaded, active, running
+  - `vault-mount.service` loaded, inactive, dead
+  - `repairman.service` loaded, failed
+  - relevant non-vault paths currently visible outside the secure runtime included:
+    - `/opt/nctv-player`
+    - `/home/pi/.config/nctv-player`
+    - `/home/pi/.config/pulse`
+    - `/etc/nctv-phoenix/hardware-lock.env`
+    - Phoenix systemd unit files under `/etc/systemd/system/`
+- The engagement then moved from high-level service names into exact unit and script content, because a report-ready explanation required the actual dependency chain. The operator read:
+  - `/etc/systemd/system/hardware-check.service`
+  - `/etc/systemd/system/vault-mount.service`
+  - `/etc/systemd/system/nctv-player.service`
+  - `/etc/systemd/system/nctv-watchdog.service`
+  - `/etc/systemd/system/nctv-phoenix.target`
+  - `/etc/nctv-phoenix/hardware-lock.env`
+  - `/usr/local/bin/hardware_lock.py`
+  - `/usr/local/bin/unlock_vault.py`
+  - `/usr/local/bin/repairman.sh`
+  - `/usr/local/bin/nctv-watchdog.sh`
+- The most important exact code and config facts recovered from that pass were:
+  - `hardware_lock.py` reads the Pi serial from `/proc/cpuinfo` and the SD CID only from `/sys/block/mmcblk0/device/cid`
+  - it compares those values to `AUTHORIZED_PI_SERIAL` and `AUTHORIZED_SD_CID_SHA256` in `/etc/nctv-phoenix/hardware-lock.env`
+  - if a mismatch is detected, it stops `nctv-player.service`, `lightdm.service`, and `getty@tty1.service`, writes a wrong-device banner to `/dev/tty1`, switches to `tty1`, and loops to keep that lock visible
+  - `unlock_vault.py` uses the same hardcoded `/sys/block/mmcblk0/device/cid` path and verifies the actual serial and CID hash before deriving keys
+  - its vault unlock key derivation is exactly `sha256(expected_serial + ':' + expected_cid_hash)` using raw digest bytes piped to `cryptsetup`
+  - its database key derivation is exactly `sha256(expected_serial + ':' + expected_cid_hash + ':' + DB_KEY_SALT)` using raw digest bytes written to `/var/lib/nctv-player/.db.key`
+  - the script expects the encrypted vault at `/var/lib/nctv-phoenix/vault.img`, mounts it at `/mnt/nctv-phoenix-secure`, and bind-mounts secure content back onto `/opt/nctv-player`, `/var/lib/nctv-player`, `/home/pi/.config/nctv-player`, and optionally `/usr/share/doc/nctv-player`
+  - `repairman.sh` contains a real recovery routine for restoring an SD install from an external repair source and also contains a branch for `emergency_standalone_mode` when `/dev/mmcblk0` is absent
+  - `nctv-watchdog.sh` continuously checks for missing critical runtime directories and, when they are absent, touches `/run/nctv-phoenix-repair-needed` and starts `repairman.service`
+- The decisive live enumeration check was to capture service failures with status and journal output. The exact commands used were:
+  - `systemctl status hardware-check.service --no-pager -l`
+  - `systemctl status repairman.service --no-pager -l`
+  - `systemctl status vault-mount.service --no-pager -l`
+  - `journalctl -u hardware-check.service -b --no-pager -n 120`
+  - `journalctl -u repairman.service -b --no-pager -n 120`
+  - `journalctl -u vault-mount.service -b --no-pager -n 120`
+- Those outputs provided the exact failure chain instead of a hypothesis:
+  - `hardware-check.service` exited with status `1/FAILURE`
+  - its traceback repeatedly ended at `FileNotFoundError: [Errno 2] No such file or directory: '/sys/block/mmcblk0/device/cid'`
+  - this proved the service was not rejecting the hardware because of a serial or CID mismatch; it was crashing because the expected SD-CID path did not exist in USB-presented boot mode
+  - `vault-mount.service` then failed only as a dependency casualty, repeatedly logging `Dependency failed for vault-mount.service - Unlock and Mount NCTV Phoenix Vault.` and never reaching its own unlock logic
+  - `repairman.service` looped every minute with `[repairman] starting nctv-phoenix repair flow` followed by `[repairman] repair source missing`
+- The engagement then validated the current storage and vault artifacts themselves without attempting an unlock. The exact commands used were:
+  - `sudo find /var/lib -maxdepth 3 \( -iname '*nctv*' -o -iname '*phoenix*' -o -iname '*vault*' \) -exec ls -ld {} \;`
+  - `sudo ls -l /var/lib/nctv-phoenix /var/lib/nctv-phoenix/vault.img`
+  - `sudo file /var/lib/nctv-phoenix/vault.img`
+  - `sudo cryptsetup luksDump /var/lib/nctv-phoenix/vault.img | sed -n '1,160p'`
+  - `sudo find /var/lib/nctv-player -maxdepth 3 -exec ls -ld {} \;`
+  - `sudo find /usr/share/doc/nctv-player -maxdepth 3 -exec ls -ld {} \;`
+- Those commands showed:
+  - `/var/lib/nctv-phoenix/vault.img` exists and is a 2 GiB LUKS2 encrypted file
+  - LUKS UUID is `58a2a481-a39b-4305-8f15-4f20fa1e7d3f`
+  - cipher is AES-XTS-plain64 with one active keyslot using Argon2id
+  - `/var/lib/nctv-player` exists but is effectively empty in this failure state
+  - `/usr/share/doc/nctv-player` also exists only as the base directory
+  - this fits the code path in `unlock_vault.py`, because the secure bind mounts never activated after `hardware-check.service` failed
+- Package metadata was also checked to understand what the plain package provides without the vault overlay. The commands used were:
+  - `sudo sed -n '1,240p' /var/lib/dpkg/info/nctv-player.list`
+  - `sudo sed -n '1,260p' /var/lib/dpkg/info/nctv-player.postinst`
+  - `sudo sed -n '1,220p' /var/lib/dpkg/info/nctv-player.postrm`
+  - `sudo sed -n '1,260p' /var/lib/dpkg/info/nctv-player.md5sums`
+- That package review showed:
+  - the Debian package lays down the Electron runtime, launcher, icons, and locale assets under `/opt/nctv-player`
+  - the post-install script creates only lightweight writable scaffolding such as `/var/lib/nctv-player` and `/var/lib/nctv-player/playlist`
+  - package metadata alone does not provide the rich secure runtime content; that content is expected to be overlaid later through the vault bind-mount process
+- A final attempted enumeration of Electron application internals produced a useful negative result that should remain documented because it explains why the visible runtime looked thinner than the package manifest suggested. The exact attempted commands were:
+  - `strings /opt/nctv-player/resources/app.asar | egrep -i 'nctv-player|vault|db\.key|sqlite|sqlcipher|playlist|server|repair|hardware|serial|cid|unlock' | sed -n '1,260p'`
+  - a small Python header walker against `/opt/nctv-player/resources/app.asar`
+  - `grep -RniE 'db\.key|better-sqlite3|cipher|sqlcipher|playlist|vault|hardware|repair|serial|cid' /opt/nctv-player/resources/app.asar.unpacked 2>/dev/null | sed -n '1,240p'`
+- Actual result from those commands:
+  - `strings` returned `No such file` for `/opt/nctv-player/resources/app.asar`
+  - the Python ASAR walker failed with `FileNotFoundError: [Errno 2] No such file or directory: '/opt/nctv-player/resources/app.asar'`
+  - the unpacked-path grep returned no hits
+- That negative result is still meaningful:
+  - in this USB-presented, vault-blocked state, the live visible `/opt/nctv-player` layout is not exposing the richer application resources that the package metadata implies should exist in a fully realized runtime view
+  - this strengthens the interpretation that the intended operational content path depends heavily on the vault-backed overlay and related recovery/runtime logic
+- Current high-confidence local enumeration conclusion:
+  - the same player image can boot successfully through a USB mass-storage presentation path
+  - in that mode, the system sees the media as `sda` rather than `mmcblk0`
+  - Phoenix enforcement code is brittle because both `hardware_lock.py` and `unlock_vault.py` hardcode `/sys/block/mmcblk0/device/cid`
+  - the direct consequence is a reproducible fail-open-like state for local access: `hardware-check.service` crashes, `vault-mount.service` dependency-fails, `repairman.service` loops looking for a repair source, and the operator remains in a usable local GUI/terminal environment instead of being locked back to the wrong-device screen
+- This branch should not be flattened into the earlier direct-slot observations. It is a separate, reproducible physical enumeration state with different attack surface, different service behavior, and a stronger evidence trail for a future vulnerability write-up around storage-interface-dependent authorization failure
