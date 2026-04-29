@@ -50,6 +50,17 @@ Even though the leading Phoenix attack paths are physical or local, they should 
 4. **Strengthen local hardening validation**
    - Re-test boot behavior, lock-state transitions, and recovery/error paths under real alternate media conditions.
 
+## Report structure for finalization
+
+Use the final Phoenix report structure in this order:
+1. **PHX-V01** as the core authorization-bypass finding
+2. **PHX-V02** as the fail-open enforcement consequence
+3. **PHX-V03** as the attacker-value follow-on exposure
+4. **PHX-V04** as supporting root-cause architecture
+5. **PHX-V05** as a supported candidate pending safest-first live validation
+
+Keep **PHX-V06** and **PHX-V07** in reserve unless later validation promotes them. Keep **PHX-V08** as context only.
+
 ## Recommended next step
 
-Proceed with final report development using PHX-V01 through PHX-V03 as the first-wave verified findings set, while keeping the remaining Phoenix observations in controlled validation until they are either confirmed or downgraded to hardening notes.
+Proceed with final report development using PHX-V01 through PHX-V03 as the verified findings set, PHX-V04 as supporting architecture, and PHX-V05 in a clearly labeled pending-validation position until the live recovery-path test is completed.
