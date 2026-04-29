@@ -165,4 +165,17 @@ For the network-supporting portions of recon, the later enum commands are the st
 - Practical recon conclusion after the full USB-presented boot sequence:
   - this is not merely a cosmetic alternate boot mode
   - it is a distinct, reproducible physical state in which the same player image boots, the lock stack partially initializes, the storage-presentation assumption breaks, the hardware lock crashes on a missing `mmcblk0` CID path, the vault remains locked only because of dependency failure, and the operator receives local GUI/terminal access for further read-only inspection
+- Additional operator-shell evidence was then preserved to link this USB-boot state back to earlier provisioning history on the device itself:
+  - a targeted search for `3.211.184.159`, `setup.enc`, and `theNTVofthe360isthe360oftheNTV` under `/etc`, `/home/pi`, `/usr/local/bin`, and `/var/lib` returned no current file hits
+  - however, direct inspection of `/home/pi/.bash_history` revealed a historically significant command actually typed on this device:
+    - `curl -fsSL http://3.211.184.159:8080/setup.enc | openssl enc -aes-256-cbc -d -salt -pbkdf2 -k "theNTVofthe360isthe360oftheNTV" | sudo bash`
+  - that command directly ties this live device back to the previously known `setup.enc` provisioning line and confirms that the `theNTVofthe360isthe360oftheNTV` passphrase is not only a prior engagement artifact but also local historical evidence from this specific player environment
+  - the same history file also showed local commands such as `pinctrl get 2-27`, `sudo raspi-config`, `ip addr`, `ls`, and `ls -la`, indicating prior operator-level interaction on the Pi outside the fully locked kiosk experience
+  - `stat /home/pi/.bash_history` showed:
+    - birth time `2026-04-14 09:54:09 +0800`
+    - modify/change time `2026-04-29 13:24:41 +0800`
+  - this timestamp context should not be overclaimed as proof of who typed the provisioning command, but it is useful evidence that the shell history was active in the current month and that the provisioning clue was locally retained rather than reconstructed from memory alone
+- This history evidence materially strengthens the recon narrative in two ways:
+  - it connects the current Phoenix build to the earlier `setup.enc` / NTV provisioning workflow using device-local evidence rather than only cross-engagement memory
+  - it supports the model that the current USB-presented shell state is exposing a real operator-capable environment with recoverable operational history, not just a sterile splash-screen bypass
 - This new state should be preserved as a first-class branch of the engagement because it materially changes both the attack surface and the explanatory chain for later findings

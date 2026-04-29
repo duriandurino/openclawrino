@@ -248,4 +248,37 @@ done
   - in that mode, the system sees the media as `sda` rather than `mmcblk0`
   - Phoenix enforcement code is brittle because both `hardware_lock.py` and `unlock_vault.py` hardcode `/sys/block/mmcblk0/device/cid`
   - the direct consequence is a reproducible fail-open-like state for local access: `hardware-check.service` crashes, `vault-mount.service` dependency-fails, `repairman.service` loops looking for a repair source, and the operator remains in a usable local GUI/terminal environment instead of being locked back to the wrong-device screen
-- This branch should not be flattened into the earlier direct-slot observations. It is a separate, reproducible physical enumeration state with different attack surface, different service behavior, and a stronger evidence trail for a future vulnerability write-up around storage-interface-dependent authorization failure
+- Additional local evidence was then gathered to determine whether any useful provisioning or runtime artifacts were exposed outside the vault in this USB-presented state. The exact commands used were:
+  - `sudo find /opt/nctv-player -maxdepth 3 -ls 2>/dev/null | sed -n '1,220p'`
+  - `sudo ls -la /opt/nctv-player /opt/nctv-player/resources /opt/nctv-player/resources/app.asar.unpacked 2>/dev/null`
+  - `sudo find / -maxdepth 4 \( -iname '*.db' -o -iname '*.sqlite' -o -iname '.db.key' -o -iname '*vault*' -o -iname '*playlist*' \) 2>/dev/null | sed -n '1,260p'`
+  - `sed -n '1,200p' /home/pi/.bash_history`
+  - `sudo grep -Rni '3.211.184.159\\|setup.enc\\|theNTVofthe360isthe360oftheNTV' /etc /home/pi /usr/local/bin /var/lib 2>/dev/null | sed -n '1,240p'`
+  - `ls -la /home/pi`
+  - `stat /home/pi/.bash_history`
+- Those commands clarified several final enum points for this branch:
+  - `/opt/nctv-player` was not merely missing selected resource files, it was effectively just an empty top-level directory in the current USB-booted state
+  - no visible application database files, SQLite files, or `.db.key` material were exposed outside the vault at this stage
+  - the only high-value vault-related file still visible from the base OS was `/var/lib/nctv-phoenix/vault.img`
+  - a recursive grep for the setup host, `setup.enc`, and `theNTVofthe360isthe360oftheNTV` returned no live file hits in the searched locations, meaning the provisioning clue was not currently echoed in plaintext across easy-to-find config files
+- The most important result from this final enum pass came from direct shell-history inspection:
+  - `/home/pi/.bash_history` contained the exact historical command:
+    - `curl -fsSL http://3.211.184.159:8080/setup.enc | openssl enc -aes-256-cbc -d -salt -pbkdf2 -k "theNTVofthe360isthe360oftheNTV" | sudo bash`
+  - this is high-value local evidence because it links the live player to the previously known `setup.enc` provisioning chain using device-resident history rather than only past engagement notes
+  - the same shell history also contained commands such as `pinctrl get 2-27`, `sudo raspi-config`, `ip addr`, `ls`, and `ls -la`, showing that local shell interaction had occurred on the device beyond the kiosk surface
+  - `stat /home/pi/.bash_history` showed birth time `2026-04-14 09:54:09 +0800` and modify/change time `2026-04-29 13:24:41 +0800`, which helps place the shell-history evidence in the current engagement window without overclaiming authorship
+- Why this matters for enumeration rather than only for later exploitation:
+  - it confirms that the USB-presented state exposes not just a thin GUI but an operator-meaningful local environment containing recoverable historical provisioning clues
+  - it strengthens the connection between this Phoenix build and the older hardwarelockv2 / `setup.enc` line of inquiry
+  - it also explains why the next phase should prioritize vuln analysis on the storage-interface-dependent authorization failure and vault/provisioning chain, rather than spending more time hoping for richer plain files to appear outside the vault
+- Recon/enum wrap-up for the USB-presented branch:
+  - the same player image can boot from a USB-attached SD reader and present as `/dev/sda`
+  - in that state, Phoenix trust enforcement fails because both `hardware_lock.py` and `unlock_vault.py` hardcode `/sys/block/mmcblk0/device/cid`
+  - the immediate consequences are:
+    - `hardware-check.service` crashes on missing path
+    - `vault-mount.service` dependency-fails before unlock logic can run
+    - `repairman.service` loops looking for a repair source
+    - the operator retains local GUI and terminal access
+    - the visible filesystem remains a thin base/runtime scaffold with the richer secure content absent because bind mounts never activate
+    - local `.bash_history` still preserves a provisioning command tied to `setup.enc` and the passphrase `theNTVofthe360isthe360oftheNTV`
+- This branch should not be flattened into the earlier direct-slot observations. It is a separate, reproducible physical enumeration state with different attack surface, different service behavior, richer local evidence, and a stronger evidence trail for downstream vulnerability analysis and reporting
