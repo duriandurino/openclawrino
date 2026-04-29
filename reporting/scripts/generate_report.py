@@ -1054,6 +1054,164 @@ def generate_report(data):
     return "\n".join(lines)
 
 
+def _find_phase_summary_paths(target):
+    slug = (target or "").strip()
+    if not slug:
+        return []
+
+    candidates = []
+    direct = ROOT / "engagements" / slug
+    candidates.append(direct)
+
+    lowered = slug.lower()
+    if lowered != slug:
+        candidates.append(ROOT / "engagements" / lowered)
+
+    normalized = "".join(ch.lower() for ch in slug if ch.isalnum())
+    engagements_root = ROOT / "engagements"
+    if engagements_root.exists():
+        for child in engagements_root.iterdir():
+            if not child.is_dir():
+                continue
+            child_norm = "".join(ch.lower() for ch in child.name if ch.isalnum())
+            if child_norm == normalized:
+                candidates.append(child)
+
+    seen = set()
+    phase_files = []
+    for base in candidates:
+        key = str(base)
+        if key in seen or not base.exists():
+            continue
+        seen.add(key)
+        phase_files.extend(sorted(base.glob("*/**/*_SUMMARY_*.md")))
+        phase_files.extend(sorted(base.glob("*/**/*-summary.md")))
+        phase_files.extend(sorted(base.glob("*/**/*summary.md")))
+        if phase_files:
+            break
+
+    unique = []
+    seen_paths = set()
+    for path in phase_files:
+        try:
+            resolved = str(path.resolve())
+        except Exception:
+            resolved = str(path)
+        if resolved in seen_paths or not path.is_file():
+            continue
+        seen_paths.add(resolved)
+        unique.append(path)
+    return unique
+
+
+def _load_phase_source_snippets(target, max_chars=2400):
+    snippets = []
+    remaining = max_chars
+    for path in _find_phase_summary_paths(target):
+        if remaining <= 0:
+            break
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore").strip()
+        except Exception:
+            continue
+        if not text:
+            continue
+        excerpt = text[: min(len(text), remaining)]
+        snippets.append((path, excerpt))
+        remaining -= len(excerpt)
+    return snippets
+
+
+def generate_process_overview(data):
+    target = data.get("target", "Unknown Target")
+    date_label = datetime.now().strftime("%Y-%m-%d %H:%M %Z").strip()
+    findings = data.get("findings", [])
+    preengagement = load_preengagement_context(target) if not data.get("quick_scan") else {}
+    phase_snippets = _load_phase_source_snippets(target)
+
+    lines = []
+    lines.append("# Process Overview")
+    lines.append("")
+    lines.append(f"**Engagement:** {target}")
+    lines.append("**Document Type:** Non-technical pentest process overview")
+    lines.append(f"**Prepared On:** {date_label}")
+    lines.append("**Audience:** Non-technical stakeholders, project owners, managers")
+    lines.append("")
+    lines.append("---")
+    lines.append("")
+    lines.append("## 1. Purpose of This Document")
+    lines.append("")
+    lines.append("This document explains what the tester actually did during the assessment, what was observed, and why the work moved from one phase to the next.")
+    lines.append("")
+    lines.append("## 2. Assessment Objective")
+    lines.append("")
+    lines.append(f"The objective of this assessment was to evaluate the security posture of `{target}` and turn the engagement record into a clear, defensible narrative for stakeholders.")
+    lines.append("")
+    lines.append("## 3. Scope in Plain Language")
+    lines.append("")
+    if preengagement.get("roe", {}).get("scope in"):
+        lines.append(f"- In scope: {preengagement['roe']['scope in']}")
+    else:
+        lines.append(f"- In scope target: `{target}`")
+    if preengagement.get("roe", {}).get("scope out"):
+        lines.append(f"- Out of scope: {preengagement['roe']['scope out']}")
+    lines.append("- This overview focuses on the real assessment flow, not just the final findings.")
+    lines.append("")
+    lines.append("## 4. Pentest Process Followed")
+    lines.append("")
+    phase_blurbs = [
+        ("Pre-Engagement", "Authorization, scope, and testing boundaries were checked before deeper work proceeded."),
+        ("Reconnaissance", "Initial observations were collected to understand what the target exposed before attempting deeper validation."),
+        ("Enumeration", "The visible surface was checked more systematically to confirm what was actually reachable and repeatable."),
+        ("Vulnerability Analysis", "Observed behavior was reviewed to determine which exposures looked meaningful enough to validate further."),
+        ("Exploitation or Controlled Validation", "Where appropriate, the next step is to prove whether the observed behavior becomes a practical weakness under controlled conditions."),
+        ("Post-Exploitation Review", "If meaningful access is proven, the follow-up question becomes what that access reveals or enables."),
+        ("Reporting and Communication", "The engagement record is turned into stakeholder-facing outputs, including the technical report and this process overview."),
+    ]
+    for idx, (title, body) in enumerate(phase_blurbs):
+        lines.append(f"### Phase {idx}: {title}")
+        lines.append("")
+        lines.append(body)
+        lines.append("")
+    lines.append("## 5. What the Engagement Record Shows")
+    lines.append("")
+    if phase_snippets:
+        lines.append("The following source summaries were available and were used to ground this overview:")
+        lines.append("")
+        for path, excerpt in phase_snippets:
+            rel = path.relative_to(ROOT)
+            lines.append(f"### Source: `{rel}`")
+            lines.append("")
+            lines.append("```markdown")
+            lines.append(excerpt.rstrip())
+            lines.append("```")
+            lines.append("")
+    else:
+        lines.append("No phase summary source snippets were auto-loaded for this target, so this overview should be treated as incomplete until the engagement summaries are present.")
+        lines.append("")
+    lines.append("## 6. What We Observed")
+    lines.append("")
+    if findings:
+        for finding in sorted(findings, key=lambda x: SEVERITY_ORDER.get(x.get("severity", "Info"), 99))[:8]:
+            title = clean_text(finding.get("title", "Untitled finding")) or "Untitled finding"
+            impact = clean_text(finding.get("impact", "Impact requires validation.")) or "Impact requires validation."
+            lines.append(f"- {title}: {impact}")
+    else:
+        lines.append("- No packaged findings were available at the time this process overview was generated.")
+    lines.append("")
+    lines.append("## 7. Why These Observations Matter")
+    lines.append("")
+    lines.append("The value of the process record is that it shows how the assessment narrowed from broad observation into specific evidence-backed questions. It helps stakeholders see not only what was found, but how confidence was built.")
+    lines.append("")
+    lines.append("## 8. Recommended Next Steps")
+    lines.append("")
+    lines.append("- Validate the strongest observed issues with controlled retesting.")
+    lines.append("- Preserve screenshots, console output, and timestamps where they materially explain the attack path.")
+    lines.append("- Keep this process overview aligned with the technical report so both documents tell the same engagement story.")
+    lines.append("")
+    return "\n".join(lines)
+
+
 def main():
     parser = argparse.ArgumentParser(description="Generate pentest report from findings JSON")
     parser.add_argument("--target", required=True, help="Target name/IP for report header")
@@ -1075,25 +1233,38 @@ def main():
         data = normalize_report_data(json.load(f))
 
     report = generate_report(data)
+    process_overview = generate_process_overview(data)
 
     with open(args.output, "w") as f:
         f.write(report)
 
+    process_output = str(Path(args.output).with_name(Path(args.output).name.replace("REPORT_FINAL", "PROCESS_OVERVIEW")))
+    if process_output == args.output:
+        process_output = str(Path(args.output).with_name(f"PROCESS_OVERVIEW_{Path(args.output).name}"))
+    with open(process_output, "w") as f:
+        f.write(process_overview)
+
     print(f"[OK] Report generated: {args.output}")
+    print(f"[OK] Process overview generated: {process_output}")
     print(f"     Target: {args.target}")
     print(f"     Findings: {len(data.get('findings', []))}")
     print(f"     Enhancements: {len(data.get('enhancements', []))}")
 
     publish_summary = {
         "local_file": args.output,
+        "process_overview_file": process_output,
         "drive_link": None,
         "doc_link": None,
         "slides_link": None,
         "pdf_link": None,
+        "process_overview_drive_link": None,
+        "process_overview_doc_link": None,
         "drive_id": None,
         "doc_id": None,
         "slides_id": None,
         "pdf_id": None,
+        "process_overview_drive_id": None,
+        "process_overview_doc_id": None,
     }
     summary_path = str(Path(args.output).with_suffix('.publish.json'))
 
@@ -1114,6 +1285,20 @@ def main():
         except Exception as e:
             print(f"[WARN] Drive upload failed: {e}")
 
+        try:
+            po_upload_result = upload_to_drive(process_output, account=args.gdrive_account, parent=args.gdrive_parent)
+            po_file_data = po_upload_result.get("file", po_upload_result) if isinstance(po_upload_result, dict) else po_upload_result
+            if isinstance(po_file_data, dict):
+                publish_summary["process_overview_drive_id"] = po_file_data.get("id")
+                publish_summary["process_overview_drive_link"] = po_file_data.get("webViewLink")
+                print(f"[OK] Process overview Drive upload: {po_file_data.get('name', process_output)}")
+                if po_file_data.get("webViewLink"):
+                    print(f"     Process Overview Drive Link: {po_file_data['webViewLink']}")
+            else:
+                print(f"[OK] Process overview Drive upload completed: {po_file_data}")
+        except Exception as e:
+            print(f"[WARN] Process overview Drive upload failed: {e}")
+
     if args.create_doc:
         try:
             docx_path = Path(args.output).with_suffix(".docx")
@@ -1133,6 +1318,20 @@ def main():
                 print(f"[OK] Google Doc created: {doc_data}")
         except Exception as e:
             print(f"[WARN] Google Doc creation failed: {e}")
+
+        try:
+            po_doc_result = upload_to_drive(process_output, account=args.gdrive_account, parent=args.gdrive_parent, convert_to="doc")
+            po_doc_data = po_doc_result.get("file", po_doc_result) if isinstance(po_doc_result, dict) else po_doc_result
+            if isinstance(po_doc_data, dict):
+                publish_summary["process_overview_doc_id"] = po_doc_data.get("id")
+                publish_summary["process_overview_doc_link"] = po_doc_data.get("webViewLink")
+                print(f"[OK] Process overview Google Doc created: {po_doc_data.get('name', process_output)}")
+                if po_doc_data.get("webViewLink"):
+                    print(f"     Process Overview Doc Link: {po_doc_data['webViewLink']}")
+            else:
+                print(f"[OK] Process overview Google Doc created: {po_doc_data}")
+        except Exception as e:
+            print(f"[WARN] Process overview Google Doc creation failed: {e}")
 
     if args.create_doc and args.export_pdf and publish_summary.get("doc_id"):
         try:
@@ -1179,17 +1378,22 @@ def main():
         json.dump(publish_summary, f, indent=2)
     print(f"[OK] Publish summary saved: {summary_path}")
 
-    if any(publish_summary[k] for k in ("drive_link", "doc_link", "slides_link")):
+    if any(publish_summary[k] for k in ("drive_link", "doc_link", "slides_link", "process_overview_drive_link", "process_overview_doc_link")):
         print("\n=== PUBLISHED LINKS ===")
         print(f"Local file: {publish_summary['local_file']}")
+        print(f"Process overview file: {publish_summary['process_overview_file']}")
         if publish_summary["doc_link"]:
             print(f"Docs: {publish_summary['doc_link']}")
+        if publish_summary["process_overview_doc_link"]:
+            print(f"Process Overview Doc: {publish_summary['process_overview_doc_link']}")
         if publish_summary["pdf_link"]:
             print(f"PDF preview: {publish_summary['pdf_link']}")
         if publish_summary["slides_link"]:
             print(f"Slides: {publish_summary['slides_link']}")
         if publish_summary["drive_link"]:
             print(f"Drive file: {publish_summary['drive_link']}")
+        if publish_summary["process_overview_drive_link"]:
+            print(f"Process Overview Drive file: {publish_summary['process_overview_drive_link']}")
 
 
 if __name__ == "__main__":
