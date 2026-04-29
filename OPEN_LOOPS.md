@@ -4,4 +4,4 @@
 - none
 
 ## Next steps
-- Resume from WORKING.md, STATE.md, OPEN_LOOPS.md, and DECISIONS.md after compaction or reset
+- After reset, resume by checking the latest publish summary and, if needed, refining the process overview pipeline behavior from the new living source file or validating the newest published Google Doc against local source.
