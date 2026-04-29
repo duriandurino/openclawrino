@@ -27,6 +27,19 @@ This architectural duplication strengthens the remediation case for:
 - fail-closed behavior when identity checks cannot complete
 - dependency design that resolves into a deterministic locked state rather than a semi-operational accessible state
 
+## Recovery-path status note — PHX-V05
+
+A separate Phoenix candidate, **PHX-V05 — Recovery-path abuse potential via `repairman.sh`**, remains in a supported but unverified state.
+
+Recovered Phoenix scripts and setup artifacts show a real USB recovery path that appears to trust the booted USB runtime as the repair source and proceeds into direct SD repair and `rsync` mirroring without a visible authenticity gate in the reviewed script body. However, this assessment did **not** complete a live acceptance replay using a repair image or alternate test image, because the required media was not available during the engagement.
+
+This means the current report can responsibly say:
+- the recovery path is real and code-backed
+- no visible authenticity control was found in the recovered script logic
+- live attacker-controlled acceptance was **not** confirmed in this engagement state due to unavailable test media
+
+That limitation should be presented as a test-coverage boundary, not as disproof of the candidate.
+
 ## Finding PHX-V01 — Storage-interface-dependent authorization failure
 
 ### Severity

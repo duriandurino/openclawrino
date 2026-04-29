@@ -32,6 +32,12 @@ A third verified issue showed that the device retained sensitive provisioning ma
 - Summary: Local shell history exposed a provisioning command containing a setup host, decryption workflow, and plaintext passphrase.
 - Business meaning: An attacker who gains local access may recover reusable operational knowledge and secret material that lowers the effort needed for follow-on compromise.
 
+### PHX-V05 — Recovery-path abuse potential via `repairman.sh` (supported candidate)
+- Status: Supported, not yet verified
+- Summary: Recovered Phoenix recovery scripts indicate a real USB recovery path that appears to trust the booted USB environment without a visible authenticity check in the reviewed script logic.
+- Constraint: Live acceptance testing was not completed because the required repair image or alternate test image was unavailable during the engagement.
+- Business meaning: This remains a meaningful integrity-risk candidate, but it should be reported honestly as pending live confirmation rather than as a finished verified finding.
+
 ## Overall risk interpretation
 
 Even though the leading Phoenix attack paths are physical or local, they should not be treated as low-priority issues in this engagement. Physical access is explicitly in scope and directly relevant to the product’s intended trust model. A hardware-lock design that breaks when storage presentation changes, then preserves local access when checks fail, represents a meaningful security design gap rather than a minor edge case.
@@ -63,4 +69,4 @@ Keep **PHX-V06** and **PHX-V07** in reserve unless later validation promotes the
 
 ## Recommended next step
 
-Proceed with final report development using PHX-V01 through PHX-V03 as the verified findings set, PHX-V04 as supporting architecture, and PHX-V05 in a clearly labeled pending-validation position until the live recovery-path test is completed.
+Proceed with final report development using PHX-V01 through PHX-V03 as the verified findings set, PHX-V04 as supporting architecture, and PHX-V05 in a clearly labeled pending-validation position. Note explicitly that the live recovery-path test was blocked in this engagement state because the required repair image or alternate test image was unavailable.

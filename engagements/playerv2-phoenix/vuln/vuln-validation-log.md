@@ -41,6 +41,7 @@ Date: 2026-04-29
 - Score state: provisional only
 - Confidence: Medium-high
 - Note: recovered Phoenix `repairman.sh` and setup artifacts show a real USB recovery path with no visible authenticity gate before restore actions, but live acceptance of attacker-controlled content is not yet proven
+- Constraint: live acceptance testing is currently blocked because the required repair image or alternate test image is unavailable
 - Live-validation control: `engagements/playerv2-phoenix/vuln/PHX-V05_LIVE_VALIDATION_PLAN_2026-04-29.md`
 
 ### PHX-V06

@@ -41,8 +41,10 @@ This file captures the concrete source material used to support Phoenix vulnerab
 ### What was not yet verified live
 - A full safe live replay showing that an attacker-controlled USB repair source is accepted on the target device without additional hidden controls.
 - Whether external constraints not visible in the recovered script, such as a protected physical repair medium, immutable trusted USB image, or additional deployment-side assumptions, reduce exploitability in practice.
+- In the current engagement state, that live replay could not be completed because the required repair image or alternate test image was not available.
 
 ### Current analyst judgment
 - PHX-V05 should be upgraded from a loose hypothesis to a **stronger supported candidate**, but it is still not treated as fully verified exploitation.
 - The evidence now supports saying the restore path appears to trust the booted USB environment as the gold image source and does not visibly verify authenticity before performing recovery actions.
 - Final promotion to a scored verified finding should wait for a controlled live validation or equivalent stronger proof that attacker-controlled content would actually be accepted in the target workflow.
+- The present limitation is logistical rather than contradictory evidence: the missing repair image or alternate test image prevented the planned live replay.

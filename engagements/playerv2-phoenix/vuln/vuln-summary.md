@@ -11,6 +11,7 @@ Scoring label used for populated entries below: CVSS-B
 - **PHX-V01** and **PHX-V02 remain separate findings**
 - **PHX-V03 is treated as still operationally useful**, not just stale historical exposure
 - **PHX-V05 to PHX-V08 remain candidate-stage items** pending stronger validation
+- **PHX-V05 live acceptance testing is currently blocked** because the required repair image or alternate test image is not available in the present engagement state
 
 ## Current finding-state overview
 
@@ -39,7 +40,7 @@ Scoring label used for populated entries below: CVSS-B
 5. **PHX-V05 — Recovery-path abuse potential via `repairman.sh`**
    - Validation status: Supported
    - CVSS status: provisional only
-   - Recommendation: authenticity checks were not visible in recovered recovery scripts, but controlled live acceptance is still needed before full scoring
+   - Recommendation: authenticity checks were not visible in recovered recovery scripts, but controlled live acceptance is still needed before full scoring; that step is currently blocked because the required repair image or alternate test image is unavailable
 
 6. **PHX-V06 — Pre-lock startup race exposing shell/GUI access**
    - Validation status: Supported / partially observed
@@ -169,14 +170,14 @@ Scoring label used for populated entries below: CVSS-B
 - **cvss_vector:** null
 - **cvss_severity:** Medium
 - **cvss_rationale:** Supported candidate. Recovered Phoenix recovery scripts show a real automatic restore path that performs direct SD repair and `rsync` mirroring from the USB runtime without visible cryptographic authenticity checks, but attacker-controlled acceptance has not yet been demonstrated live on target.
-- **cvss_assumptions:** No score assigned yet because the current evidence is code-backed and stronger than a pure hypothesis, but final exploitability still depends on proving that attacker-controlled recovery content would be accepted in the real target workflow.
+- **cvss_assumptions:** No score assigned yet because the current evidence is code-backed and stronger than a pure hypothesis, but final exploitability still depends on proving that attacker-controlled recovery content would be accepted in the real target workflow. That live acceptance step was not completed in this assessment state because the required repair image or alternate test image was unavailable.
 - **cve_ids:** []
 - **cwe_ids:** ["CWE-494", "CWE-829"]
 - **impact:** If exploitable, an attacker-controlled repair source could compromise player integrity or restore attacker-chosen content to the protected media.
 - **evidence:** Recovered Phoenix `repairman.sh` and setup artifacts showed an automatic USB-boot recovery path. In surgery mode, the script runs `fsck` on `/dev/mmcblk0p1` and `/dev/mmcblk0p2`, mounts the SD root, `rsync`s `/` from the USB runtime onto the mounted SD root, rebuilds `fstab`, restores firmware config, forces GUI settings, enables `nctv-watchdog.service`, disables `repairman.service`, and reboots. No visible signature or authenticity check was present in the reviewed script body before restore actions proceeded.
 - **remediation:** Require signed and authenticated recovery bundles, verify source integrity before any restore action, and limit repair triggering to authenticated maintenance workflows.
 - **hardening_recommendations:** Treat recovery media as hostile by default, add cryptographic verification to restore artifacts, and log any repair-mode entry with tamper-evident records.
-- **retest_guidance:** Build a controlled non-destructive test repair source and verify whether unsigned or attacker-modified content is rejected before any write action occurs. Prefer a staged dry-run or isolated sacrificial media workflow before any production-target replay.
+- **retest_guidance:** When the required repair image or alternate test image becomes available, build a controlled non-destructive test repair source and verify whether unsigned or attacker-modified content is rejected before any write action occurs. Prefer a staged dry-run or isolated sacrificial media workflow before any production-target replay.
 
 ---
 
