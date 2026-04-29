@@ -23,21 +23,19 @@ Target: playerv2-phoenix
    - retain current evidence-backed narrative
    - preserve the validation package for later live replay
 
-2. **Proceed with PHX-V01 to PHX-V03 as the first fully score-ready finding set**
+2. **Use PHX-V01 to PHX-V03 as the first fully score-ready finding set**
    - these are the strongest and most defensible findings for final vuln scoring right now
 
 3. **Treat PHX-V04 as supporting/root-cause material unless separate attacker leverage becomes clearer**
 
-4. **Revisit PHX-V06 and PHX-V07 only after the first-wave finding set is locked**
+4. **Keep PHX-V06 as supported, partially observed, and unscored pending reproducibility proof**
+
+5. **Keep PHX-V07 as low-severity secondary candidate or hardening observation pending tighter reliability/business-impact framing**
 
 ## Immediate next vuln action
 
-Convert PHX-V01 to PHX-V03 into complete CVSS v4 finding blocks with:
-- `cvss_version`
-- `cvss_label`
-- `cvss_score`
-- `cvss_vector`
-- `cvss_severity`
-- `cvss_rationale`
-- `cvss_assumptions`
-- evidence, impact, remediation, hardening, and retest guidance
+The first-wave vuln set is now clear:
+- scored findings: PHX-V01, PHX-V02, PHX-V03
+- supporting/root-cause: PHX-V04
+- supported candidate awaiting live validation: PHX-V05
+- secondary candidates awaiting tighter validation: PHX-V06, PHX-V07
