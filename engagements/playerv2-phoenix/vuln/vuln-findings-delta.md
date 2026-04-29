@@ -43,10 +43,11 @@ Date: 2026-04-29
 ### PHX-V04
 - Stayed **Supported**
 - Converted into a structured provisional record
-- Not numerically scored yet because distinct attacker leverage beyond PHX-V01 and PHX-V02 is not cleanly separated
+- Disposition tightened: best treated as **supporting/root-cause material** rather than a first-wave standalone scored finding
+- Not numerically scored because distinct attacker leverage beyond PHX-V01 and PHX-V02 is not cleanly separated
 
 ### PHX-V05
-- Stayed **Hypothesis**
+- Stayed **Supported**
 - Converted into a structured provisional record
 - Kept unscored pending validation of authenticity/source-acceptance behavior
 
