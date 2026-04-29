@@ -11,9 +11,12 @@ Date: 2026-04-29
 2. **Decide whether PHX-V04 stays standalone or becomes supporting root-cause text under PHX-V01**
    - current recommendation: supporting/root-cause unless distinct attacker benefit is later demonstrated
 
-3. **Execute the PHX-V05 live validation plan in safest-first order**
+3. **Execute the PHX-V05 live validation package in safest-first order**
    - current code-review pass found no visible signature/authenticity gate in recovered recovery scripts
    - use `PHX-V05_LIVE_VALIDATION_PLAN_2026-04-29.md` as the control document
+   - use `PHX-V05_OPERATOR_RUNBOOK_2026-04-29.md` for step-by-step execution
+   - use `PHX-V05_SAFE_MARKERS_2026-04-29.md` for benign marker choices
+   - use `PHX-V05_RESULT_TEMPLATE_2026-04-29.md` to capture the outcome
    - start with non-destructive acceptance proof before any sacrificial-media replay
    - avoid destructive restore actions on the primary target during first live replay
 
