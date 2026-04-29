@@ -25,3 +25,13 @@
 - Additional physical enum observations now show that `tty1` can briefly surface a live shell prompt as `pi@raspberry` and later staged runtime text including `Completed socket interaction for boot stage config` and `Completed socket interaction for boot stage final` before the wrong-device path reclaims the console
 - These staged socket messages strengthen the interpretation that the primary console participates in a boot-time service / orchestration workflow, not just a static banner path
 - Passive traffic-correlation work is currently limited by runtime privilege constraints, so stronger network-flow linkage will require privileged local capture or on-device observation
+- New 2026-04-29 network rerun changes the current live service picture and is important enough to document separately from the earlier validated baseline:
+  - the reusable scripts-first enum rerun initially produced a much weaker result set than the earlier validated inventory, including `0 hosts up` in the default fast pass, no derived service scan, no SSH host-key material, and an `1883/tcp` timeout
+  - because earlier enum had already proven that default local discovery behavior can be misleading on this segment, those weaker results were not trusted by themselves and were followed with the previously proven no-ARP pattern
+  - manual no-ARP revalidation then showed the host still up, but with a more filtered service posture than before:
+    - `22/tcp` now `filtered`
+    - `111/tcp` now `filtered`
+    - `111/udp` now `open|filtered`
+    - `5353/udp` now `open|filtered`
+    - `ssh-keyscan` returned no host keys at that moment
+  - current interpretation: the target's network state appears to have changed or become more filtered compared with the earlier validated `open` service inventory, so both time-stamped states should be preserved rather than flattened into a single timeless conclusion

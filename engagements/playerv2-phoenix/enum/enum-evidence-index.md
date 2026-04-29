@@ -39,6 +39,41 @@
   - passive packet capture attempt from this runtime was blocked because elevated capture is unavailable on the current Telegram direct session
   - targeted NetBIOS and SSDP follow-up did not validate Pi responses; observed SSDP chatter came from other LAN devices instead, including LG webOS devices at `192.168.1.37` and a media-renderer-like device at `192.168.1.141`
   - live raw captures saved at `engagements/playerv2-phoenix/enum/live/network-enum-2026-04-27_1827.txt`, `engagements/playerv2-phoenix/enum/live/rpcinfo-2026-04-27_1829.txt`, `engagements/playerv2-phoenix/enum/live/udp-enum-2026-04-27_1832.txt`, `engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-27_1834.txt`, and `engagements/playerv2-phoenix/enum/live/udp-followup-2026-04-27_1842.txt`
+  - reusable scripts-first rerun on 2026-04-29 used:
+    - `python3 scripts/orchestration/run_enum_profile.py --profile enum-player-core --target 192.168.1.70 --engagement playerv2-phoenix`
+    - this resolved into reusable scripts including:
+      - `scripts/enum/ports/scan_ports_fast.sh`
+      - `scripts/enum/ports/scan_ports_service.sh`
+      - `scripts/enum/ssh/ssh_probe.sh`
+      - `scripts/enum/ftp/ftp_probe.sh`
+      - `scripts/enum/web/enum_web_basic.sh --safe`
+      - `scripts/enum/services/mqtt_probe.sh --safe`
+  - reusable runner artifacts from 2026-04-29 were written to:
+    - `engagements/playerv2-phoenix/enum/summaries/nmap-fast-192-168-1-70-2026-04-29_141121.md`
+    - `engagements/playerv2-phoenix/enum/summaries/nmap-service-192-168-1-70-2026-04-29_141123.md`
+    - `engagements/playerv2-phoenix/enum/summaries/ssh-probe-192-168-1-70-2026-04-29_141123.md`
+    - `engagements/playerv2-phoenix/enum/summaries/ftp-probe-192-168-1-70-2026-04-29_141126.md`
+    - `engagements/playerv2-phoenix/enum/summaries/web-basic-192-168-1-70-2026-04-29_141129.md`
+    - `engagements/playerv2-phoenix/enum/summaries/mqtt-probe-192-168-1-70-2026-04-29_141142.md`
+  - key scripts-first observations from that rerun:
+    - default fast scan reported `0 hosts up` / no open top-1000 ports
+    - derived service scan became a no-op because no ports were discovered by the fast pass
+    - `ssh_probe.sh` observed no SSH key material at that moment
+    - `mqtt_probe.sh` observed `1883/tcp timed out`
+  - because the earlier engagement had already proven that same-subnet default discovery can be misleading on this segment, the weaker scripts-first output was not accepted as final truth without revalidation
+  - manual no-ARP revalidation on 2026-04-29 used:
+    - `nmap --privileged -Pn -n --disable-arp-ping -sS -sV --version-light --reason -p 22,111 -oA engagements/playerv2-phoenix/enum/live/revalidate-known-noarp-2026-04-29 192.168.1.70`
+    - `nmap --privileged -Pn -n --disable-arp-ping -sU -sV --version-light --reason -p 111,5353 -oA engagements/playerv2-phoenix/enum/live/revalidate-udp-noarp-2026-04-29 192.168.1.70`
+    - `ssh-keyscan -T 5 192.168.1.70 > engagements/playerv2-phoenix/enum/live/ssh-keyscan-2026-04-29.txt`
+    - `timeout 5 bash -lc "printf '' | nc -v -w 3 192.168.1.70 1883" > engagements/playerv2-phoenix/enum/live/mqtt-1883-2026-04-29.txt 2>&1`
+  - fresh 2026-04-29 manual no-ARP results:
+    - host still up when scanned with `-Pn -n --disable-arp-ping`
+    - `22/tcp` -> `filtered` (`no-response`)
+    - `111/tcp` -> `filtered` (`no-response`)
+    - `111/udp` -> `open|filtered`
+    - `5353/udp` -> `open|filtered`
+    - `ssh-keyscan` returned no host keys
+    - raw connect test to `1883/tcp` timed out
 - API-side enum evidence:
   - reproducibility anchor commands used for this phase included:
     - `curl -I https://dev-api.n-compass.online`
@@ -65,4 +100,6 @@
   - current RPC evidence points to a minimal externally visible binder rather than a clearly exposed file-sharing or mount service
   - `mDNS` is now a validated local-network signal worth correlating later with passive discovery traffic or hostname/service advertisements
   - the cloud endpoint now shows a stronger hint of an ASP.NET / Kestrel-backed application behind the ELB, but still no direct binding evidence to the specific Pi
-  - the strongest next proof path is now likely physical or on-device observation rather than more blind network-only probing from this vantage point
+  - the strongest next proof path is still likely physical or on-device observation rather than more blind network-only probing from this vantage point
+  - a new network-state wrinkle now exists: compared with the earlier validated inventory, the 2026-04-29 rerun suggests the target is currently more filtered or less reachable at the service layer even though the host still answers as up under the no-ARP pattern
+  - that shift should be treated as a live state change or timing difference to explain, not as proof that the earlier validated inventory was false

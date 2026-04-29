@@ -26,6 +26,10 @@ nmap --privileged -Pn -n --disable-arp-ping -sU -sV --version-light --reason -p 
 nmap --privileged -Pn -n --disable-arp-ping --script ssh2-enum-algos,ssh-hostkey -p 22 -oA engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-28 192.168.1.70
 nmap --privileged -Pn -n --disable-arp-ping --script rpcinfo -p 111 -oA engagements/playerv2-phoenix/enum/live/rpc-script-2026-04-28 192.168.1.70
 nmap --privileged -Pn -n --disable-arp-ping -sU --script dns-service-discovery -p 5353 -oA engagements/playerv2-phoenix/enum/live/mdns-discovery-2026-04-28 192.168.1.70
+nmap --privileged -Pn -n --disable-arp-ping -sS -sV --version-light --reason -p 22,111 -oA engagements/playerv2-phoenix/enum/live/revalidate-known-noarp-2026-04-29 192.168.1.70
+nmap --privileged -Pn -n --disable-arp-ping -sU -sV --version-light --reason -p 111,5353 -oA engagements/playerv2-phoenix/enum/live/revalidate-udp-noarp-2026-04-29 192.168.1.70
+ssh-keyscan -T 5 192.168.1.70 > engagements/playerv2-phoenix/enum/live/ssh-keyscan-2026-04-29.txt
+timeout 5 bash -lc "printf '' | nc -v -w 3 192.168.1.70 1883" > engagements/playerv2-phoenix/enum/live/mqtt-1883-2026-04-29.txt 2>&1
 ```
 
 ### Core API-side enumeration commands
@@ -47,7 +51,7 @@ done
   - device hostname: `raspberry`
   - device IPv4: `192.168.1.70`
   - device link-local IPv6: `fe80::2ecf:67ff:fe04:bd1`
-  - alternate local consoles: tty2 and tty3 with `raspberry login:` visible
+  - alternate local consoles: tty2 and tty3 with `raspberry login:` visible, reached via `Alt+Fn` rather than `Ctrl+Alt+Fn`
   - trust-related services exposed by failure state: `hardware-check.service` and `vault-mount.service`
 - Current enum objective: validate remote reachability, confirm exposed management/services, and turn the device-side trust-path clues into a concrete service and behavior inventory
 - Important network note: operator VM is on Wi-Fi SSID `NTV360_5GHz`, but the player Raspberry Pi's connected Wi-Fi / SSID is still unknown, so same-network assumptions must be validated instead of assumed
@@ -87,8 +91,45 @@ done
 - Current network picture suggests a deliberately sparse device surface, with SSH, rpcbind, and local-service-discovery signals exposed while the cloud endpoint presents a thin ELB front with a Kestrel-backed application visible only indirectly through selected 404 responses
 - Passive local-network correlation is partially blocked from this chat runtime because elevated packet capture is unavailable here, so stronger mDNS or outbound-flow proof will require either a local privileged capture or physical-on-device observation
 - Follow-up SSH auth-surface characterization on 2026-04-28 confirmed that the target advertises `publickey,password` for candidate users `pi`, `root`, `admin`, `phoenix`, `player`, and `ncompass`; this is useful for account-surface mapping, but no valid credentials were proven from the network side in this pass
-- New physical enum evidence from 2026-04-28 photos shows that the short-lived `tty1` exposure is not only a login banner but can momentarily present an interactive shell prompt as `pi@raspberry` before the lockout path resumes
-- The same transient shell exposure also captured service-style runtime text including `Completed socket interaction for boot stage config` and later `Completed socket interaction for boot stage final`, which suggests the boot path includes an internal staged socket-driven workflow on the primary console
-- This strengthens the current model that `tty1` is a contested runtime surface that briefly exposes live host-side output before being reclaimed by the wrong-device / hardware-lock path
+- On 2026-04-29, this engagement also resumed network enum through the reusable scripts/manifests layer rather than only manual commands. The runner used was:
+  - `python3 scripts/orchestration/run_enum_profile.py --profile enum-player-core --target 192.168.1.70 --engagement playerv2-phoenix`
+  - this resolved into reusable scripts including fast port scan, service scan, SSH probe, FTP probe, safe web basic enum, and safe MQTT probe, all under `scripts/enum/` and `scripts/shared/manifests/`
+- The reusable scripts-first rerun produced a weaker default result set than the earlier validated inventory:
+  - fast top-1000 scan reported `0 hosts up` / no open ports
+  - service scan became a no-op because the fast pass discovered nothing
+  - SSH probe saw no host-key material
+  - MQTT probe observed `1883/tcp timed out`
+- Because earlier enum had already shown that default same-subnet discovery can mislead on this LAN, those weaker results were not accepted as final truth without revalidation
+- Manual no-ARP revalidation on 2026-04-29 then showed the host is still up but currently presents a more filtered service picture than the earlier validated baseline:
+  - `22/tcp` now `filtered` with `no-response`
+  - `111/tcp` now `filtered` with `no-response`
+  - `111/udp` now `open|filtered`
+  - `5353/udp` now `open|filtered`
+  - `ssh-keyscan` returned no host keys at that moment
+  - raw TCP connect test to `1883/tcp` timed out
+- Current interpretation for this network delta:
+  - the earlier validated inventory should still be preserved as real earlier state
+  - the newest rerun should be preserved as a separate later state showing a more filtered or less reachable posture
+  - do not flatten these into a single timeless conclusion, because the target appears to have changed behavior over time or across runtime states
+- New physical enum evidence from 2026-04-28 and later photo captures shows that the short-lived `tty1` exposure was previously not only a login banner but could momentarily present an interactive shell prompt as `pi@raspberry` before the lockout path resumed
+- Current follow-up behavior has shifted: the operator now reports that the `tty1` shell exposure is no longer appearing, with only the OS GUI showing during that window despite no intentional change to the device
+- The same transient shell exposure and startup log window captured service-style runtime text including `Completed socket interaction for boot stage config`, `Completed socket interaction for boot stage final`, and later boot-screen output showing `Complete socket interaction for boot stage local`, which suggests the boot path includes an internal staged socket-driven workflow on the primary console
+- Additional startup and shutdown-path photo evidence now shows service-start and service-stop output that is likely relevant to player/Phoenix behavior, including:
+  - startup-side ordering-cycle clue: `systemd[1]: graphical.target: Job nctv-phoenix.target/start deleted to break ordering cycle starting with graphical.target/start`
+  - prior startup/shutdown-side ordering-cycle clue: `systemd[1]: nctv-phoenix.service: Job hardware-check.service/start deleted to break ordering cycle starting with nctv-phoenix.target/start`
+  - startup log visibility during Plymouth via `Esc`, showing systemd units for filesystems, socket activation, `cloud-init`, `NetworkManager`, Raspberry Pi EEPROM checks, and boot-stage socket-interaction lines
+  - `Stopped nctv-watchdog.service - NCTV Phoenix Directory Watchdog...`
+  - `Stopped nctv-watchdog.service - NCTV Phoenix Directory Watchdog.`
+  - `Stopped target rpcbind.target - RPC Port Mapper.`
+  - `Stopped NetworkManager.service - Network Manager.`
+  - `Closed sshd-unix-local.socket - OpenSSH Server Socket (systemd-ssh-generator, AF_UNIX Local).`
+  - `Reached target shutdown.target - System Shutdown.`
+  - `Reached target poweroff.target - System Power Off.`
+- Operator interaction detail now matters for reproduction:
+  - the shutdown trigger was corrected again to `Fn+Esc`
+  - near the verge of shutdown, pressing `Shift+Esc` appears to be what exposes the stopped-services log output on screen
+  - this suggests the visible log dump may depend on a second key interaction during an in-progress shutdown state rather than appearing automatically every time
+- One of the shutdown captures also shows a filesystem-check-related unit still active during poweroff flow, including `systemd-fsck@...service - File System Check on /dev/disk/by-partuuid/...` and a running job associated with `/dev/sda1`; this should be treated as a potentially relevant storage-state clue until reproduced more cleanly
+- This strengthens the current model that `tty1` is a contested runtime surface that briefly exposes live host-side output before being reclaimed by the wrong-device / hardware-lock path, and also suggests the Phoenix/hardware-check dependency chain deserves direct service-order analysis
 - Old engagement artifacts provide a strong historical hypothesis that serial-derived values matter operationally, especially the confirmed `setup.enc` passphrase `theNTVofthe360isthe360oftheNTV`, but that prior evidence is tied to provisioning / installer recovery work and must not be treated as a proven SSH credential without local validation
 - Immediate enum follow-up should now focus on high-fidelity physical timing and classification of the `tty1` race window, while preserving the distinction between observed shell exposure, staged socket messages, and the later wrong-device takeover

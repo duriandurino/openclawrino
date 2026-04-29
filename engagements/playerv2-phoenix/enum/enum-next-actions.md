@@ -1,13 +1,21 @@
 # Enum Next Actions
 
-- Preserve the validated Phoenix Pi service inventory as the current enum baseline:
-  - `22/tcp` SSH
-  - `111/tcp` and `111/udp` rpcbind
-  - `5353/udp` mDNS / Zeroconf
+- Preserve the validated Phoenix Pi service inventory as the earlier enum baseline, not as an unconditional current-state claim:
+  - earlier validated baseline:
+    - `22/tcp` SSH
+    - `111/tcp` and `111/udp` rpcbind
+    - `5353/udp` mDNS / Zeroconf
+  - latest 2026-04-29 live rerun:
+    - `22/tcp` filtered
+    - `111/tcp` filtered
+    - `111/udp` open|filtered
+    - `5353/udp` open|filtered
 - Treat `137/udp`, `1900/udp`, and `123/udp` as resolved non-findings for the current host unless fresh contradictory evidence appears
 - Keep the Pi/API relationship labeled as likely but unproven until a stronger shared identifier, outbound flow, config artifact, or on-device evidence ties them directly together
 - If privileged local capture becomes available later, use it to correlate mDNS advertisements and outbound `n-compass.online` traffic from `192.168.1.70`
 - Prioritize physical or on-device enum next, because the strongest remaining evidence path is no longer blind network expansion:
+  - the network-side question is now partly a state-change question, not just a discovery question
+  - on-device observation should now help answer whether SSH/rpcbind were disabled, firewalled, or made transient by boot/runtime state changes
   - tty2 through tty6 remain exposed login surfaces
   - tty1 remains the wrong-device prompt
   - observed trust-control components are still `hardware-check.service` and `vault-mount.service`
@@ -17,7 +25,10 @@
   - the service-order explanation is still a hypothesis, not a proven root cause
   - the active `playerv2-phoenix` build is still expected to remain unchanged during this pentest unless fresh live evidence shows otherwise
 - Preserve reporting-ready reality-check language:
-  - sparse but real network surface confirmed
+  - sparse but real network surface was confirmed earlier, but latest reruns show a more filtered current posture
   - alternate local consoles exposed in the failure state
   - no validated console access yet
   - no proven direct API trust binding yet
+- Script reuse note for later reporting and workflow review:
+  - this enum round did use the reusable scripts/manifests layer, but the default fast-scan script path currently misses the previously learned no-ARP requirement for this LAN segment
+  - if this runner is meant to stay reusable for similar targets, the enum script layer should likely be improved later so it can optionally use `-Pn -n --disable-arp-ping` or a comparable host-discovery-safe profile when prior evidence justifies it
