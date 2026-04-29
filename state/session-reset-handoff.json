@@ -1,21 +1,21 @@
 {
-  "timestamp_local": "2026-04-29 16:02:23 PST",
-  "timestamp_iso": "2026-04-29T16:02:23+08:00",
+  "timestamp_local": "2026-04-29 18:02:04 PST",
+  "timestamp_iso": "2026-04-29T18:02:04+08:00",
   "date": "2026-04-29",
   "trigger": "manual-near-50-percent",
-  "summary": "Phoenix recon is wrapped and enum is near ceiling; latest work added explicit command provenance plus final API-side signal showing OPTIONS /api returns 200 OK from Kestrel with permissive CORS/method headers while public GET paths remain flat or 404.",
+  "summary": "Wrapped playerv2-phoenix recon and enum into detailed docs, built Phoenix-only vuln triage, then patched/reporting-validated CVSS v4 label-vector-assumptions surfacing for Viol/Raph before returning to Phoenix vuln work.",
   "key_points": [
-    "Physical enum is blocked without credentials or a new race window; network enum captured both the earlier open-service state and the later filtered-state reruns without flattening them.",
-    "Command provenance for reusable runner, no-ARP revalidation, restart-window watcher, deep API rerun, and methods/host-header pass is now backfilled into enum evidence docs."
+    "Phoenix now has a committed vuln triage sheet with PHX-V01..PHX-V08, and reporting/scripts now surface cvss_label plus cvss_assumptions so CVSS-B/BT/BE/BTE outputs can be rendered explicitly.",
+    "Latest scoring guidance came from pentest-references/cvss/CVSS_V4_ESSENTIALS.md and CVSS_V4_FINDING_SCHEMA.md; implementation patch commit is 5dd2576 and Phoenix vuln triage commit is 4275fb6."
   ],
   "next_actions": [
-    "After reset, resume from Phoenix enum docs and either pivot into vuln analysis or wait for a new clue/runtime change before forcing more blind enumeration."
+    "After reset, resume on playerv2-phoenix vuln phase by converting PHX-V01 to PHX-V03 into score-ready entries with explicit CVSS v4 label, vector, rationale, assumptions, and provisional severity direction."
   ],
   "files": [
-    "engagements/playerv2-phoenix/enum/enum-summary.md"
+    "engagements/playerv2-phoenix/vuln/VULN_TRIAGE_playerv2-phoenix_2026-04-29.md"
   ],
   "branch": "main",
-  "head_before": "64e8626",
+  "head_before": "5dd2576",
   "git_status_before": [
     " M scripts/orchestration/README.md",
     " M vuln/scripts/__pycache__/cve_lookup.cpython-313.pyc",
@@ -92,8 +92,11 @@
     "?? engagements/playerv2-phoenix/reporting/process-overview.md",
     "?? engagements/playerv2-phoenix/reporting/technical-report.md",
     "?? engagements/playerv2-phoenix/reports/",
-    "?? engagements/playerv2-phoenix/vuln/",
-    "?? pentest-references/cvss/",
+    "?? engagements/playerv2-phoenix/vuln/vuln-evidence-index.md",
+    "?? engagements/playerv2-phoenix/vuln/vuln-findings-delta.md",
+    "?? engagements/playerv2-phoenix/vuln/vuln-next-actions.md",
+    "?? engagements/playerv2-phoenix/vuln/vuln-summary.md",
+    "?? engagements/playerv2-phoenix/vuln/vuln-validation-log.md",
     "?? scripts/orchestration/preengagement_analysis_policy.md"
   ],
   "handoff_path": "state/session-reset-handoff.json"
