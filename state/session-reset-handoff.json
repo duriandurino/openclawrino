@@ -1,21 +1,20 @@
 {
-  "timestamp_local": "2026-04-29 18:02:04 PST",
-  "timestamp_iso": "2026-04-29T18:02:04+08:00",
+  "timestamp_local": "2026-04-29 20:14:58 PST",
+  "timestamp_iso": "2026-04-29T20:14:58+08:00",
   "date": "2026-04-29",
   "trigger": "manual-near-50-percent",
-  "summary": "Wrapped playerv2-phoenix recon and enum into detailed docs, built Phoenix-only vuln triage, then patched/reporting-validated CVSS v4 label-vector-assumptions surfacing for Viol/Raph before returning to Phoenix vuln work.",
+  "summary": "Phoenix exploit already confirmed via SD-to-USB trust-break and fail-open local foothold; reporting is cleaned up, current active phase is post-exploitation focused on finding/accessing hidden or protected player files from current foothold evidence.",
   "key_points": [
-    "Phoenix now has a committed vuln triage sheet with PHX-V01..PHX-V08, and reporting/scripts now surface cvss_label plus cvss_assumptions so CVSS-B/BT/BE/BTE outputs can be rendered explicitly.",
-    "Latest scoring guidance came from pentest-references/cvss/CVSS_V4_ESSENTIALS.md and CVSS_V4_FINDING_SCHEMA.md; implementation patch commit is 5dd2576 and Phoenix vuln triage commit is 4275fb6."
+    "PHX-V05 remains blocked by missing repair image/alternate test image, so the best next step after reset is to resume Phoenix post-exploit by building a recovered clues ledger around vault paths, unlock logic, mountpoints, scripts, key/passphrase/device-identity clues, and app data paths."
   ],
   "next_actions": [
-    "After reset, resume on playerv2-phoenix vuln phase by converting PHX-V01 to PHX-V03 into score-ready entries with explicit CVSS v4 label, vector, rationale, assumptions, and provisional severity direction."
+    "After reset, resume Phoenix post-exploit and provide exact actions/commands to run for the hidden-file mission using current or realistically reachable evidence."
   ],
   "files": [
-    "engagements/playerv2-phoenix/vuln/VULN_TRIAGE_playerv2-phoenix_2026-04-29.md"
+    "engagements/playerv2-phoenix/post-exploit/POST_EXPLOIT_WORKPLAN_2026-04-29.md"
   ],
   "branch": "main",
-  "head_before": "5dd2576",
+  "head_before": "03e2a46",
   "git_status_before": [
     " M scripts/orchestration/README.md",
     " M vuln/scripts/__pycache__/cve_lookup.cpython-313.pyc",
@@ -64,8 +63,18 @@
     "?? engagements/playerv2-phoenix/enum/parsed/",
     "?? engagements/playerv2-phoenix/enum/raw/",
     "?? engagements/playerv2-phoenix/enum/summaries/",
-    "?? engagements/playerv2-phoenix/exploit/",
-    "?? engagements/playerv2-phoenix/post-exploit/",
+    "?? engagements/playerv2-phoenix/exploit/attack-paths.md",
+    "?? engagements/playerv2-phoenix/exploit/exploit-activity-log.md",
+    "?? engagements/playerv2-phoenix/exploit/exploit-evidence-index.md",
+    "?? engagements/playerv2-phoenix/exploit/exploit-findings-delta.md",
+    "?? engagements/playerv2-phoenix/exploit/exploit-next-actions.md",
+    "?? engagements/playerv2-phoenix/exploit/exploit-summary.md",
+    "?? engagements/playerv2-phoenix/post-exploit/cleanup-notes.md",
+    "?? engagements/playerv2-phoenix/post-exploit/loot-and-impact-log.md",
+    "?? engagements/playerv2-phoenix/post-exploit/post-exploit-evidence-index.md",
+    "?? engagements/playerv2-phoenix/post-exploit/post-exploit-findings-delta.md",
+    "?? engagements/playerv2-phoenix/post-exploit/post-exploit-next-actions.md",
+    "?? engagements/playerv2-phoenix/post-exploit/post-exploit-summary.md",
     "?? engagements/playerv2-phoenix/registers/asset-register.md",
     "?? engagements/playerv2-phoenix/reporting/PROCESS_OVERVIEW_2026-04-29_1011_SIMULATED.md",
     "?? engagements/playerv2-phoenix/reporting/PROCESS_OVERVIEW_2026-04-29_1046_SIMULATED.md",
@@ -85,18 +94,7 @@
     "?? engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_1052_SIMULATED.docx",
     "?? engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_1052_SIMULATED.md",
     "?? engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_1052_SIMULATED.publish.json",
-    "?? engagements/playerv2-phoenix/reporting/appendix.md",
-    "?? engagements/playerv2-phoenix/reporting/executive-report.md",
-    "?? engagements/playerv2-phoenix/reporting/findings-playerv2-phoenix-simulated.json",
-    "?? engagements/playerv2-phoenix/reporting/presentation-outline.md",
-    "?? engagements/playerv2-phoenix/reporting/process-overview.md",
-    "?? engagements/playerv2-phoenix/reporting/technical-report.md",
     "?? engagements/playerv2-phoenix/reports/",
-    "?? engagements/playerv2-phoenix/vuln/vuln-evidence-index.md",
-    "?? engagements/playerv2-phoenix/vuln/vuln-findings-delta.md",
-    "?? engagements/playerv2-phoenix/vuln/vuln-next-actions.md",
-    "?? engagements/playerv2-phoenix/vuln/vuln-summary.md",
-    "?? engagements/playerv2-phoenix/vuln/vuln-validation-log.md",
     "?? scripts/orchestration/preengagement_analysis_policy.md"
   ],
   "handoff_path": "state/session-reset-handoff.json"
