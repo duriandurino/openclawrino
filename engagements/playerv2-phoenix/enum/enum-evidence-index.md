@@ -20,6 +20,43 @@
     - `rpcinfo -p 192.168.1.70`
     - `showmount -e 192.168.1.70`
     - `ssh -v pi@192.168.1.70`
+  - explicit command provenance for the main 2026-04-29 network outputs:
+    - reusable runner command:
+      ```bash
+      python3 scripts/orchestration/run_enum_profile.py --profile enum-player-core --target 192.168.1.70 --engagement playerv2-phoenix
+      ```
+    - manual no-ARP revalidation command block:
+      ```bash
+      nmap --privileged -Pn -n --disable-arp-ping -sS -sV --version-light --reason -p 22,111 -oA engagements/playerv2-phoenix/enum/live/revalidate-known-noarp-2026-04-29 192.168.1.70
+      nmap --privileged -Pn -n --disable-arp-ping -sU -sV --version-light --reason -p 111,5353 -oA engagements/playerv2-phoenix/enum/live/revalidate-udp-noarp-2026-04-29 192.168.1.70
+      ssh-keyscan -T 5 192.168.1.70 > engagements/playerv2-phoenix/enum/live/ssh-keyscan-2026-04-29.txt
+      timeout 5 bash -lc "printf '' | nc -v -w 3 192.168.1.70 1883" > engagements/playerv2-phoenix/enum/live/mqtt-1883-2026-04-29.txt 2>&1
+      ```
+    - partial restart-window watcher command block:
+      ```bash
+      bash -lc '
+      set -euo pipefail
+      mkdir -p engagements/playerv2-phoenix/enum/live/restart-window-2026-04-29
+      TS=$(date +%Y-%m-%d_%H%M%S)
+      OUTDIR="engagements/playerv2-phoenix/enum/live/restart-window-2026-04-29"
+      {
+        echo "# Restart-window network enum"
+        echo "# started: $(date -Is)"
+        echo "# target: 192.168.1.70"
+        echo
+        for i in $(seq 1 18); do
+          echo "=== cycle $i @ $(date -Is) ==="
+          ping -c 1 -W 1 192.168.1.70 || true
+          nmap --privileged -Pn -n --disable-arp-ping -sS --reason -p 22,111 192.168.1.70 || true
+          nmap --privileged -Pn -n --disable-arp-ping -sU --reason -p 111,5353 192.168.1.70 || true
+          timeout 4 ssh-keyscan -T 3 192.168.1.70 2>/dev/null || true
+          timeout 4 bash -lc "printf '' | nc -v -w 2 192.168.1.70 1883" 2>&1 || true
+          echo
+          sleep 5
+        done
+      } | tee "$OUTDIR/restart-window-$TS.txt"
+      '
+      ```
   - VM interface observed at `192.168.1.63/24`
   - default route observed via `192.168.1.1`
   - `ping` to `192.168.1.70` succeeded
@@ -103,6 +140,61 @@
     - reusable helpers:
       - `bash scripts/enum/web/enum_graphql_basic.sh --target https://dev-api.n-compass.online --engagement playerv2-phoenix --safe`
       - `bash scripts/enum/web/enum_nestjs_api.sh --target https://dev-api.n-compass.online --engagement playerv2-phoenix --safe`
+  - explicit command provenance for the main API-side outputs:
+    - manual deep API rerun command block:
+      ```bash
+      bash -lc '
+      set -euo pipefail
+      ENG=playerv2-phoenix
+      TARGET=https://dev-api.n-compass.online
+      {
+        echo "# API enum rerun $(date -Is)"
+        echo
+        echo "## headers"
+        curl -skI "$TARGET"
+        echo
+        echo "## root body"
+        curl -skL "$TARGET/"
+        echo
+        for path in / /health /healthz /status /graphql /.well-known/security.txt /api /api/health /api/v1 /swagger /swagger-json /api-json /openapi.json /graphiql /playground; do
+          echo "=== $path ==="
+          curl -sk -D - "$TARGET$path" -o /tmp/playerv2_api_body.$$ || true
+          head -c 1200 /tmp/playerv2_api_body.$$ 2>/dev/null || true
+          echo
+          echo
+        done
+        rm -f /tmp/playerv2_api_body.$$
+      } > engagements/$ENG/enum/live/api-deep-rerun-2026-04-29.txt
+      bash scripts/enum/web/enum_graphql_basic.sh --target "$TARGET" --engagement "$ENG" --safe
+      bash scripts/enum/web/enum_nestjs_api.sh --target "$TARGET" --engagement "$ENG" --safe
+      '
+      ```
+    - methods and host-header command block that produced the `OPTIONS /api` result:
+      ```bash
+      bash -lc '
+      set -euo pipefail
+      TARGET=https://dev-api.n-compass.online
+      OUT=engagements/playerv2-phoenix/enum/live/api-methods-and-hosts-2026-04-29.txt
+      {
+        echo "# API methods and host-header enum $(date -Is)"
+        echo
+        for path in / /api /graphql /swagger /openapi.json; do
+          echo "=== OPTIONS $path ==="
+          curl -sk -X OPTIONS -i "$TARGET$path" || true
+          echo
+        done
+        for host in dev-api.n-compass.online api.n-compass.online n-compass.online; do
+          echo "=== Host header: $host ==="
+          curl -sk -i "$TARGET/" -H "Host: $host" || true
+          echo
+        done
+      } > "$OUT"
+      '
+      ```
+    - minimal single command for the strongest final API-side signal:
+      ```bash
+      curl -sk -X OPTIONS -i "https://dev-api.n-compass.online/api"
+      ```
   - `curl -I` to `https://dev-api.n-compass.online` returned `HTTP/1.1 200 OK`
   - header exposed `Server: awselb/2.0`
   - response body returned `This is N-Compass TV.`
