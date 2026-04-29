@@ -5,7 +5,7 @@
 - percent used: unknown
 - source: sessions-store
 - branch: main
-- head before snapshot: 411b110
+- head before snapshot: 944edc6
 
 ## Blockers
 - none
