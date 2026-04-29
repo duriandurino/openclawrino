@@ -1,0 +1,87 @@
+{
+  "target": "playerv2-phoenix",
+  "findings": [
+    {
+      "id": "PHX-V01",
+      "title": "Storage-interface-dependent authorization failure",
+      "severity": "Medium",
+      "affected": "playerv2-phoenix device, hardware-check.service, vault-mount.service",
+      "description": "Phoenix authorization relied on a fixed Linux storage identity assumption rather than a transport-independent identity check for the protected media. The same trusted microSD card was accepted into a materially different runtime state when presented through an external USB SD reader instead of the Pi's native SD slot.",
+      "technical_basis": "The engagement verified that the player image booted successfully when the same microSD card was inserted into an external USB SD adapter and attached to the Raspberry Pi. In that mode the runtime storage appeared as /dev/sda1 and /dev/sda2, while Phoenix trust logic in both hardware_lock.py and unlock_vault.py still attempted to read only /sys/block/mmcblk0/device/cid.",
+      "evidence": "Same Phoenix player microSD booted successfully through a USB SD reader, local commands showed the live root and boot media as /dev/sda2 and /dev/sda1, hardware_lock.py and unlock_vault.py both hardcoded /sys/block/mmcblk0/device/cid, and hardware-check.service crashed because the expected mmcblk0 path did not exist in USB-presented mode.",
+      "impact": "A local attacker with physical device access can bypass the intended hardware-bound authorization condition by changing only how the same media is presented to the system. This weakens the local trust boundary and creates the conditions for a more serious fail-open foothold.",
+      "remediation": "Refactor authorization logic to identify the protected media through stable device attributes independent of Linux block-device naming. Validate the actual trusted media identity across supported presentation modes. Treat inability to confirm the trusted media identity as a secure denial condition.",
+      "hardening": "Centralize media-identity handling so trust logic is not duplicated across multiple scripts. Add regression tests for alternate storage presentation paths, including USB-attached SD readers. Add explicit negative-path tests that prove identity-read failures fail closed.",
+      "retest_guidance": "Reboot the same authorized media in both the native SD slot and a USB SD adapter. Confirm that trusted-media validation still behaves deterministically. Confirm that any identity-read failure results in a locked state rather than a more accessible runtime state.",
+      "cvss": "6.8",
+      "cvss_version": "4.0",
+      "cvss_label": "CVSS-B",
+      "cvss_vector": "CVSS:4.0/AV:P/AC:L/AT:N/PR:N/UI:N/VC:H/VI:L/VA:L/SC:N/SI:N/SA:N",
+      "cvss_severity": "Medium",
+      "cvss_rationale": "The attacker needs physical access to present the same protected media through a USB SD path, but no prior privileges or victim interaction are required. The bypass undermines the intended authorization boundary and can expose sensitive local system access conditions on the vulnerable device itself.",
+      "cvss_assumptions": "Base-only scoring was used. Threat and Environmental metrics were not enriched. This score treats the vulnerability as the authorization-bypass condition itself and keeps the more direct fail-open access consequence in PHX-V02."
+    },
+    {
+      "id": "PHX-V02",
+      "title": "Fail-open local access after hardware-check crash",
+      "severity": "High",
+      "affected": "playerv2-phoenix device, hardware-check.service, local GUI and shell access paths",
+      "description": "When Phoenix authorization logic encountered the missing mmcblk0 CID path, the device did not fail safely. Instead, the lock enforcement component crashed and preserved interactive local access to the underlying OS environment.",
+      "technical_basis": "In the USB-presented exploit state, hardware-check.service repeatedly failed with FileNotFoundError for /sys/block/mmcblk0/device/cid. vault-mount.service dependency-failed afterward, but the system remained in a usable GUI and terminal state. The operator verified local shell access as user pi.",
+      "evidence": "Direct GUI and terminal observation on the target display, whoami returned pi, systemctl status hardware-check.service and journalctl output showed repeated crash on the missing CID path rather than an enforced lock state.",
+      "impact": "A local attacker can preserve a usable foothold on the player after the authorization component crashes. In this engagement, that foothold enabled access to shell history, trust inputs, service logic, vault metadata, and later extension into protected-vault access and secret recovery.",
+      "remediation": "Implement explicit fail-closed behavior for all authorization-check exceptions. Force the device into a minimal locked state when hardware identity cannot be validated. Block local shell and GUI access until an authenticated recovery procedure completes.",
+      "hardening": "Isolate the lock path from nonessential UI startup behavior. Prevent interactive local sessions from appearing before authorization completes. Add integration tests that validate crash handling, missing-path handling, and dependency-failure handling.",
+      "retest_guidance": "Repeat the USB-presented boot path. Confirm that an identity-read failure produces an enforced locked state rather than GUI or shell access. Confirm logs show a clean denial path rather than an uncaught exception.",
+      "cvss": "7.3",
+      "cvss_version": "4.0",
+      "cvss_label": "CVSS-B",
+      "cvss_vector": "CVSS:4.0/AV:P/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:L/SC:N/SI:N/SA:N",
+      "cvss_severity": "High",
+      "cvss_rationale": "Physical access is required, but the attacker does not need existing credentials or user participation. Once the enforcement component crashes, the device preserves local shell and GUI access instead of failing safely, resulting in direct confidentiality and integrity exposure on the vulnerable system.",
+      "cvss_assumptions": "Base-only scoring was used. Threat and Environmental metrics were not enriched. This finding is intentionally kept separate from PHX-V01 and scored as the fail-open consequence after the authorization path crashes."
+    },
+    {
+      "id": "PHX-V03",
+      "title": "Sensitive provisioning artifact exposure in shell history",
+      "severity": "High",
+      "affected": "/home/pi/.bash_history, provisioning workflow, related setup secrets and deployment material",
+      "description": "Local shell history retained a plaintext provisioning command containing a remote setup host and passphrase. Because PHX-V02 preserved local shell access, that history became directly accessible during the engagement.",
+      "technical_basis": "Inspection of /home/pi/.bash_history revealed a curl plus openssl provisioning command containing the setup host and passphrase. stat confirmed the history file was active in the current month and contained other local operator commands.",
+      "evidence": "sed inspection of /home/pi/.bash_history revealed the plaintext provisioning command and passphrase. stat on the history file placed the artifact in the current operational period.",
+      "impact": "A local attacker with shell access can recover secret-bearing provisioning material, deployment workflow knowledge, and a potentially reusable setup passphrase. This may enable reinstallation abuse, recovery-path abuse, environment cloning, or related attack chaining.",
+      "remediation": "Remove secret-bearing provisioning commands from shell history. Rotate any setup passphrases, bootstrap commands, and related deployment credentials that may still be valid. Move provisioning secrets into protected, noninteractive channels.",
+      "hardening": "Disable or strictly control shell history for privileged provisioning workflows. Use one-time, device-bound, or short-lived bootstrap material instead of static passphrases. Audit historical images and field workflows for similar retained provisioning artifacts.",
+      "retest_guidance": "Confirm shell history no longer contains plaintext secret-bearing provisioning commands. Confirm any prior passphrase or setup artifact is no longer valid. Verify historical provisioning material cannot be reused successfully.",
+      "cvss": "7.1",
+      "cvss_version": "4.0",
+      "cvss_label": "CVSS-B",
+      "cvss_vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:L/SC:N/SI:N/SA:N",
+      "cvss_severity": "High",
+      "cvss_rationale": "The attacker needs local access to the shell history context, which in this engagement was realistically obtainable after the fail-open path. No extra victim interaction is needed, and the recovered provisioning command exposes operationally useful secret material and deployment workflow details that may support further compromise.",
+      "cvss_assumptions": "Base-only scoring was used. Threat and Environmental metrics were not enriched. This score assumes the exposed provisioning passphrase and command structure remain operationally useful enough to support attack chaining, as judged from current engagement context."
+    }
+  ],
+  "enhancements": [
+    {
+      "category": "Architecture",
+      "recommendation": "Redesign trusted-media validation to be transport-independent and centralized rather than duplicated across multiple scripts."
+    },
+    {
+      "category": "Failure handling",
+      "recommendation": "Implement deterministic fail-closed behavior whenever media identity cannot be resolved or validated."
+    },
+    {
+      "category": "Secret management",
+      "recommendation": "Rotate and remove retained provisioning secrets, and move bootstrap workflows away from plaintext shell-history exposure."
+    },
+    {
+      "category": "Vault and key protection",
+      "recommendation": "Reassess vault key derivation, DB key placement, and private-key storage so a local foothold cannot reproduce protected access from product-resident inputs alone."
+    },
+    {
+      "category": "Recovery hardening",
+      "recommendation": "Require authenticated and signed recovery sources before any repair or restore workflow can modify protected media."
+    }
+  ]
+}
