@@ -7,6 +7,7 @@ from typing import Any
 
 CVSS_V4_VERSION = "4.0"
 CVSS_V4_LABEL = "CVSS-B"
+CVSS_V4_ALLOWED_LABELS = {"CVSS-B", "CVSS-BT", "CVSS-BE", "CVSS-BTE"}
 CVSS_V4_VERSION_LABEL = "CVSS v4.0 Base"
 
 
@@ -48,12 +49,22 @@ def severity_from_score(score: Any) -> str | None:
     return None
 
 
+def _normalize_label(label: Any) -> str:
+    text = _clean_text(label)
+    if not text:
+        return CVSS_V4_LABEL
+    upper = text.upper()
+    if upper in CVSS_V4_ALLOWED_LABELS:
+        return upper
+    return CVSS_V4_LABEL
+
+
 def make_cvss_v4(*, score: Any = None, vector: Any = None, severity: Any = None,
                  rationale: Any = None, assumptions: Any = None,
                  version: Any = CVSS_V4_VERSION, label: Any = CVSS_V4_LABEL) -> dict:
     payload = {
         "version": _clean_text(version) or CVSS_V4_VERSION,
-        "label": _clean_text(label) or CVSS_V4_LABEL,
+        "label": _normalize_label(label),
         "score": _normalize_score(score),
         "vector": _clean_text(vector),
         "severity": _clean_text(severity),
