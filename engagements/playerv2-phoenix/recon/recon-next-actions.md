@@ -6,8 +6,9 @@
   - local device hostname `raspberry`
   - local IPv4 `192.168.1.70`
   - local link-local IPv6 `fe80::2ecf:67ff:fe04:bd1`
-  - visible login consoles on tty2 and tty3
-  - observed trust-control components `hardware-check.service` and `vault-mount.service`
+  - visible login consoles on tty2 through tty6 via `Alt + Fn`, with `Alt + F1` returning to the wrong-device prompt
+  - observed trust-control components `hardware-check.service`, `vault-mount.service`, and `nctv-watchdog.service`
+  - observed startup visibility path through Plymouth via `Esc`
 - Note the remaining recon uncertainty that may affect enum planning:
   - the operator VM is connected to Wi-Fi SSID `NTV360_5GHz`
   - the player Raspberry Pi Wi-Fi / SSID is still unknown
@@ -15,9 +16,14 @@
 - Defer deeper active probing to enum, especially SSH reachability checks, systemd/service inspection, and host-level validation
 - Preserve the current physical recon conclusion for enum and later reporting:
   - tty2 through tty6 are exposed login surfaces in the failure state
-  - tty1 remains the wrong-device prompt surface
+  - tty1 remains the wrong-device prompt surface, though earlier testing briefly showed a non-stable shell exposure that is not consistently reproducible now
   - default `pi` / `raspberry` login did not succeed
   - early-boot `F1` behavior can temporarily expose SD boot text and a short-lived GUI window before the lockout path takes over
+  - pressing `Esc` during the NTV logo / Plymouth screen can reveal startup logs and service-order clues before `tty1` takes over
+  - `Fn + Esc` appears to trigger a full shutdown path, and `Shift + Esc` near shutdown can reveal stopped-service logs
 - Preserve the current boundary / coordination note for later phases:
   - the client was informed early about the probable late-start ordering issue around `hardware-check.service`
   - no defensive change is currently expected on the active `playerv2-phoenix` version under test unless fresh live evidence proves otherwise
+- Recon-to-enum handoff emphasis:
+  - the next phase should treat the Phoenix boot chain as timing-sensitive and service-order-sensitive
+  - the most promising enum paths are the exposed TTY login surfaces, the `tty1` race behavior if it reappears, and service/dependency correlation around `nctv-phoenix`, `hardware-check`, `vault-mount`, and `nctv-watchdog`

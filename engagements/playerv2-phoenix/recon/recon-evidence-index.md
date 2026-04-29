@@ -22,17 +22,37 @@
     - the operator asked OpenClaw which low-risk keys and TTY shortcuts to try next
     - the successful branch was the virtual-console path rather than random single-key testing
   - low-risk single keys, harmless control keys, function keys, safer modifier combos, and higher-signal combos produced no visible change on the main wrong-device prompt
-  - `Ctrl + Alt + F1` returns to the wrong-device prompt / main TTY
-  - `Ctrl + Alt + F2` exposed tty2 login output with `Debian GNU/Linux 13 raspberry tty2`, `My IP address is 192.168.1.70`, and `raspberry login:`
-  - `Ctrl + Alt + F3` exposed tty3 login output after failure prompts appeared, matching the same hostname/login/IP disclosure pattern
+  - key-path correction: later live retesting showed the effective TTY-switching method was `Alt + Fn`, not `Ctrl + Alt + Fn`
+  - `Alt + F1` returns to the wrong-device prompt / main TTY
+  - `Alt + F2` exposed tty2 login output with `Debian GNU/Linux 13 raspberry tty2`, `My IP address is 192.168.1.70`, and `raspberry login:`
+  - `Alt + F3` exposed tty3 login output after failure prompts appeared, matching the same hostname/login/IP disclosure pattern
   - tty4 through tty6 present the same login-banner behavior as tty2 and tty3
-  - `Ctrl + Alt + F7` produced a blank screen with blinking `-` after failure prompts appeared
+  - `Ctrl + Alt + F7` was earlier observed to produce a blank screen with blinking `-` after failure prompts appeared, but the primary reproduced finding is the lower-friction `Alt + Fn` console path
+  - during early startup, pressing `F1` can divert execution into visible SD-mode boot text including `Progress: Trying boot mode SD`
+  - while the NTV logo / Plymouth screen is active, pressing `Esc` reveals a short-lived startup log screen before `tty1` takes over
+  - current startup-log photo evidence includes visible lines for local and remote filesystem setup, socket units, `cloud-init`, `NetworkManager`, Raspberry Pi EEPROM checks, and `Complete socket interaction for boot stage local`
+  - shortcut correction history for shutdown path:
+    - initial belief: `Ctrl + Alt + Esc`
+    - later belief: `Alt + Esc`
+    - latest confirmed operator correction: `Fn + Esc`
+  - `Fn + Esc` appears to trigger a real poweroff path
+  - near the verge of shutdown, pressing `Shift + Esc` appears to expose the stopped-services log output on screen
 - Local credential validation results:
   - default username `pi` with password `raspberry` did not produce console access on tty2 / tty3
   - no additional user or recovery clues were exposed from the repeated tty surfaces
+- Additional verbatim or near-verbatim photo-derived service evidence:
+  - startup-side ordering-cycle clue: `systemd[1]: graphical.target: Job nctv-phoenix.target/start deleted to break ordering cycle starting with graphical.target/start`
+  - Phoenix / hardware-check ordering clue from other captured output: `systemd[1]: nctv-phoenix.service: Job hardware-check.service/start deleted to break ordering cycle starting with nctv-phoenix.target/start`
+  - shutdown-side service-stop clues include:
+    - `Stopped nctv-watchdog.service - NCTV Phoenix Directory Watchdog...`
+    - `Stopped nctv-watchdog.service - NCTV Phoenix Directory Watchdog.`
+    - `Reached target shutdown.target - System Shutdown.`
+    - `Reached target poweroff.target - System Power Off.`
 - Evidence artifacts:
   - photo of initial unauthorized state showing `WRONG DEVICE` and the access-denied message
   - photo of later boot/runtime state showing the same unauthorized message plus the `hardware-check.service` and `vault-mount.service` failures
+  - startup and shutdown photo sets capturing boot logs, ordering-cycle lines, and stopped-service output during Plymouth and poweroff sequences
   - operator notes in `media/inbound/keys---74fb1190-2df3-48f7-a833-1033a549c293.md`
 - Evidence quality note:
-  - the current evidence now includes exact text for the most important screen and console outputs; screenshots or photos of the tty2/tty6 login screens would strengthen this further if needed
+  - the current evidence now includes exact text or near-verbatim photo capture for the most important screen and console outputs, plus a clearer process trail showing which keys revealed which states
+  - the strongest remaining evidence upgrade would be clearer per-TTY photos or a video/timeline capture showing transition order between Plymouth logs, GUI exposure, `tty1`, and wrong-device takeover

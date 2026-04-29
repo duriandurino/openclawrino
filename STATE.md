@@ -1,11 +1,11 @@
 # STATE.md
 
 ## Session pressure
-- state: snapshot
-- percent used: 54
-- source: openclaw-status
+- state: unknown
+- percent used: unknown
+- source: sessions-store
 - branch: main
-- head before snapshot: 3aace90
+- head before snapshot: 97d80d3
 
 ## Blockers
 - none

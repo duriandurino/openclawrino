@@ -13,19 +13,30 @@
   - `hardware-check.service - NCTV Phoenix Hardware Lockout Screen`
   - `vault-mount.service - Unlock and Mount NCTV Phoenix Vault`
 - Controlled TTY switching produced high-value recon evidence:
-  - `Ctrl + Alt + F2` exposed `Debian GNU/Linux 13 raspberry tty2`
-  - `Ctrl + Alt + F3` exposed `Debian GNU/Linux 13 raspberry tty3`
+  - key-path correction: the working virtual-console method was later rechecked and corrected to `Alt + Fn`, not `Ctrl + Alt + Fn`
+  - `Alt + F2` exposed `Debian GNU/Linux 13 raspberry tty2`
+  - `Alt + F3` exposed `Debian GNU/Linux 13 raspberry tty3`
   - both consoles displayed IPv4 address `192.168.1.70`
   - both consoles displayed link-local IPv6 address `fe80::2ecf:67ff:fe04:bd1`
   - both consoles reached a visible `raspberry login:` prompt once failure conditions had appeared
-  - `Ctrl + Alt + F1` returns to the wrong-device prompt / main TTY
-  - `Ctrl + Alt + F7` produced only a blank screen with blinking `-` after failures
+  - `Alt + F1` returns to the wrong-device prompt / main TTY
+  - tty4 through tty6 later matched the same exposed-login-surface pattern
+  - an earlier observation of `Ctrl + Alt + F7` producing only a blank screen with blinking `-` was preserved, but the stronger reproducible finding is the simpler `Alt + Fn` path
 - These observations increase confidence that the engagement includes a meaningful device-side trust path in addition to the confirmed API surface, and that the lockout screen does not fully seal alternate local consoles once the failure state is reached
 - Physical follow-up now confirms that tty2 through tty6 behave consistently as exposed login surfaces, while tty1 remains isolated to the wrong-device prompt
 - Default `pi` / `raspberry` access was attempted on the exposed login consoles and did not succeed, so the current state is console exposure without validated local credential access
 - New boot-sequence recon expands the local exposure picture:
   - pressing `F1` during early startup can divert into an SD / boot-text path that visibly shows `Progress: Trying boot mode SD`
+  - while the NTV logo / Plymouth screen is active, pressing `Esc` can reveal a short-lived startup log screen before `tty1` takes over
+  - startup log output includes filesystems, sockets, `cloud-init`, `NetworkManager`, Raspberry Pi EEPROM checks, and `Complete socket interaction for boot stage local`
   - a short-lived GUI-like environment can become reachable before the lockout path later reclaims the system
+  - a previously observed `tty1` shell exposure is no longer consistently appearing in current live testing despite no reported intentional change, which increases confidence that the behavior is a timing-dependent race window rather than a stable state
+  - new startup-side service-order evidence includes `systemd[1]: graphical.target: Job nctv-phoenix.target/start deleted to break ordering cycle starting with graphical.target/start`
+  - prior related evidence already showed `systemd[1]: nctv-phoenix.service: Job hardware-check.service/start deleted to break ordering cycle starting with nctv-phoenix.target/start`
   - operator interpretation is that `hardware-check.service` likely starts too late, after GUI / `tty1` exposure, creating a transient race window before the wrong-device workflow fully owns the console
   - the operator has already relayed this early-hardening observation to the client, but the current `playerv2-phoenix` build under test is still expected to remain unchanged during this engagement unless live evidence shows otherwise
+- Additional shutdown-path recon observations add platform and service-mapping value without yet crossing into exploit claims:
+  - `Fn + Esc` appears to trigger a real poweroff path
+  - near the verge of shutdown, pressing `Shift + Esc` appears to expose stopped-service logs
+  - newly observed stopped services include `nctv-watchdog.service - NCTV Phoenix Directory Watchdog...`
 - Current interpretation is still reconnaissance only: these are observations and hypotheses, not yet validated findings or exploit claims
