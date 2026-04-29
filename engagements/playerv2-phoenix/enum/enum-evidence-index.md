@@ -114,6 +114,14 @@
   - `/api`, `/api/health`, and `/api/v1` returned `404 Not Found` with `Server: Kestrel`, indicating a reachable backend application tier behind the ELB
   - later rerun showed `/api-json` also returned `404 Not Found` with `Server: Kestrel`
   - later rerun showed `/graphql`, `/swagger`, `/swagger-json`, `/openapi.json`, `/graphiql`, and `/playground` still returned the same `200 OK` plain-text body `This is N-Compass TV.` through the ELB rather than a proven docs/UI/API surface
+  - final low-noise methods/host-header rerun saved at `engagements/playerv2-phoenix/enum/live/api-methods-and-hosts-2026-04-29.txt`
+  - `OPTIONS /api` returned `200 OK` from `Server: Kestrel` with:
+    - `Access-Control-Allow-Credentials: true`
+    - `Access-Control-Allow-Headers: Content-Type, Authorization`
+    - `Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS`
+    - `Access-Control-Allow-Origin: *`
+  - this is stronger evidence that `/api` is a handled backend route family even though direct `GET /api` remains `404`
+  - host-header variations using `dev-api.n-compass.online`, `api.n-compass.online`, and `n-compass.online` on `/` all returned the same flat ELB-side body, so no alternate vhost behavior was exposed by this pass
   - per-IP `--resolve` checks against both AWS A records behaved consistently with the hostname
   - live raw capture saved at `engagements/playerv2-phoenix/enum/live/api-linkage-2026-04-27_1834.txt`
   - later deep rerun saved at `engagements/playerv2-phoenix/enum/live/api-deep-rerun-2026-04-29.txt`

@@ -16,6 +16,7 @@
   - several root-like paths return the same `This is N-Compass TV.` response
   - later deeper reruns showed the same flat-response behavior even on pseudo-GraphQL and pseudo-doc routes such as `/graphql`, `/swagger`, `/swagger-json`, `/openapi.json`, `/graphiql`, and `/playground`
   - `/api`, `/api/health`, `/api/v1`, and later `/api-json` returned `404` from `Kestrel`, indicating a backend app tier exists behind the ELB
+  - final methods probing showed `OPTIONS /api` returns `200 OK` with permissive CORS and allowed methods from `Kestrel`, which is a stronger sign that `/api` is a backend-handled route family even though simple GET probes stay 404
   - the current evidence still does not prove a live GraphQL endpoint, GraphiQL UI, Swagger UI, or exposed OpenAPI document on the public surface
 - Current enum interpretation remains careful:
   - the Pi and API are likely operationally related

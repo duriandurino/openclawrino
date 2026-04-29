@@ -13,6 +13,7 @@
 - Treat `137/udp`, `1900/udp`, and `123/udp` as resolved non-findings for the current host unless fresh contradictory evidence appears
 - Keep the Pi/API relationship labeled as likely but unproven until a stronger shared identifier, outbound flow, config artifact, or on-device evidence ties them directly together
 - Treat further blind public-path spraying on the current API surface as lower-value unless a new host-side clue suggests specific routes, headers, tokens, hostnames, or request patterns
+- If API work resumes later, the best next API-side value is no longer generic route guessing; it is targeted request-shape testing against the `/api` backend family, because `OPTIONS /api` proved a live Kestrel-handled route surface with permissive CORS/method metadata even while GET stayed 404
 - If privileged local capture becomes available later, use it to correlate mDNS advertisements and outbound `n-compass.online` traffic from `192.168.1.70`
 - Prioritize physical or on-device enum next, because the strongest remaining evidence path is no longer blind network expansion:
   - the network-side question is now partly a state-change question, not just a discovery question
