@@ -1,36 +1,22 @@
 {
-  "updatedAt": "2026-04-29T11:05:44+08:00",
-  "trigger": "manual",
-  "pressure": {
-    "updatedAt": "2026-04-29T11:05:44+08:00",
-    "sessionKey": "agent:main:telegram:direct:6018252086",
-    "sessionId": "d4be2e01-411f-4056-a6c2-de733251b695",
-    "source": "openclaw-status",
-    "percentUsed": 54,
-    "totalTokens": 145931,
-    "contextTokens": 272000,
-    "remainingTokens": 126069,
-    "warningThreshold": 40,
-    "snapshotThreshold": 48,
-    "pressureState": "snapshot",
-    "lastSnapshotHash": "f2d2a4d4988e1abb923fce5b5104a3e19b0a8ef3e1c37e21dc864a88c69eac3f",
-    "lastSnapshotAt": "2026-04-29T11:05:44+08:00",
-    "shouldSnapshot": true
-  },
-  "currentTask": "Fix and validate the process overview publishing pipeline for playerv2-phoenix, including gog auth recovery and using a richer preferred process overview source during simulated publishing.",
-  "objective": "Leave a reset-safe handoff with the repaired gog auth flow, the process overview source-selection fix, and the latest simulated publish outputs/links clearly preserved.",
-  "keyPoints": [],
-  "decisions": [],
-  "blockers": [],
-  "nextSteps": [
-    "After reset, resume by checking the latest publish summary and, if needed, refining the process overview pipeline behavior from the new living source file or validating the newest published Google Doc against local source."
+  "timestamp_local": "2026-04-29 16:01:38 PST",
+  "timestamp_iso": "2026-04-29T16:01:38+08:00",
+  "date": "2026-04-29",
+  "trigger": "manual-near-50-percent",
+  "summary": "Phoenix recon is wrapped and enum is near ceiling; latest work added explicit command provenance plus final API-side signal showing OPTIONS /api returns 200 OK from Kestrel with permissive CORS/method headers while public GET paths remain flat or 404.",
+  "key_points": [
+    "Physical enum is blocked without credentials or a new race window; network enum captured both the earlier open-service state and the later filtered-state reruns without flattening them.",
+    "Command provenance for reusable runner, no-ARP revalidation, restart-window watcher, deep API rerun, and methods/host-header pass is now backfilled into enum evidence docs."
   ],
-  "files": [],
-  "preferences": [],
-  "assumptions": [],
+  "next_actions": [
+    "After reset, resume from Phoenix enum docs and either pivot into vuln analysis or wait for a new clue/runtime change before forcing more blind enumeration."
+  ],
+  "files": [
+    "engagements/playerv2-phoenix/enum/enum-summary.md"
+  ],
   "branch": "main",
-  "headBefore": "3aace90",
-  "gitStatusBefore": [
+  "head_before": "b29faf8",
+  "git_status_before": [
     " M scripts/orchestration/README.md",
     " M vuln/scripts/__pycache__/cve_lookup.cpython-313.pyc",
     "?? -.md",
@@ -57,17 +43,27 @@
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.md",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.pptx",
     "?? engagements/hardwarelockv2/06-report/REPORT_FINAL_hardwareLockV2_2026-04-14_1608.publish.json",
+    "?? engagements/playerv2-phoenix/enum/live/api-deep-rerun-2026-04-29.txt",
     "?? engagements/playerv2-phoenix/enum/live/api-linkage-2026-04-27_1834.txt",
+    "?? engagements/playerv2-phoenix/enum/live/api-methods-and-hosts-2026-04-29.txt",
     "?? engagements/playerv2-phoenix/enum/live/fulltcp-refresh-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/mqtt-1883-2026-04-29.txt",
     "?? engagements/playerv2-phoenix/enum/live/network-enum-2026-04-27_1827.txt",
+    "?? engagements/playerv2-phoenix/enum/live/restart-window-2026-04-29/",
     "?? engagements/playerv2-phoenix/enum/live/revalidate-known-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/revalidate-known-noarp-2026-04-29.gnmap",
     "?? engagements/playerv2-phoenix/enum/live/revalidate-known-retry-2026-04-28.gnmap",
     "?? engagements/playerv2-phoenix/enum/live/revalidate-udp-2026-04-28.gnmap",
+    "?? engagements/playerv2-phoenix/enum/live/revalidate-udp-noarp-2026-04-29.gnmap",
     "?? engagements/playerv2-phoenix/enum/live/revalidate-udp-retry-2026-04-28.gnmap",
     "?? engagements/playerv2-phoenix/enum/live/rpcinfo-2026-04-27_1829.txt",
     "?? engagements/playerv2-phoenix/enum/live/ssh-deep-2026-04-27_1834.txt",
+    "?? engagements/playerv2-phoenix/enum/live/ssh-keyscan-2026-04-29.txt",
     "?? engagements/playerv2-phoenix/enum/live/udp-enum-2026-04-27_1832.txt",
     "?? engagements/playerv2-phoenix/enum/live/udp-followup-2026-04-27_1842.txt",
+    "?? engagements/playerv2-phoenix/enum/parsed/",
+    "?? engagements/playerv2-phoenix/enum/raw/",
+    "?? engagements/playerv2-phoenix/enum/summaries/",
     "?? engagements/playerv2-phoenix/exploit/",
     "?? engagements/playerv2-phoenix/post-exploit/",
     "?? engagements/playerv2-phoenix/registers/asset-register.md",
@@ -100,5 +96,5 @@
     "?? pentest-references/cvss/",
     "?? scripts/orchestration/preengagement_analysis_policy.md"
   ],
-  "snapshotHash": "f2d2a4d4988e1abb923fce5b5104a3e19b0a8ef3e1c37e21dc864a88c69eac3f"
+  "handoff_path": "state/session-reset-handoff.json"
 }
