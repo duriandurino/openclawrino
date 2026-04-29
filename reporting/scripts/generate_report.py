@@ -1054,10 +1054,10 @@ def generate_report(data):
     return "\n".join(lines)
 
 
-def _find_phase_summary_paths(target):
+def _find_engagement_base(target):
     slug = (target or "").strip()
     if not slug:
-        return []
+        return None
 
     candidates = []
     direct = ROOT / "engagements" / slug
@@ -1078,17 +1078,25 @@ def _find_phase_summary_paths(target):
                 candidates.append(child)
 
     seen = set()
-    phase_files = []
     for base in candidates:
         key = str(base)
-        if key in seen or not base.exists():
+        if key in seen:
             continue
         seen.add(key)
-        phase_files.extend(sorted(base.glob("*/**/*_SUMMARY_*.md")))
-        phase_files.extend(sorted(base.glob("*/**/*-summary.md")))
-        phase_files.extend(sorted(base.glob("*/**/*summary.md")))
-        if phase_files:
-            break
+        if base.exists() and base.is_dir():
+            return base
+    return None
+
+
+def _find_phase_summary_paths(target):
+    base = _find_engagement_base(target)
+    if not base:
+        return []
+
+    phase_files = []
+    phase_files.extend(sorted(base.glob("*/**/*_SUMMARY_*.md")))
+    phase_files.extend(sorted(base.glob("*/**/*-summary.md")))
+    phase_files.extend(sorted(base.glob("*/**/*summary.md")))
 
     unique = []
     seen_paths = set()
@@ -1102,6 +1110,25 @@ def _find_phase_summary_paths(target):
         seen_paths.add(resolved)
         unique.append(path)
     return unique
+
+
+def _find_existing_process_overview_source(target):
+    base = _find_engagement_base(target)
+    if not base:
+        return None
+    reporting_dir = base / "reporting"
+    if not reporting_dir.exists():
+        return None
+
+    living_doc = reporting_dir / "process-overview.md"
+    if living_doc.exists() and living_doc.is_file():
+        return living_doc
+
+    timestamped = sorted(reporting_dir.glob("PROCESS_OVERVIEW_*.md"), key=lambda p: p.stat().st_mtime, reverse=True)
+    for path in timestamped:
+        if path.is_file():
+            return path
+    return None
 
 
 def _load_phase_source_snippets(target, max_chars=2400):
@@ -1124,6 +1151,15 @@ def _load_phase_source_snippets(target, max_chars=2400):
 
 def generate_process_overview(data):
     target = data.get("target", "Unknown Target")
+    existing_source = _find_existing_process_overview_source(target)
+    if existing_source:
+        try:
+            text = existing_source.read_text(encoding="utf-8", errors="ignore").strip()
+            if text:
+                return text
+        except Exception:
+            pass
+
     date_label = datetime.now().strftime("%Y-%m-%d %H:%M %Z").strip()
     findings = data.get("findings", [])
     preengagement = load_preengagement_context(target) if not data.get("quick_scan") else {}
