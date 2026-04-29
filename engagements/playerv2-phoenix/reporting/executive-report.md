@@ -65,8 +65,8 @@ Use the final Phoenix report structure in this order:
 4. **PHX-V04** as supporting root-cause architecture
 5. **PHX-V05** as a supported candidate pending safest-first live validation
 
-Keep **PHX-V06** and **PHX-V07** in reserve unless later validation promotes them. Keep **PHX-V08** as context only.
+Keep **PHX-V06** in reserve as a supported but not-yet-reproducible startup-race candidate. Keep **PHX-V07** in reserve as a likely low-severity candidate or hardening observation unless stronger validation promotes it. Keep **PHX-V08** as context only.
 
 ## Recommended next step
 
-Proceed with final report development using PHX-V01 through PHX-V03 as the verified findings set, PHX-V04 as supporting architecture, and PHX-V05 in a clearly labeled pending-validation position. Note explicitly that the live recovery-path test was blocked in this engagement state because the required repair image or alternate test image was unavailable.
+Proceed with final report development using PHX-V01 through PHX-V03 as the verified findings set, PHX-V04 as supporting architecture, and PHX-V05 in a clearly labeled pending-validation position. Note explicitly that the live recovery-path test was blocked in this engagement state because the required repair image or alternate test image was unavailable. Keep PHX-V06 and PHX-V07 outside the main scored set unless later replay produces tighter reproducibility and impact framing.

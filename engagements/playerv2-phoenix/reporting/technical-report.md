@@ -1,25 +1,58 @@
-# PlayerV2 Phoenix — Technical Report Draft
+# PlayerV2 Phoenix — Technical Report
 
 Date: 2026-04-29
 Target: playerv2-phoenix
-Status: Draft, first-wave findings prepared for reporting
+Status: Final draft for current engagement state
+Scoring standard: CVSS v4.0
 
-## Reporting scope for this pass
+## 1. Executive technical summary
 
-This draft prepares the first three Phoenix findings for report-ready use:
+The current Phoenix assessment identified three verified findings that form a coherent local attack chain, plus one supporting architectural weakness and one meaningful but still unverified recovery-path candidate.
+
+The verified path is:
+1. **PHX-V01** — authorization can be disrupted by changing how the same storage is presented to the device
+2. **PHX-V02** — when that trust path fails, enforcement crashes and preserves local access instead of denying it safely
+3. **PHX-V03** — once local access is preserved, sensitive provisioning material can be recovered from shell history
+
+A supporting architectural issue, **PHX-V04**, helps explain why the trust failure propagates into a wider inconsistent security state. A separate recovery-path concern, **PHX-V05**, is supported by recovered script evidence but remains unverified because live acceptance testing could not be completed without the required repair image or alternate test image.
+
+## 2. Report scope for this draft
+
+This report reflects the current validated state of the Phoenix engagement.
+
+### Verified findings
 - **PHX-V01 — Storage-interface-dependent authorization failure**
 - **PHX-V02 — Fail-open local access after hardware-check crash**
 - **PHX-V03 — Sensitive provisioning artifact exposure in shell history**
 
-These are the strongest currently verified Phoenix findings and reflect the latest analyst decisions:
-- PHX-V01 and PHX-V02 remain separate
-- PHX-V03 is treated as still operationally useful if missed in a real attack
+### Supporting architecture
+- **PHX-V04 — Fragile vault authorization chain and dependency-only gating**
 
-## Root-cause support note — PHX-V04
+### Supported but unverified candidate
+- **PHX-V05 — Recovery-path abuse potential via `repairman.sh`**
 
-The first-wave findings are reinforced by a supporting architectural weakness tracked as **PHX-V04 — Fragile vault authorization chain and dependency-only gating**. This item is not being promoted as a separate top-tier finding in this report pass because its attacker benefit overlaps heavily with PHX-V01 and PHX-V02. However, it materially explains why the Phoenix trust boundary fails so awkwardly.
+### Secondary or contextual items not promoted as final findings in this draft
+- **PHX-V06** — supported / partially observed startup-race candidate, not yet reproducible enough for final scoring
+- **PHX-V07** — low-severity local availability candidate or hardening observation, not yet bounded tightly enough for final scoring
+- **PHX-V08** — environment context only, not a standalone report finding
 
-The current design chains `vault-mount.service` behind `hardware-check.service`, and the vault-unlock logic repeats the same brittle `mmcblk0`-specific identity assumption seen in the main authorization path. In effect, the device does not just have one fragile trust decision. It duplicates that trust assumption across multiple linked components, increasing the chance that a single device-path mismatch produces a wider inconsistent security state.
+## 3. Verified finding chain
+
+The strongest Phoenix story is not a loose collection of unrelated issues. It is a sequence of trust and enforcement failures.
+
+First, the device’s authorization logic depends on the storage appearing as `mmcblk0`, rather than identifying the trusted media in a transport-independent way. That makes the trust decision fragile.
+
+Second, when this trust assumption breaks in the USB-presented path, the enforcement component does not fail closed. It crashes and leaves the operator with local shell or GUI access.
+
+Third, that preserved local access exposes operationally valuable provisioning material in shell history, including a setup host, decryption workflow, and plaintext passphrase.
+
+This sequence matters because it shows cause, consequence, and attacker value in a clean progression.
+
+## 4. Supporting root-cause architecture — PHX-V04
+
+**PHX-V04 — Fragile vault authorization chain and dependency-only gating** is not promoted here as a top-tier standalone finding. Its attacker benefit overlaps heavily with PHX-V01 and PHX-V02. However, it materially explains the failure pattern.
+
+The current design chains `vault-mount.service` behind `hardware-check.service`, and the vault-unlock logic repeats the same `mmcblk0`-specific assumption already seen in the main authorization path. This means the device duplicates a brittle trust dependency across linked components, increasing the chance that a single device-path mismatch will produce a wider unsafe state.
 
 This architectural duplication strengthens the remediation case for:
 - centralized device-identity resolution
@@ -27,20 +60,9 @@ This architectural duplication strengthens the remediation case for:
 - fail-closed behavior when identity checks cannot complete
 - dependency design that resolves into a deterministic locked state rather than a semi-operational accessible state
 
-## Recovery-path status note — PHX-V05
+---
 
-A separate Phoenix candidate, **PHX-V05 — Recovery-path abuse potential via `repairman.sh`**, remains in a supported but unverified state.
-
-Recovered Phoenix scripts and setup artifacts show a real USB recovery path that appears to trust the booted USB runtime as the repair source and proceeds into direct SD repair and `rsync` mirroring without a visible authenticity gate in the reviewed script body. However, this assessment did **not** complete a live acceptance replay using a repair image or alternate test image, because the required media was not available during the engagement.
-
-This means the current report can responsibly say:
-- the recovery path is real and code-backed
-- no visible authenticity control was found in the recovered script logic
-- live attacker-controlled acceptance was **not** confirmed in this engagement state due to unavailable test media
-
-That limitation should be presented as a test-coverage boundary, not as disproof of the candidate.
-
-## Finding PHX-V01 — Storage-interface-dependent authorization failure
+## 5. Finding PHX-V01 — Storage-interface-dependent authorization failure
 
 ### Severity
 Medium
@@ -74,7 +96,7 @@ This was scored as **CVSS-B 6.8 / Medium** because the attack requires physical 
 - Base-only scoring was used for this pass
 - Threat and Environmental metrics were not enriched
 - No subsequent-system impact is claimed in this finding
-- The finding is limited to the authorization failure condition, not the preserved shell/GUI access that followed
+- The finding is limited to the authorization failure condition, not the preserved shell or GUI access that followed
 
 ### Remediation
 Refactor the authorization logic so that it binds to the protected media identity regardless of whether the storage is presented through the native slot or an external reader. Use stable device attributes rather than a fixed Linux block-device name, and deny access safely when trusted identity cannot be confirmed.
@@ -91,7 +113,7 @@ Reboot the same authorized media in both the native slot and a USB SD reader. Co
 
 ---
 
-## Finding PHX-V02 — Fail-open local access after hardware-check crash
+## 6. Finding PHX-V02 — Fail-open local access after hardware-check crash
 
 ### Severity
 High
@@ -115,7 +137,7 @@ During the USB-presented boot path:
 - GUI and terminal access remained available long enough to perform local shell-based reconnaissance as user `pi`
 
 ### Impact
-A local attacker can preserve interactive access to the underlying OS environment when the authorization component crashes. This defeats the intended deny-by-default behavior and exposes confidentiality and integrity on the vulnerable system. In a device intended to enforce local lockout, preserving local shell/GUI access after enforcement failure is a high-value control failure.
+A local attacker can preserve interactive access to the underlying OS environment when the authorization component crashes. This defeats the intended deny-by-default behavior and exposes confidentiality and integrity on the vulnerable system. In a device intended to enforce local lockout, preserving local shell or GUI access after enforcement failure is a high-value control failure.
 
 ### CVSS rationale
 This was scored as **CVSS-B 7.3 / High** because the path still requires physical access, but it does not require prior credentials or user interaction, and it yields direct access to local system state. Confidentiality and integrity impacts are both high because the exposed session can reveal system information and permit local actions. Availability impact is limited rather than high because the device remains partially operational rather than fully destroyed or permanently denied.
@@ -140,7 +162,7 @@ Repeat the USB-presented boot path after remediation and confirm that any identi
 
 ---
 
-## Finding PHX-V03 — Sensitive provisioning artifact exposure in shell history
+## 7. Finding PHX-V03 — Sensitive provisioning artifact exposure in shell history
 
 ### Severity
 High
@@ -194,6 +216,77 @@ Remove secret-bearing provisioning commands from shell history, move setup secre
 ### Retest guidance
 After remediation, confirm that shell history no longer stores secret-bearing provisioning commands, verify that any exposed passphrase has been rotated or invalidated, and test that recovered historical setup material cannot be reused successfully.
 
-## Recommended next reporting move
+---
 
-Use PHX-V01 through PHX-V03 as the first-wave Phoenix findings set in the final report. Keep PHX-V04 as likely supporting root-cause material, and keep PHX-V05 through PHX-V07 in validation flow until they are either proven or downgraded to contextual hardening observations.
+## 8. Supported candidate — PHX-V05 Recovery-path abuse potential via `repairman.sh`
+
+### Status
+Supported, not verified in the current engagement state
+
+### Why it matters
+Recovered Phoenix recovery scripts show a real automatic USB-boot recovery path that performs direct SD repair and `rsync` mirroring from the USB runtime onto the mounted SD root. In the reviewed script logic, no visible signature, authenticity, or operator-authentication gate was found before restore actions proceeded.
+
+If that path accepts attacker-controlled content in practice, it could become a meaningful integrity-impact recovery-path weakness.
+
+### Current evidence basis
+- recovered `repairman.sh` and setup artifacts show a real Phoenix recovery path
+- the path appears to trust the booted USB runtime as the repair source
+- the script performs `fsck`, mounts the SD root, mirrors `/` from the USB runtime, rebuilds `fstab`, restores firmware configuration, toggles services, and reboots
+- no visible cryptographic validation or trust gate was observed in the reviewed script body
+
+### Why it is not verified yet
+The engagement did **not** complete a live acceptance replay using the required repair image or an alternate test image, because that media was not available during the assessment state covered by this report.
+
+This is a coverage limitation, not contradictory evidence. The candidate remains meaningful, but it is not presented here as a finished verified finding.
+
+### Reporting position
+- keep PHX-V05 visible in the report as a supported candidate
+- do not assign a final score yet
+- do not present it as live-confirmed attacker-controlled acceptance
+- keep PHX-V06 and PHX-V07 outside the main scored finding set unless later replay tightens reproducibility and impact framing
+
+### Recommended follow-up
+When a repair image or alternate test image becomes available, perform a controlled safest-first replay:
+1. non-destructive acceptance proof
+2. sacrificial-media write proof if needed
+3. final finding promotion only if acceptance is confirmed
+
+---
+
+## 9. Final finding set for current report state
+
+### Main verified findings
+- PHX-V01
+- PHX-V02
+- PHX-V03
+
+### Supporting architecture
+- PHX-V04
+
+### Supported candidate pending future validation
+- PHX-V05
+
+### Secondary or contextual items retained outside the main finding set
+- PHX-V06 — supported / partially observed startup-race candidate
+- PHX-V07 — low-severity local availability candidate or hardening observation
+- PHX-V08 — context only
+
+## 10. Recommended retest priorities
+
+1. Re-test trusted-media identity handling across native-slot and USB-presented paths
+2. Re-test fail-closed behavior on hardware-check exceptions
+3. Remove and rotate sensitive provisioning residue, then verify the cleanup
+4. Perform controlled PHX-V05 recovery-path validation once required media becomes available
+5. Revisit PHX-V06 only if repeated boot-cycle evidence can bound the startup exposure window cleanly
+6. Revisit PHX-V07 only if the shutdown/disruption path can be reproduced and justified as more than a hardening issue
+
+## 11. Conclusion
+
+The most important Phoenix risks in the current engagement state are not broad network exposure issues. They are local trust, enforcement, and operational-secret handling failures.
+
+The verified findings already show that Phoenix can:
+- make the wrong trust decision when storage presentation changes
+- fail open when that trust path breaks
+- expose operationally useful provisioning material once local access is preserved
+
+That is already a meaningful and defensible finding set. PHX-V05 remains worth keeping in view, but the report should stay disciplined and distinguish clearly between code-backed concern and live-confirmed exploitability.
