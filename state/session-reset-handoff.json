@@ -1,21 +1,26 @@
 {
-  "timestamp_local": "2026-04-29 20:14:58 PST",
-  "timestamp_iso": "2026-04-29T20:14:58+08:00",
+  "timestamp_local": "2026-04-29 21:38:41 PST",
+  "timestamp_iso": "2026-04-29T21:38:41+08:00",
   "date": "2026-04-29",
   "trigger": "manual-near-50-percent",
-  "summary": "Phoenix exploit already confirmed via SD-to-USB trust-break and fail-open local foothold; reporting is cleaned up, current active phase is post-exploitation focused on finding/accessing hidden or protected player files from current foothold evidence.",
+  "summary": "Phoenix reporting generation/publishing failed quality expectations. Need post-reset inspection of why Raph and main agent did not use engagement docs correctly, why report/process overview revision failed, and why report format drifted from the intended pipeline.",
   "key_points": [
-    "PHX-V05 remains blocked by missing repair image/alternate test image, so the best next step after reset is to resume Phoenix post-exploit by building a recovered clues ledger around vault paths, unlock logic, mountpoints, scripts, key/passphrase/device-identity clues, and app data paths."
+    "Do not rerun reporting immediately after reset. First compare engagement source docs against generated REPORT_FINAL_2026-04-29_2105/2120 and PROCESS_OVERVIEW_2026-04-29_2105/2120 outputs, then inspect reporting generator inputs/templates/pipeline path and where PHX-V04 to PHX-V08 plus detailed process narrative were dropped or flattened."
   ],
   "next_actions": [
-    "After reset, resume Phoenix post-exploit and provide exact actions/commands to run for the hidden-file mission using current or realistically reachable evidence."
+    "After reset, inspect Phoenix reporting failure: review local corrected report/process files, publish manifests, structured findings JSON, and the production report generator path before any new generation."
   ],
   "files": [
-    "engagements/playerv2-phoenix/post-exploit/POST_EXPLOIT_WORKPLAN_2026-04-29.md"
+    "engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_2120.md"
   ],
   "branch": "main",
-  "head_before": "03e2a46",
+  "head_before": "3943c24",
   "git_status_before": [
+    " M engagements/playerv2-phoenix/registers/attack-path-register.md",
+    " M engagements/playerv2-phoenix/registers/evidence-register.md",
+    " M engagements/playerv2-phoenix/registers/findings-register.md",
+    " M engagements/playerv2-phoenix/registers/master-activity-log.md",
+    " M engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_2120.publish.json",
     " M scripts/orchestration/README.md",
     " M vuln/scripts/__pycache__/cve_lookup.cpython-313.pyc",
     "?? -.md",
@@ -63,14 +68,17 @@
     "?? engagements/playerv2-phoenix/enum/parsed/",
     "?? engagements/playerv2-phoenix/enum/raw/",
     "?? engagements/playerv2-phoenix/enum/summaries/",
+    "?? engagements/playerv2-phoenix/exploit/EXPLOIT_SUMMARY_2026-04-29_2045.md",
     "?? engagements/playerv2-phoenix/exploit/attack-paths.md",
     "?? engagements/playerv2-phoenix/exploit/exploit-activity-log.md",
     "?? engagements/playerv2-phoenix/exploit/exploit-evidence-index.md",
     "?? engagements/playerv2-phoenix/exploit/exploit-findings-delta.md",
     "?? engagements/playerv2-phoenix/exploit/exploit-next-actions.md",
     "?? engagements/playerv2-phoenix/exploit/exploit-summary.md",
+    "?? engagements/playerv2-phoenix/post-exploit/POST_EXPLOIT_SUMMARY_2026-04-29_2045.md",
     "?? engagements/playerv2-phoenix/post-exploit/cleanup-notes.md",
     "?? engagements/playerv2-phoenix/post-exploit/loot-and-impact-log.md",
+    "?? engagements/playerv2-phoenix/post-exploit/post-exploit-activity-log.md",
     "?? engagements/playerv2-phoenix/post-exploit/post-exploit-evidence-index.md",
     "?? engagements/playerv2-phoenix/post-exploit/post-exploit-findings-delta.md",
     "?? engagements/playerv2-phoenix/post-exploit/post-exploit-next-actions.md",
@@ -95,6 +103,7 @@
     "?? engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_1052_SIMULATED.md",
     "?? engagements/playerv2-phoenix/reporting/REPORT_FINAL_2026-04-29_1052_SIMULATED.publish.json",
     "?? engagements/playerv2-phoenix/reports/",
+    "?? engagements/playerv2-phoenix/vuln/VULN_SUMMARY_2026-04-29_2052.md",
     "?? scripts/orchestration/preengagement_analysis_policy.md"
   ],
   "handoff_path": "state/session-reset-handoff.json"
