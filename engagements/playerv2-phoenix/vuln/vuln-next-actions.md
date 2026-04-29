@@ -11,10 +11,10 @@ Date: 2026-04-29
 2. **Decide whether PHX-V04 stays standalone or becomes supporting root-cause text under PHX-V01**
    - current recommendation: supporting/root-cause unless distinct attacker benefit is later demonstrated
 
-3. **Validate PHX-V05 safely**
-   - determine exact repair-source structure
-   - determine whether signature/authenticity checks exist
-   - avoid destructive restore actions during first validation pass
+3. **Promote PHX-V05 from supported candidate to verified finding only if live acceptance is proven**
+   - current code-review pass found no visible signature/authenticity gate in recovered recovery scripts
+   - next step is a controlled non-destructive or sacrificial-media validation
+   - avoid destructive restore actions on the primary target during first live replay
 
 4. **Re-test PHX-V06 only if needed**
    - reproduce the pre-lock race with exact timing notes

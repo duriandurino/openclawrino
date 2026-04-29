@@ -37,10 +37,10 @@ Date: 2026-04-29
 - Note: likely root-cause/supporting architecture unless distinct attacker leverage is proven
 
 ### PHX-V05
-- State: Hypothesis
-- Score state: unscored
-- Confidence: Medium
-- Note: requires authenticity/source-acceptance validation
+- State: Supported
+- Score state: provisional only
+- Confidence: Medium-high
+- Note: recovered Phoenix `repairman.sh` and setup artifacts show a real USB recovery path with no visible authenticity gate before restore actions, but live acceptance of attacker-controlled content is not yet proven
 
 ### PHX-V06
 - State: Supported / partially observed

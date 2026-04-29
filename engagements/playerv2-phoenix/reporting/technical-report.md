@@ -15,6 +15,18 @@ These are the strongest currently verified Phoenix findings and reflect the late
 - PHX-V01 and PHX-V02 remain separate
 - PHX-V03 is treated as still operationally useful if missed in a real attack
 
+## Root-cause support note — PHX-V04
+
+The first-wave findings are reinforced by a supporting architectural weakness tracked as **PHX-V04 — Fragile vault authorization chain and dependency-only gating**. This item is not being promoted as a separate top-tier finding in this report pass because its attacker benefit overlaps heavily with PHX-V01 and PHX-V02. However, it materially explains why the Phoenix trust boundary fails so awkwardly.
+
+The current design chains `vault-mount.service` behind `hardware-check.service`, and the vault-unlock logic repeats the same brittle `mmcblk0`-specific identity assumption seen in the main authorization path. In effect, the device does not just have one fragile trust decision. It duplicates that trust assumption across multiple linked components, increasing the chance that a single device-path mismatch produces a wider inconsistent security state.
+
+This architectural duplication strengthens the remediation case for:
+- centralized device-identity resolution
+- transport-independent trusted-media validation
+- fail-closed behavior when identity checks cannot complete
+- dependency design that resolves into a deterministic locked state rather than a semi-operational accessible state
+
 ## Finding PHX-V01 — Storage-interface-dependent authorization failure
 
 ### Severity
@@ -58,6 +70,7 @@ Refactor the authorization logic so that it binds to the protected media identit
 - Centralize device-identity resolution in a single reusable component
 - Remove hardcoded assumptions about `mmcblk0`
 - Add explicit fail-closed handling when identity attributes are unavailable
+- Eliminate duplicated trust assumptions between `hardware-check.service` and vault-unlock workflows
 - Add integration tests that simulate alternate storage presentation methods such as USB-attached readers
 
 ### Retest guidance

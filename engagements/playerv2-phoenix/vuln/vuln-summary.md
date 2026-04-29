@@ -37,9 +37,9 @@ Scoring label used for populated entries below: CVSS-B
    - Recommendation: likely root-cause/supporting finding unless separate attacker benefit is proven
 
 5. **PHX-V05 — Recovery-path abuse potential via `repairman.sh`**
-   - Validation status: Hypothesis
-   - CVSS status: not scored yet
-   - Recommendation: validate source acceptance and authenticity controls first
+   - Validation status: Supported
+   - CVSS status: provisional only
+   - Recommendation: authenticity checks were not visible in recovered recovery scripts, but controlled live acceptance is still needed before full scoring
 
 6. **PHX-V06 — Pre-lock startup race exposing shell/GUI access**
    - Validation status: Supported / partially observed
@@ -161,22 +161,22 @@ Scoring label used for populated entries below: CVSS-B
 - **finding_id:** PHX-V05
 - **title:** Recovery-path abuse potential via `repairman.sh`
 - **severity:** Medium
-- **validation_status:** Hypothesis
+- **validation_status:** Supported
 - **affected_asset:** playerv2-phoenix
 - **cvss_version:** 4.0
 - **cvss_label:** CVSS-B
 - **cvss_score:** null
 - **cvss_vector:** null
 - **cvss_severity:** Medium
-- **cvss_rationale:** Candidate only. The recovery path appears trust-sensitive and potentially high impact, but exploitability has not been verified.
-- **cvss_assumptions:** No score assigned until source acceptance, authenticity validation behavior, and attacker control feasibility are proven.
+- **cvss_rationale:** Supported candidate. Recovered Phoenix recovery scripts show a real automatic restore path that performs direct SD repair and `rsync` mirroring from the USB runtime without visible cryptographic authenticity checks, but attacker-controlled acceptance has not yet been demonstrated live on target.
+- **cvss_assumptions:** No score assigned yet because the current evidence is code-backed and stronger than a pure hypothesis, but final exploitability still depends on proving that attacker-controlled recovery content would be accepted in the real target workflow.
 - **cve_ids:** []
 - **cwe_ids:** ["CWE-494", "CWE-829"]
 - **impact:** If exploitable, an attacker-controlled repair source could compromise player integrity or restore attacker-chosen content to the protected media.
-- **evidence:** `repairman.sh` searched multiple removable-media paths for `nctv-phoenix`; if found and `/dev/mmcblk0` existed it could perform surgical restore actions; `nctv-watchdog.sh` could trigger `repairman.service` by touching `/run/nctv-phoenix-repair-needed`.
+- **evidence:** Recovered Phoenix `repairman.sh` and setup artifacts showed an automatic USB-boot recovery path. In surgery mode, the script runs `fsck` on `/dev/mmcblk0p1` and `/dev/mmcblk0p2`, mounts the SD root, `rsync`s `/` from the USB runtime onto the mounted SD root, rebuilds `fstab`, restores firmware config, forces GUI settings, enables `nctv-watchdog.service`, disables `repairman.service`, and reboots. No visible signature or authenticity check was present in the reviewed script body before restore actions proceeded.
 - **remediation:** Require signed and authenticated recovery bundles, verify source integrity before any restore action, and limit repair triggering to authenticated maintenance workflows.
 - **hardening_recommendations:** Treat recovery media as hostile by default, add cryptographic verification to restore artifacts, and log any repair-mode entry with tamper-evident records.
-- **retest_guidance:** Build a controlled test repair source and verify whether unsigned or attacker-modified content is rejected before any write action occurs.
+- **retest_guidance:** Build a controlled non-destructive test repair source and verify whether unsigned or attacker-modified content is rejected before any write action occurs. Prefer a staged dry-run or isolated sacrificial media workflow before any production-target replay.
 
 ---
 
