@@ -55,8 +55,8 @@ Suggested current mapping:
 - PHX-V03 — Verified — CVSS-B 7.1 — High — Main finding
 - PHX-V04 — Supported — Unscored — Medium direction — Supporting root cause
 - PHX-V05 — Supported — Unscored — Medium direction — Candidate pending live replay
-- PHX-V06 — Supported / partially observed — Unscored — Secondary candidate
-- PHX-V07 — Supported — Unscored — Secondary candidate or hardening note
+- PHX-V06 — Supported / partially observed — Unscored — Secondary candidate, not reproducible enough yet for scoring
+- PHX-V07 — Supported — Unscored — Low-severity candidate or hardening note
 - PHX-V08 — Not applicable as standalone vuln — Unscored — Context only
 
 ### F. Retest checklist
@@ -64,6 +64,8 @@ Suggested current mapping:
 - fail-closed behavior on hardware-check exceptions
 - shell-history secret handling cleanup
 - recovery-path authenticity validation
+- PHX-V06 repeated boot-cycle timing validation if exploit feasibility is revisited
+- PHX-V07 exact shutdown/disruption replay if availability impact is revisited
 
 ## Recommended linked artifacts
 - `engagements/playerv2-phoenix/vuln/vuln-summary.md`

@@ -35,6 +35,8 @@ Walk through:
 - enum
 - vuln analysis
 - controlled validation
+- exploit feasibility review
+- post-exploit feasibility review
 - reporting
 
 ### 4. Why the testing pivoted toward local trust behavior
@@ -72,10 +74,11 @@ Summarize the main business meaning:
 
 ### 10. Next-step decision tree
 Recommended sequence:
-1. execute the safest-first PHX-V05 live validation plan
-2. if verified, promote PHX-V05 into the main finding set
-3. if not verified, keep it as a supported candidate or root-cause note
-4. finalize the report around PHX-V01 to PHX-V04 plus the correct PHX-V05 status
+1. determine whether exploit and post-exploit work are genuinely blocked or still safely viable in the present engagement state
+2. if PHX-V05 live validation becomes feasible, execute the safest-first PHX-V05 validation plan
+3. if PHX-V05 is verified, promote it into the main finding set and reassess exploit/post-exploit follow-through from that foothold
+4. if PHX-V05 remains blocked, keep it as a supported candidate or root-cause note
+5. finalize the report around PHX-V01 to PHX-V04 plus the correct PHX-V05 status
 
 ## Writing rules for the final process overview
 
@@ -100,6 +103,6 @@ Recommended sequence:
 - PHX-V05
 
 ### Secondary candidates / context
-- PHX-V06
-- PHX-V07
-- PHX-V08
+- PHX-V06 — supported / partially observed startup-race candidate
+- PHX-V07 — low-severity local availability candidate or hardening observation
+- PHX-V08 — context only

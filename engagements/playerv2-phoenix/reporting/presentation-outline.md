@@ -69,9 +69,10 @@ Explain the Phoenix security story clearly:
 - harden and test recovery-path trust
 
 ### 11. Immediate next steps
-- execute PHX-V05 safest-first live validation
+- first decide whether exploit and post-exploit work are still safely viable or genuinely blocked in the current Phoenix state
+- execute PHX-V05 safest-first live validation if the required media becomes available
 - finalize finding set based on that result
-- complete final report with validated recovery-path status
+- complete final report with the correct validated recovery-path status
 
 ### 12. Closing slide
 - top risks
