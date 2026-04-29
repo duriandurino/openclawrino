@@ -71,6 +71,7 @@ PHASE_FILES = {
         "technical-report.md",
         "appendix.md",
         "presentation-outline.md",
+        "process-overview.md",
     ],
 }
 
