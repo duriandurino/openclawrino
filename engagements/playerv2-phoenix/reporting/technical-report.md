@@ -9,6 +9,8 @@ Scoring standard: CVSS v4.0
 
 The current Phoenix assessment identified three verified findings that form a coherent local attack chain, plus one supporting architectural weakness and one meaningful but still unverified recovery-path candidate.
 
+Importantly, the engagement did not stop at passive vulnerability observation. The PHX-V01 to PHX-V02 chain was successfully exercised in practice, producing a meaningful local foothold. From that foothold, the assessment entered bounded post-exploitation through local reconnaissance and sensitive artifact recovery.
+
 The verified path is:
 1. **PHX-V01** — authorization can be disrupted by changing how the same storage is presented to the device
 2. **PHX-V02** — when that trust path fails, enforcement crashes and preserves local access instead of denying it safely
@@ -46,7 +48,7 @@ Second, when this trust assumption breaks in the USB-presented path, the enforce
 
 Third, that preserved local access exposes operationally valuable provisioning material in shell history, including a setup host, decryption workflow, and plaintext passphrase.
 
-This sequence matters because it shows cause, consequence, and attacker value in a clean progression.
+This sequence matters because it shows cause, consequence, and attacker value in a clean progression. It also means the engagement already crossed from vulnerability validation into actual local exploitation and early post-exploitation, even though deeper privilege escalation, persistence, and broader environment impact were intentionally left bounded by the evidence.
 
 ## 4. Supporting root-cause architecture — PHX-V04
 

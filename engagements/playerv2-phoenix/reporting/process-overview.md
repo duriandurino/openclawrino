@@ -7,7 +7,7 @@ Audience: Non-technical stakeholders and technical reviewers who want the real t
 
 ## Purpose
 
-This document explains how the Phoenix assessment was actually carried out, what the tester observed at each phase, and how those observations led to the current findings and next-step decisions.
+This document explains how the Phoenix assessment was actually carried out, what the tester observed at each phase, and how those observations led to the current findings and next-step decisions. It should also make clear that the work progressed beyond vulnerability confirmation into real local exploitation and bounded post-exploitation from the observed fail-open foothold.
 
 It is not just a findings list. It is the narrative bridge between:
 - the engagement process
@@ -48,7 +48,7 @@ Present the verified path in this order:
 2. **PHX-V02** — when that path breaks, enforcement fails open and preserves local access
 3. **PHX-V03** — once local access exists, sensitive provisioning material is recoverable from shell history
 
-This order matters because it tells the real story of cause, consequence, and attacker value.
+This order matters because it tells the real story of cause, consequence, and attacker value. It also marks the point where the engagement moved from vulnerability confirmation into actual local exploitation and then into bounded post-exploitation through reconnaissance and artifact recovery.
 
 ### 6. Supporting root cause
 Add **PHX-V04** here as supporting architecture, not as a top-tier stand-alone finding.
@@ -70,6 +70,7 @@ Keep **PHX-V08** as environment context only.
 Summarize the main business meaning:
 - the most important Phoenix risks are local trust and enforcement weaknesses, not broad network exposure
 - physical access matters because the product’s protection claims depend on resisting exactly these local and startup-path conditions
+- the engagement already demonstrated a real local exploit path, not just a theoretical validation
 - the engagement is narrowing from broad exploration into a small number of concrete, evidence-backed trust failures
 
 ### 10. Next-step decision tree
